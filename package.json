@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "1.6",
+  "version": "1.6.6",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
@@ -13,35 +13,11 @@
   },
   "keywords": [],
   "author": {
-    "name": "Cthethan"
+    "name": "Ethan Ray"
   },
   "license": "MIT",
   "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "electron test"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
+    "forge": "./forge.config.js"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0"
