@@ -1,15 +1,37 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "1.6.6",
+  "version": "1.7.0",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "dist": "electron-builder"
+  },
+  "repository": "https://github.com/RayDawn/Lexicanter-Electron",
+  "publish": {
+    "provider": "github",
+    "releaseType": "release"
+  },
+  "build": {
+    "appId": "com.lexicanter.app",
+    "productName": "Lexicanter",
+    "win": {
+      "target": "nsis",
+      "icon": "src/rsrc/Quill Icon.ico"
+    },
+    "nsis": {
+      "installerIcon": "src/rsrc/Quill Icon.ico",
+      "installerHeaderIcon":  "src/rsrc/Quill Icon.ico"
+    },
+    "files": [ "src/**/*" ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "src/rsrc"
+    }
   },
   "keywords": [],
   "author": {
@@ -20,9 +42,11 @@
     "forge": "./forge.config.js"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-updater": "^5.3.0"
   },
   "devDependencies": {
+    "electron-builder": "^23.6.0",
     "@electron-forge/cli": "^6.0.0-beta.63",
     "@electron-forge/maker-deb": "^6.0.0-beta.63",
     "@electron-forge/maker-rpm": "^6.0.0-beta.63",
