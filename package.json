@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "1.7.0",
+  "version": "1.7.4",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
@@ -27,7 +27,7 @@
       "installerIcon": "src/rsrc/Quill Icon.ico",
       "installerHeaderIcon":  "src/rsrc/Quill Icon.ico"
     },
-    "files": [ "src/**/*" ],
+    "files": [ "src/**/*", "node_modules/**/*" ],
     "directories": {
       "output": "dist",
       "buildResources": "src/rsrc"
