@@ -1160,6 +1160,35 @@ function open_v1p6(contents) {
     tab_btns[0].onclick(); // Return to Lexicon tab
 }
 
+function open_v1p7(contents) {
+    try {lexicon = contents.Lexicon;} catch (err) { window.alert("There was a problem loading the contents of the lexicon. Please contact the developer.") }
+    try {alphabet_input.value = contents.Alphabet;} catch (err) { window.alert("There was a problem loading the alphabetical order. Please contact the developer.") }
+    try {
+        let txt = ''
+        for (var r in contents.Romanization) {
+        txt += (`${r} > ${contents.Romanization[r]}\n`) }
+        romans.value = txt.trimEnd(); romans.onchange();
+    } catch (err) { window.alert("There was a problem loading the romanizations. Please contact the developer.") }
+    try { phrasebook = contents.Phrasebook; } catch (err) { window.alert('There was a problem loading the phrasebook. Please contact the developer.') }
+    try {
+        onset_input.value = contents.Phonotactics.Initial.join(' ');
+        middle_input.value = contents.Phonotactics.Middle.join(' ');
+        coda_input.value = contents.Phonotactics.Final.join(' ');
+        vowel_input.value = contents.Phonotactics.Vowel.join(' ');
+        illegals_input.value = contents.Phonotactics.Illegal.join(' ');
+    } catch (err) { window.alert("There was a problem loading the phonotactics data. Please contact the developer.") }
+    try {write_tables(contents.Tables);} catch (err) { window.alert("There was a problem loading the tables data. Please contact the developer."); console.log(err); }
+    try {header_tags_text.value = contents.HeaderTags} catch (err) { window.alert("There was a problem loading the header tags.") }
+
+    try { document.getElementById('ignore-diacritic').checked = contents.IgnoreDiacritics } catch (err) { console.log(err) }
+    try { document.getElementById('case-sensitive').checked = contents.CaseSensitive } catch (err) { console.log(err) }
+
+    try {rewrite_entries();} catch (err) { window.alert("The save file's lexicon data successfully was loaded, but an error occurred while parsing it. Please contact the developer.") }
+    try {update_categories();} catch (err) { window.alert("The save file's phrasebook data successfully was loaded, but an error occurred while parsing it. Please contact the developer.") }
+    
+    tab_btns[0].onclick(); // Return to Lexicon tab 
+}
+
 async function open_lex() {
     let [file_handle] = await window.showOpenFilePicker();
     await file_handle.requestPermission({ mode: 'read' });
@@ -1180,22 +1209,25 @@ async function open_lex() {
             case 1.4: open_v1p3(contents); break; // save file format is same as 1.3
             case 1.5: open_v1p5(contents); break;
             case 1.6: open_v1p6(contents); break;
+            case 1.7: open_v1p7(contents); break;
         }
     }
     file_name_input.value = file.name.split('.')[0]
 }
 
 async function save_as() {
-    // v1.6
+    // v1.7
     let export_data = {
-        Version: 1.6,
+        Version: 1.7,
         Lexicon: lexicon,
         Alphabet: alphabet_input.value,
         Phrasebook: phrasebook,
         Phonotactics: get_phonotactics(),
         Romanization: romanizations,
         Tables: collect_tables(),
-        HeaderTags: header_tags_text.value
+        HeaderTags: header_tags_text.value,
+        IgnoreDiacritics: document.getElementById('ignore-diacritic').checked,
+        CaseSensitive: document.getElementById('case-sensitive').checked
     }
     let exports = new Blob([JSON.stringify(export_data)]);
 
