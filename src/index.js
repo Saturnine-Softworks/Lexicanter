@@ -5,6 +5,11 @@ const { autoUpdater, AppUpdater } = require("electron-updater");
 
 // Auto-updater flags
 autoUpdater.autoDownload = true;
+var exec = require('child_process').exec; 
+exec('NET SESSION', function(err,so,se) {
+      autoUpdater.allowPrerelease = se.length === 0 ? true : false;
+      console.log(autoUpdater.allowPrerelease);
+    });
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {

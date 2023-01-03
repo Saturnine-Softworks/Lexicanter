@@ -1,3 +1,6 @@
+# Electron-Builder Distribution
+dist/
+
 # Logs
 logs
 *.log
