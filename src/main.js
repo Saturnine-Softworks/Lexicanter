@@ -487,7 +487,7 @@ srch_wrd.onblur(); srch_def.onblur(); srch_tag.onblur();
 
 function search_lex() {
     let s = srch_wrd.value.trim();
-    let z = srch_def.value.trim();
+    let z = srch_def.value.toLowerCase().trim();
     let x = srch_tag.value.trim();
     if (s === 'Search by word…'){s = ''};
     if (z === 'Search definition…'){z = ''};
@@ -510,7 +510,7 @@ function search_lex() {
                 if ( !w.includes(a) ) { match = false; }
             }
             for (let a of l[1]) { // definitions
-                if ( !lexicon[word][1].includes(a) ) { match = false; }
+                if ( !lexicon[word][1].toLowerCase().includes(a) ) { match = false; }
             }
             for (let a of x) { // tags
                 if ( !lexicon[word][3].includes(a) ) { match = false; }
@@ -553,7 +553,7 @@ srch_phrase.onblur(); srch_descriptions.onblur();
 function search_book() {
     let scope = phrasebook[selected_cat];
     let ps = srch_phrase.value.trim();
-    let ds = srch_descriptions.value.trim();
+    let ds = srch_descriptions.value.toLowerCase().trim();
     if (ps === 'Search by phrase…') {ps = ''};
     if (ds === 'Search descriptions…') {ds = ''};
     let keys = false;
@@ -563,11 +563,11 @@ function search_book() {
             let term = '^' + entry + '^';
             let pm = !ps.length;
             let dm = !ds.length;
-            console.log(scope[entry].description, scope[entry].description.includes(ds));
+            // console.log(scope[entry].description, scope[entry].description.includes(ds));
             if (term.includes(ps)) {
                 pm = true;
             }
-            if ( scope[entry].description.includes(ds) ) {
+            if ( scope[entry].description.toLowerCase().includes(ds) ) {
                 dm = true;
             } 
             for (let variant in scope[entry].variants) {
@@ -575,7 +575,7 @@ function search_book() {
                 if (v_term.includes(ps)) {
                     pm = true;
                 }
-                if (scope[entry].variants[variant].description.includes(ds)) {
+                if (scope[entry].variants[variant].description.toLowerCase().includes(ds)) {
                     dm = true;
                 }
             }
