@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "1.7.6",
+  "version": "1.7.7",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
@@ -9,12 +9,12 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "lint": "echo \"No linting configured\"",
-    "dist": "electron-builder"
+    "dist": "electron-builder --mac --win --publish always"
   },
   "repository": "https://github.com/RayDawn/Lexicanter-Electron",
   "publish": {
     "provider": "github",
-    "releaseType": "release"
+    "releaseType": "prerelease"
   },
   "build": {
     "appId": "com.lexicanter.app",
