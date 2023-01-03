@@ -14,7 +14,7 @@
   "repository": "https://github.com/RayDawn/Lexicanter-Electron",
   "publish": {
     "provider": "github",
-    "releaseType": "prerelease"
+    "releaseType": "release"
   },
   "build": {
     "appId": "com.lexicanter.app",
