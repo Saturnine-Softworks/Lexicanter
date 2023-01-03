@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
@@ -23,11 +23,17 @@
       "target": "nsis",
       "icon": "src/rsrc/Quill Icon.ico"
     },
+    "mac": {
+      "icon": "src/rsrc/Quill Icon.icns"
+    },
     "nsis": {
       "installerIcon": "src/rsrc/Quill Icon.ico",
-      "installerHeaderIcon":  "src/rsrc/Quill Icon.ico"
+      "installerHeaderIcon": "src/rsrc/Quill Icon.ico"
     },
-    "files": [ "src/**/*", "node_modules/**/*" ],
+    "files": [
+      "src/**/*",
+      "node_modules/**/*"
+    ],
     "directories": {
       "output": "dist",
       "buildResources": "src/rsrc"
@@ -46,12 +52,12 @@
     "electron-updater": "^5.3.0"
   },
   "devDependencies": {
-    "electron-builder": "^23.6.0",
     "@electron-forge/cli": "^6.0.0-beta.63",
     "@electron-forge/maker-deb": "^6.0.0-beta.63",
     "@electron-forge/maker-rpm": "^6.0.0-beta.63",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
-    "electron": "17.0.0"
+    "electron": "17.0.0",
+    "electron-builder": "^23.6.0"
   }
 }
