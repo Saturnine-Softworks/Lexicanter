@@ -207,7 +207,7 @@ function rewrite_entries(keys = false) {
                 }
                 
                 entry.append(word, pron, tags, defn);
-                entry.addEventListener('click', () => edit_entry(key) );
+                entry.addEventListener('contextmenu', () => edit_entry(key) );
 
                 lex_body.appendChild(entry);
             }
