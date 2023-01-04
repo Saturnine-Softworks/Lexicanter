@@ -316,5 +316,5 @@ td[class=header] { background-color: #333; font-weight: bold; }
 /* The header class style is currently unused, until I can work out the best way to make
    header rows and columns user-definable.  */
 
-tr:nth-child(odd) {background-color: #555;}
-tr:nth-child(even) { background-color: #777; }
+tr:nth-child(odd) {background-color: rgb(20, 20, 20);}
+tr:nth-child(even) { background-color: rgb(30, 30, 30); }

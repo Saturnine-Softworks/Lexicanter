@@ -349,7 +349,8 @@ function update_categories() {
         i.appendChild( document.createTextNode(cat) );
         i.className = 'lex-entry capitalize';
         i.onclick = function () { 
-            selected_cat = cat; 
+            selected_cat = cat;
+            cat_input.value = cat;
             update_book();
         };
         cat_body.appendChild(i);
@@ -390,7 +391,7 @@ function add_phrase() {
     phrase_input.value = '';
     phrase_pron.value = '';
     phrase_desc.value = '';
-    cat_input.value = '';
+    // cat_input.value = '';
     // console.log(phrasebook);
 }
 
@@ -490,7 +491,7 @@ function search_lex() {
     let z = srch_def.value.toLowerCase().trim();
     let x = srch_tag.value.trim();
     if (s === 'Search by word…'){s = ''};
-    if (z === 'Search definition…'){z = ''};
+    if (z === 'search definition…'){z = ''};
     if (x === 'Search by tags…' || x === ''){ x = [] } else { x = x.split(/\s+/g) }
     let keys = false;
     if (s !== '' || z !== '' || x.length !== 0 ) {
@@ -555,7 +556,7 @@ function search_book() {
     let ps = srch_phrase.value.trim();
     let ds = srch_descriptions.value.toLowerCase().trim();
     if (ps === 'Search by phrase…') {ps = ''};
-    if (ds === 'Search descriptions…') {ds = ''};
+    if (ds === 'search descriptions…') {ds = ''};
     let keys = false;
     if (ps !== '' || ds !== '') {
         keys = [];
@@ -1456,7 +1457,7 @@ async function export_html() {
         let z = srch_def.value.toLowerCase().trim();
         let x = srch_tag.value.trim();
         if (s === 'Search by word…'){s = ''};
-        if (z === 'Search definition…'){z = ''};
+        if (z === 'search definition…'){z = ''};
         if (x === 'Search by tags…' || x === ''){ x = [] } else { x = x.split(/\s+/g) }
         let keys = false;
         if (s !== '' || z !== '' || x.length !== 0 ) {
@@ -1646,7 +1647,7 @@ async function export_html() {
         let ps = srch_phrase.value.trim();
         let ds = srch_descriptions.value.toLowerCase().trim();
         if (ps === 'Search by phrase…') {ps = ''};
-        if (ds === 'Search descriptions…') {ds = ''};
+        if (ds === 'search descriptions…') {ds = ''};
         let keys = false;
         if (ps !== '' || ds !== '') {
             keys = [];
@@ -1700,7 +1701,8 @@ async function export_html() {
         overflow: auto;
         white-space: pre-line;
     }
-    .row {display: inline-flex;}
+    .row { display: flex; }
+    .search-row { display: inline-flex; }
     .column { flex: 50%; }
 
     input { min-width: 12em; }
@@ -1824,14 +1826,15 @@ async function export_html() {
     td { 
     border: 1px solid black;
     padding: 2px 6px 2px 6px;
+    text-align: center;
     }
     
     td[class=header] { background-color: #333; font-weight: bold; }
     /* The header class style is currently unused, until I can work out the best way to make
         header rows and columns user-definable.  */
     
-    tr:nth-child(odd) {background-color: #555;}
-    tr:nth-child(even) { background-color: #777; }
+    tr:nth-child(odd) {background-color: rgb(20, 20, 20);}
+    tr:nth-child(even) { background-color: rgb(30, 30, 30); }
 
     button {
         display: none;
@@ -1847,7 +1850,7 @@ async function export_html() {
     <div class='tab-pane text-center'>
         <div class="row" style="max-height: 90vh">
             <div class='container column'>
-                <div class='row' style="inline-flex">
+                <div class='search-row'>
                     <div class="column">
                         <label for="search-wrd" style="display: none">Search by word</label>
                         <input id="search-wrd" type="text" class="search" />
@@ -1881,7 +1884,7 @@ async function export_html() {
             </div>
             <div class="container column">
                 <!-- Search Fields -->
-                <div class="row">
+                <div class="search-row">
                     <div class="column">
                         <label for="search-phrase" style="display: none">Search by phrase…</label>
                         <input id="search-phrase" type="text" class="search" />

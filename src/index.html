@@ -9,7 +9,7 @@
   <body id="body">
     <div class='tab-container'>
       <div class="button-container">
-        <p class="version-info"><i>β</i>1.7.8</p>
+        <p class="version-info"><i>β</i>1.7.9</p>
         <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
         <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
         <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
@@ -178,7 +178,7 @@
       <!-- File Tab -->
       <div class="tab-pane">
         <div class="row" style="height: 95vh">
-          <div class="column container">
+          <div class="column container" style="overflow-y:auto">
             <p>Document</p>
             <label for="file-name">Name</label>
             <input type="text" id="file-name" />
