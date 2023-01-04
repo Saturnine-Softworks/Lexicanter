@@ -7,6 +7,7 @@ const { autoUpdater, AppUpdater } = require("electron-updater");
 autoUpdater.autoDownload = true;
 var exec = require('child_process').exec; 
 exec('NET SESSION', function(err,so,se) {
+      // If the app is run as admin, it will check for pre-release versions to download; otherwise it will only check for releases.
       autoUpdater.allowPrerelease = se.length === 0 ? true : false;
       console.log("allowPrerelease:", autoUpdater.allowPrerelease);
     });
@@ -29,13 +30,27 @@ const createWindow = () => {
   });
   if (process.platform === 'darwin') {
     app.dock.setIcon(path.join(__dirname, 'rsrc/Quill Icon.png'));
-}
+  }
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
+
+  // Prompt user to save changes on quit. 
+  mainWindow.on('close', function(e) {
+    var choice = require('electron').dialog.showMessageBoxSync(this,
+        {
+          type: 'question',
+          buttons: ['Quit', 'Cancel'],
+          title: 'Confirm Quit',
+          message: 'You may want to ensure you have saved your changes.'
+        });
+        if(choice == 1){
+          e.preventDefault();
+        }
+    });
 };
 
 // This method will be called when Electron has finished
@@ -45,6 +60,7 @@ app.on('ready', () => {
   autoUpdater.checkForUpdatesAndNotify();
   createWindow();
 });
+
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

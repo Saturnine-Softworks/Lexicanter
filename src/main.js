@@ -23,7 +23,7 @@ const phrase_desc = document.getElementById('description');
 const cat_input = document.getElementById('category');
 const cat_body = document.getElementById('category-body');
 const book_body = document.getElementById('phrasebook-body');
-const variant_body = document.getElementById('variants-body')
+const variant_body = document.getElementById('variants-body');
 const add_variant_btn = document.getElementById('add-variant');
 
 const romans = document.getElementById('romans');
@@ -791,11 +791,32 @@ trial_input.onkeyup = function() {
     trial_output.replaceChildren(text);                     // be found in 20 attempts
 }
 
+
+// function allowDrop(ev) {
+//     ev.preventDefault();
+// }
+
+// function drag(ev) {
+//     ev.dataTransfer.setData("text", ev.target.id);  
+// }
+
+// function drop(ev) {
+//     ev.preventDefault();
+//     var data = ev.dataTransfer.getData("text");
+//     ev.target.innerHTML=''
+//     ev.target.appendChild(document.getElementById(data));
+// }
+
 function add_rows(table, n) {
     for (let i = 0; i < n; i++) {
         let r = table.insertRow(-1);
         for (let j = 0; j < table.rows[0].childElementCount; j++) {
-            r.insertCell().append('—');
+            let cell = r.insertCell();
+            // cell.draggable = true;
+            // cell.onDrop = () => {drop(event)}
+            // cell.onDragOver = () => {allowDrop(event)}
+            // cell.onDragStart = () => {drag(event)}
+            cell.append('—');
         }
     }
 }
@@ -803,6 +824,10 @@ function add_columns(table, n) {
     for (let i = 0; i < n; i++) {
         Array.from(table.rows).forEach((row, i) => {
             let cell = document.createElement('td');
+            // cell.draggable = true;
+            // cell.onDrop = () => {drop(event)}
+            // cell.onDragOver = () => {allowDrop(event)}
+            // cell.onDragStart = () => {drag(event)}
             cell.appendChild( document.createTextNode('—') );
             table.rows[i].appendChild(cell);
         });
@@ -1295,6 +1320,7 @@ async function export_html() {
     // Create HTML document object
     let export_container = document.createElement('html');
 
+    // Create HTML header info
     let head = document.createElement('head');
     head.innerHTML = `
     <meta charset="UTF-8" />
@@ -1308,7 +1334,14 @@ async function export_html() {
     const srch_wrd = document.getElementById('search-wrd');
     const srch_def = document.getElementById('search-def');
     const srch_tag = document.getElementById('search-tag');
+    const srch_phrase = document.getElementById('search-phrase');
+    const srch_descriptions = document.getElementById('search-description');
+    const cat_body = document.getElementById('category-body');
+    const book_body = document.getElementById('phrasebook-body');
+    const variant_body = document.getElementById('variants-body');
     const lexicon = ${JSON.stringify(lexicon)};
+    const phrasebook = ${JSON.stringify(phrasebook)};
+    let selected_cat;
 
     function sort_lex_keys() {
         let htags = ${JSON.stringify(header_tags_text.value.toLowerCase().trim().split(/\s+/))};
@@ -1420,7 +1453,7 @@ async function export_html() {
     }
     function search_lex() {
         let s = srch_wrd.value.trim();
-        let z = srch_def.value.trim();
+        let z = srch_def.value.toLowerCase().trim();
         let x = srch_tag.value.trim();
         if (s === 'Search by word…'){s = ''};
         if (z === 'Search definition…'){z = ''};
@@ -1443,7 +1476,7 @@ async function export_html() {
                     if ( !w.includes(a) ) { match = false; }
                 }
                 for (let a of l[1]) { // definitions
-                    if ( !lexicon[word][1].includes(a) ) { match = false; }
+                    if ( !lexicon[word][1].toLowerCase().includes(a) ) { match = false; }
                 }
                 for (let a of x) { // tags
                     if ( !lexicon[word][3].includes(a) ) { match = false; }
@@ -1493,7 +1526,163 @@ async function export_html() {
         }
     }
     srch_wrd.onblur(); srch_def.onblur(); srch_tag.onblur();
+    
+    function update_book(keys=false) {
+        if (!keys) { keys = [false] }
+        if (selected_cat) { // make sure category isn't blank
+            while (book_body.firstChild) {
+                book_body.removeChild(book_body.lastChild)
+            }
+            let title = document.createElement("p");
+            title.classList = 'table-title capitalize';
+            title.appendChild( document.createTextNode( selected_cat.toLowerCase()) );
+            book_body.append(title, /* document.createElement('hr') */ );
+    
+            for (let entry in phrasebook[selected_cat]) {
+                if (keys.indexOf(entry) !== -1 || keys[0] === false) {
+                    // base entry
+                    let entry_container = document.createElement('div');
+                    entry_container.className = 'lex-entry';
+                    let phrase = document.createElement('p');
+                    phrase.appendChild( document.createTextNode(entry) );
+                    phrase.style.fontStyle = 'italic';
+                    let pron = document.createElement('p');
+                    pron.className = 'pronunciation';
+                    pron.appendChild( document.createTextNode(phrasebook[selected_cat][entry].pronunciation) );
+                    let desc = document.createElement('p');
+                    desc.className = 'prelined';
+                    desc.appendChild( document.createTextNode(phrasebook[selected_cat][entry].description) );
+                    entry_container.append(phrase, pron, desc);
+                    // variant entries
+    
+                    if ( Object.keys(phrasebook[selected_cat][entry].variants).length > 0) {
+                        let t = document.createElement('p');
+                        t.appendChild( document.createTextNode('⋲ ᴠᴀʀɪᴀɴᴛꜱ ⋺') );
+                        entry_container.append(t);
+    
+                        var it = 0;
+                        var crow = document.createElement('div');
+                        crow.classList = 'row variants';
+                        entry_container.appendChild(crow);
+                        for (variant in phrasebook[selected_cat][entry].variants) {
+                            it++;
+                            if (it === 4) {
+                                it = 0;
+                                entry_container.appendChild(crow);
+                                var crow = document.createElement('div');
+                                crow.classList = 'row variants';
+                                entry_container.appendChild(crow);
+                            }
+                            let vcol = document.createElement('div');
+                            vcol.className = 'column';
+    
+                            let v_phrase = document.createElement('p');
+                            v_phrase.appendChild( document.createTextNode(variant) );
+                            v_phrase.style.fontStyle = 'italic';
+                            let v_pron = document.createElement('p');
+                            v_pron.className = 'pronunciation';
+                            v_pron.appendChild( document.createTextNode(phrasebook[selected_cat][entry].variants[variant].pronunciation) );
+                            let v_desc = document.createElement('p');
+                            v_desc.className = 'prelined';
+                            v_desc.appendChild( document.createTextNode(phrasebook[selected_cat][entry].variants[variant].description) );
+            
+                            vcol.append(v_phrase, v_pron, v_desc);
+                            crow.appendChild(vcol);                    
+                        }
+                    }
+    
+                    entry_container.addEventListener('click', () => edit_book_entry(entry)); // edit functionality
+                    book_body.appendChild(entry_container);
+                }
+            }
+        } else { book_body.replaceChildren(); }
+    }
+    
+    function update_categories() {
+        while (cat_body.firstChild) {
+            cat_body.removeChild(cat_body.lastChild);
+        }
+        for (let cat in phrasebook) {
+            let i = document.createElement("div");
+            i.appendChild( document.createTextNode(cat) );
+            i.className = 'lex-entry capitalize';
+            i.onclick = function () { 
+                selected_cat = cat; 
+                update_book();
+            };
+            cat_body.appendChild(i);
+        };
+        update_book();
+    }
+    
+    srch_phrase.onfocus = function() {
+        if (srch_phrase.value === 'Search by phrase…') {
+            srch_phrase.style.color = 'white';
+            srch_phrase.value = '';
+        }
+    }
+    srch_phrase.onblur = function() {
+        if (srch_phrase.value === '') {
+            srch_phrase.style.color = 'rgb(60, 60, 60)';
+            srch_phrase.value = 'Search by phrase…';
+        }
+    }
+    srch_descriptions.onfocus = function() {
+        if (srch_descriptions.value === 'Search descriptions…') {
+            srch_descriptions.style.color = 'white';
+            srch_descriptions.value = '';
+        }
+    }
+    srch_descriptions.onblur = function() {
+        if (srch_descriptions.value === '') {
+            srch_descriptions.style.color = 'rgb(60, 60, 60)';
+            srch_descriptions.value = 'Search descriptions…';
+        }
+    }
+    srch_phrase.onblur(); srch_descriptions.onblur();
+    
+    function search_book() {
+        let scope = phrasebook[selected_cat];
+        let ps = srch_phrase.value.trim();
+        let ds = srch_descriptions.value.toLowerCase().trim();
+        if (ps === 'Search by phrase…') {ps = ''};
+        if (ds === 'Search descriptions…') {ds = ''};
+        let keys = false;
+        if (ps !== '' || ds !== '') {
+            keys = [];
+            for (let entry in scope) {
+                let term = '^' + entry + '^';
+                let pm = !ps.length;
+                let dm = !ds.length;
+                // console.log(scope[entry].description, scope[entry].description.includes(ds));
+                if (term.includes(ps)) {
+                    pm = true;
+                }
+                if ( scope[entry].description.toLowerCase().includes(ds) ) {
+                    dm = true;
+                } 
+                for (let variant in scope[entry].variants) {
+                    let v_term = '^' + variant + '^';
+                    if (v_term.includes(ps)) {
+                        pm = true;
+                    }
+                    if (scope[entry].variants[variant].description.toLowerCase().includes(ds)) {
+                        dm = true;
+                    }
+                }
+                console.log(pm, dm, ps, ds, entry);
+                if (pm && dm) {
+                    keys.push(entry);
+                }
+            }
+        }
+        update_book(keys);
+    }
+    srch_phrase.onkeyup = search_book;
+    srch_descriptions.onkeyup = search_book;
 
+    update_book();
+    update_categories();
     rewrite_entries();
     `;
     // Create export styles
@@ -1508,15 +1697,19 @@ async function export_html() {
         min-height: 500px;
         margin: 0px;
         text-align: center;
-        overflow: hidden;
+        overflow: auto;
         white-space: pre-line;
     }
-    .row {display: flex; max-width: 66%; margin: auto}
-    .column {flex: 50%;}
+    .row {display: inline-flex;}
+    .column { flex: 50%; }
+
+    input { min-width: 12em; }
+
     h1 {
         font-family: Palatino;
         font-style: italic;
         font-size: 17px;
+        display: inline-flex;
     }
     p {margin: 0px;}
     .prelined {white-space: pre-line;}
@@ -1610,31 +1803,102 @@ async function export_html() {
         padding: .2em;
         margin: auto;
     }
+    .table-container { 
+        font-family: Gentium;
+        font-size: 15px;
+        margin: auto; 
+        padding: 30px 5%;
+      }
+      
+    table {
+    border-collapse: collapse;
+    width: 100%;
+    }
+    
+    .table-title {
+    font-family: Gentium;
+    font-style: italic;
+    font-size: 17px;
+    }
+    
+    td { 
+    border: 1px solid black;
+    padding: 2px 6px 2px 6px;
+    }
+    
+    td[class=header] { background-color: #333; font-weight: bold; }
+    /* The header class style is currently unused, until I can work out the best way to make
+        header rows and columns user-definable.  */
+    
+    tr:nth-child(odd) {background-color: #555;}
+    tr:nth-child(even) { background-color: #777; }
+
+    button {
+        display: none;
+    }
+    .info {
+        display: none;
+    }
     `;
     // Create export body
     let body = document.createElement('body');
     body.innerHTML = `
-    <div class='tab-container'>
-        <h1>The Lexicon of ${file_name_input.value}</h1>
-        <div class='tab-pane text-center'>
-            <div class='row'>
-                <div class="column">
-                    <label for="search-wrd" style="display: none">Search by word</label>
-                    <input id="search-wrd" type="text" class="search" />
+    <h1>${file_name_input.value}</h1>
+    <div class='tab-pane text-center'>
+        <div class="row" style="max-height: 90vh">
+            <div class='container column'>
+                <div class='row' style="inline-flex">
+                    <div class="column">
+                        <label for="search-wrd" style="display: none">Search by word</label>
+                        <input id="search-wrd" type="text" class="search" />
+                    </div>
+                    <div class="column">
+                        <label for="search-tag" style="display: none">Search by tags</label>
+                        <input id="search-tag" type="text" class="search" />
+                    </div>
                 </div>
-                <div class="column">
-                    <label for="search-tag" style="display: none">Search by tags</label>
-                    <input id="search-tag" type="text" class="search" />
+                <label for="search-def" style="display: none">Search definitions</label>
+                <input id="search-def" type="text" class="search">
+                <div class='scrolled' style="max-height: 72%">
+                    <p class="prelined lex-body" id="lex-body">The lexicon should appear here.</p>
+                </div>
+                <p id="entry-counter"></p>
+            </div>
+            <div class='container column scrolled'>
+                ${document.getElementById('tables-pane').innerHTML}
+            </div>
+        </div>
+
+        <!-- Phrasebook -->
+        <div class="row" style="height:90vh;">
+            <!-- Categories -->
+            <div class="container column" style="max-width: 18%;">
+                <p>Categories</p>
+                <hr />
+                <div class="column scrolled" style="max-height: 90%;" id="category-body">
+                    <p class="info">Phrasebook categories appear here.</p>
                 </div>
             </div>
-            <label for="search-def" style="display: none">Search definitions</label>
-            <input id="search-def" type="text" class="search">
-            <div class='scrolled'>
-                <p class="prelined lex-body" id="lex-body">Add new words on the left</p>
+            <div class="container column">
+                <!-- Search Fields -->
+                <div class="row">
+                    <div class="column">
+                        <label for="search-phrase" style="display: none">Search by phrase…</label>
+                        <input id="search-phrase" type="text" class="search" />
+                    </div>
+                    <div class="column">
+                        <label for="search-description" style="display: none">Search descriptions…</label>
+                        <input id="search-description" type="text" class="search" />
+                    </div>
+                </div>
+                <!-- Book -->
+                <div class="column scrolled" id="phrasebook-body" style="max-height: 80%;">
+                    <p class="info">Select a category from the left.</p>
+                </div>
             </div>
-            <p id="entry-counter"></p>
         </div>
     </div>
+    <br><br>
     `;
 
     head.appendChild(styles);
