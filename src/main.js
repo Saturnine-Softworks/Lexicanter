@@ -1345,7 +1345,7 @@ async function export_html() {
     let selected_cat;
 
     function sort_lex_keys() {
-        let htags = ${JSON.stringify(header_tags_text.value.toLowerCase().trim().split(/\s+/))};
+        let htags = ${JSON.stringify(header_tags_text.value.toLowerCase().trim().split(/\\s+/))};
         let all_words = structuredClone(lexicon)
         let tag_ordered_lexes = []
         for (let tag of htags) {
@@ -1701,6 +1701,9 @@ async function export_html() {
         overflow: auto;
         white-space: pre-line;
     }
+
+    @import url('https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
     .row { display: flex; }
     .search-row { display: inline-flex; }
     .column { flex: 50%; }
@@ -1708,7 +1711,7 @@ async function export_html() {
     input { min-width: 12em; }
 
     h1 {
-        font-family: Palatino;
+        font-family: 'Gentium Book Plus' serif;
         font-style: italic;
         font-size: 17px;
         display: inline-flex;
@@ -1718,7 +1721,7 @@ async function export_html() {
 
     .lex-body {
         color: rgb(80, 80, 80);
-        font-family: Palatino;
+        font-family: 'Gentium Book Plus' serif;
         font-size: 15px;
     }
 
@@ -1729,7 +1732,7 @@ async function export_html() {
     .lex-entry {
         transition: .3s;
         padding: 1em;
-        font-family: Gentium;
+        font-family: 'Gentium Book Plus' serif;
         font-size: 15px;
     }
     .lex-entry:hover { background: rgb(90, 90, 90); }
@@ -1748,7 +1751,7 @@ async function export_html() {
     }
 
     .search {
-        font-family: Palatino;
+        font-family: 'Gentium Book Plus' serif;
         font-size: 15px;
         color: lightgray;
         background-color: rgb(20, 20, 20);
@@ -1798,7 +1801,7 @@ async function export_html() {
         background-color: rgb(62, 62, 62);
         border-radius: 4px;
         width: fit-content;
-        font-family: Noto;
+        font-family: Noto sans-serif;
         font-size: 10px;
         font-weight: bold;
         text-transform: uppercase;
@@ -1806,7 +1809,7 @@ async function export_html() {
         margin: auto;
     }
     .table-container { 
-        font-family: Gentium;
+        font-family: 'Gentium Book Plus' serif;
         font-size: 15px;
         margin: auto; 
         padding: 30px 5%;
@@ -1818,7 +1821,7 @@ async function export_html() {
     }
     
     .table-title {
-    font-family: Gentium;
+    font-family: 'Gentium Book Plus' serif;
     font-style: italic;
     font-size: 17px;
     }
@@ -1862,7 +1865,7 @@ async function export_html() {
                 </div>
                 <label for="search-def" style="display: none">Search definitions</label>
                 <input id="search-def" type="text" class="search">
-                <div class='scrolled' style="max-height: 72%">
+                <div class='scrolled' style="height: 64vh">
                     <p class="prelined lex-body" id="lex-body">The lexicon should appear here.</p>
                 </div>
                 <p id="entry-counter"></p>
