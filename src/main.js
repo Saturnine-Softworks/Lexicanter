@@ -1961,3 +1961,17 @@ async function import_csv() {
     tab_btns[0].onclick() // Return to Lexicon tab
     file_name_input.value = file.name.split('.')[0]
 }
+
+async function custom_theme() {
+    let [file_handle] = await window.showOpenFilePicker();
+    await file_handle.requestPermission({ mode: 'read' });
+    let file = await file_handle.getFile();
+    if ( !file.name.includes('.css') ) {
+        window.alert('The selected file was not a .css file.');
+        return;
+    }
+    let sheet = document.createElement('style');
+    sheet.innerHTML = await file.text();
+    console.log(sheet);
+    document.head.appendChild(sheet);
+}

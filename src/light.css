@@ -138,7 +138,7 @@ td[class=header] {
     font-weight: bold;
 }
 
-/* All of the scrollbar color settings. */
+/* All of the used scrollbar color settings. */
 ::-webkit-scrollbar-track {
     background-color: rgb(206, 206, 206);
 }
