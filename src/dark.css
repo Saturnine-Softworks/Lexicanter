@@ -1,0 +1,151 @@
+/* The background color and default text color. */
+body {
+    color: rgb(180, 180, 180);
+    background-color: rgb(48, 48, 48);
+}
+
+/* Default buttons and dropdowns use this style. */
+button, select {
+    color: rgb(170, 170, 170);
+    background-color:rgb(80, 80, 80);
+}
+
+/* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
+button[id=overwrite] {
+    color: darkred;
+}
+
+/* The following two styles are used for most buttons on mouse hover. */
+.hover-highlight:hover {
+    color: white;
+}
+.hover-shadow:hover {
+    box-shadow: 0px 2px 12px rgb(26, 26, 26);
+}
+
+/* This style applies to table-editing buttons. By default, the colors are the same as normal buttons */
+.table-container:focus-within .show-in-context button {
+    color: inherit;
+}
+
+/* This style is for the table-editing buttons when the mouse is hovering over them. */
+.table-container:focus-within .show-in-context button:hover {
+    color:rgb(146, 146, 146);
+    background-color:rgb(26, 26, 26);
+}
+
+/*
+.button-container wraps the buttons which are used to flip between the tabs. Its background-color is only seen along the top of the screen in the tab selector. 
+The buttons within this container are styled the same so that they are flush, and appear as tabs.
+*/
+.tab-container .button-container,
+.tab-container .button-container button {
+    background-color: rgb(20, 20, 20);
+}
+
+/* This style applies to the button for the selected tab. By default it is the same as the body background-color. The !important flag is important for any styles used here. */
+.selected {
+    background-color: rgb(48, 48, 48) !important;
+}
+
+/* Colors and border style used for all of the panes within each tab. */
+.container {
+    background-color: rgb(36, 36, 36);
+    border: 1px solid black;
+}
+
+/* This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab. */
+.info {
+    color:rgb(100, 100, 100);
+}
+
+/* This style is used solely for the version indicator in the top right. */
+.version-info {
+    color:rgb(120, 120, 120);
+}
+
+/* The default color styling for text in the lexicon and phrasebook. */
+.lex-body {
+    color: rgb(200, 200, 200);
+}
+
+/* This is the style used for lexicon entries when the mouse is hovering over them. */
+.lex-entry:hover { 
+    background: rgb(90, 90, 90);
+}
+
+/* These are the colors used for tags as they appear in the lexicon. */
+.tag-item {
+    color:rgb(170, 170, 170);
+    background-color: rgb(80, 80, 80);
+}
+
+/* The style used for pronunciation indicators beneath words and phrases. */
+.pronunciation {
+    color: rgb(146, 146, 146);
+}
+
+/* The colors used for the entry counter/search results counters in the Lexicon tab. */
+[id=entry-counter] {
+    color:rgb(120, 120, 120);
+    background-color: rgb(62, 62, 62);
+}
+
+/* This style is used for dividers such as the one in the Categories pane of the Phrasebook tab. */
+hr {
+    border-top:rgb(170, 170, 170);
+}
+
+/* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
+label {
+  color:rgb(125, 125, 125);
+}
+
+/* Default colors for text input fields. */
+textarea, input {
+    color: rgb(180, 180, 180);
+    background-color: rgb(20, 20, 20);
+}
+
+/* The background color for pronunciation-specific text input fields blends into the background color. */
+input[class=pronunciation] {
+    background-color: inherit;
+}
+
+/* Style used for pronunciation-specific text input fields on mouse hover. */
+input[class=pronunciation]:hover {
+    background-color: rgb(80, 80, 80);
+}
+
+/* The style used for table cells. */
+td {
+  border: 1px solid black;
+}
+
+/* Styles used for alternating rows in tables. */
+tr:nth-child(odd) {
+    background-color: rgb(20, 20, 20);
+}
+tr:nth-child(even) { 
+    background-color: rgb(30, 30, 30);
+}
+
+/* The header class style is currently unused, until I can work out the best way to make header rows and columns user-definable. */
+td[class=header] {
+    background-color: #333;
+    font-weight: bold;
+}
+
+/* All of the used scrollbar color settings. */
+::-webkit-scrollbar-track {
+    background-color:rgb(48, 48, 48);
+}
+::-webkit-scrollbar-thumb {
+    background-color:rgb(77, 77, 77);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(112, 112, 112);
+}
+::-webkit-resizer {
+    background-color:rgb(70, 70, 70);
+}

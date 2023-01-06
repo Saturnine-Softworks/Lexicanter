@@ -3,18 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <title>Lexicanter</title>
-    <link defer rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="dark.css" id="color-theme"/>
     <script defer src="main.js"></script>
   </head>
   <body id="body">
     <div class='tab-container'>
       <div class="button-container">
-        <p class="version-info"><i>v</i>1.7.10</p>
+        <p class="version-info"><i>v</i>1.8.0</p>
         <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
         <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
         <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
         <button onclick="show_pane(3)" class="hover-highlight">Tables</button>
         <button onclick="show_pane(4)" class="hover-highlight">File</button>
+        <button onclick="show_pane(5)" class="hover-highlight">Settings</button>
       </div>
 
       <!-- Lexicon Tab -->
@@ -230,6 +232,22 @@
           </div>
         </div>
       </div>
+
+      <!-- App Settings -->
+      <div class="tab-pane">
+        <div class="row" style="height: 95vh">
+          <div class="container column scrolled">
+            <p>Appearance Settings</p> <br>
+            <label for="theme-select">Color Theme</label>
+            <select name="theme-select" id="theme-select">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="marine">Marine</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
     </div>
   </body>
 </html>

@@ -72,9 +72,9 @@ let content = "Some text to save into the file";
 function show_pane(i) {
     tab_btns.forEach(
         function(btn) {
-            btn.style.backgroundColor = '';
+            btn.classList.remove('selected');
         });
-    tab_btns[i].style.backgroundColor = 'rgb(48, 48, 48)';
+    tab_btns[i].classList.add('selected');
 
     tab_panes.forEach(
         function(pane) {
@@ -83,6 +83,15 @@ function show_pane(i) {
     tab_panes[i].style.display = 'block';
 }
 show_pane(0);
+
+const theme_select = document.getElementById("theme-select");
+const color_theme = document.getElementById("color-theme");
+function change_theme() {
+    let theme = theme_select.value;
+    color_theme.href = theme + '.css';
+}
+theme_select.onchange = change_theme;
+change_theme();
 
 function removeItem(arr, value) {
     var index = arr.indexOf(value);
@@ -178,7 +187,7 @@ function edit_entry(k) {
 
 function rewrite_entries(keys = false) {
     let sorted_keys = sort_lex_keys();
-    lex_body.style.color = 'rgb(200, 200, 200)';
+    // lex_body.style.color = 'rgb(200, 200, 200)';
     lex_body.replaceChildren();
 
     if (sorted_keys.length !== 0) {

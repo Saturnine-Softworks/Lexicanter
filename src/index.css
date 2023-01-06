@@ -47,8 +47,6 @@
 body {
   font-family: Noto;
   font-size: 14px;
-  color: rgb(190, 190, 190);
-  background-color: rgb(48, 48, 48);
   min-width: 500px;
   min-height: 500px;
   margin: 0px;
@@ -58,11 +56,9 @@ body {
 button {
   font-family: Noto;
   font-size: 14px;
-  color: rgb(170, 170, 170);
   transition-duration: 0.33s;
 }
 button[id=overwrite] {
-  color: darkred;
   font-weight:bold
 }
 
@@ -78,9 +74,10 @@ button[id=overwrite] {
   border-radius: 0px;
   font-size: 12px;
 }
+
 .table-container:focus-within .show-in-context button:hover {
-  color:rgb(146, 146, 146);
-  background-color:rgb(26, 26, 26);
+  /* place-holder; this style only contains colors */
+  font-size: 12px;
 }
 
 .tab-container {
@@ -90,12 +87,10 @@ button[id=overwrite] {
 
 .tab-container .button-container {
   width: 100%;
-  background-color: rgb(20, 20, 20);
   text-align: center;
 }
 
 .tab-container .button-container button {
-  background-color: rgb(20, 20, 20);
   border: none;
   outline: none;
   padding: 4px;
@@ -123,7 +118,6 @@ p {margin: 0px;}
 .info {
   font-size: 14px;
   font-style: italic;
-  color:rgb(100, 100, 100);
   line-height: 1.5em;
 }
 
@@ -136,13 +130,11 @@ p {margin: 0px;}
 .version-info {
   text-align: left;
   font-size: 10px;
-  color:rgb(120, 120, 120);
   display: inline;
   float: right;
 }
 
 .lex-body {
-  color: rgb(80, 80, 80);
   font-family: Gentium;
   font-size: 15px;
 }
@@ -165,16 +157,8 @@ p {margin: 0px;}
   font-family: Gentium;
   font-size: 15px;
 }
-.lex-entry:hover { background: rgb(90, 90, 90); }
-
-.selected {
-  background: rgb(80, 80, 80);
-  color: rgb(170, 170, 170);
-}
 
 .tag-item {
-  color:rgb(170, 170, 170);
-  background-color: rgb(80, 80, 80);
   border-radius: 4px;
   width: fit-content;
   font-family: Noto;
@@ -185,13 +169,7 @@ p {margin: 0px;}
   display: inline-block;
 }
 
-hr {
-  border-top:rgb(170, 170, 170);
-}
-
 [id=entry-counter] {
-  color:rgb(120, 120, 120);
-  background-color: rgb(62, 62, 62);
   border-radius: 4px;
   width: fit-content;
   font-family: Noto;
@@ -209,8 +187,6 @@ hr {
 }
 
 .container {
-  background-color: rgb(36, 36, 36);
-  border: 1px solid black;
   border-radius: 6px;
   text-align: center;
   margin: 6px;
@@ -218,7 +194,6 @@ hr {
 }
 
 .row button {
-  background-color:rgb(80, 80, 80);
   padding: 2px 10px 2px 10px;
   margin: 4px auto 4px auto;
   display: flex;
@@ -227,19 +202,13 @@ hr {
   border-radius: 8px;
 }
 
-.hover-highlight:hover {color: white;}
-.hover-shadow:hover {box-shadow: 0px 2px 12px rgb(26, 26, 26);}
-
 label {
   font-size: 13px;
-  color:rgb(128, 128, 128);
 }
 
 textarea, input {
   font-family: Gentium;
   font-size: 15px;
-  color: lightgray;
-  background-color: rgb(20, 20, 20);
   display: flex;
   text-align: center;
   padding: 4px;
@@ -274,18 +243,12 @@ textarea {resize: vertical;}
 }
 
 .pronunciation {
-  color: rgb(146, 146, 146);
   font-size: 13px;
 }
 
 input[class=pronunciation] {
-  background-color: inherit;
   font-size: 13px;
   transition: .2s;
-}
-
-input[class=pronunciation]:hover {
-  background-color: rgb(80, 80, 80);
 }
 
 .table-container { 
@@ -307,14 +270,17 @@ table {
 }
 
 td { 
-  border: 1px solid black;
   padding: 2px 6px 2px 6px;
   user-select: none;
 }
 
-td[class=header] { background-color: #333; font-weight: bold; }
-/* The header class style is currently unused, until I can work out the best way to make
-   header rows and columns user-definable.  */
-
-tr:nth-child(odd) {background-color: rgb(20, 20, 20);}
-tr:nth-child(even) { background-color: rgb(30, 30, 30); }
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-thumb { 
+  border-radius: 6px; 
+  transition: .2s;
+}
+::-webkit-scrollbar-button { display: none; }
+::-webkit-scrollbar-corner { border-radius: 6px 0px 0px 0px; }
+::-webkit-resizer { border-radius: 6px 0px 0px 0px; }
