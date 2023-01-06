@@ -52,13 +52,13 @@ The buttons within this container are styled the same so that they are flush, an
 /* Colors and border style used for all of the panes within each tab. */
 .container {
     color: rgb(116, 116, 116);
-    background-color: rgb(225, 225, 225);
+    background-color: rgb(233, 233, 233);
     border: 1px solid rgb(192, 192, 192);
 }
 
 /* This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab. */
 .info {
-    color:rgb(170, 170, 170);
+    color:rgb(142, 142, 142);
 }
 
 /* This style is used solely for the version indicator in the top right. */
@@ -68,7 +68,7 @@ The buttons within this container are styled the same so that they are flush, an
 
 /* The default color styling for text in the lexicon and phrasebook. */
 .lex-body {
-    color: rgb(100, 100, 100);
+    color: rgb(64, 64, 64);
 }
 
 /* This is the style used for lexicon entries when the mouse is hovering over them. */
@@ -100,13 +100,13 @@ hr {
 
 /* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
 label {
-  color:rgb(120, 120, 120);
+  color:rgb(100, 100, 100);
 }
 
 /* Default colors for text input fields. */
 textarea, input {
     color: rgb(95, 95, 95) !important;
-    background-color: rgb(233, 233, 233);
+    background-color: rgb(244, 244, 244);
 }
 
 /* The background color for pronunciation-specific text input fields blends into the background color. */
@@ -151,4 +151,14 @@ td[class=header] {
 ::-webkit-resizer {
     background-color: rgb(200, 200, 200);
 }
-  
+
+/* The border and background colors for checkmarks. Default themes make the background transparent. */
+input[type="checkbox"] {
+    background-color: rgba(0, 0, 0, 0);
+    border: 0.15em solid rgb(120, 120, 120);
+}
+
+/* The color of the checkmark in checkboxes. */
+input[type="checkbox"]::before {
+    background-color: black;
+}

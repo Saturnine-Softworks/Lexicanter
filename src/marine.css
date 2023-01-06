@@ -150,3 +150,14 @@ td[class=header] {
 ::-webkit-resizer {
     background-color: rgb(112, 141, 148);
 }
+
+/* The border and background colors for checkmarks. Default themes make the background transparent. */
+input[type="checkbox"] {
+    background-color: rgba(0, 0, 0, 0);
+    border: 0.15em solid rgb(174, 185, 185);
+}
+
+/* The color of the checkmark in checkboxes. */
+input[type="checkbox"]::before {
+    background-color: rgb(158, 204, 215);
+}
