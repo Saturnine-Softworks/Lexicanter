@@ -1,3 +1,20 @@
+const {app, ipcRenderer } = require('electron')
+const fs = require('fs');
+
+// This function grabs the path to the userData directory and calls back with it.
+// Usage:
+// userData(path => {
+//     ... code which needs to use the userData path ...
+// });
+async function userData(callback) {
+    let path;
+    await ipcRenderer.invoke('getUserDataPath').then(result => {
+        // console.log(result.toString());
+        path = result;
+    });
+    callback(path);
+}
+
 const tab_panes = document.querySelectorAll('.tab-container .tab-pane');
 const tab_btns = document.querySelectorAll('.tab-container .button-container button');
 
@@ -67,8 +84,6 @@ let phrasebook = {};
 let selected_cat;
 let romanizations;
 
-let content = "Some text to save into the file";
-
 function show_pane(i) {
     tab_btns.forEach(
         function(btn) {
@@ -86,12 +101,24 @@ show_pane(0);
 
 const theme_select = document.getElementById("theme-select");
 const color_theme = document.getElementById("color-theme");
+userData(path => {
+    if (!fs.existsSync(path + '/theme.txt')) {
+        fs.writeFile(path + '/theme.txt', 'dark.css', (err) => {if (err) throw err});
+    }
+    let theme_value = fs.readFileSync(path + '/theme.txt', 'utf8', (err, data) => { if (err) throw err }).toString();
+    color_theme.href = theme_value;
+    theme_select.value = theme_value;
+})
+// console.log(color_theme.href);
 function change_theme() {
     let theme = theme_select.value;
-    color_theme.href = theme + '.css';
+    color_theme.href = theme;
+    userData(path => {
+        fs.writeFile(path + '/theme.txt', theme, (err) => {if (err) throw err });
+    })
 }
 theme_select.onchange = change_theme;
-change_theme();
+// change_theme();
 
 function removeItem(arr, value) {
     var index = arr.indexOf(value);
@@ -1969,9 +1996,17 @@ async function custom_theme() {
     if ( !file.name.includes('.css') ) {
         window.alert('The selected file was not a .css file.');
         return;
-    }
-    let sheet = document.createElement('style');
-    sheet.innerHTML = await file.text();
-    console.log(sheet);
-    document.head.appendChild(sheet);
+    };
+    let contents = await file.text();
+    let theme_path;
+    await userData(path => {
+        let themes_dir = path + '/user_themes/';
+        if (!fs.existsSync(themes_dir)) {
+            fs.mkdirSync(themes_dir);
+        }
+        theme_path = path + '/user_themes/' + file.name;
+        fs.writeFileSync(theme_path, contents, 'utf8');
+        fs.writeFileSync(path + '/theme.txt', theme_path);
+        color_theme.href = theme_path;
+    });
 }

@@ -1,0 +1,176 @@
+:root {
+    --tan: rgb(66, 49, 26);
+    --mid-tan: rgb(100, 81, 55);
+    --light-tan: rgb(147, 121, 84);
+    --light-skin: rgb(215, 190, 162);
+    --ruddy: rgb(69, 36, 9);
+    --leather: rgb(39, 20, 5);
+    --rust: rgb(80, 35, 10);
+    --ochre: rgb(200, 179, 131);
+    --parchment: rgb(170, 147, 111);
+}
+
+/* The background color and default text color. */
+body {
+    color: var(--tan);
+    background-color: var(--ruddy);
+}
+
+/* Default buttons and dropdowns use this style. */
+button, select {
+    color: var(--light-tan);
+    background-color: var(--mid-tan);
+}
+
+/* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
+button[id=overwrite] {
+    color: rgb(180, 0, 0);
+}
+
+/* The following two styles are used for most buttons on mouse hover. */
+.hover-highlight:hover {
+    color: var(--light-skin) !important;
+}
+.hover-shadow:hover {
+    box-shadow: 0px 2px 12px rgb(52, 52, 52);
+}
+
+/* This style applies to table-editing buttons. By default, the colors are the same as normal buttons */
+.table-container:focus-within .show-in-context button {
+    color: inherit;
+}
+
+/* This style is for the table-editing buttons when the mouse is hovering over them. */
+.table-container:focus-within .show-in-context button:hover {
+    color: var(--light-skin);
+    background-color: var(--tan);
+}
+
+/*
+.button-container wraps the buttons which are used to flip between the tabs. Its background-color is only seen along the top of the screen in the tab selector. 
+The buttons within this container are styled the same so that they are flush, and appear as tabs.
+*/
+.tab-container .button-container,
+.tab-container .button-container button {
+    color: var(--light-tan);
+    background-color: var(--leather);
+}
+
+/* This style applies to the button for the selected tab. By default it is the same as the body background-color. The !important flag is important for any styles used here. */
+.selected {
+    background-color: var(--ruddy) !important;
+}
+
+/* Colors and border style used for all of the panes within each tab. */
+.container {
+    color: var(--light-skin);
+    background-color: var(--light-tan);
+    border: 1px solid var(--rust);
+}
+
+/* This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab. */
+.info {
+    color: var(--ochre);
+}
+
+/* This style is used solely for the version indicator in the top right. */
+.version-info {
+    color: var(--tan);
+}
+
+/* The default color styling for text in the lexicon and phrasebook. */
+.lex-body {
+    color: var(--light-skin);
+}
+
+/* This is the style used for lexicon entries when the mouse is hovering over them. */
+.lex-entry:hover { 
+    background: var(--mid-tan);
+}
+
+/* These are the colors used for tags as they appear in the lexicon. */
+.tag-item {
+    color: var(--light-tan);
+    background-color: var(--rust);
+}
+
+/* The style used for pronunciation indicators beneath words and phrases. */
+.pronunciation {
+    color: var(--ochre);
+}
+
+/* The colors used for the entry counter/search results counters in the Lexicon tab. */
+[id=entry-counter] {
+    color: var(--light-skin);
+    background-color: var(--rust);
+}
+
+/* This style is used for dividers such as the one in the Categories pane of the Phrasebook tab. */
+hr {
+    border-top:rgb(221, 221, 221);
+}
+
+/* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
+label {
+  color: var(--rust);
+}
+
+/* Default colors for text input fields. */
+textarea, input {
+    color: var(--leather) !important;
+    background-color: var(--parchment);
+}
+
+/* The background color for pronunciation-specific text input fields blends into the background color. */
+input[class=pronunciation] {
+    background-color: inherit;
+}
+
+/* Style used for pronunciation-specific text input fields on mouse hover. */
+input[class=pronunciation]:hover {
+    background-color: var(--mid-tan);
+}
+
+/* The style used for table cells. */
+td {
+  border: 1px solid var(--rust);
+}
+
+/* Styles used for alternating rows in tables. */
+tr:nth-child(odd) {
+    background-color: var(--tan);
+}
+tr:nth-child(even) { 
+    background-color: var(--mid-tan);
+}
+
+/* The header class style is currently unused, until I can work out the best way to make header rows and columns user-definable. */
+td[class=header] {
+    background-color: #666;
+    font-weight: bold;
+}
+
+/* All of the used scrollbar color settings. */
+::-webkit-scrollbar-track {
+    background-color: var(--mid-tan);
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--ruddy);
+}  
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--rust);
+}
+::-webkit-resizer {
+    background-color: var(--mid-tan);
+}
+
+/* The border and background colors for checkmarks. Default themes make the background transparent. */
+input[type="checkbox"] {
+    background-color: rgba(0, 0, 0, 0);
+    border: 0.15em solid var(--rust);
+}
+
+/* The color of the checkmark in checkboxes. */
+input[type="checkbox"]::before {
+    background-color: var(--ochre);
+}

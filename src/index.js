@@ -1,6 +1,5 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const { contextIsolated } = require('process');
 const { autoUpdater, AppUpdater } = require("electron-updater");
 
 // Auto-updater flags
@@ -26,11 +25,20 @@ const createWindow = () => {
     autoHideMenuBar: true,
     webPreferences: {
       // devTools: false,
+      nodeIntegration: true,
+      contextIsolation: false,
     }
   });
   if (process.platform === 'darwin') {
     app.dock.setIcon(path.join(__dirname, 'rsrc/Quill Icon.png'));
   }
+
+  // Even with contextIsolation set to false, there are some things which still require interprocess communication. 
+  // IPC handlers below.
+  ipcMain.handle('getUserDataPath', (event) => {
+    let data_path = app.getPath('userData');
+    return data_path;
+  });
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
