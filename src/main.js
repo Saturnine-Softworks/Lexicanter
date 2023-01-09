@@ -564,8 +564,16 @@ function search_lex() {
             for (let a of l[1]) { // definitions
                 if ( !lexicon[word][1].toLowerCase().includes(a) ) { match = false; }
             }
-            for (let a of x) { // tags
-                if ( !lexicon[word][3].includes(a) ) { match = false; }
+            if (lexicon[word][3].length !== 0) {
+                let any_tag_match;
+                for (let tag of lexicon[word][3]) {
+                    for (let a of x) { // tags
+                        if (`^${tag}^`.includes(a)) { any_tag_match = true; }
+                    }
+                }
+                if (!any_tag_match) { match = false; }
+            } else {
+                if (x.length !== 0) { match = false; }
             }
             if (match) { keys.push(word); }
         }
