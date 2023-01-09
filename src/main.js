@@ -76,6 +76,7 @@ const tables_pane = document.getElementById('tables-pane');
 
 const file_name_input = document.getElementById('file-name');
 const header_tags_text = document.getElementById('header-tags');
+const autosave_setting = document.getElementById('auto-save');
 
 const inputs = Array.from(document.querySelectorAll('input')).concat(Array.from(document.querySelectorAll('textarea')));
 inputs.forEach((i) => i.setAttribute('spellcheck', 'false'));
@@ -1296,7 +1297,7 @@ async function save_as() {
     window.alert('The file saved successfully.')
 }
 
-async function save_file() {
+async function save_file(send_alert = true) {
     if (file_name_input.value.trim() === '') {
         window.alert("Please enter a file name before saving.");
         return;
@@ -1309,9 +1310,40 @@ async function save_file() {
             }
             fs.writeFileSync(`${user_path}${path.sep}Lexicons${path.sep}${file_name_input.value}.lexc`, exports, 'utf8')
         });
-        window.alert("The file has been saved.");
+        if (send_alert) { window.alert("The file has been saved."); } else { new Notification('Your file has been auto-saved.') }
     } catch (err) { window.alert("There was a problem saving your file. Please contact the developer."); console.log(err) }
 }
+
+var autosave_tracker;
+autosave_setting.onchange = function() {
+    userData(user_path => {
+        fs.writeFile(user_path + path.sep + "autosave_pref.txt", String(autosave_setting.checked), 'utf8', (err) => { if (err) throw err; })
+    });
+    if (autosave_setting.checked) {
+        autosave_tracker = window.setInterval(save_file, 300000 /* 5 minutes */, false);
+    } else {
+        window.clearInterval(autosave_tracker);
+    }
+}
+userData(user_path => {
+    if (!fs.existsSync(user_path + path.sep + 'autosave_pref.txt')) {
+        fs.writeFileSync(user_path + path.sep + 'autosave_pref.txt', 'false');
+        autosave_setting.checked = false;
+    } else {
+        autosave_setting.checked = fs.readFileSync(user_path + path.sep + 'autosave_pref.txt', 'utf8') === 'true';
+    }
+}).then(_ => { autosave_setting.onchange(); });
+ipcRenderer.on('app-close', _ => {
+    if (autosave_setting.checked) {
+        save_file(false).then(_ => {
+            ipcRenderer.send('close');
+        });
+    } else {
+        if (window.confirm('You may have unsaved changes. Are you sure you want to exit?')) {
+            ipcRenderer.send('close');
+        }
+    }
+})
 
 async function export_txt() {
     let export_data = '';

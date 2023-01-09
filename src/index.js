@@ -19,23 +19,25 @@ if (require('electron-squirrel-startup')) {
 
 const createWindow = () => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  var mainWindow = new BrowserWindow({
     width: 728,
     height: 800,
     autoHideMenuBar: true,
     webPreferences: {
       // devTools: false,
-      nodeIntegration: true,
-      contextIsolation: false,
+      nodeIntegration: true,   // these two settings are required in order to use
+      contextIsolation: false, // modules such as path and fs in renderer processes.
     }
   });
+
+  // Set macOS dock icon
   if (process.platform === 'darwin') {
     app.dock.setIcon(path.join(__dirname, 'rsrc/Quill Icon.png'));
   }
 
   // Even with contextIsolation set to false, there are some things which still require interprocess communication. 
   // IPC handlers below.
-  ipcMain.handle('getUserDataPath', (event) => {
+  ipcMain.handle('getUserDataPath', _ => {
     let data_path = app.getPath('userData');
     return data_path;
   });
@@ -44,25 +46,24 @@ const createWindow = () => {
     return file_path;
   })
 
-  // and load the index.html of the app.
+  mainWindow.on('close', function(e) {
+    // Prompt user to save changes on quit (or auto-save) via IPC.
+    if (mainWindow) {
+      e.preventDefault();
+      mainWindow.send('app-close');
+    }
+  });
+  ipcMain.on('close', _ => {
+    // Renderer will send back this event when it's done confirming quit or saving. 
+    mainWindow = null;
+    app.quit();
+  })
+
+  // Load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
-
-  // Prompt user to save changes on quit. 
-  mainWindow.on('close', function(e) {
-    var choice = require('electron').dialog.showMessageBoxSync(this,
-        {
-          type: 'question',
-          buttons: ['Quit', 'Cancel'],
-          title: 'Confirm Quit',
-          message: 'You may want to ensure you have saved your changes.'
-        });
-        if(choice == 1){
-          e.preventDefault();
-        }
-    });
 };
 
 // This method will be called when Electron has finished
@@ -73,27 +74,4 @@ app.on('ready', () => {
   createWindow();
 });
 
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-});
-
-
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-
-app.commandLine.appendSwitch("enable-experimental-web-platform-features"); // required to write files
+app.commandLine.appendSwitch("enable-experimental-web-platform-features"); // required to write files with FileSystemAccess API. 
