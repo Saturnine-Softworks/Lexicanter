@@ -116,11 +116,11 @@ show_pane(0);
 
 const theme_select = document.getElementById("theme-select");
 const color_theme = document.getElementById("color-theme");
-userData(path => {
-    if (!fs.existsSync(path + '/theme.txt')) {
-        fs.writeFile(path + '/theme.txt', 'dark.css', (err) => {if (err) throw err});
+userData(user_path => {
+    if (!fs.existsSync(user_path + path.sep + 'theme.txt')) {
+        fs.writeFileSync(user_path + path.sep + 'theme.txt', 'dark.css');
     }
-    let theme_value = fs.readFileSync(path + '/theme.txt', 'utf8', (err, data) => { if (err) throw err }).toString();
+    let theme_value = fs.readFileSync(user_path + path.sep + 'theme.txt', 'utf8').toString();
     color_theme.href = theme_value;
     theme_select.value = theme_value;
 })
@@ -128,8 +128,8 @@ userData(path => {
 function change_theme() {
     let theme = theme_select.value;
     color_theme.href = theme;
-    userData(path => {
-        fs.writeFile(path + '/theme.txt', theme, (err) => {if (err) throw err });
+    userData(user_path => {
+        fs.writeFile(user_path + path.sep + 'theme.txt', theme, (err) => {if (err) throw err });
     })
 }
 theme_select.onchange = change_theme;
@@ -1239,13 +1239,10 @@ async function import_lex() {
 async function open_lex() {
     let contents;
     // here's to hoping future me doesn't forget how callback functions work.
-    await userData(user_path => {
-        if (!fs.existsSync(`${user_path}/Lexicons/`)) {
-            fs.mkdirSync(`${user_path}/Lexicons/`);
-        }
+    let dialog = (user_path) => {
         showOpenDialog({
             title: 'Open Lexicon',
-            defaultPath: `${user_path}/Lexicons/`,
+            defaultPath: `${user_path}${path.sep}Lexicons${path.sep}`,
             properties: ['openFile']
         }, file_path => {
             fs.readFile(file_path[0], 'utf8', (err, data) => {
@@ -1255,6 +1252,11 @@ async function open_lex() {
                 file_name_input.value = path.basename(file_path[0], '.lexc');
             });
         });
+    }
+    await userData(user_path => {
+        if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
+            fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => { dialog(user_path); });
+        } else { dialog(user_path); }
     });
 }
 
@@ -1301,11 +1303,11 @@ async function save_file() {
     }
     let exports = collect_export_data(blob=false); // needs a string or buffer
     try {
-        userData(path => {
-            if (!fs.existsSync(`${path}/Lexicons/`)) {
-                fs.mkdirSync(`${path}/Lexicons/`)
+        userData(user_path => {
+            if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
+                fs.mkdirSync(`${user_path}${path.sep}Lexicons${path.sep}`)
             }
-            fs.writeFileSync(`${path}/Lexicons/${file_name_input.value}.lexc`, exports, 'utf8')
+            fs.writeFileSync(`${user_path}${path.sep}Lexicons${path.sep}${file_name_input.value}.lexc`, exports, 'utf8')
         });
         window.alert("The file has been saved.");
     } catch (err) { window.alert("There was a problem saving your file. Please contact the developer."); console.log(err) }
@@ -2009,16 +2011,16 @@ async function custom_theme() {
     };
     let contents = await file.text();
     let theme_path;
-    await userData(path => {
-        let themes_dir = path + '/user_themes/';
+    await userData(user_path => {
+        let themes_dir = user_path + `${path.sep}user_themes${path.sep}`;
         if (!fs.existsSync(themes_dir)) {
             fs.mkdirSync(themes_dir);
         }
-        theme_path = path + '/user_themes/' + file.name;
+        theme_path = user_path + `${path.sep}user_themes${path.sep}` + file.name;
         fs.writeFile(theme_path, contents, 'utf8', (err) => {
             if (err) throw err;
             color_theme.href = theme_path;
         });
-        fs.writeFile(path + '/theme.txt', theme_path, (err) => { if (err) throw err });
+        fs.writeFile(user_path + `${path.sep}theme.txt`, theme_path, (err) => { if (err) throw err });
     });
 }
