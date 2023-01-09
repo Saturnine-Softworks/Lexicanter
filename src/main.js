@@ -1414,6 +1414,9 @@ async function export_html() {
     head.innerHTML = `
     <meta charset="UTF-8" />
     <title>${file_name_input.value}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     `
     // Create export scripts
     let scripts = document.createElement('script');
@@ -1546,7 +1549,7 @@ async function export_html() {
         let x = srch_tag.value.trim();
         if (s === 'Search by word…'){s = ''};
         if (z === 'search definition…'){z = ''};
-        if (x === 'Search by tags…' || x === ''){ x = [] } else { x = x.split(/\s+/g) }
+        if (x === 'Search by tags…' || x === ''){ x = [] } else { x = x.split(/\\s+/g) }
         let keys = false;
         if (s !== '' || z !== '' || x.length !== 0 ) {
             let l = [s + '|', z + '|'];
@@ -1567,14 +1570,22 @@ async function export_html() {
                 for (let a of l[1]) { // definitions
                     if ( !lexicon[word][1].toLowerCase().includes(a) ) { match = false; }
                 }
-                for (let a of x) { // tags
-                    if ( !lexicon[word][3].includes(a) ) { match = false; }
+                if (lexicon[word][3].length !== 0) {
+                    let any_tag_match;
+                    for (let tag of lexicon[word][3]) {
+                        for (let a of x) { // tags
+                            if (\`^\${tag}^\`.includes(a)) { any_tag_match = true; }
+                        }
+                    }
+                    if (!any_tag_match) { match = false; }
+                } else {
+                    if (x.length !== 0) { match = false; }
                 }
                 if (match) { keys.push(word); }
             }
         }
         rewrite_entries(keys);
-    } 
+    }
     srch_wrd.onkeyup = search_lex; 
     srch_def.onkeyup = search_lex;
     srch_tag.onkeyup = search_lex;
@@ -1776,164 +1787,18 @@ async function export_html() {
     `;
     // Create export styles
     let styles = document.createElement('style');
-    styles.innerHTML = `
-    body {
-        font-family: sans-serif;
-        font-size: 14px;
-        color: rgb(190, 190, 190);
-        background-color: rgb(48, 48, 48);
-        min-width: 500px;
-        min-height: 500px;
-        margin: 0px;
-        text-align: center;
-        overflow: auto;
-        white-space: pre-line;
+    styles.innerHTML = fs.readFileSync(path.join(__dirname, 'index.css'), 'utf8');
+    let theme = document.createElement('style');
+    theme.innerHTML = fs.readFileSync(path.join(__dirname, theme_select.value), 'utf8');
+    let overrides = document.createElement('style');
+    overrides.innerHTML = fs.readFileSync(path.join(__dirname, 'html_export.css'), 'utf8');
+
+    tables_content = document.createElement('div');
+    tables_content.innerHTML = document.getElementById('tables-pane').innerHTML;
+    for (let table of tables_content.children) {
+        table.contentEditable = false;
     }
 
-    @import url('https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
-    .row { display: flex; }
-    .search-row { display: inline-flex; }
-    .column { flex: 50%; }
-
-    input { min-width: 12em; }
-
-    h1 {
-        font-family: 'Gentium Book Plus' serif;
-        font-style: italic;
-        font-size: 17px;
-        display: inline-flex;
-    }
-    p {margin: 0px;}
-    .prelined {white-space: pre-line;}
-
-    .lex-body {
-        color: rgb(80, 80, 80);
-        font-family: 'Gentium Book Plus' serif;
-        font-size: 15px;
-    }
-
-    .capitalize {
-        text-transform: capitalize;
-    }
-      
-    .lex-entry {
-        transition: .3s;
-        padding: 1em;
-        font-family: 'Gentium Book Plus' serif;
-        font-size: 15px;
-    }
-    .lex-entry:hover { background: rgb(90, 90, 90); }
-
-    .tag-item {
-        color:rgb(170, 170, 170);
-        background-color: rgb(80, 80, 80);
-        border-radius: 4px;
-        width: fit-content;
-        font-family: sans-serif;
-        font-size: 9px;
-        text-transform: uppercase;
-        padding: .2em;
-        margin: .2em;
-        display: inline-block;
-    }
-
-    .search {
-        font-family: 'Gentium Book Plus' serif;
-        font-size: 15px;
-        color: lightgray;
-        background-color: rgb(20, 20, 20);
-        display: flex;
-        padding: 4px;
-        text-align: center;
-        margin: -1em auto 0em auto;
-        border: none;
-        border-radius: 3px;
-        text-align: left;
-        max-width: 60%;
-    }
-
-    .pronunciation {
-        color: rgb(146, 146, 146);
-        font-size: 13px;
-    }
-
-    .scrolled {
-        max-height: 96%;
-        overflow-y: auto;
-        overflow-x: wrap;
-    }
-
-    .tab-container {
-        width: 100vw;
-        height: 90vh;
-    }
-    .tab-container .tab-pane {
-        height: 75%;
-        box-sizing: border-box;
-        margin: auto;
-    }
-
-    .container {
-        background-color: rgb(36, 36, 36);
-        border: 1px solid black;
-        border-radius: 6px;
-        text-align: center;
-        margin: 6px;
-        padding: 6px;
-        max-height: 100%;
-    }
-
-    [id=entry-counter] {
-        color:rgb(120, 120, 120);
-        background-color: rgb(62, 62, 62);
-        border-radius: 4px;
-        width: fit-content;
-        font-family: Noto sans-serif;
-        font-size: 10px;
-        font-weight: bold;
-        text-transform: uppercase;
-        padding: .2em;
-        margin: auto;
-    }
-    .table-container { 
-        font-family: 'Gentium Book Plus' serif;
-        font-size: 15px;
-        margin: auto; 
-        padding: 30px 5%;
-      }
-      
-    table {
-    border-collapse: collapse;
-    width: 100%;
-    }
-    
-    .table-title {
-    font-family: 'Gentium Book Plus' serif;
-    font-style: italic;
-    font-size: 17px;
-    }
-    
-    td { 
-    border: 1px solid black;
-    padding: 2px 6px 2px 6px;
-    text-align: center;
-    }
-    
-    td[class=header] { background-color: #333; font-weight: bold; }
-    /* The header class style is currently unused, until I can work out the best way to make
-        header rows and columns user-definable.  */
-    
-    tr:nth-child(odd) {background-color: rgb(20, 20, 20);}
-    tr:nth-child(even) { background-color: rgb(30, 30, 30); }
-
-    button {
-        display: none;
-    }
-    .info {
-        display: none;
-    }
-    `;
     // Create export body
     let body = document.createElement('body');
     body.innerHTML = `
@@ -1959,7 +1824,7 @@ async function export_html() {
                 <p id="entry-counter"></p>
             </div>
             <div class='container column scrolled'>
-                ${document.getElementById('tables-pane').innerHTML}
+                ${tables_content.innerHTML}
             </div>
         </div>
 
@@ -1995,7 +1860,7 @@ async function export_html() {
     <br><br>
     `;
 
-    head.appendChild(styles);
+    head.append(styles, theme, overrides);
     export_container.append(head, body, scripts);
 
     export_data = export_container.innerHTML;
