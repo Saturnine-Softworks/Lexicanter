@@ -10,7 +10,7 @@
   <body id="body">
     <div class='tab-container'>
       <div class="button-container">
-        <p class="version-info"><i>β</i>1.8.3</p>
+        <p class="version-info"><i>β</i>1.8.4</p>
         <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
         <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
         <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
@@ -184,16 +184,26 @@
             <p>Document</p>
             <label for="file-name">Name</label>
             <input type="text" id="file-name" />
-            <button onclick="save_as()" class="hover-highlight hover-shadow">Save…</button>
-            <button onclick="open_lex()" class="hover-highlight hover-shadow">Open…</button>
+            <div class="narrow row">
+              <div class="column">
+                <button onclick="save_file()" class="hover-highlight hover-shadow">Save…</button>
+                <button onclick="open_lex()" class="hover-highlight hover-shadow">Open…</button>
+                <p class="info">Save your lexicon or open a previously saved one.</p>
+              </div>
+              <div class="column">
+                <button onclick="save_as()" class="hover-highlight hover-shadow">Export…</button>
+                <button onclick="import_lex()" class="hover-highlight hover-shadow">Import…</button>
+                <p class="info">Export and import your own copies of the lexicon file.</p>
+              </div>
+            </div>
             <br>
             <p>Lexicon Header Tags</p>
             <div class="narrow">
               <textarea id="header-tags"></textarea>
-              <label for="header-tags">Entries with these tags will be sorted separately at the top of the lexicon.</label>
+              <label for="header-tags" class="info">Entries with these tags will be sorted separately at the top of the lexicon.</label>
             </div>
             <br>
-            <button onclick="window.open('index.html', '_blank', 'height=800, width=728, top=100, left=100');">Open New Window</button>
+            <button class="hover-highlight hover-shadow" onclick="window.open('index.html', '_blank', 'height=800, width=728, top=100, left=100');">Open New Window</button>
             <br>
             <p>Change Pronunciations & Orthography</p>
             <div class="narrow">
@@ -203,7 +213,7 @@
               <input id="new-pattern" type="text" />
               <label for="change-pronunciations">Change Pronunciations</label>
               <input id="change-pronunciations" type="checkbox" checked />
-              <button id="change-ortho" onclick="change_orthography()">Commit Change</button>
+              <button class="hover-highlight hover-shadow" id="change-ortho" onclick="change_orthography()">Commit Change</button>
             </div>
             <br>
             <p>Export Lexicon</p>

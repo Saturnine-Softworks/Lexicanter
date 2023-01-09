@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { autoUpdater, AppUpdater } = require("electron-updater");
 
@@ -39,6 +39,10 @@ const createWindow = () => {
     let data_path = app.getPath('userData');
     return data_path;
   });
+  ipcMain.handle('showOpenDialog', (event, params) => {
+    let file_path = dialog.showOpenDialogSync(params);
+    return file_path;
+  })
 
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, 'index.html'));

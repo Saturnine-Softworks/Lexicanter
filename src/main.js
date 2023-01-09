@@ -1,4 +1,5 @@
 const {app, ipcRenderer } = require('electron')
+const path = require('path');
 const fs = require('fs');
 
 // This function grabs the path to the userData directory and calls back with it.
@@ -9,9 +10,23 @@ const fs = require('fs');
 async function userData(callback) {
     let path;
     await ipcRenderer.invoke('getUserDataPath').then(result => {
-        // console.log(result.toString());
         path = result;
     });
+    callback(path);
+}
+
+// This function opens a file picker dialog and calls back with the retrieved file path. 
+// Usage:
+// showOpenDialog({
+//    ...electron.showOpenDialogSync parameters object
+// }, file_path => {
+//     ... code which needs to use the file_path ...
+// });
+async function showOpenDialog(params, callback) {
+    let path;
+    await ipcRenderer.invoke('showOpenDialog', params).then(result => {
+        path = result;
+    })
     callback(path);
 }
 
@@ -118,7 +133,6 @@ function change_theme() {
     })
 }
 theme_select.onchange = change_theme;
-// change_theme();
 
 function removeItem(arr, value) {
     var index = arr.indexOf(value);
@@ -828,22 +842,6 @@ trial_input.onkeyup = function() {
     trial_output.replaceChildren(text);                     // be found in 20 attempts
 }
 
-
-// function allowDrop(ev) {
-//     ev.preventDefault();
-// }
-
-// function drag(ev) {
-//     ev.dataTransfer.setData("text", ev.target.id);  
-// }
-
-// function drop(ev) {
-//     ev.preventDefault();
-//     var data = ev.dataTransfer.getData("text");
-//     ev.target.innerHTML=''
-//     ev.target.appendChild(document.getElementById(data));
-// }
-
 function add_rows(table, n) {
     for (let i = 0; i < n; i++) {
         let r = table.insertRow(-1);
@@ -870,50 +868,6 @@ function add_columns(table, n) {
         });
     }
 }
-
-// Old table edit code ->
-/* function bind_table_keys(container) {
-    // Add row
-    container.addEventListener('keypress', event => {
-        if (!event.shiftKey && event.altKey && event.code === 'KeyR') {
-            event.preventDefault();
-            add_rows(document.querySelector(`#${event.target.id} table`), 1)
-        }
-    });
-    // Add column
-    container.addEventListener('keypress', event => {
-        if (!event.shiftKey && event.altKey && event.code === 'KeyT') {
-            event.preventDefault();
-            add_columns(document.querySelector(`#${event.target.id} table`), 1)
-        }
-    });
-    // Remove row
-    container.addEventListener('keypress', event => {
-        if (event.shiftKey && event.altKey && event.code === 'KeyR') {
-            event.preventDefault();
-            document.querySelector(`#${event.target.id} table`).deleteRow(-1);
-        }
-    });
-    // Remove column
-    container.addEventListener('keypress', event => {
-        if (event.shiftKey && event.altKey && event.code === 'KeyT') {
-            event.preventDefault();
-            let table = document.querySelector(`#${event.target.id} table`)
-            Array.from(table.rows).forEach((row, i) => {
-                table.rows[i].deleteCell(-1);
-            });
-        }
-    });
-    // Delete table
-    container.addEventListener('keypress', event => {
-        if (event.altKey && event.shiftKey && event.code === 'KeyD') {
-            event.preventDefault();
-            if ( window.confirm('Are you sure you want to delete this table?') ) {
-                document.querySelector(`#${event.target.id}`).remove();
-            }
-        }
-    });
-} */
 
 add_table_btn.onclick = function() {
 
@@ -1251,17 +1205,7 @@ function open_v1p7(contents) {
     tab_btns[0].onclick(); // Return to Lexicon tab 
 }
 
-async function open_lex() {
-    let [file_handle] = await window.showOpenFilePicker();
-    await file_handle.requestPermission({ mode: 'read' });
-    let file = await file_handle.getFile();
-    if ( !file.name.includes('.lexc') ) {
-        window.alert('The selected file was not a .lexc file.');
-        return;
-    }
-    let string_contents = await file.text();
-    let contents = JSON.parse(string_contents);
-
+function open_contents_by_version(contents) {
     if ( !('Version' in contents) ) { open_v1p0(contents); } 
     else {
         switch (contents.Version) {
@@ -1272,15 +1216,52 @@ async function open_lex() {
             case 1.5: open_v1p5(contents); break;
             case 1.6: open_v1p6(contents); break;
             case 1.7: open_v1p7(contents); break;
+            case 1.8: open_v1p7(contents); break; // save file format is same as 1.7
         }
     }
+}
+
+async function import_lex() {
+    let [file_handle] = await window.showOpenFilePicker();
+    await file_handle.requestPermission({ mode: 'read' });
+    let file = await file_handle.getFile();
+    if ( !file.name.includes('.lexc') ) {
+        window.alert('The selected file was not a .lexc file.');
+        return;
+    }
+    let string_contents = await file.text();
+    let contents = JSON.parse(string_contents);
+    open_contents_by_version(contents);
+
     file_name_input.value = file.name.split('.')[0]
 }
 
-async function save_as() {
-    // v1.7
+async function open_lex() {
+    let contents;
+    // here's to hoping future me doesn't forget how callback functions work.
+    await userData(user_path => {
+        if (!fs.existsSync(`${user_path}/Lexicons/`)) {
+            fs.mkdirSync(`${user_path}/Lexicons/`);
+        }
+        showOpenDialog({
+            title: 'Open Lexicon',
+            defaultPath: `${user_path}/Lexicons/`,
+            properties: ['openFile']
+        }, file_path => {
+            fs.readFile(file_path[0], 'utf8', (err, data) => {
+                if (err) throw err;
+                contents = JSON.parse(data);
+                open_contents_by_version(contents);
+                file_name_input.value = path.basename(file_path[0], '.lexc');
+            });
+        });
+    });
+}
+
+function collect_export_data (blob=true) {
+    // Version 1.8.x
     let export_data = {
-        Version: 1.7,
+        Version: 1.8,
         Lexicon: lexicon,
         Alphabet: alphabet_input.value,
         Phrasebook: phrasebook,
@@ -1291,7 +1272,19 @@ async function save_as() {
         IgnoreDiacritics: document.getElementById('ignore-diacritic').checked,
         CaseSensitive: document.getElementById('case-sensitive').checked
     }
-    let exports = new Blob([JSON.stringify(export_data)]);
+
+    let exports;
+    if (blob) {
+        exports = new Blob([JSON.stringify(export_data)]);
+    } else {
+        exports = JSON.stringify(export_data);
+    }
+
+    return exports;
+}
+
+async function save_as() {
+    let exports = collect_export_data();
 
     let file_handle = await window.showSaveFilePicker( {suggestedName: `${file_name_input.value}.lexc`} );
     await file_handle.requestPermission({ mode: 'readwrite' });
@@ -1299,6 +1292,23 @@ async function save_as() {
     try { await file.write(exports); } catch (err) { window.alert('The file failed to save.') }
     await file.close();
     window.alert('The file saved successfully.')
+}
+
+async function save_file() {
+    if (file_name_input.value.trim() === '') {
+        window.alert("Please enter a file name before saving.");
+        return;
+    }
+    let exports = collect_export_data(blob=false); // needs a string or buffer
+    try {
+        userData(path => {
+            if (!fs.existsSync(`${path}/Lexicons/`)) {
+                fs.mkdirSync(`${path}/Lexicons/`)
+            }
+            fs.writeFileSync(`${path}/Lexicons/${file_name_input.value}.lexc`, exports, 'utf8')
+        });
+        window.alert("The file has been saved.");
+    } catch (err) { window.alert("There was a problem saving your file. Please contact the developer."); console.log(err) }
 }
 
 async function export_txt() {
@@ -2005,8 +2015,10 @@ async function custom_theme() {
             fs.mkdirSync(themes_dir);
         }
         theme_path = path + '/user_themes/' + file.name;
-        fs.writeFileSync(theme_path, contents, 'utf8');
-        fs.writeFileSync(path + '/theme.txt', theme_path);
-        color_theme.href = theme_path;
+        fs.writeFile(theme_path, contents, 'utf8', (err) => {
+            if (err) throw err;
+            color_theme.href = theme_path;
+        });
+        fs.writeFile(path + '/theme.txt', theme_path, (err) => { if (err) throw err });
     });
 }
