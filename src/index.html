@@ -14,7 +14,7 @@
         <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
         <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
         <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
-        <button onclick="show_pane(3)" class="hover-highlight">Tables</button>
+        <button onclick="show_pane(3)" class="hover-highlight">Documentation</button>
         <button onclick="show_pane(4)" class="hover-highlight">File</button>
         <button onclick="show_pane(5)" class="hover-highlight">Settings</button>
       </div>
@@ -168,11 +168,11 @@
         </div>
       </div>
 
-      <!-- Grammar Tables Tab -->
+      <!-- Documentation Tab -->
       <div class="tab-pane">
         <div class="container row text-center" style="height: 90vh; overflow-y: auto;">
           <div class="column" id="tables-pane">
-            <button id="new-table" class="hover-highlight hover-shadow">Create New Table</button>
+            <button id="new-table" class="hover-highlight hover-shadow">Add Section</button>
             <p class="info">
               This panel can be used to document and describe your <br>
               languge's features in greater detail.
@@ -264,6 +264,7 @@
             <br><br>
             <button onclick="custom_theme()" class="hover-highlight hover-shadow">Load Custom Theme…</button>
             <br><br>
+            <p>Saving Settings</p>
             <label for="auto-save">Auto-Save</label>
             <input type="checkbox" id="auto-save" checked />
           </div>

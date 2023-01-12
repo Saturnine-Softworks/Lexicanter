@@ -1,6 +1,7 @@
 const {app, ipcRenderer } = require('electron')
 const path = require('path');
 const fs = require('fs');
+const { EventEmitter } = require('stream');
 
 // This function grabs the path to the userData directory and calls back with it.
 // Usage:
@@ -123,6 +124,14 @@ theme_select.onchange = change_theme;
 
 function markdown_to_html(text) {
     // To allow the user to use common markdown notation to style their text.
+    // ***bold italic***
+    // **bold** *italic*
+    // __underline__
+    // ~~strikethrough~~
+    // ^s^u^p^e^rscript
+    // ~s~u~bscript
+    // [external links](url)
+    // --- horizontal rule
 	let toHTML = text
         .replace(/\*\*\*([^\*]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
 		.replace(/\*\*([^\*]*)\*\*/gim, '<b>$1</b>') // bold
@@ -132,7 +141,7 @@ function markdown_to_html(text) {
         .replace(/\[(.*)\]\((.*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
         .replace(/\^(.)/gim, '<sup>$1</sup>') // superscript
         .replace(/~(.)/gim, '<sub>$1</sub>') // subscript
-        .replace(/---\n?/gim, '<hr>'); // line separator
+        .replace(/---\n?/gim, '<hr>'); // horizontal rule
 	return toHTML.trim();
 }
 
@@ -993,6 +1002,97 @@ function add_columns(table, n) {
     }
 }
 
+function enable_markdown(table_container) {
+    // To enable markdown functionality in the docs sections, 
+    // we store a copy of the innerHTML which the user directly
+    // edited as `table_container.real_value`. On the blur 
+    // event, we store this copy and convert the displayed HTML
+    // which may have user markdown. On the focus event, we replace
+    // this converted version with the stored copy once again. 
+    // We also need to add and remove the button span, since its
+    // event listeners are overridden when the innerHTML is replaced.
+    table_container.real_value = table_container.innerHTML;
+    table_container.addEventListener('focus', event => {
+        event.target.innerHTML = event.target.real_value.replace(/<span.*span>/im, ''); // remove disfunctional button span;
+        create_table_buttons(event.target, event.target.getElementsByTagName('table')[0]); // replace button span
+    });
+    table_container.addEventListener('blur', event => {
+        event.target.real_value = event.target.innerHTML
+        event.target.innerHTML = markdown_to_html(event.target.innerHTML);
+    });
+}
+
+function create_table_buttons(container, table) {
+    let btns = document.createElement('span');
+    btns.contentEditable = false;
+    btns.className = 'show-in-context';
+    btns.id = `button-span-${Date.now()}`; // unique id
+
+    let add_row_btn = document.createElement('button');
+    add_row_btn.innerHTML = '+ ROW';
+    add_row_btn.addEventListener('mousedown', event => {
+        event.preventDefault();
+        let table = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`).getElementsByTagName('table')[0];
+        add_rows(table, 1)
+    });
+
+    let del_row_btn = document.createElement('button');
+    del_row_btn.innerHTML = '- ROW';
+    del_row_btn.addEventListener('mousedown', event => {
+        event.preventDefault();
+        let table = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`).getElementsByTagName('table')[0];
+        table.deleteRow(-1)
+    });
+
+    let add_col_btn = document.createElement('button');
+    add_col_btn.innerHTML = '+ COLUMN';
+    add_col_btn.addEventListener('mousedown', event => {
+        event.preventDefault();
+        let table = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`).getElementsByTagName('table')[0];
+        add_columns(table, 1)
+    });
+
+    let del_col_btn = document.createElement('button');
+    del_col_btn.innerHTML = '- COLUMN';
+    del_col_btn.addEventListener('mousedown', event => {
+        event.preventDefault();
+        let table = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`).getElementsByTagName('table')[0];
+        Array.from(table.rows)
+        .forEach((_, i) => { event.target.parentElement.parentElement.getElementsByTagName('table')[0].rows[i].deleteCell(-1); } )
+    });
+
+    let move_up_btn = document.createElement('button');
+    move_up_btn.innerHTML = '⬆';
+    move_up_btn.addEventListener('mousedown', event => {
+        event.preventDefault();
+        let container = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`);
+        let i = Array.from(tables_pane.children).indexOf(container);
+        tables_pane.insertBefore(tables_pane.children[i], tables_pane.children[ Math.max(0, i-1) ]);
+    });
+
+    let move_down_btn = document.createElement('button');
+    move_down_btn.innerHTML = '⬇';
+    move_down_btn.addEventListener('mousedown', event => {
+        event.preventDefault();
+        let container = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`);
+        let i = Array.from(tables_pane.children).indexOf(container);
+        let m = Array.from(tables_pane.children).length - 2; // so that we cannot move below the button
+        tables_pane.insertBefore(tables_pane.children[i], tables_pane.children[ Math.min(m, i+2) ]);
+    });
+
+    let delete_btn = document.createElement('button');
+    delete_btn.innerHTML = '⌫';
+    delete_btn.addEventListener('mousedown', event => {
+        event.preventDefault();
+        if ( window.confirm('Are you sure you want to delete this table?') ) {
+            let container = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`);
+            container.remove();
+        }
+    });
+    btns.append(move_up_btn, move_down_btn, add_row_btn, del_row_btn, add_col_btn, del_col_btn, delete_btn);
+    container.insertBefore(btns, table);
+}
+
 add_table_btn.onclick = function() {
     let table_container = document.createElement('div');
     table_container.spellcheck = false;
@@ -1005,54 +1105,6 @@ add_table_btn.onclick = function() {
     title.className = 'table-title';
     title.appendChild( document.createTextNode('Table Title') );
 
-    let btns = document.createElement('span');
-    btns.contentEditable = false;
-    btns.className = 'show-in-context';
-    btns.id = 'button-span';
-
-    let add_row_btn = document.createElement('button');
-    add_row_btn.innerHTML = '+ ROW';
-    add_row_btn.onclick = function() {add_rows(table, 1)};
-
-    let del_row_btn = document.createElement('button');
-    del_row_btn.innerHTML = '- ROW';
-    del_row_btn.onclick = function() {table.deleteRow(-1)};
-
-    let add_col_btn = document.createElement('button');
-    add_col_btn.innerHTML = '+ COLUMN';
-    add_col_btn.onclick = function() {add_columns(table, 1)};
-
-    let del_col_btn = document.createElement('button');
-    del_col_btn.innerHTML = '- COLUMN';
-    del_col_btn.onclick = function() {
-        Array.from(table.rows).forEach((row, i) => { table.rows[i].deleteCell(-1); } )
-    }
-
-    let move_up_btn = document.createElement('button');
-    move_up_btn.innerHTML = '⬆';
-    move_up_btn.onclick = function() {
-        let i = Array.from(tables_pane.children).indexOf(table_container);
-        tables_pane.insertBefore(tables_pane.children[i], tables_pane.children[ Math.max(0, i-1) ]);
-    }
-
-    let move_down_btn = document.createElement('button');
-    move_down_btn.innerHTML = '⬇';
-    move_down_btn.onclick = function() {
-        let i = Array.from(tables_pane.children).indexOf(table_container);
-        let m = Array.from(tables_pane.children).length - 2; // so that we cannot move below the button
-        tables_pane.insertBefore(tables_pane.children[i], tables_pane.children[ Math.min(m, i+2) ]);
-    }
-
-    let delete_btn = document.createElement('button');
-    delete_btn.innerHTML = '⌫';
-    delete_btn.onclick = function() {
-        if ( window.confirm('Are you sure you want to delete this table?') ) {
-            table_container.remove();
-        }
-    }
-
-    btns.replaceChildren(move_up_btn, move_down_btn, add_row_btn, del_row_btn, add_col_btn, del_col_btn, delete_btn);
-
     let table = document.createElement('table');
     add_rows(table, 3);
     add_columns(table, 3);
@@ -1061,20 +1113,12 @@ add_table_btn.onclick = function() {
     caption.className = 'table-caption';
     caption.innerHTML = 'Caption text can go here.';
 
-    table_container.replaceChildren(title, btns, table, caption);
+    table_container.replaceChildren(title, table, caption);
 
-    table_container.real_value = table_container.innerHTML;
-
-    table_container.addEventListener('focus', event => {
-        event.target.innerHTML = event.target.real_value;
-    });
-    table_container.addEventListener('blur', event => {
-        event.target.real_value = event.target.innerHTML;
-        event.target.innerHTML = markdown_to_html(event.target.innerHTML);
-        console.log(event.target.real_value, '\n', event.target.innerHTML);
-    });
-
+    create_table_buttons(table_container, table);
+    enable_markdown(table_container);
     tables_pane.insertBefore(table_container, add_table_btn);
+
     // bind_table_keys(document.getElementById(id));
 }
 
@@ -1088,7 +1132,7 @@ function collect_tables() {
 
 function write_tables(tables) {
     for (let container of Array.from(document.querySelectorAll('.table-container'))) {
-        container.remove();
+        container.remove(); // Clear out the tab
     }
     for (let table_data of tables) {
         let table_container = document.createElement('div');
@@ -1099,54 +1143,17 @@ function write_tables(tables) {
         table_container.id = id;
         table_container.innerHTML = table_data;
 
-        // Remove the disfuntional button span:
+        // All of this should be handled by the focus event now.
+        /* // Remove the disfunctional button span:
         if (table_container.querySelector('#button-span') !== null) {
             // console.log('Found button span');
             table_container.removeChild(table_container.querySelector('#button-span'));
         }
-
         // Add the button span to each table:
         let table = table_container.querySelector('table');
-        let btns = document.createElement('span');
-        btns.contentEditable = false;
-        btns.className = 'show-in-context';
-        btns.id = 'button-span';
-        let add_row_btn = document.createElement('button');
-        add_row_btn.innerHTML = '+ ROW';
-        add_row_btn.onclick = function() {add_rows(table, 1)};
-        let del_row_btn = document.createElement('button');
-        del_row_btn.innerHTML = '- ROW';
-        del_row_btn.onclick = function() {table.deleteRow(-1)};
-        let add_col_btn = document.createElement('button');
-        add_col_btn.innerHTML = '+ COLUMN';
-        add_col_btn.onclick = function() {add_columns(table, 1)};
-        let del_col_btn = document.createElement('button');
-        del_col_btn.innerHTML = '- COLUMN';
-        del_col_btn.onclick = function() {
-            Array.from(table.rows).forEach((row, i) => { table.rows[i].deleteCell(-1); } )
-        }
-        let move_up_btn = document.createElement('button');
-        move_up_btn.innerHTML = '⬆';
-        move_up_btn.onclick = function() {
-            let i = Array.from(tables_pane.children).indexOf(table_container);
-            tables_pane.insertBefore(tables_pane.children[i], tables_pane.children[ Math.max(0, i-1) ]);
-        }
-        let move_down_btn = document.createElement('button');
-        move_down_btn.innerHTML = '⬇';
-        move_down_btn.onclick = function() {
-            let i = Array.from(tables_pane.children).indexOf(table_container);
-            let m = Array.from(tables_pane.children).length - 2; // so that we cannot move below the button
-            tables_pane.insertBefore(tables_pane.children[i], tables_pane.children[ Math.min(m, i+2) ]);
-        }
-        let delete_btn = document.createElement('button');
-        delete_btn.innerHTML = '⌫';
-        delete_btn.onclick = function() {
-            if ( window.confirm('Are you sure you want to delete this table?') ) {
-                table_container.remove();
-            }
-        }
-        btns.replaceChildren(move_up_btn, move_down_btn, add_row_btn, del_row_btn, add_col_btn, del_col_btn, delete_btn);
-        table_container.insertBefore(btns, table);
+        create_table_buttons(table_container, table); */
+        enable_markdown(table_container);
+
         tables_pane.insertBefore(table_container, add_table_btn);
     }
 }
@@ -1461,8 +1468,9 @@ async function save_as() {
 
 async function save_file(send_alert = true) {
     if (file_name_input.value.trim() === '') {
-        window.alert("Please enter a file name before saving.");
-        return;
+        if (send_alert) {
+            file_name_input.value = window.prompt("Please enter a file name before saving.");
+        } else return;
     }
     let exports = collect_export_data(blob=false); // needs a string or buffer
     try {
