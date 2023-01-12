@@ -12,12 +12,12 @@ button, select {
 
 /* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
 button[id=overwrite] {
-    color: #ff0000;
+    color: rgb(144, 0, 0);
 }
 
 /* The following two styles are used for most buttons on mouse hover. */
 .hover-highlight:hover {
-    color: rgb(255, 255, 255) !important;
+    color: white !important;
 }
 .hover-shadow:hover {
     box-shadow: 0px 2px 12px rgb(32, 32, 32);
@@ -30,7 +30,7 @@ button[id=overwrite] {
 
 /* This style is for the table-editing buttons when the mouse is hovering over them. */
 .table-container:focus-within .show-in-context button:hover {
-    color: rgb(0, 70, 128);
+    color: rgb(84, 130, 156);
     background-color: rgb(8, 70, 88);
 }
 

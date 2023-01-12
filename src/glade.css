@@ -46,7 +46,7 @@ button[id=overwrite] {
 /* This style is for the table-editing buttons when the mouse is hovering over them. */
 .table-container:focus-within .show-in-context button:hover {
     color: var(--jasmine);
-    background-color: var(--emerald);
+    background-color: var(--evergreen);
 }
 
 /*
