@@ -10,7 +10,7 @@
   <body id="body">
     <div class='tab-container'>
       <div class="button-container">
-        <p class="version-info"><i>β</i>1.8.7</p>
+        <p class="version-info"><i>β</i>1.8.8</p>
         <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
         <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
         <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
@@ -157,9 +157,13 @@
             <br>
           </div>
           <!-- Romanization -->
-          <div class="container column">
+          <div class="container column scrolled" style="min-height: 97% !important">
             <label for="romans">Pronunciations</label>
             <textarea id="romans" rows="30" style="text-align: left" class="prelined"></textarea>
+            <br><br>
+            <label for="test-romans">Orthography Testing</label>
+            <textarea id="test-romans" rows="4" class="prelined"></textarea>
+            <input id="test-romans-result" class="pronunciation" readonly>
           </div>
         </div>
       </div>

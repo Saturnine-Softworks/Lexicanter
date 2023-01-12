@@ -653,7 +653,7 @@ srch_descriptions.onkeyup = search_book;
 romans.innerHTML = "th > θ"; // initialize pronunciations variables; for some reason, everything breaks if there's nothing initialized here. TODO: Fix that.
 
 function get_pronunciation(word) {
-    word = `^${word}^`; // add carets for front/end searching
+    word = `^${word.replaceAll(/\s+/g, '^')}^`; // add carets for front/end searching, treat spaces as word boundaries
     word = document.getElementById('case-sensitive').checked ? word : word.toLowerCase(); // if the case-sensitive setting is ticked, don't force to lowercase.
     
     // Romanizations need to be sorted by length and applied in that order. 
@@ -679,24 +679,35 @@ function get_pronunciation(word) {
 
     // Then we go through each length of pattern, checking for patterns from the starting point of each
     // character in the word. Given the word 'dread' and the pattern 'ad', it would find a pattern match
-    // when i = 3 and the patterns length we're checking for is 2 (†1). We then find the pronunciation to 
+    // when i = 3 and the patterns length we're checking for is 2 (†1). We then find the pronunciation to
     // substitute at this position (†2) and use slices to replace the pattern with the substitute (†3).
     // We add the length of the substituion string to `i` so that the next iteration skips past the part of
     // the word we have already changed (†4). When this process is done, we remove the carets (†5) and
     // return the processed word.
-    let i = 0;
-    while (i < word.length) {
+    for (let i = 0; i < word.length; i++) {
         for (let length of lengths) {
-            if (word.slice(i, i+length) in sort[length]) { // †1
-                let substitute = sort[length][word.slice(i, i+length)]; // †2
+            let substring = word.slice(i, i+length);
+
+            let match = false;
+            Object.keys(sort[length]).forEach(pattern => {
+                new_pattern = [...pattern].map((char, i) => { 
+                    return (char === '_' && substring[i] !== '^') ? substring[i] : char; 
+                }).join('');
+                if (new_pattern === substring)
+                    { match = [...sort[length][pattern]].map((char, i) => { 
+                        return (char === '_' && substring[i] !== '^') ? substring[i] : char; 
+                    }).join(''); }
+            });
+
+            if (substring in sort[length] || match) { // †1
+                let substitute = match ? match : sort[length][substring]; // †2
                 word = word.slice(0, i) + substitute + word.slice(length+i); // †3
-                i += substitute.length - 1; // †4
+                i += substitute.length - 1; // †4 
                 break;
             }
         }
-        i++;
     }
-    return word.replace(/\^/g, ''); // (†5)
+    return word.replaceAll('^', ' ').trim().replaceAll('∅', ''); // (†5)
 }
 
 function update_pronunciation(input=wrd_input, output=pronun) {
@@ -751,16 +762,14 @@ function generateRules(rules, categories) {
             expandedSubstitution = expandedSubstitution.map((symbol, index) => {
                 if (uniqueCategorySymbols.includes(symbol)) { // symbol is in pattern
                     return combo[uniqueCategorySymbols.indexOf(symbol)]
-                } else {
-                    if (symbol in categories) { // symbol is not in pattern
-                        return categories[symbol][categories[[...pattern][index]].indexOf(newPattern[index])]
-                    } else { return symbol } // symbol is not a category
-                }
+                } else if (symbol in categories) { // symbol is not in pattern
+                    return categories[symbol][categories[[...pattern][index]].indexOf(newPattern[index])]
+                } else { return symbol } // symbol is not a category
             });
 
             // generate the new rule by joining pattern and substitution and push into expandedRules
             let expandedRule = `${newPattern.join('')}>${expandedSubstitution.join('')}`;
-            expandedRule = expandedRule.replaceAll('∅', ''); // get rid of null signs
+            // expandedRule = expandedRule.replaceAll('∅', ''); // get rid of null signs // leave null signs, post-processor takes care of it
             expandedRules.push(expandedRule);
         }
     }
@@ -834,8 +843,11 @@ wrd_input.onkeyup = function(repronounce=true) {
         document.getElementById('definition-exists').style.display = 'none';
     }
 };
-
 phrase_input.onkeyup = function() {update_pronunciation(phrase_input, phrase_pron)};
+
+const test_romans = document.getElementById('test-romans');
+const test_romans_result = document.getElementById('test-romans-result');
+test_romans.onkeyup = function() {update_pronunciation(test_romans, test_romans_result)};
 
 function get_phonotactics() {
     component_txt = {
@@ -1326,7 +1338,10 @@ function open_v1p7(contents) {
 function open_v1p8(contents) {
     try {lexicon = contents.Lexicon;} catch (err) { window.alert("There was a problem loading the contents of the lexicon. Please contact the developer.") }
     try {alphabet_input.value = contents.Alphabet;} catch (err) { window.alert("There was a problem loading the alphabetical order. Please contact the developer.") }
-    try {romans.value = contents.Romanization} catch (err) { window.alert("There was a problem loading the romanizations. Please contact the developer.") }
+    try {
+        romans.value = contents.Romanization;
+        romans.onchange();
+    } catch (err) { window.alert("There was a problem loading the romanizations. Please contact the developer.") }
     try { phrasebook = contents.Phrasebook; } catch (err) { window.alert('There was a problem loading the phrasebook. Please contact the developer.') }
     try {
         onset_input.value = contents.Phonotactics.Initial.join(' ');
