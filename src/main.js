@@ -1,7 +1,8 @@
 const {app, ipcRenderer } = require('electron')
 const path = require('path');
 const fs = require('fs');
-const { EventEmitter } = require('stream');
+var $ = jQuery = require('jquery');
+require('jquery-ui-dist/jquery-ui');
 
 // This function grabs the path to the userData directory and calls back with it.
 // Usage:
@@ -1013,12 +1014,33 @@ function enable_markdown(table_container) {
     // event listeners are overridden when the innerHTML is replaced.
     table_container.real_value = table_container.innerHTML;
     table_container.addEventListener('focus', event => {
-        event.target.innerHTML = event.target.real_value.replace(/<span.*span>/im, ''); // remove disfunctional button span;
+        // the table cells can be re-ordered while the container does not have focus, but the real_value is not updated until this point. 
+        event.target.real_value = event.target.real_value.replace(/<table.*table>/im, event.target.querySelector('table').outerHTML) 
+        event.target.innerHTML = event.target.real_value.replace(/<span.*span>/im, '');    // remove disfunctional button span;
         create_table_buttons(event.target, event.target.getElementsByTagName('table')[0]); // replace button span
     });
     table_container.addEventListener('blur', event => {
-        event.target.real_value = event.target.innerHTML
+        event.target.real_value = event.target.innerHTML;
         event.target.innerHTML = markdown_to_html(event.target.innerHTML);
+        let column_number = event.target.querySelector('tr').querySelectorAll('td').length;
+        let Id = event.target.querySelector('table').id;
+        $(`#${Id} tbody`).sortable({ // the following code is adapted from https://stackoverflow.com/a/44827338/16249135.
+            items: 'td',            // it allows for cells in the tables to be re-ordered. 
+            connectWith: 'table tr',
+            stop: function (_, prop) {
+                var id = prop.item;
+                const colNum = column_number;
+                $('table tr').not(':last').each(function () {
+                    var $this = $(this);
+                    if ($this.children().length < colNum) {
+                        $this.append($this.next().children(':first'));
+                    }
+                    else if ($this.children().length > colNum) {
+                        $this.next().prepend($this.children(':last'));
+                    }
+                });
+            }
+        });
     });
 }
 
@@ -1089,6 +1111,7 @@ function create_table_buttons(container, table) {
             container.remove();
         }
     });
+
     btns.append(move_up_btn, move_down_btn, add_row_btn, del_row_btn, add_col_btn, del_col_btn, delete_btn);
     container.insertBefore(btns, table);
 }
@@ -1106,6 +1129,7 @@ add_table_btn.onclick = function() {
     title.appendChild( document.createTextNode('Table Title') );
 
     let table = document.createElement('table');
+    table.id = `table-${Date.now()}`;
     add_rows(table, 3);
     add_columns(table, 3);
 
@@ -1118,8 +1142,6 @@ add_table_btn.onclick = function() {
     create_table_buttons(table_container, table);
     enable_markdown(table_container);
     tables_pane.insertBefore(table_container, add_table_btn);
-
-    // bind_table_keys(document.getElementById(id));
 }
 
 function collect_tables() {
@@ -1143,15 +1165,6 @@ function write_tables(tables) {
         table_container.id = id;
         table_container.innerHTML = table_data;
 
-        // All of this should be handled by the focus event now.
-        /* // Remove the disfunctional button span:
-        if (table_container.querySelector('#button-span') !== null) {
-            // console.log('Found button span');
-            table_container.removeChild(table_container.querySelector('#button-span'));
-        }
-        // Add the button span to each table:
-        let table = table_container.querySelector('table');
-        create_table_buttons(table_container, table); */
         enable_markdown(table_container);
 
         tables_pane.insertBefore(table_container, add_table_btn);
