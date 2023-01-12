@@ -309,3 +309,10 @@ input[type="checkbox"]::before {
   transform: scale(0);
   transition: 120ms transform ease-in-out;
 }
+
+hr { 
+  margin-bottom: .2em;
+  margin-top: .2em;
+  max-width: 50%;
+  padding: 0px;
+}

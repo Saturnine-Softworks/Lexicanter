@@ -81,20 +81,6 @@ const autosave_setting = document.getElementById('auto-save');
 const inputs = Array.from(document.querySelectorAll('input')).concat(Array.from(document.querySelectorAll('textarea')));
 inputs.forEach((i) => i.setAttribute('spellcheck', 'false'));
 
-function getAllChildren(htmlElement) {
-    if (htmlElement.children.length === 0) return [htmlElement];
-  
-    let allChildElements = [];
-  
-    for (let i = 0; i < htmlElement.children.length; i++) {
-      let children = getAllChildren(htmlElement.children[i]);
-      if (children) allChildElements.push(...children);
-    }
-    allChildElements.push(htmlElement);
-  
-    return allChildElements;
-}
-
 let lexicon = {};
 let phrasebook = {};
 let selected_cat;
@@ -135,12 +121,19 @@ function change_theme() {
 }
 theme_select.onchange = change_theme;
 
-function removeItem(arr, value) {
-    var index = arr.indexOf(value);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-    return arr;
+function markdown_to_html(text) {
+    // To allow the user to use common markdown notation to style their text.
+	let toHTML = text
+        .replace(/\*\*\*([^\*]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
+		.replace(/\*\*([^\*]*)\*\*/gim, '<b>$1</b>') // bold
+		.replace(/\*([^\*]*)\*/gim, '<i>$1</i>') // italic
+        .replace(/__([^_]*)__/gim, '<u>$1</u>') // underlined
+        .replace(/~~([^~]*)~~/gim, '<strike>$1</strike>') // strikethrough
+        .replace(/\[(.*)\]\((.*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
+        .replace(/\^(.)/gim, '<sup>$1</sup>') // superscript
+        .replace(/~(.)/gim, '<sub>$1</sub>') // subscript
+        .replace(/---\n?/gim, '<hr>'); // line separator
+	return toHTML.trim();
 }
 
 // Lexicon handling
@@ -247,7 +240,8 @@ function rewrite_entries(keys = false) {
                 pron.className = 'pronunciation';
                 pron.appendChild( document.createTextNode(lexicon[key][0]) );
                 
-                let defn = document.createTextNode(lexicon[key][1]);
+                let defn = document.createElement('p');
+                defn.innerHTML = markdown_to_html(lexicon[key][1]); // allow markdown styling in definitions
                 
                 let tags = document.createElement('div');
                 for (let tag of lexicon[key][3]) {
@@ -275,7 +269,7 @@ function rewrite_entries(keys = false) {
 function add_word(append=false) {
     let w = wrd_input.value.trim();
     let p = pronun.value.trim();
-    let d = def_input.value.trim();
+    let d = def_input.value.trim(); // allow markdown in definitions
     let t;
     if (tags_input.value !== '') { t = tags_input.value.trim().split(/\s+/g); }
     else { t = [] }
@@ -344,7 +338,7 @@ function update_book(keys=false) {
                 pron.appendChild( document.createTextNode(phrasebook[selected_cat][entry].pronunciation) );
                 let desc = document.createElement('p');
                 desc.className = 'prelined';
-                desc.appendChild( document.createTextNode(phrasebook[selected_cat][entry].description) );
+                desc.innerHTML = markdown_to_html(phrasebook[selected_cat][entry].description);
                 entry_container.append(phrase, pron, desc);
                 // variant entries
 
@@ -1000,7 +994,6 @@ function add_columns(table, n) {
 }
 
 add_table_btn.onclick = function() {
-
     let table_container = document.createElement('div');
     table_container.spellcheck = false;
     table_container.contentEditable = true;
@@ -1066,9 +1059,21 @@ add_table_btn.onclick = function() {
 
     let caption = document.createElement('p');
     caption.className = 'table-caption';
-    caption.appendChild( document.createTextNode('Caption text can go here.') );
+    caption.innerHTML = 'Caption text can go here.';
 
     table_container.replaceChildren(title, btns, table, caption);
+
+    table_container.real_value = table_container.innerHTML;
+
+    table_container.addEventListener('focus', event => {
+        event.target.innerHTML = event.target.real_value;
+    });
+    table_container.addEventListener('blur', event => {
+        event.target.real_value = event.target.innerHTML;
+        event.target.innerHTML = markdown_to_html(event.target.innerHTML);
+        console.log(event.target.real_value, '\n', event.target.innerHTML);
+    });
+
     tables_pane.insertBefore(table_container, add_table_btn);
     // bind_table_keys(document.getElementById(id));
 }

@@ -110,7 +110,7 @@ The buttons within this container are styled the same so that they are flush, an
 
 /* This style is used for dividers such as the one in the Categories pane of the Phrasebook tab. */
 hr {
-    border-top:rgb(221, 221, 221);
+    border: 1px solid rgb(95, 129, 112);
 }
 
 /* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
@@ -178,3 +178,7 @@ input[type="checkbox"] {
 input[type="checkbox"]::before {
     background-color: var(--jasmine);
 }
+
+/* Link styles */ 
+a { color: var(--pine); transition: 0.5s; }
+a:hover { color: var(--jasmine); }

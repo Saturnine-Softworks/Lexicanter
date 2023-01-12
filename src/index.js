@@ -1,6 +1,7 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const { autoUpdater, AppUpdater } = require("electron-updater");
+const { chrome } = require('process');
 
 // Auto-updater flags
 autoUpdater.autoDownload = true;
@@ -35,13 +36,19 @@ const createWindow = () => {
     app.dock.setIcon(path.join(__dirname, 'rsrc/Quill Icon.png'));
   }
 
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    mainWindow.webContents.executeJavaScript(`console.log('${url}');`);
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
+
   // Even with contextIsolation set to false, there are some things which still require interprocess communication. 
   // IPC handlers below.
   ipcMain.handle('getUserDataPath', _ => {
     let data_path = app.getPath('userData');
     return data_path;
   });
-  ipcMain.handle('showOpenDialog', (event, params) => {
+  ipcMain.handle('showOpenDialog', (_, params) => {
     let file_path = dialog.showOpenDialogSync(params);
     return file_path;
   })
