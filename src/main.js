@@ -129,20 +129,21 @@ function markdown_to_html(text) {
     // **bold** *italic*
     // __underline__
     // ~~strikethrough~~
-    // ^s^u^p^e^rscript
-    // ~s~u~bscript
+    // ^[super]script
+    // ~[sub]script
     // [external links](url)
     // --- horizontal rule
 	let toHTML = text
-        .replace(/\*\*\*([^\*]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
-		.replace(/\*\*([^\*]*)\*\*/gim, '<b>$1</b>') // bold
-		.replace(/\*([^\*]*)\*/gim, '<i>$1</i>') // italic
-        .replace(/__([^_]*)__/gim, '<u>$1</u>') // underlined
-        .replace(/~~([^~]*)~~/gim, '<strike>$1</strike>') // strikethrough
-        .replace(/\[(.*)\]\((.*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
-        .replace(/\^(.)/gim, '<sup>$1</sup>') // superscript
-        .replace(/~(.)/gim, '<sub>$1</sub>') // subscript
-        .replace(/---\n?/gim, '<hr>'); // horizontal rule
+        .replace(/[^\\]\*\*\*([^\*]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
+		.replace(/[^\\]\*\*([^\*]*)\*\*/gim, '<b>$1</b>') // bold
+		.replace(/[^\\]\*([^\*]*)\*/gim, '<i>$1</i>') // italic
+        .replace(/[^\\]__([^_]*)__/gim, '<u>$1</u>') // underlined
+        .replace(/[^\\]~~([^~]*)~~/gim, '<strike>$1</strike>') // strikethrough
+        .replace(/[^\\]\^\[(.*)\]/gim, '<sup>$1</sup>') // superscript
+        .replace(/[^\\]~\[(.*)\]/gim, '<sub>$1</sub>') // subscript
+        .replace(/[^\\]\[(.*)\]\((.*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
+        .replace(/[^\\]---\n?/gim, '<hr>') // horizontal rule
+        .replace(/\\(.)/gi, '$1'); // backslash escaping
 	return toHTML.trim();
 }
 
@@ -568,16 +569,16 @@ function search_lex() {
             for (let a of l[1]) { // definitions
                 if ( !lexicon[word][1].toLowerCase().includes(a) ) { match = false; }
             }
-            if (lexicon[word][3].length !== 0) {
+            if (lexicon[word][3].length !== 0) { // has at least one tag
                 let any_tag_match;
                 for (let tag of lexicon[word][3]) {
                     for (let a of x) { // tags
                         if (`^${tag}^`.includes(a)) { any_tag_match = true; }
                     }
                 }
-                if (!any_tag_match) { match = false; }
-            } else {
-                if (x.length !== 0) { match = false; }
+                if (!any_tag_match && x.length !== 0) { match = false; }
+            } else { // has no tags
+                if (x.length !== 0 /*at least one tag as search term*/) { match = false; }
             }
             if (match) { keys.push(word); }
         }
