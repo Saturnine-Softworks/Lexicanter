@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "1.8.12",
+  "version": "1.8.13",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
