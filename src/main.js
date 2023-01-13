@@ -134,16 +134,16 @@ function markdown_to_html(text) {
     // [external links](url)
     // --- horizontal rule
 	let toHTML = text
-        .replace(/[^\\]\*\*\*([^\*]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
-		.replace(/[^\\]\*\*([^\*]*)\*\*/gim, '<b>$1</b>') // bold
-		.replace(/[^\\]\*([^\*]*)\*/gim, '<i>$1</i>') // italic
-        .replace(/[^\\]__([^_]*)__/gim, '<u>$1</u>') // underlined
-        .replace(/[^\\]~~([^~]*)~~/gim, '<strike>$1</strike>') // strikethrough
-        .replace(/[^\\]\^\[(.*)\]/gim, '<sup>$1</sup>') // superscript
-        .replace(/[^\\]~\[(.*)\]/gim, '<sub>$1</sub>') // subscript
-        .replace(/[^\\]\[(.*)\]\((.*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
-        .replace(/[^\\]---\n?/gim, '<hr>') // horizontal rule
-        .replace(/\\(.)/gi, '$1'); // backslash escaping
+        .replace(/\*\*\*([^\*]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
+		.replace(/\*\*([^\*]*)\*\*/gim, '<b>$1</b>') // bold
+		.replace(/\*([^\*]*)\*/gim, '<i>$1</i>') // italic
+        .replace(/__([^_]*)__/gim, '<u>$1</u>') // underlined
+        .replace(/~~([^~]*)~~/gim, '<strike>$1</strike>') // strikethrough
+        .replace(/\^\[(.*)\]/gim, '<sup>$1</sup>') // superscript
+        .replace(/~\[(.*)\]/gim, '<sub>$1</sub>') // subscript
+        .replace(/\[(.*)\]\((.*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
+        .replace(/---\n?/gim, '<hr>'); // horizontal rule
+        // TODO: Backslash escaping. 
 	return toHTML.trim();
 }
 
@@ -782,7 +782,7 @@ function generateRules(rules, categories) {
     return expandedRules;
 }
 
-romans.onchange = function() {
+romans.onblur = function() {
     romanizations = {}; // global
     let categories = {};
     let rules = [];
@@ -834,7 +834,7 @@ romans.onchange = function() {
     rewrite_entries();
     update_book();
 }
-romans.onchange();
+romans.onblur();
 
 wrd_input.onkeyup = function(repronounce=true) {
     if (repronounce) {update_pronunciation(); }
@@ -1015,33 +1015,12 @@ function enable_markdown(table_container) {
     // event listeners are overridden when the innerHTML is replaced.
     table_container.real_value = table_container.innerHTML;
     table_container.addEventListener('focus', event => {
-        // the table cells can be re-ordered while the container does not have focus, but the real_value is not updated until this point. 
-        event.target.real_value = event.target.real_value.replace(/<table.*table>/im, event.target.querySelector('table').outerHTML) 
         event.target.innerHTML = event.target.real_value.replace(/<span.*span>/im, '');    // remove disfunctional button span;
         create_table_buttons(event.target, event.target.getElementsByTagName('table')[0]); // replace button span
     });
     table_container.addEventListener('blur', event => {
         event.target.real_value = event.target.innerHTML;
         event.target.innerHTML = markdown_to_html(event.target.innerHTML);
-        let column_number = event.target.querySelector('tr').querySelectorAll('td').length;
-        let Id = event.target.querySelector('table').id;
-        $(`#${Id} tbody`).sortable({ // the following code is adapted from https://stackoverflow.com/a/44827338/16249135.
-            items: 'td',            // it allows for cells in the tables to be re-ordered. 
-            connectWith: 'table tr',
-            stop: function (_, prop) {
-                var id = prop.item;
-                const colNum = column_number;
-                $('table tr').not(':last').each(function () {
-                    var $this = $(this);
-                    if ($this.children().length < colNum) {
-                        $this.append($this.next().children(':first'));
-                    }
-                    else if ($this.children().length > colNum) {
-                        $this.next().prepend($this.children(':last'));
-                    }
-                });
-            }
-        });
     });
 }
 
@@ -1196,7 +1175,7 @@ function change_orthography() {
         }
     }
 
-    romans.onchange(); // checks to update all pronunciations and rewrites lex
+    romans.onblur(); // checks to update all pronunciations and rewrites lex
     document.getElementById('ortho-pattern').value = '';
     document.getElementById('new-pattern').value = '';
     tab_btns[0].onclick();
@@ -1215,7 +1194,7 @@ function open_v1p0(contents) {
     for (var r in contents.Romanization) {
         txt += (`${r} > ${contents.Romanization[r]}\n`)
     }
-    romans.value = txt; romans.onchange();
+    romans.value = txt; romans.onblur();
     onset_input.value = contents.Phonotactics.Initial.join(' ');
     middle_input.value = contents.Phonotactics.Middle.join(' ');
     coda_input.value = contents.Phonotactics.Final.join(' ');
@@ -1234,7 +1213,7 @@ function open_v1p1(contents) {
     for (var r in contents.Romanization) {
         txt += (`${r} > ${contents.Romanization[r]}\n`)
     }
-    romans.value = txt.trimEnd(); romans.onchange();
+    romans.value = txt.trimEnd(); romans.onblur();
     onset_input.value = contents.Phonotactics.Initial.join(' ');
     middle_input.value = contents.Phonotactics.Middle.join(' ');
     coda_input.value = contents.Phonotactics.Final.join(' ');
@@ -1253,7 +1232,7 @@ function open_v1p2(contents) {
     for (var r in contents.Romanization) {
         txt += (`${r} > ${contents.Romanization[r]}\n`)
     }
-    romans.value = txt.trimEnd(); romans.onchange();
+    romans.value = txt.trimEnd(); romans.onblur();
     onset_input.value = contents.Phonotactics.Initial.join(' ');
     middle_input.value = contents.Phonotactics.Middle.join(' ');
     coda_input.value = contents.Phonotactics.Final.join(' ');
@@ -1272,7 +1251,7 @@ function open_v1p3(contents) {
     for (var r in contents.Romanization) {
         txt += (`${r} > ${contents.Romanization[r]}\n`)
     }
-    romans.value = txt.trimEnd(); romans.onchange();
+    romans.value = txt.trimEnd(); romans.onblur();
     onset_input.value = contents.Phonotactics.Initial.join(' ');
     middle_input.value = contents.Phonotactics.Middle.join(' ');
     coda_input.value = contents.Phonotactics.Final.join(' ');
@@ -1291,7 +1270,7 @@ function open_v1p5(contents) {
         let txt = ''
         for (var r in contents.Romanization) {
         txt += (`${r} > ${contents.Romanization[r]}\n`) }
-        romans.value = txt.trimEnd(); romans.onchange();
+        romans.value = txt.trimEnd(); romans.onblur();
     } catch (err) {window.alert("There was a problem loading the romanizations. Please contact the developer.")}
     try {
         onset_input.value = contents.Phonotactics.Initial.join(' ');
@@ -1314,7 +1293,7 @@ function open_v1p6(contents) {
         let txt = ''
         for (var r in contents.Romanization) {
         txt += (`${r} > ${contents.Romanization[r]}\n`) }
-        romans.value = txt.trimEnd(); romans.onchange();
+        romans.value = txt.trimEnd(); romans.onblur();
     } catch (err) { window.alert("There was a problem loading the romanizations. Please contact the developer.") }
     try { phrasebook = contents.Phrasebook; } catch (err) { window.alert('There was a problem loading the phrasebook. Please contact the developer.') }
     try {
@@ -1339,7 +1318,7 @@ function open_v1p7(contents) {
         let txt = ''
         for (var r in contents.Romanization) {
         txt += (`${r} > ${contents.Romanization[r]}\n`) }
-        romans.value = txt.trimEnd(); romans.onchange();
+        romans.value = txt.trimEnd(); romans.onblur();
     } catch (err) { window.alert("There was a problem loading the romanizations. Please contact the developer.") }
     try { phrasebook = contents.Phrasebook; } catch (err) { window.alert('There was a problem loading the phrasebook. Please contact the developer.') }
     try {
@@ -1366,7 +1345,7 @@ function open_v1p8(contents) {
     try {alphabet_input.value = contents.Alphabet;} catch (err) { window.alert("There was a problem loading the alphabetical order. Please contact the developer.") }
     try {
         romans.value = contents.Romanization;
-        romans.onchange();
+        romans.onblur();
     } catch (err) { window.alert("There was a problem loading the romanizations. Please contact the developer.") }
     try { phrasebook = contents.Phrasebook; } catch (err) { window.alert('There was a problem loading the phrasebook. Please contact the developer.') }
     try {

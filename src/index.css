@@ -137,6 +137,7 @@ p {margin: 0px;}
 .lex-body {
   font-family: Gentium;
   font-size: 15px;
+  white-space: pre-line;
 }
 
 .variants {
