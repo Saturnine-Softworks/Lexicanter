@@ -10,7 +10,7 @@
   <body id="body">
     <div class='tab-container'>
       <div class="button-container">
-        <p class="version-info"><i>β</i>1.8.11</p>
+        <p class="version-info"><i>v</i>1.8.12</p>
         <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
         <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
         <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
@@ -250,7 +250,7 @@
       <!-- App Settings -->
       <div class="tab-pane">
         <div class="row" style="height: 95vh">
-          <div class="container column scrolled">
+          <div class="container column scrolled" style="min-height: 90vh;">
             <p>Appearance Settings</p> <br>
             <label for="theme-select">Color Theme</label>
             <select name="theme-select" id="theme-select">
@@ -268,11 +268,19 @@
             <label for="auto-save">Auto-Save</label>
             <input type="checkbox" id="auto-save" checked />
             <br><br>
-            <p>New in 1.8</p>
-            <li>
-              <ul>File storage has been migrated to make auto-save possible.</ul>
-              <ul>Categories can now be defined and used in your Pronunciations rules. See the <a href="https://lexicanter.com/docs">docs page</a> for more info.</ul>
-            </li>
+            <p>New in 1.8</p><br>
+            <p style="width: 70%; margin: auto;">
+              • File storage has been migrated to make auto-save possible. <br>
+              • Categories can now be defined and used in your Pronunciations rules. See the <a href="https://lexicanter.com/docs">docs page</a> for more info.<br>
+              • Five new color themes: Light, Marine, Glade, Leatherbound, and Purple Maar (contributed by <a href="https://linktr.ee/maarzcreative">Maarz</a>). <br>
+              • You can now load in your own custom CSS color themes.<br>
+              • Definitions, descriptions, and documentation sections now support simple <a href="https://lexicanter.com/docs#markdown">markdown</a>. <br>
+              • There's a new space in the Phonology tab to test your pronunciation rules. <br>
+              • Tag searches no longer require an exact match. <br>
+              • Several minor bug fixes, including one reported about tables being editable in the HTML export.<br>
+            </p>
+            <br>
+            <p class="info">Now open: Join me on <a href="https://discord.gg/uDk2XDhh8K">Discord</a>!</p>
           </div>
         </div>
       </div>

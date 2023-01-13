@@ -1127,7 +1127,7 @@ add_table_btn.onclick = function() {
 function collect_tables() {
     exports = [];
     for (let container of Array.from(document.querySelectorAll('.table-container'))) {
-        exports.push(container.innerHTML)
+        exports.push(container.real_value);
     }
     return exports;
 }
