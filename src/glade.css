@@ -123,14 +123,15 @@ textarea, input {
     color: var(--jasmine) !important;
     background-color: var(--meadow);
 }
-
 /* The background color for pronunciation-specific text input fields blends into the background color. */
-input[class=pronunciation] {
-    background-color: inherit;
+input[class=pronunciation],
+textarea[class=pronunciation] {
+    background-color: transparent;
 }
 
 /* Style used for pronunciation-specific text input fields on mouse hover. */
-input[class=pronunciation]:hover {
+input[class=pronunciation]:hover,
+textarea[class=pronunciation]:hover {
     background-color: var(--meadow);
 }
 

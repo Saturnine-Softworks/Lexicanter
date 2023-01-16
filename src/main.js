@@ -134,15 +134,16 @@ function markdown_to_html(text) {
     // [external links](url)
     // --- horizontal rule
 	let toHTML = text
-        .replace(/\*\*\*([^\*]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
-		.replace(/\*\*([^\*]*)\*\*/gim, '<b>$1</b>') // bold
-		.replace(/\*([^\*]*)\*/gim, '<i>$1</i>') // italic
-        .replace(/__([^_]*)__/gim, '<u>$1</u>') // underlined
-        .replace(/~~([^~]*)~~/gim, '<strike>$1</strike>') // strikethrough
-        .replace(/\^\[(.*)\]/gim, '<sup>$1</sup>') // superscript
-        .replace(/~\[(.*)\]/gim, '<sub>$1</sub>') // subscript
-        .replace(/\[(.*)\]\((.*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
-        .replace(/---\n?/gim, '<hr>'); // horizontal rule
+        .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
+		.replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
+		.replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
+        .replace(/__([^\n(?:__)]*)__/gim, '<u>$1</u>') // underlined
+        .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
+        .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
+        .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
+        .replace(/``([^\n(?:``)]*)``/gim, '<code>$1</code>') // monospace
+        .replace(/\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
+        .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
         // TODO: Backslash escaping. 
 	return toHTML.trim();
 }
@@ -658,7 +659,7 @@ srch_descriptions.onkeyup = search_book;
 romans.innerHTML = "th > θ"; // initialize pronunciations variables; for some reason, everything breaks if there's nothing initialized here. TODO: Fix that.
 
 function get_pronunciation(word) {
-    word = `^${word.replaceAll(/\s+/g, '^')}^`; // add carets for front/end searching, treat spaces as word boundaries
+    word = `^${word.replaceAll(/[^\S\n]|(\n)/gm, '^$1')}^`; // add carets for front/end searching, treat spaces as word boundaries
     word = document.getElementById('case-sensitive').checked ? word : word.toLowerCase(); // if the case-sensitive setting is ticked, don't force to lowercase.
     
     // Romanizations need to be sorted by length and applied in that order. 
@@ -1004,7 +1005,7 @@ function add_columns(table, n) {
     }
 }
 
-function enable_markdown(table_container) {
+function enable_markdown(table_container, first_write=false) {
     // To enable markdown functionality in the docs sections, 
     // we store a copy of the innerHTML which the user directly
     // edited as `table_container.real_value`. On the blur 
@@ -1022,6 +1023,11 @@ function enable_markdown(table_container) {
         event.target.real_value = event.target.innerHTML;
         event.target.innerHTML = markdown_to_html(event.target.innerHTML);
     });
+    if (first_write) {
+        tab_btns[3].onclick();
+        table_container.focus();
+        table_container.blur();
+    }
 }
 
 function create_table_buttons(container, table) {
@@ -1144,10 +1150,8 @@ function write_tables(tables) {
         let id = `t${tables_pane.childElementCount}`;
         table_container.id = id;
         table_container.innerHTML = table_data;
-
-        enable_markdown(table_container);
-
         tables_pane.insertBefore(table_container, add_table_btn);
+        enable_markdown(table_container, first_write=true);
     }
 }
 

@@ -10,7 +10,7 @@
   <body id="body">
     <div class='tab-container'>
       <div class="button-container">
-        <p class="version-info"><i>v</i>1.8.13</p>
+        <p class="version-info"><i>v</i>1.8.14</p>
         <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
         <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
         <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
@@ -163,7 +163,7 @@
             <br><br>
             <label for="test-romans">Orthography Testing</label>
             <textarea id="test-romans" rows="4" class="prelined"></textarea>
-            <input id="test-romans-result" class="pronunciation" readonly>
+            <textarea id="test-romans-result" class="pronunciation" readonly></textarea>
           </div>
         </div>
       </div>
@@ -268,16 +268,22 @@
             <label for="auto-save">Auto-Save</label>
             <input type="checkbox" id="auto-save" checked />
             <br><br>
-            <p>New in 1.8</p><br>
+            <p><u>Patch 1.8.14</u></p>
             <p style="width: 70%; margin: auto;">
-              • File storage has been migrated to make auto-save possible. <br>
-              • Categories can now be defined and used in your Pronunciations rules. See the <a target="_blank" href="https://lexicanter.com/docs">docs page</a> for more info.<br>
-              • Five new color themes: Light, Marine, Glade, Leatherbound, and Purple Maar (contributed by <a target="_blank" href="https://linktr.ee/maarzcreative">Maarz</a>). <br>
-              • You can now load in your own custom CSS color themes.<br>
-              • Definitions, descriptions, and documentation sections now support simple <a target="_blank" href="https://lexicanter.com/docs#markdown">markdown</a>. <br>
-              • There's a new space in the Phonology tab to test your pronunciation rules. <br>
-              • Tag searches no longer require an exact match. <br>
-              • Several minor bug fixes, including one reported about tables being editable in the HTML export.<br>
+              • Fixed a few minor bugs with markdown parsing.<br>
+              • Added monospace markdown with <code>``this``</code> syntax.<br>
+              • Fixed a reported bug which affected the orthography testing area.
+            <br><br>
+            <p><u>New in 1.8</u></p>
+            <p style="width: 70%; margin: auto;">
+              • File storage has been migrated to make auto-save possible. <br>
+              • Categories can now be defined and used in your Pronunciations rules. See the <a target="_blank" href="https://lexicanter.com/docs">docs page</a> for more info.<br>
+              • Five new color themes: Light, Marine, Glade, Leatherbound, and Purple Maar (contributed by <a target="_blank" href="https://linktr.ee/maarzcreative">Maarz</a>). <br>
+              • You can now load in your own custom CSS color themes.<br>
+              • Definitions, descriptions, and documentation sections now support simple <a target="_blank" href="https://lexicanter.com/docs#markdown">markdown</a>. <br>
+              • There's a new space in the Phonology tab to test your pronunciation rules. <br>
+              • Tag searches no longer require an exact match. <br>
+              • Several minor bug fixes, including one reported about tables being editable in the HTML export.<br>
             </p>
             <br>
             <p class="info">Now open: Join me on <a target="_blank" href="https://discord.gg/uDk2XDhh8K">Discord</a>!</p>

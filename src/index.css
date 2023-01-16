@@ -219,6 +219,11 @@ textarea, input {
   width: 80%;
 }
 
+input[class=pronunciation],
+textarea[class=pronunciation] {
+    transition: 0.33s;
+}
+
 .header input {width: 70%;}
 
 input[type=number] {
