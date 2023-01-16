@@ -1,6 +1,73 @@
 const {app, ipcRenderer } = require('electron')
 const path = require('path');
 const fs = require('fs');
+const EditorJS = require('@editorjs/editorjs');
+const Header = require('@editorjs/header');
+const Paragraph = require('@editorjs/paragraph');
+const Table = require('@editorjs/table');
+const Underline = require('@editorjs/underline');
+class Monospace { // EditorJS custom class
+    static get isInline() {
+        return true;
+    }
+    static get sanitize() {
+        return {
+            code: {
+                class: 'cdx-monospace'
+            }
+        };
+    }
+    get state() {
+        return this._state;
+    }
+    set state(state) {
+        this._state = state;
+
+        this.button.classList.toggle(this.api.styles.inlineToolButtonActive, state);
+    }
+    constructor({ api }) {
+        this.api = api;
+        this.button = null;
+        this._state = false;
+
+        this.tag = 'code';
+        this.class = 'cdx-monospace';
+    }
+    render() {
+        this.button = document.createElement('button');
+        this.button.type = 'button';
+        this.button.textContent = 'M';
+        this.button.classList.add(this.api.styles.inlineToolButton);
+        return this.button;
+    }
+    surround(range) {
+        if (this.state) {
+            this.unwrap(range);
+            return;
+        }
+        this.wrap(range);
+    }
+    wrap(range) {
+        const selectedText = range.extractContents();
+        const monospaced = document.createElement(this.tag);
+        monospaced.classList.add(this.class);
+        monospaced.appendChild(selectedText);
+        range.insertNode(monospaced);
+        this.api.selection.expandToTag(monospaced);
+    }
+    unwrap(range) {
+        const monospaced = this.api.selection.findParentTag(this.tag, this.class);
+        const text = range.extractContents();
+        monospaced.remove();
+        range.insertNode(text);
+    }
+    checkState() {
+        const monospaced = this.api.selection.findParentTag(this.tag);
+        this.state = !!monospaced;
+    }
+}
+var Docs;
+
 var $ = jQuery = require('jquery');
 require('jquery-ui-dist/jquery-ui');
 
@@ -123,7 +190,7 @@ function change_theme() {
 }
 theme_select.onchange = change_theme;
 
-function markdown_to_html(text) {
+function markdown_to_html(text, convert_legacy_docs=false) {
     // To allow the user to use common markdown notation to style their text.
     // ***bold italic***
     // **bold** *italic*
@@ -133,19 +200,35 @@ function markdown_to_html(text) {
     // ~[sub]script
     // [external links](url)
     // --- horizontal rule
-	let toHTML = text
-        .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
-		.replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
-		.replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
-        .replace(/__([^\n(?:__)]*)__/gim, '<u>$1</u>') // underlined
-        .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
-        .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
-        .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
-        .replace(/``([^\n(?:``)]*)``/gim, '<code>$1</code>') // monospace
-        .replace(/\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
-        .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
-        // TODO: Backslash escaping. 
-	return toHTML.trim();
+	if (!convert_legacy_docs) {
+        let toHTML = text
+            .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
+            .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
+            .replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
+            .replace(/__([^\n(?:__)]*)__/gim, '<u>$1</u>') // underlined
+            .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
+            .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
+            .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
+            .replace(/``([^\n(?:``)]*)``/gim, '<code>$1</code>') // monospace
+            .replace(/\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
+            .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
+            // TODO: Backslash escaping. 
+        return toHTML.trim();
+    } else {
+        let toHTML = text
+            .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
+            .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
+            .replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
+            .replace(/__([^\n(?:__)]*)__/gim, '<u class=\"cdx-underline\">$1</u>') // underlined
+            .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
+            .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
+            .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
+            .replace(/``([^\n(?:``)]*)``/gim, '<code class=\"cdx-monospace\">$1</code>') // monospace
+            .replace(/\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
+            .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
+            // TODO: Backslash escaping. 
+        return toHTML.trim();
+    }
 }
 
 // Lexicon handling
@@ -1005,154 +1088,96 @@ function add_columns(table, n) {
     }
 }
 
-function enable_markdown(table_container, first_write=false) {
-    // To enable markdown functionality in the docs sections, 
-    // we store a copy of the innerHTML which the user directly
-    // edited as `table_container.real_value`. On the blur 
-    // event, we store this copy and convert the displayed HTML
-    // which may have user markdown. On the focus event, we replace
-    // this converted version with the stored copy once again. 
-    // We also need to add and remove the button span, since its
-    // event listeners are overridden when the innerHTML is replaced.
-    table_container.real_value = table_container.innerHTML;
-    table_container.addEventListener('focus', event => {
-        event.target.innerHTML = event.target.real_value.replace(/<span.*span>/im, '');    // remove disfunctional button span;
-        create_table_buttons(event.target, event.target.getElementsByTagName('table')[0]); // replace button span
-    });
-    table_container.addEventListener('blur', event => {
-        event.target.real_value = event.target.innerHTML;
-        event.target.innerHTML = markdown_to_html(event.target.innerHTML);
-    });
-    if (first_write) {
-        tab_btns[3].onclick();
-        table_container.focus();
-        table_container.blur();
-    }
-}
-
-function create_table_buttons(container, table) {
-    let btns = document.createElement('span');
-    btns.contentEditable = false;
-    btns.className = 'show-in-context';
-    btns.id = `button-span-${Date.now()}`; // unique id
-
-    let add_row_btn = document.createElement('button');
-    add_row_btn.innerHTML = '+ ROW';
-    add_row_btn.addEventListener('mousedown', event => {
-        event.preventDefault();
-        let table = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`).getElementsByTagName('table')[0];
-        add_rows(table, 1)
-    });
-
-    let del_row_btn = document.createElement('button');
-    del_row_btn.innerHTML = '- ROW';
-    del_row_btn.addEventListener('mousedown', event => {
-        event.preventDefault();
-        let table = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`).getElementsByTagName('table')[0];
-        table.deleteRow(-1)
-    });
-
-    let add_col_btn = document.createElement('button');
-    add_col_btn.innerHTML = '+ COLUMN';
-    add_col_btn.addEventListener('mousedown', event => {
-        event.preventDefault();
-        let table = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`).getElementsByTagName('table')[0];
-        add_columns(table, 1)
-    });
-
-    let del_col_btn = document.createElement('button');
-    del_col_btn.innerHTML = '- COLUMN';
-    del_col_btn.addEventListener('mousedown', event => {
-        event.preventDefault();
-        let table = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`).getElementsByTagName('table')[0];
-        Array.from(table.rows)
-        .forEach((_, i) => { event.target.parentElement.parentElement.getElementsByTagName('table')[0].rows[i].deleteCell(-1); } )
-    });
-
-    let move_up_btn = document.createElement('button');
-    move_up_btn.innerHTML = '⬆';
-    move_up_btn.addEventListener('mousedown', event => {
-        event.preventDefault();
-        let container = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`);
-        let i = Array.from(tables_pane.children).indexOf(container);
-        tables_pane.insertBefore(tables_pane.children[i], tables_pane.children[ Math.max(0, i-1) ]);
-    });
-
-    let move_down_btn = document.createElement('button');
-    move_down_btn.innerHTML = '⬇';
-    move_down_btn.addEventListener('mousedown', event => {
-        event.preventDefault();
-        let container = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`);
-        let i = Array.from(tables_pane.children).indexOf(container);
-        let m = Array.from(tables_pane.children).length - 2; // so that we cannot move below the button
-        tables_pane.insertBefore(tables_pane.children[i], tables_pane.children[ Math.min(m, i+2) ]);
-    });
-
-    let delete_btn = document.createElement('button');
-    delete_btn.innerHTML = '⌫';
-    delete_btn.addEventListener('mousedown', event => {
-        event.preventDefault();
-        if ( window.confirm('Are you sure you want to delete this table?') ) {
-            let container = tables_pane.querySelector(`:has(#${event.target.parentElement.id})`);
-            container.remove();
+// EditorJS Setup
+function initialize_docs(data=false) {
+    let config = {
+        holder: tables_pane.id,
+        tools: {
+            underline: Underline,
+            monospace: Monospace,
+            header: {
+                class: Header,
+                inlineToolbar: false,
+            },
+            paragraph: {
+                class: Paragraph,
+                inlineToolbar: true,
+                config: {
+                    placeholder: 'This panel can be used to document and describe your languge’s features in greater detail.',
+                }
+            },
+            table: {
+                class: Table,
+                config: {
+                    rows: 3, cols: 3,
+                    withHeadings: true,
+                }
+            }
         }
-    });
-
-    btns.append(move_up_btn, move_down_btn, add_row_btn, del_row_btn, add_col_btn, del_col_btn, delete_btn);
-    container.insertBefore(btns, table);
-}
-
-add_table_btn.onclick = function() {
-    let table_container = document.createElement('div');
-    table_container.spellcheck = false;
-    table_container.contentEditable = true;
-    table_container.className = 'table-container';
-    let id = `t${tables_pane.childElementCount}`
-    table_container.id = id
-
-    let title = document.createElement('p');
-    title.className = 'table-title';
-    title.appendChild( document.createTextNode('Table Title') );
-
-    let table = document.createElement('table');
-    table.id = `table-${Date.now()}`;
-    add_rows(table, 3);
-    add_columns(table, 3);
-
-    let caption = document.createElement('p');
-    caption.className = 'table-caption';
-    caption.innerHTML = 'Caption text can go here.';
-
-    table_container.replaceChildren(title, table, caption);
-
-    create_table_buttons(table_container, table);
-    enable_markdown(table_container);
-    tables_pane.insertBefore(table_container, add_table_btn);
-}
-
-function collect_tables() {
-    exports = [];
-    for (let container of Array.from(document.querySelectorAll('.table-container'))) {
-        exports.push(container.real_value);
     }
-    return exports;
+    if (data) config.data = data;
+    Docs = new EditorJS(config);
 }
+initialize_docs();
 
 function write_tables(tables) {
-    for (let container of Array.from(document.querySelectorAll('.table-container'))) {
-        container.remove(); // Clear out the tab
+    // Function for migrating pre-1.9 docs to the EditorJS format. 
+    tables_pane.replaceChildren();
+    let data = {
+        "time": Date.now(),
+        "blocks": [],
+        "version": '2.8.1'
     }
     for (let table_data of tables) {
-        let table_container = document.createElement('div');
-        table_container.spellcheck = false;
-        table_container.contentEditable = true;
-        table_container.className = 'table-container';
-        let id = `t${tables_pane.childElementCount}`;
-        table_container.id = id;
-        table_container.innerHTML = table_data;
-        tables_pane.insertBefore(table_container, add_table_btn);
-        enable_markdown(table_container, first_write=true);
+        console.log("table_data:", table_data)
+        table_data.match(/<p class="table-title">(.*?)<\/p>/g).forEach(title => {
+            console.log("title:", title);
+            data.blocks.push({
+                "type": "header",
+                "data": {
+                    "text": title,
+                    "level": 1,
+                }
+            });
+        });
+        if (table_data.includes('<table')) {
+            let table = [];
+            table_data
+                .match(/<tbody>(.*?)<\/tbody>/)[1]
+                .replaceAll('</tr>', '').split('<tr>')
+                .forEach(row => {
+                    table.push([...row.replaceAll('</td>', '').split('<td>')]);
+                });
+            table.splice(0, 1);
+            console.log("table:", table)
+            data.blocks.push({
+                "type": "table",
+                "data": {
+                    "withHeadings": false,
+                    "content": table,
+                }
+            });
+        }
+        table_data.match(/<p class="table-caption">(.*?)<\/p>/g).forEach(p_element => {
+            [...p_element.split('<br>')].forEach(paragraph => {
+                paragraph = paragraph.replaceAll(/<.*?>/g, '');
+                paragraph = markdown_to_html(paragraph, true);
+                console.log("paragraph:", paragraph);
+                data.blocks.push({
+                    "type": "paragraph",
+                    "data": {
+                        "text": paragraph,
+                    }
+                });
+            });
+        });
     }
+    initialize_docs(data);
+}
+
+function write_docs(data) {
+    tables_pane.replaceChildren();
+    initialize_docs(data);
 }
 
 function change_orthography() {
@@ -1359,7 +1384,7 @@ function open_v1p8(contents) {
         vowel_input.value = contents.Phonotactics.Vowel.join(' ');
         illegals_input.value = contents.Phonotactics.Illegal.join(' ');
     } catch (err) { window.alert("There was a problem loading the phonotactics data. Please contact the developer.") }
-    try {write_tables(contents.Tables);} catch (err) { window.alert("There was a problem loading the tables data. Please contact the developer."); console.log(err); }
+    try {write_tables(contents.Tables);} catch (err) { window.alert("There was a problem loading the documentation data. Please contact the developer."); console.log(err); }
     try {header_tags_text.value = contents.HeaderTags} catch (err) { window.alert("There was a problem loading the header tags.") }
 
     try { document.getElementById('ignore-diacritic').checked = contents.IgnoreDiacritics } catch (err) { console.log(err) }
@@ -1368,7 +1393,32 @@ function open_v1p8(contents) {
     try {rewrite_entries();} catch (err) { window.alert("The save file's lexicon data successfully was loaded, but an error occurred while parsing it. Please contact the developer.") }
     try {update_categories();} catch (err) { window.alert("The save file's phrasebook data successfully was loaded, but an error occurred while parsing it. Please contact the developer.") }
     
-    tab_btns[0].onclick(); // Return to Lexicon tab 
+}
+
+function open_v1p9(contents) {
+    try {lexicon = contents.Lexicon;} catch (err) { window.alert("There was a problem loading the contents of the lexicon. Please contact the developer.") }
+    try {alphabet_input.value = contents.Alphabet;} catch (err) { window.alert("There was a problem loading the alphabetical order. Please contact the developer.") }
+    try {
+        romans.value = contents.Romanization;
+        romans.onblur();
+    } catch (err) { window.alert("There was a problem loading the romanizations. Please contact the developer.") }
+    try { phrasebook = contents.Phrasebook; } catch (err) { window.alert('There was a problem loading the phrasebook. Please contact the developer.') }
+    try {
+        onset_input.value = contents.Phonotactics.Initial.join(' ');
+        middle_input.value = contents.Phonotactics.Middle.join(' ');
+        coda_input.value = contents.Phonotactics.Final.join(' ');
+        vowel_input.value = contents.Phonotactics.Vowel.join(' ');
+        illegals_input.value = contents.Phonotactics.Illegal.join(' ');
+    } catch (err) { window.alert("There was a problem loading the phonotactics data. Please contact the developer.") }
+    try {write_docs(contents.Docs);} catch (err) { window.alert("There was a problem loading the documentation data. Please contact the developer."); console.log(err); }
+    try {header_tags_text.value = contents.HeaderTags} catch (err) { window.alert("There was a problem loading the header tags.") }
+
+    try { document.getElementById('ignore-diacritic').checked = contents.IgnoreDiacritics } catch (err) { console.log(err) }
+    try { document.getElementById('case-sensitive').checked = contents.CaseSensitive } catch (err) { console.log(err) }
+
+    try {rewrite_entries();} catch (err) { window.alert("The save file's lexicon data successfully was loaded, but an error occurred while parsing it. Please contact the developer.") }
+    try {update_categories();} catch (err) { window.alert("The save file's phrasebook data successfully was loaded, but an error occurred while parsing it. Please contact the developer.") }
+    
 }
 
 function open_contents_by_version(contents) {
@@ -1383,17 +1433,31 @@ function open_contents_by_version(contents) {
             case 1.6: open_v1p6(contents); break;
             case 1.7: open_v1p7(contents); break;
             case 1.8: open_v1p7(contents); break; // save file format is same as 1.7
-            case '1.8.x': open_v1p8(contents); break // dv1.8.7 changed romanization loading
+            case '1.8.x': open_v1p8(contents); break; // dv1.8.7 changed romanization loading
+            case 1.9: open_v1p9(contents); break;
         }
     }
 }
 
 async function import_lex() {
+    document.querySelectorAll('.planet').forEach(planet => { // loading anim start
+        planet.style.animationPlayState = 'running';
+    });
+    document.getElementById('loading-message').innerHTML = 'Loading...';
+
+    document.getElementById('loading-message').innerHTML = 'Loading...';
     let [file_handle] = await window.showOpenFilePicker();
     await file_handle.requestPermission({ mode: 'read' });
     let file = await file_handle.getFile();
     if ( !file.name.includes('.lexc') ) {
         window.alert('The selected file was not a .lexc file.');
+        document.querySelectorAll('.planet').forEach(planet => { // loading anim stop
+            planet.style.animationPlayState = 'paused';
+        });
+        document.getElementById('loading-message').innerHTML = 'Incorrect file type.';
+        window.setTimeout(() => {
+            document.getElementById('loading-message').innerHTML = '';
+        }, 5000)
         return;
     }
     let string_contents = await file.text();
@@ -1401,6 +1465,15 @@ async function import_lex() {
     open_contents_by_version(contents);
 
     file_name_input.value = file.name.split('.')[0]
+
+
+    document.querySelectorAll('.planet').forEach(planet => { // loading anim stop
+        planet.style.animationPlayState = 'paused';
+    });
+    document.getElementById('loading-message').innerHTML = 'Done!';
+    window.setTimeout(() => {
+        document.getElementById('loading-message').innerHTML = '';
+    }, 5000)
 }
 
 async function open_lex() {
@@ -1413,13 +1486,35 @@ async function open_lex() {
             properties: ['openFile']
         }, file_path => {
             fs.readFile(file_path[0], 'utf8', (err, data) => {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    window.alert("There was an issue loading your file. Please contact the developer."); 
+                    document.querySelectorAll('.planet').forEach(planet => { // loading anim stop
+                        planet.style.animationPlayState = 'paused';
+                    });
+                    document.getElementById('loading-message').innerHTML = 'Couldn’t open file.';
+                    window.setTimeout(() => {
+                        document.getElementById('loading-message').innerHTML = '';
+                    }, 5000);
+                    return
+                }
                 contents = JSON.parse(data);
                 open_contents_by_version(contents);
                 file_name_input.value = path.basename(file_path[0], '.lexc');
+                document.querySelectorAll('.planet').forEach(planet => { // loading anim stop
+                    planet.style.animationPlayState = 'paused';
+                });
+                document.getElementById('loading-message').innerHTML = 'Done!';
+                window.setTimeout(() => {
+                    document.getElementById('loading-message').innerHTML = '';
+                }, 5000);
             });
         });
     }
+    document.querySelectorAll('.planet').forEach(planet => { // loading anim start
+        planet.style.animationPlayState = 'running';
+    });
+    document.getElementById('loading-message').innerHTML = 'Loading...';
     await userData(user_path => {
         if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
             fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => { dialog(user_path); });
@@ -1427,16 +1522,20 @@ async function open_lex() {
     });
 }
 
-function collect_export_data (blob=true) {
-    // Version 1.8.7+
+async function collect_export_data (blob=true) {
+    let documentation;
+    await Docs.save().then(data => {
+        documentation = data;
+    });
+    // Version 1.9
     let export_data = {
-        Version: '1.8.x',
+        Version: 1.9,
         Lexicon: lexicon,
         Alphabet: alphabet_input.value,
         Phrasebook: phrasebook,
         Phonotactics: get_phonotactics(),
         Romanization: romans.value.trim(),
-        Tables: collect_tables(),
+        Docs: documentation,
         HeaderTags: header_tags_text.value,
         IgnoreDiacritics: document.getElementById('ignore-diacritic').checked,
         CaseSensitive: document.getElementById('case-sensitive').checked
@@ -1453,12 +1552,12 @@ function collect_export_data (blob=true) {
 }
 
 async function save_as() {
-    let exports = collect_export_data();
+    let exports = await collect_export_data(blob=true); // needs a blob
 
     let file_handle = await window.showSaveFilePicker( {suggestedName: `${file_name_input.value}.lexc`} );
     await file_handle.requestPermission({ mode: 'readwrite' });
     let file = await file_handle.createWritable();
-    try { await file.write(exports); } catch (err) { window.alert('The file failed to save.') }
+    try { await file.write(exports); } catch (err) { window.alert('The file failed to save. Please contact the developer.'); console.log(err); await file.close(); return }
     await file.close();
     window.alert('The file saved successfully.')
 }
@@ -1469,7 +1568,7 @@ async function save_file(send_alert = true) {
             file_name_input.value = window.prompt("Please enter a file name before saving.");
         } else return;
     }
-    let exports = collect_export_data(blob=false); // needs a string or buffer
+    let exports = await collect_export_data(blob=false); // needs a string or buffer
     try {
         userData(user_path => {
             if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {

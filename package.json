@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "1.8.14",
+  "version": "1.9.0",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
@@ -48,6 +48,12 @@
     "forge": "./forge.config.js"
   },
   "dependencies": {
+    "@editorjs/code": "^2.8.0",
+    "@editorjs/editorjs": "^2.26.4",
+    "@editorjs/header": "^2.7.0",
+    "@editorjs/paragraph": "^2.9.0",
+    "@editorjs/table": "^2.2.0",
+    "@editorjs/underline": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^5.3.0",
     "jquery": "^3.6.3",

@@ -10,7 +10,7 @@
   <body id="body">
     <div class='tab-container'>
       <div class="button-container">
-        <p class="version-info"><i>v</i>1.8.14</p>
+        <p class="version-info"><i>β</i>1.9.0</p>
         <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
         <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
         <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
@@ -169,14 +169,9 @@
       </div>
 
       <!-- Documentation Tab -->
-      <div class="tab-pane">
+      <div class="tab-pane" spellcheck="false">
         <div class="container row text-center" style="height: 90vh; overflow-y: auto;">
           <div class="column" id="tables-pane">
-            <button id="new-table" class="hover-highlight hover-shadow">Add Section</button>
-            <p class="info">
-              This panel can be used to document and describe your <br>
-              languge's features in greater detail.
-            </p>
           </div>
         </div>
       </div>
@@ -188,6 +183,7 @@
             <p>Document</p>
             <label for="file-name">Name</label>
             <input type="text" id="file-name" />
+            <br>
             <div class="narrow row">
               <div class="column">
                 <button onclick="save_file()" class="hover-highlight hover-shadow">Save…</button>
@@ -195,11 +191,27 @@
                 <p class="info">Save your lexicon or open a previously saved one.</p>
               </div>
               <div class="column">
+                <div class="milkyWay"> <!--Loader-->
+                  <div class="sun"></div>
+                  <div class="planet mercury"></div>
+                  <div class="planet venus"></div>
+                  <div class="planet earth"></div>
+                  <div class="planet mars"></div>
+                  <div class="planet jupiter"></div>
+                  <div class="planet saturn"></div>
+                  <div class="planet uranus"></div>
+                  <div class="planet neptune"></div>
+                  <div class="planet pluto"></div>
+                </div>
+                <p id="loading-message"></p>
+              </div>
+              <div class="column">
                 <button onclick="save_as()" class="hover-highlight hover-shadow">Export…</button>
                 <button onclick="import_lex()" class="hover-highlight hover-shadow">Import…</button>
                 <p class="info">Export and import your own copies of the lexicon file.</p>
               </div>
             </div>
+            
             <br>
             <p>Lexicon Header Tags</p>
             <div class="narrow">
