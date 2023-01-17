@@ -1,6 +1,11 @@
-const {app, ipcRenderer } = require('electron')
+// Lexicanter, a constructed language organization app.
+// Copyright (C) 2023 Ethan Ray.
+// See GNU General Public License Version 3. 
+
+const { ipcRenderer } = require('electron')
 const path = require('path');
 const fs = require('fs');
+const $ = jQuery = require('jquery');
 const EditorJS = require('@editorjs/editorjs');
 const Header = require('@editorjs/header');
 const Paragraph = require('@editorjs/paragraph');
@@ -67,9 +72,6 @@ class Monospace { // EditorJS custom class
     }
 }
 var Docs;
-
-var $ = jQuery = require('jquery');
-require('jquery-ui-dist/jquery-ui');
 
 // This function grabs the path to the userData directory and calls back with it.
 // Usage:

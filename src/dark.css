@@ -1,3 +1,7 @@
+/* Lexicanter, a constructed language organization app.
+   Copyright (C) 2023 Ethan Ray.
+   See GNU General Public License Version 3.  */
+
 /* The background color and default text color. */
 body {
     color: rgb(180, 180, 180);

@@ -1,22 +1,19 @@
+// Lexicanter, a constructed language organization app.
+// Copyright (C) 2023 Ethan Ray.
+// See GNU General Public License Version 3. 
+
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const { autoUpdater, AppUpdater } = require("electron-updater");
-const { chrome } = require('process');
 
 // Auto-updater flags
 autoUpdater.autoDownload = true;
-var exec = require('child_process').exec; 
-exec('NET SESSION', function(err,so,se) {
-      // If the app is run as admin, it will check for pre-release versions to download; otherwise it will only check for releases.
-      autoUpdater.allowPrerelease = se.length === 0 ? true : false;
-      console.log("allowPrerelease:", autoUpdater.allowPrerelease);
-    });
-
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  // eslint-disable-line global-require
-  app.quit();
-}
+var exec = require('child_process').exec;
+exec('NET SESSION', function (err, so, se) {
+  // If the app is run as admin, it will check for pre-release versions to download; otherwise it will only check for releases.
+  autoUpdater.allowPrerelease = se.length === 0 ? true : false;
+  console.log("allowPrerelease:", autoUpdater.allowPrerelease);
+});
 
 const createWindow = () => {
   // Create the browser window.
@@ -53,7 +50,7 @@ const createWindow = () => {
     return file_path;
   })
 
-  mainWindow.on('close', function(e) {
+  mainWindow.on('close', function (e) {
     // Prompt user to save changes on quit (or auto-save) via IPC.
     if (mainWindow) {
       e.preventDefault();

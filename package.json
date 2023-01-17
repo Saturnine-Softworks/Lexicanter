@@ -6,9 +6,6 @@
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "lint": "echo \"No linting configured\"",
     "dist": "electron-builder --mac --win --publish always"
   },
   "repository": "https://github.com/RayDawn/Lexicanter-Electron",
@@ -43,10 +40,7 @@
   "author": {
     "name": "Ethan Ray"
   },
-  "license": "MIT",
-  "config": {
-    "forge": "./forge.config.js"
-  },
+  "license": "GNU General Public License Version 3",
   "dependencies": {
     "@editorjs/code": "^2.8.0",
     "@editorjs/editorjs": "^2.26.4",
@@ -54,17 +48,11 @@
     "@editorjs/paragraph": "^2.9.0",
     "@editorjs/table": "^2.2.0",
     "@editorjs/underline": "^1.1.0",
-    "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^5.3.0",
-    "jquery": "^3.6.3",
-    "jquery-ui-dist": "^1.13.2"
+    "jquery": "^3.6.3"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.63",
-    "@electron-forge/maker-deb": "^6.0.0-beta.63",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
-    "@electron-forge/maker-zip": "^6.0.0-beta.63",
+    "@electron-forge/cli": "^6.0.4",
     "electron": "17.0.0",
     "electron-builder": "^23.6.0"
   }
