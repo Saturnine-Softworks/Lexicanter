@@ -537,3 +537,7 @@ html, body {
   0% { transform: rotate(-180deg); }
   100% { transform: rotate(180deg); }
 }
+
+.ce-toolbar__plus {
+  transition: 0.33s;
+}

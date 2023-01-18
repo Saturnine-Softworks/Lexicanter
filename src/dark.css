@@ -170,3 +170,57 @@ input[type="checkbox"]::before {
 /* Link styles */ 
 a { color: rgb(185, 185, 185); transition: 0.5s; }
 a:hover { color: white; }
+
+
+/* EditorJS Color Overrides */
+/* see github.com/editor-js */
+
+/* General UI Popups */
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn,
+.ce-conversion-toolbar__label {
+    color: rgb(180, 180, 180) !important;
+}
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover,
+.ce-conversion-toolbar__label {
+    background-color: rgb(80, 80, 80) !important;
+}
+.ce-popover,
+.ce-popover__item,
+.ce-popover--opened,
+.ce-inline-tool,
+.ce-conversion-tool {
+    background-color:rgb(90, 90, 90) !important;
+}
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons,
+.ce-conversion-toolbar,
+.ce-inline-toolbar {
+    background-color:rgb(70, 70, 70) !important;
+}
+.ce-popover__item:hover,
+.ce-inline-tool:hover,
+.ce-conversion-tool:hover {
+    background-color:rgb(112, 112, 112) !important;
+}
+
+/* Paragraph placeholder text */
+.ce-paragraph[data-placeholder]:empty::before {
+    color: rgb(146, 146, 146) !important;
+}
+
+/* Tables */
+.tc-popover {
+    --color-border: rgb(234, 234, 234) !important;
+    --color-background: rgb(52, 52, 52) !important;
+    --color-background-hover: rgb(81, 81, 81) !important;
+    --color-background-confirm: #812b2b !important;
+    --color-background-confirm-hover: #a12929 !important;
+    --color-text-confirm: rgb(255, 255, 255) !important;
+}
+.tc-wrap {
+    --color-background: rgba(151, 151, 151, 0.396) !important;
+    --color-text-secondary: rgb(132, 132, 132) !important;
+    --color-border: rgb(224, 224, 224) !important;
+}

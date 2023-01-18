@@ -187,3 +187,57 @@ input[type="checkbox"]::before {
 /* Link styles */ 
 a { color: var(--pine); transition: 0.5s; }
 a:hover { color: var(--jasmine); }
+
+
+/* EditorJS Color Overrides */
+/* see github.com/editor-js */
+
+/* General UI Popups */
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn,
+.ce-conversion-toolbar__label {
+    color: var(--fern) !important;
+}
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover,
+.ce-conversion-toolbar__label {
+    background-color: var(--jasmine) !important;
+}
+.ce-popover,
+.ce-popover__item,
+.ce-popover--opened,
+.ce-inline-tool,
+.ce-conversion-tool {
+    background-color: var(--emerald) !important;
+}
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons,
+.ce-conversion-toolbar,
+.ce-inline-toolbar {
+    background-color: var(--oak) !important;
+}
+.ce-popover__item:hover,
+.ce-inline-tool:hover,
+.ce-conversion-tool:hover {
+    background-color: var(--evergreen) !important;
+}
+
+/* Paragraph placeholder text */
+.ce-paragraph[data-placeholder]:empty::before {
+    color: var(--fern) !important;
+}
+
+/* Tables */
+.tc-popover {
+    --color-border: rgb(95, 129, 112) !important;
+    --color-background: var(--emerald) !important;
+    --color-background-hover: var(--fir) !important;
+    --color-background-confirm: #812b2b !important;
+    --color-background-confirm-hover: #a12929 !important;
+    --color-text-confirm: rgb(255, 255, 255) !important;
+}
+.tc-wrap {
+    --color-background: rgba(172, 167, 146, 0.396) !important;
+    --color-text-secondary: rgb(120, 151, 131) !important;
+    --color-border: rgb(95, 129, 112) !important;
+}

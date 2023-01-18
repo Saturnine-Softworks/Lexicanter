@@ -1132,16 +1132,20 @@ function write_tables(tables) {
     }
     for (let table_data of tables) {
         console.log("table_data:", table_data)
-        table_data.match(/<p class="table-title">(.*?)<\/p>/g).forEach(title => {
-            console.log("title:", title);
-            data.blocks.push({
-                "type": "header",
-                "data": {
-                    "text": title,
-                    "level": 1,
-                }
+        let titles = table_data.match(/<p class="table-title">(.*?)<\/p>/g);
+        if (!!titles) {
+            titles.forEach(title => {
+                console.log("title:", title);
+                data.blocks.push({
+                    "type": "header",
+                    "data": {
+                        "text": title,
+                        "level": 1,
+                    }
+                });
             });
-        });
+        }
+        
         if (table_data.includes('<table')) {
             let table = [];
             table_data
@@ -1160,19 +1164,23 @@ function write_tables(tables) {
                 }
             });
         }
-        table_data.match(/<p class="table-caption">(.*?)<\/p>/g).forEach(p_element => {
-            [...p_element.split('<br>')].forEach(paragraph => {
-                paragraph = paragraph.replaceAll(/<.*?>/g, '');
-                paragraph = markdown_to_html(paragraph, true);
-                console.log("paragraph:", paragraph);
-                data.blocks.push({
-                    "type": "paragraph",
-                    "data": {
-                        "text": paragraph,
-                    }
+
+        let paragraphs = table_data.match(/<p class="table-caption">(.*?)<\/p>/g);
+        if (!!paragraphs) {
+            table_data.match(/<p class="table-caption">(.*?)<\/p>/g).forEach(p_element => {
+                [...p_element.split('<br>')].forEach(paragraph => {
+                    paragraph = paragraph.replaceAll(/<.*?>/g, '');
+                    paragraph = markdown_to_html(paragraph, true);
+                    console.log("paragraph:", paragraph);
+                    data.blocks.push({
+                        "type": "paragraph",
+                        "data": {
+                            "text": paragraph,
+                        }
+                    });
                 });
             });
-        });
+        }
     }
     initialize_docs(data);
 }
@@ -2053,11 +2061,40 @@ async function export_html() {
     let overrides = document.createElement('style');
     overrides.innerHTML = fs.readFileSync(path.join(__dirname, 'html_export.css'), 'utf8');
 
-    tables_content = document.createElement('div');
-    tables_content.innerHTML = document.getElementById('tables-pane').innerHTML;
-    for (let table of tables_content.children) {
-        table.contentEditable = false;
-    }
+    let documentation = document.createElement('div');
+    documentation.classList.add('container', 'column', 'scrolled');
+    // Convert EditorJS save data to HTML. 
+    await Docs.save().then(data => {
+        for (let element of data.blocks) {
+            switch (element.type) {
+                case 'header': 
+                    let header = document.createElement(`h${element.data.level}`);
+                    header.innerHTML = element.data.text;
+                    documentation.appendChild(header);
+                    break;
+                case 'paragraph':
+                    let paragraph = document.createElement('p');
+                    paragraph.innerHTML = element.data.text
+                    documentation.appendChild(paragraph);
+                    break;
+                case 'table':
+                    let table = document.createElement('table');
+                    let tbody = document.createElement('tbody');
+                    element.data.content.forEach(row => {
+                        let tr = document.createElement('tr');
+                        row.forEach(cell => {
+                            let td = document.createElement('td');
+                            td.innerHTML = cell;
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });
+                    table.appendChild(tbody);
+                    documentation.appendChild(table);
+                    break;
+            }
+        }
+    });
 
     // Create export body
     let body = document.createElement('body');
@@ -2083,9 +2120,7 @@ async function export_html() {
                 </div>
                 <p id="entry-counter"></p>
             </div>
-            <div class='container column scrolled'>
-                ${tables_content.innerHTML}
-            </div>
+            ${documentation.outerHTML}
         </div>
 
         <!-- Phrasebook -->

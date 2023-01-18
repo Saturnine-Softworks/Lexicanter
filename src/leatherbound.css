@@ -184,3 +184,67 @@ input[type="checkbox"]::before {
 /* Link styles */ 
 a { color: var(--ruddy); transition: 0.5s; }
 a:hover { color: var(--rust); }
+
+
+/* EditorJS Color Overrides */
+/* see github.com/editor-js */
+
+/* General UI Popups */
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn,
+.ce-conversion-toolbar__label {
+    color: var(--mid-tan) !important;
+}
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover,
+.ce-conversion-toolbar__label {
+    background-color: var(--tan) !important;
+}
+
+/* These are the buttons */
+.ce-popover,
+.ce-popover__item,
+.ce-popover--opened,
+.ce-inline-tool,
+.ce-conversion-tool {
+    background-color: var(--mid-tan) !important;
+}
+
+/* These are the containers for the buttons */
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons,
+.ce-conversion-toolbar,
+.ce-inline-toolbar {
+    background-color: var(--rust) !important;
+}
+
+/* The buttons on mouse hover */
+.ce-popover__item:hover,
+.ce-inline-tool:hover,
+.ce-conversion-tool:hover {
+    background-color: var(--tan) !important;
+}
+
+
+/* Paragraph placeholder text */
+.ce-paragraph[data-placeholder]:empty::before {
+    color: var(--ochre) !important;
+}
+
+
+/* Tables */
+/* Table editing pop-up buttons */
+.tc-popover {
+    --color-border: rgb(129, 118, 95) !important;
+    --color-background: var(--ruddy) !important;
+    --color-background-hover: var(--rust) !important;
+    --color-background-confirm: #812b2b !important;
+    --color-background-confirm-hover: #a12929 !important;
+    --color-text-confirm: rgb(255, 255, 255) !important;
+}
+/* Table itself. --color-background is the highlight color */
+.tc-wrap {
+    --color-background: rgba(156, 138, 123, 0.396) !important;
+    --color-text-secondary: rgb(151, 140, 120) !important;
+    --color-border: var(--rust) !important;
+}
