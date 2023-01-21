@@ -541,3 +541,7 @@ html, body {
 .ce-toolbar__plus {
   transition: 0.33s;
 }
+
+::selection {
+  background-color: rgba(255, 255, 255, 0.333) !important;
+}

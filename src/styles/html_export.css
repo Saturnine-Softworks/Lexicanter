@@ -11,13 +11,6 @@ body {
 
 .search-row { display: inline-flex; }
 
-h1 {
-    font-family: 'Gentium Book Plus', serif;
-    font-style: italic;
-    font-size: 17px;
-    display: inline-flex;
-}
-
 .lex-body {
     font-family: 'Gentium Book Plus', serif;
 }

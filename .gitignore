@@ -1,6 +1,6 @@
 # Electron-Builder Distribution
 dist/
-.bash_profile
+publish
 
 # Logs
 logs

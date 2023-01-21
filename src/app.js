@@ -1,26 +1,27 @@
 // Lexicanter, a constructed language organization app.
 // Copyright (C) 2023 Ethan Ray.
-// See GNU General Public License Version 3. 
+// See GNU General Public License Version 3.
 
 // Module requirements
-const { ipcRenderer } = require('electron')
+const { ipcRenderer } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const $ = jQuery = require('jquery');
+const $ = (jQuery = require('jquery'));
 const EditorJS = require('@editorjs/editorjs');
 const Header = require('@editorjs/header');
 const Paragraph = require('@editorjs/paragraph');
 const Table = require('@editorjs/table');
 const Underline = require('@editorjs/underline');
-class Monospace { // EditorJS custom class
+class Monospace {
+    // EditorJS custom class
     static get isInline() {
         return true;
     }
     static get sanitize() {
         return {
             code: {
-                class: 'cdx-monospace'
-            }
+                class: 'cdx-monospace',
+            },
         };
     }
     get state() {
@@ -29,7 +30,10 @@ class Monospace { // EditorJS custom class
     set state(state) {
         this._state = state;
 
-        this.button.classList.toggle(this.api.styles.inlineToolButtonActive, state);
+        this.button.classList.toggle(
+            this.api.styles.inlineToolButtonActive,
+            state
+        );
     }
     constructor({ api }) {
         this.api = api;
@@ -62,7 +66,10 @@ class Monospace { // EditorJS custom class
         this.api.selection.expandToTag(monospaced);
     }
     unwrap(range) {
-        const monospaced = this.api.selection.findParentTag(this.tag, this.class);
+        const monospaced = this.api.selection.findParentTag(
+            this.tag,
+            this.class
+        );
         const text = range.extractContents();
         monospaced.remove();
         range.insertNode(text);
@@ -87,7 +94,7 @@ async function userData(callback) {
     callback(path);
 }
 
-// This function opens a file picker dialog and calls back with the retrieved file path. 
+// This function opens a file picker dialog and calls back with the retrieved file path.
 // Usage:
 // showOpenDialog({
 //    ...electron.showOpenDialogSync parameters object
@@ -98,13 +105,15 @@ async function showOpenDialog(params, callback) {
     let path;
     await ipcRenderer.invoke('showOpenDialog', params).then(result => {
         path = result;
-    })
+    });
     callback(path);
 }
 
-// Document constants. TODO: Refactor. 
+// Document constants. TODO: Refactor.
 const tab_panes = document.querySelectorAll('.tab-container .tab-pane');
-const tab_btns = document.querySelectorAll('.tab-container .button-container button');
+const tab_btns = document.querySelectorAll(
+    '.tab-container .button-container button'
+);
 
 const alphabet_input = document.getElementById('alph-input');
 const fresh_order = document.getElementById('update-order');
@@ -151,8 +160,10 @@ const file_name_input = document.getElementById('file-name');
 const header_tags_text = document.getElementById('header-tags');
 const autosave_setting = document.getElementById('auto-save');
 
-const inputs = Array.from(document.querySelectorAll('input')).concat(Array.from(document.querySelectorAll('textarea')));
-inputs.forEach((i) => i.setAttribute('spellcheck', 'false'));
+const inputs = Array.from(document.querySelectorAll('input')).concat(
+    Array.from(document.querySelectorAll('textarea'))
+);
+inputs.forEach(i => i.setAttribute('spellcheck', 'false'));
 
 let lexicon = {};
 let phrasebook = {};
@@ -160,41 +171,44 @@ let selected_cat;
 let romanizations;
 
 function show_pane(i) {
-    tab_btns.forEach(
-        function(btn) {
-            btn.classList.remove('selected');
-        });
+    tab_btns.forEach(function (btn) {
+        btn.classList.remove('selected');
+    });
     tab_btns[i].classList.add('selected');
 
-    tab_panes.forEach(
-        function(pane) {
-            pane.style.display = 'none';
-        });
+    tab_panes.forEach(function (pane) {
+        pane.style.display = 'none';
+    });
     tab_panes[i].style.display = 'block';
 }
 show_pane(0);
 
-const theme_select = document.getElementById("theme-select");
-const color_theme = document.getElementById("color-theme");
+const theme_select = document.getElementById('theme-select');
+const color_theme = document.getElementById('color-theme');
 userData(user_path => {
     if (!fs.existsSync(user_path + path.sep + 'theme.txt')) {
         fs.writeFileSync(user_path + path.sep + 'theme.txt', 'dark.css');
     }
-    let theme_value = 'styles/' + fs.readFileSync(user_path + path.sep + 'theme.txt', 'utf8').toString();
+    let theme_value = fs
+        .readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
+        .toString();
+    console.log(theme_value);
     color_theme.href = theme_value;
     theme_select.value = theme_value;
-})
+});
 // console.log(color_theme.href);
 function change_theme() {
     let theme = 'styles/' + theme_select.value;
     color_theme.href = theme;
     userData(user_path => {
-        fs.writeFile(user_path + path.sep + 'theme.txt', theme, (err) => {if (err) throw err });
-    })
+        fs.writeFile(user_path + path.sep + 'theme.txt', theme, err => {
+            if (err) throw err;
+        });
+    });
 }
 theme_select.onchange = change_theme;
 
-function markdown_to_html(text, convert_legacy_docs=false) {
+function markdown_to_html(text, convert_legacy_docs = false) {
     // To allow the user to use common markdown notation to style their text.
     // ***bold italic***
     // **bold** *italic*
@@ -204,7 +218,7 @@ function markdown_to_html(text, convert_legacy_docs=false) {
     // ~[sub]script
     // [external links](url)
     // --- horizontal rule
-	if (!convert_legacy_docs) {
+    if (!convert_legacy_docs) {
         let toHTML = text
             .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
             .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
@@ -214,23 +228,32 @@ function markdown_to_html(text, convert_legacy_docs=false) {
             .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
             .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
             .replace(/``([^\n(?:``)]*)``/gim, '<code>$1</code>') // monospace
-            .replace(/\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
+            .replace(
+                /\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim,
+                '<a href="$2" target="_blank">$1</a>'
+            ) // link
             .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
-            // TODO: Backslash escaping. 
+        // TODO: Backslash escaping.
         return toHTML.trim();
     } else {
         let toHTML = text
             .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
             .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
             .replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
-            .replace(/__([^\n(?:__)]*)__/gim, '<u class=\"cdx-underline\">$1</u>') // underlined
+            .replace(/__([^\n(?:__)]*)__/gim, '<u class="cdx-underline">$1</u>') // underlined
             .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
             .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
             .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
-            .replace(/``([^\n(?:``)]*)``/gim, '<code class=\"cdx-monospace\">$1</code>') // monospace
-            .replace(/\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim, '<a href="$2" target="_blank">$1</a>') // link
+            .replace(
+                /``([^\n(?:``)]*)``/gim,
+                '<code class="cdx-monospace">$1</code>'
+            ) // monospace
+            .replace(
+                /\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim,
+                '<a href="$2" target="_blank">$1</a>'
+            ) // link
             .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
-            // TODO: Backslash escaping. 
+        // TODO: Backslash escaping.
         return toHTML.trim();
     }
 }
@@ -238,29 +261,35 @@ function markdown_to_html(text, convert_legacy_docs=false) {
 // Lexicon handling
 function sort_lex_keys() {
     let htags = header_tags_text.value.toLowerCase().trim().split(/\s+/);
-    let all_words = structuredClone(lexicon)
-    let tag_ordered_lexes = []
+    let all_words = structuredClone(lexicon);
+    let tag_ordered_lexes = [];
     for (let tag of htags) {
-        tag_ordered_lexes.push([])
+        tag_ordered_lexes.push([]);
         for (let word in all_words) {
             if (lexicon[word][3].includes(tag)) {
-                tag_ordered_lexes[tag_ordered_lexes.length-1].push(word)
+                tag_ordered_lexes[tag_ordered_lexes.length - 1].push(word);
             }
         }
         // console.log(tag_ordered_lexes, tag_ordered_lexes[tag_ordered_lexes.length-1])
-        for (let w of tag_ordered_lexes[tag_ordered_lexes.length-1]) {
+        for (let w of tag_ordered_lexes[tag_ordered_lexes.length - 1]) {
             delete all_words[w];
         }
     }
-    let remaining_words = []
-    for (let w in all_words) {remaining_words.push(w)}
-    tag_ordered_lexes.push(remaining_words)
+    let remaining_words = [];
+    for (let w in all_words) {
+        remaining_words.push(w);
+    }
+    tag_ordered_lexes.push(remaining_words);
 
     // Lowercase alphabet if case-sensitivity is unticked
-    var alphabet = document.getElementById('case-sensitive').checked ? alphabet_input.value.trim() : alphabet_input.value.trim().toLowerCase();
+    var alphabet = document.getElementById('case-sensitive').checked
+        ? alphabet_input.value.trim()
+        : alphabet_input.value.trim().toLowerCase();
     let order = alphabet.trim().split(/\s+/);
     // to make sure we find the largest tokens first, i.e. for cases where 'st' comes before 'str' alphabetically
-    find_in_order = Array.from(new Set(order)).sort((a, b) => b.length - a.length); // descending, ensures uniqueness
+    find_in_order = Array.from(new Set(order)).sort(
+        (a, b) => b.length - a.length
+    ); // descending, ensures uniqueness
 
     let final_sort = [];
     for (let group of tag_ordered_lexes) {
@@ -268,35 +297,48 @@ function sort_lex_keys() {
         let list = [];
         for (let word of group) {
             // case sensitivity
-            let w = document.getElementById('case-sensitive').checked ? word : word.toLowerCase();
+            let w = document.getElementById('case-sensitive').checked
+                ? word
+                : word.toLowerCase();
 
             // diacritic sensitivity
-            w = document.getElementById('ignore-diacritic').checked ? w.normalize("NFD").replace(/\p{Diacritic}/gu, "") : w;
+            w = document.getElementById('ignore-diacritic').checked
+                ? w.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+                : w;
 
             for (let token of find_in_order) {
-                w = w.replace(new RegExp(`${token}`, 'g'), `${order.indexOf(token)}.`)
+                w = w.replace(
+                    new RegExp(`${token}`, 'g'),
+                    `${order.indexOf(token)}.`
+                );
             }
             append = w.split('.');
-            for (let i of append) { append[append.indexOf(i)] = +i || 0 }
+            for (let i of append) {
+                append[append.indexOf(i)] = +i || 0;
+            }
             lex[word] = append;
             list.push(append);
         }
-        list.sort( (a, b) => {
+        list.sort((a, b) => {
             for (let i of a) {
                 let j = b[a.indexOf(i)];
-                if (i === j) { continue };
+                if (i === j) {
+                    continue;
+                }
                 return i - j;
             }
             return 0;
         });
         let sorted = [];
-        for (let key in lex) { sorted.push([key, list.indexOf(lex[key])]) } // [ [word, index], [word, index], ...]
+        for (let key in lex) {
+            sorted.push([key, list.indexOf(lex[key])]);
+        } // [ [word, index], [word, index], ...]
         sorted.sort((a, b) => a[1] - b[1]);
         for (let i = 0; i < sorted.length; i++) {
             sorted[i] = sorted[i][0];
         }
         for (let i of sorted) {
-            final_sort.push(i)
+            final_sort.push(i);
         }
     }
     return final_sort;
@@ -305,13 +347,15 @@ function sort_lex_keys() {
 function edit_entry(k) {
     var confirmation = true;
     if (wrd_input.value !== '' || def_input.value !== '') {
-        var confirmation = confirm("There is text in the word entry fields. Are you sure you want to overwrite it?");
+        var confirmation = confirm(
+            'There is text in the word entry fields. Are you sure you want to overwrite it?'
+        );
     }
     if (confirmation) {
         wrd_input.value = k;
         pronun.value = lexicon[k][0];
         def_input.value = lexicon[k][1];
-        tags_input.value = lexicon[k][3].join(" ");
+        tags_input.value = lexicon[k][3].join(' ');
         delete lexicon[k];
         rewrite_entries();
 
@@ -326,77 +370,83 @@ function rewrite_entries(keys = false) {
 
     if (sorted_keys.length !== 0) {
         for (let key of sorted_keys) {
-            if ( !keys || keys.includes(key) ) {
+            if (!keys || keys.includes(key)) {
                 let entry = document.createElement('div');
                 entry.className = 'lex-entry';
                 entry.id = key;
-                
+
                 let word = document.createElement('p');
-                word.appendChild( document.createTextNode(key) );
+                word.appendChild(document.createTextNode(key));
                 word.style.fontStyle = 'italic';
-                
+
                 let pron = document.createElement('p');
                 pron.className = 'pronunciation';
-                pron.appendChild( document.createTextNode(lexicon[key][0]) );
-                
+                pron.appendChild(document.createTextNode(lexicon[key][0]));
+
                 let defn = document.createElement('p');
                 defn.innerHTML = markdown_to_html(lexicon[key][1]); // allow markdown styling in definitions
-                
+
                 let tags = document.createElement('div');
                 for (let tag of lexicon[key][3]) {
                     let newTag = document.createElement('div');
-                    newTag.appendChild( document.createTextNode(tag) );
+                    newTag.appendChild(document.createTextNode(tag));
                     newTag.className = 'tag-item';
                     tags.appendChild(newTag);
                 }
-                
+
                 entry.append(word, pron, tags, defn);
-                entry.addEventListener('contextmenu', () => edit_entry(key) );
+                entry.addEventListener('contextmenu', () => edit_entry(key));
 
                 lex_body.appendChild(entry);
             }
         }
     }
     if (!keys) {
-        var count = document.createTextNode(`${Object.keys(lexicon).length} Entries`);
+        var count = document.createTextNode(
+            `${Object.keys(lexicon).length} Entries`
+        );
     } else {
         var count = document.createTextNode(`${keys.length} Matches`);
     }
-    entry_count.replaceChildren(count)
+    entry_count.replaceChildren(count);
 }
 
-function add_word(append=false) {
+function add_word(append = false) {
     let w = wrd_input.value.trim();
     let p = pronun.value.trim();
     let d = def_input.value.trim(); // allow markdown in definitions
     let t;
-    if (tags_input.value !== '') { t = tags_input.value.trim().split(/\s+/g); }
-    else { t = [] }
+    if (tags_input.value !== '') {
+        t = tags_input.value.trim().split(/\s+/g);
+    } else {
+        t = [];
+    }
 
     if (!append) {
         lexicon[w] = [p, d, p !== get_pronunciation(w), t];
-    } else if ( d !== '' ) {
+    } else if (d !== '') {
         lexicon[w][1] += '\n' + d;
         lexicon[w][3].push(...t);
     }
 
     rewrite_entries();
-    document.getElementById(w).scrollIntoView({ behavior: "smooth", block: "center" });
+    document
+        .getElementById(w)
+        .scrollIntoView({ behavior: 'smooth', block: 'center' });
     wrd_input.value = '';
     def_input.value = '';
     tags_input.value = '';
     update_pronunciation();
-    return w
+    return w;
 }
 
 function edit_book_entry(e) {
     let i = structuredClone(phrasebook[selected_cat][e]);
-    console.log(e, i)
+    console.log(e, i);
     phrase_input.value = e;
     phrase_pron.value = i.pronunciation;
     phrase_desc.value = i.description;
     cat_input.value = selected_cat;
-
 
     while (variant_body.firstChild.id !== 'add-variant') {
         variant_body.removeChild(variant_body.firstChild);
@@ -406,23 +456,26 @@ function edit_book_entry(e) {
     }
 
     delete phrasebook[selected_cat][e];
-    if ( !(Object.keys(phrasebook[selected_cat]).length > 0) ) {
+    if (!(Object.keys(phrasebook[selected_cat]).length > 0)) {
         delete phrasebook[selected_cat];
         selected_cat = '';
     }
     update_categories();
 }
 
-function update_book(keys=false) {
-    if (!keys) { keys = [false] }
-    if (selected_cat) { // make sure category isn't blank
+function update_book(keys = false) {
+    if (!keys) {
+        keys = [false];
+    }
+    if (selected_cat) {
+        // make sure category isn't blank
         while (book_body.firstChild) {
-            book_body.removeChild(book_body.lastChild)
+            book_body.removeChild(book_body.lastChild);
         }
-        let title = document.createElement("p");
+        let title = document.createElement('p');
         title.classList = 'table-title capitalize';
-        title.appendChild( document.createTextNode( selected_cat.toLowerCase()) );
-        book_body.append(title, /* document.createElement('hr') */ );
+        title.appendChild(document.createTextNode(selected_cat.toLowerCase()));
+        book_body.append(title /* document.createElement('hr') */);
 
         for (let entry in phrasebook[selected_cat]) {
             if (keys.indexOf(entry) !== -1 || keys[0] === false) {
@@ -430,20 +483,29 @@ function update_book(keys=false) {
                 let entry_container = document.createElement('div');
                 entry_container.className = 'lex-entry';
                 let phrase = document.createElement('p');
-                phrase.appendChild( document.createTextNode(entry) );
+                phrase.appendChild(document.createTextNode(entry));
                 phrase.style.fontStyle = 'italic';
                 let pron = document.createElement('p');
                 pron.className = 'pronunciation';
-                pron.appendChild( document.createTextNode(phrasebook[selected_cat][entry].pronunciation) );
+                pron.appendChild(
+                    document.createTextNode(
+                        phrasebook[selected_cat][entry].pronunciation
+                    )
+                );
                 let desc = document.createElement('p');
                 desc.className = 'prelined';
-                desc.innerHTML = markdown_to_html(phrasebook[selected_cat][entry].description);
+                desc.innerHTML = markdown_to_html(
+                    phrasebook[selected_cat][entry].description
+                );
                 entry_container.append(phrase, pron, desc);
                 // variant entries
 
-                if ( Object.keys(phrasebook[selected_cat][entry].variants).length > 0) {
+                if (
+                    Object.keys(phrasebook[selected_cat][entry].variants)
+                        .length > 0
+                ) {
                     let t = document.createElement('p');
-                    t.appendChild( document.createTextNode('⋲ ᴠᴀʀɪᴀɴᴛꜱ ⋺') );
+                    t.appendChild(document.createTextNode('⋲ ᴠᴀʀɪᴀɴᴛꜱ ⋺'));
                     entry_container.append(t);
 
                     var it = 0;
@@ -463,25 +525,41 @@ function update_book(keys=false) {
                         vcol.className = 'column';
 
                         let v_phrase = document.createElement('p');
-                        v_phrase.appendChild( document.createTextNode(variant) );
+                        v_phrase.appendChild(document.createTextNode(variant));
                         v_phrase.style.fontStyle = 'italic';
                         let v_pron = document.createElement('p');
                         v_pron.className = 'pronunciation';
-                        v_pron.appendChild( document.createTextNode(phrasebook[selected_cat][entry].variants[variant].pronunciation) );
+                        v_pron.appendChild(
+                            document.createTextNode(
+                                phrasebook[selected_cat][entry].variants[
+                                    variant
+                                ].pronunciation
+                            )
+                        );
                         let v_desc = document.createElement('p');
                         v_desc.className = 'prelined';
-                        v_desc.appendChild( document.createTextNode(phrasebook[selected_cat][entry].variants[variant].description) );
-        
+                        v_desc.appendChild(
+                            document.createTextNode(
+                                phrasebook[selected_cat][entry].variants[
+                                    variant
+                                ].description
+                            )
+                        );
+
                         vcol.append(v_phrase, v_pron, v_desc);
-                        crow.appendChild(vcol);                    
+                        crow.appendChild(vcol);
                     }
                 }
 
-                entry_container.addEventListener('click', () => edit_book_entry(entry)); // edit functionality
+                entry_container.addEventListener('contextmenu', () =>
+                    edit_book_entry(entry)
+                ); // edit functionality
                 book_body.appendChild(entry_container);
             }
         }
-    } else { book_body.replaceChildren(); }
+    } else {
+        book_body.replaceChildren();
+    }
 }
 
 function update_categories() {
@@ -489,45 +567,52 @@ function update_categories() {
         cat_body.removeChild(cat_body.lastChild);
     }
     for (let cat in phrasebook) {
-        let i = document.createElement("div");
-        i.appendChild( document.createTextNode(cat) );
+        let i = document.createElement('div');
+        i.appendChild(document.createTextNode(cat));
         i.className = 'lex-entry capitalize';
-        i.onclick = function () { 
+        i.onclick = function () {
             selected_cat = cat;
             cat_input.value = cat;
             update_book();
         };
         cat_body.appendChild(i);
-    };
+    }
     update_book();
 }
 
 function add_phrase() {
     let cat = cat_input.value.trim().toLowerCase();
-    if(!cat.length) { cat = 'miscellaneous' }
+    if (!cat.length) {
+        cat = 'miscellaneous';
+    }
     selected_cat = cat;
-    if (phrase_input.value.trim() === '') { return } // prevent empty entries
-    if ( !(cat in phrasebook) ) {
+    if (phrase_input.value.trim() === '') {
+        return;
+    } // prevent empty entries
+    if (!(cat in phrasebook)) {
         phrasebook[cat] = {}; // create category if it does not exist
-    };
+    }
     // create entry as an object
-    phrasebook[cat][phrase_input.value.trim()] = { 
+    phrasebook[cat][phrase_input.value.trim()] = {
         pronunciation: phrase_pron.value.trim(),
         description: phrase_desc.value.trim(),
         variants: {},
     };
     for (let v of variant_body.childNodes) {
-        if (v.className === 'variant-div') { // only grab variant divs
+        if (v.className === 'variant-div') {
+            // only grab variant divs
             let ins = v.childNodes;
             if (ins[0].value.trim() !== '') {
                 // create variant object
-                phrasebook[cat][phrase_input.value.trim()].variants[ins[0].value.trim()] = {
+                phrasebook[cat][phrase_input.value.trim()].variants[
+                    ins[0].value.trim()
+                ] = {
                     pronunciation: ins[1].value.trim(),
-                    description: ins[2].value.trim()
-                }
+                    description: ins[2].value.trim(),
+                };
             }
         }
-    };
+    }
     while (variant_body.firstChild.id !== 'add-variant') {
         variant_body.removeChild(variant_body.firstChild);
     }
@@ -540,23 +625,25 @@ function add_phrase() {
 }
 
 function add_variant(v = '', p = '', d = '') {
-    let variant_prompt = document.createElement("div");
+    let variant_prompt = document.createElement('div');
     variant_prompt.className = 'variant-div';
-    let variation = document.createElement("input");
-    variation.setAttribute("type", "text");
+    let variation = document.createElement('input');
+    variation.setAttribute('type', 'text');
     variation.value = v;
-    let variation_pronun = document.createElement("input");
-    variation_pronun.setAttribute("type", "text");
-    variation_pronun.setAttribute("class", "pronunciation");
+    let variation_pronun = document.createElement('input');
+    variation_pronun.setAttribute('type', 'text');
+    variation_pronun.setAttribute('class', 'pronunciation');
     variation_pronun.value = p;
-    variation.onkeyup = function() {update_pronunciation(variation, variation_pronun)};
-    let variant_description = document.createElement("textarea");
+    variation.onkeyup = function () {
+        update_pronunciation(variation, variation_pronun);
+    };
+    let variant_description = document.createElement('textarea');
     variant_description.value = d;
 
     variant_prompt.appendChild(variation);
     variant_prompt.appendChild(variation_pronun);
     variant_prompt.appendChild(variant_description);
-    variant_prompt.appendChild( document.createElement('br') )
+    variant_prompt.appendChild(document.createElement('br'));
 
     variant_body.insertBefore(variant_prompt, add_variant_btn);
 }
@@ -574,7 +661,7 @@ def_input.addEventListener('keypress', event => {
         let w = wrd_input.value.trim();
         wrd_input.focus();
         add_word(w in lexicon); // default to append mode
-                                // call add_word function last so that the smooth scroll isn't interrupted
+        // call add_word function last so that the smooth scroll isn't interrupted
     }
     if (event.altKey && event.shiftKey && event.code === 'Enter') {
         tags_input.focus();
@@ -586,129 +673,163 @@ tags_input.addEventListener('keypress', event => {
         let w = wrd_input.value.trim();
         wrd_input.focus();
         add_word(w in lexicon); // default to append mode
-                                // call add_word function last so that the smooth scroll isn't interrupted
+        // call add_word function last so that the smooth scroll isn't interrupted
     }
 });
 
 fresh_order.onclick = () => rewrite_entries(false);
 
-srch_wrd.onfocus = function() {
+srch_wrd.onfocus = function () {
     if (srch_wrd.value === 'Search by word…') {
         srch_wrd.style.color = 'white';
         srch_wrd.value = '';
     }
-}
-srch_wrd.onblur = function() {
+};
+srch_wrd.onblur = function () {
     if (srch_wrd.value === '') {
         srch_wrd.style.color = 'rgb(60, 60, 60)';
         srch_wrd.value = 'Search by word…';
     }
-}
-srch_def.onfocus = function() {
+};
+srch_def.onfocus = function () {
     if (srch_def.value === 'Search definition…') {
         srch_def.style.color = 'white';
         srch_def.value = '';
     }
-}
-srch_def.onblur = function() {
+};
+srch_def.onblur = function () {
     if (srch_def.value === '') {
         srch_def.style.color = 'rgb(60, 60, 60)';
         srch_def.value = 'Search definition…';
     }
-}
-srch_tag.onfocus = function() {
+};
+srch_tag.onfocus = function () {
     if (srch_tag.value === 'Search by tags…') {
         srch_tag.style.color = 'white';
         srch_tag.value = '';
     }
-}
-srch_tag.onblur = function() {
+};
+srch_tag.onblur = function () {
     if (srch_tag.value === '') {
         srch_tag.style.color = 'rgb(60, 60, 60)';
         srch_tag.value = 'Search by tags…';
     }
-}
-srch_wrd.onblur(); srch_def.onblur(); srch_tag.onblur();
+};
+srch_wrd.onblur();
+srch_def.onblur();
+srch_tag.onblur();
 
 function search_lex() {
     let s = srch_wrd.value.trim();
     let z = srch_def.value.toLowerCase().trim();
     let x = srch_tag.value.trim();
-    if (s === 'Search by word…'){s = ''};
-    if (z === 'search definition…'){z = ''};
-    if (x === 'Search by tags…' || x === ''){ x = [] } else { x = x.split(/\s+/g) }
+    if (s === 'Search by word…') {
+        s = '';
+    }
+    if (z === 'search definition…') {
+        z = '';
+    }
+    if (x === 'Search by tags…' || x === '') {
+        x = [];
+    } else {
+        x = x.split(/\s+/g);
+    }
     let keys = false;
-    if (s !== '' || z !== '' || x.length !== 0 ) {
+    if (s !== '' || z !== '' || x.length !== 0) {
         let l = [s + '|', z + '|'];
         // Turn l into a list of [search by word terms, search by def terms]
         for (let e of l) {
             let n = l.indexOf(e);
             l[n] = [];
             e = e.split('|');
-            for (let a of e) { l[n].push( a.trim() ); }
+            for (let a of e) {
+                l[n].push(a.trim());
+            }
         }
         keys = [];
         for (let word in lexicon) {
             let w = `^${word}^`;
             let match = true;
-            for (let a of l[0]) { // words
-                if ( !w.includes(a) ) { match = false; }
+            for (let a of l[0]) {
+                // words
+                if (!w.includes(a)) {
+                    match = false;
+                }
             }
-            for (let a of l[1]) { // definitions
-                if ( !lexicon[word][1].toLowerCase().includes(a) ) { match = false; }
+            for (let a of l[1]) {
+                // definitions
+                if (!lexicon[word][1].toLowerCase().includes(a)) {
+                    match = false;
+                }
             }
-            if (lexicon[word][3].length !== 0) { // has at least one tag
+            if (lexicon[word][3].length !== 0) {
+                // has at least one tag
                 let any_tag_match;
                 for (let tag of lexicon[word][3]) {
-                    for (let a of x) { // tags
-                        if (`^${tag}^`.includes(a)) { any_tag_match = true; }
+                    for (let a of x) {
+                        // tags
+                        if (`^${tag}^`.includes(a)) {
+                            any_tag_match = true;
+                        }
                     }
                 }
-                if (!any_tag_match && x.length !== 0) { match = false; }
-            } else { // has no tags
-                if (x.length !== 0 /*at least one tag as search term*/) { match = false; }
+                if (!any_tag_match && x.length !== 0) {
+                    match = false;
+                }
+            } else {
+                // has no tags
+                if (x.length !== 0 /*at least one tag as search term*/) {
+                    match = false;
+                }
             }
-            if (match) { keys.push(word); }
+            if (match) {
+                keys.push(word);
+            }
         }
     }
     rewrite_entries(keys);
 }
-srch_wrd.onkeyup = search_lex; 
+srch_wrd.onkeyup = search_lex;
 srch_def.onkeyup = search_lex;
 srch_tag.onkeyup = search_lex;
 
-srch_phrase.onfocus = function() {
+srch_phrase.onfocus = function () {
     if (srch_phrase.value === 'Search by phrase…') {
         srch_phrase.style.color = 'white';
         srch_phrase.value = '';
     }
-}
-srch_phrase.onblur = function() {
+};
+srch_phrase.onblur = function () {
     if (srch_phrase.value === '') {
         srch_phrase.style.color = 'rgb(60, 60, 60)';
         srch_phrase.value = 'Search by phrase…';
     }
-}
-srch_descriptions.onfocus = function() {
+};
+srch_descriptions.onfocus = function () {
     if (srch_descriptions.value === 'Search descriptions…') {
         srch_descriptions.style.color = 'white';
         srch_descriptions.value = '';
     }
-}
-srch_descriptions.onblur = function() {
+};
+srch_descriptions.onblur = function () {
     if (srch_descriptions.value === '') {
         srch_descriptions.style.color = 'rgb(60, 60, 60)';
         srch_descriptions.value = 'Search descriptions…';
     }
-}
-srch_phrase.onblur(); srch_descriptions.onblur();
+};
+srch_phrase.onblur();
+srch_descriptions.onblur();
 
 function search_book() {
     let scope = phrasebook[selected_cat];
     let ps = srch_phrase.value.trim();
     let ds = srch_descriptions.value.toLowerCase().trim();
-    if (ps === 'Search by phrase…') {ps = ''};
-    if (ds === 'search descriptions…') {ds = ''};
+    if (ps === 'Search by phrase…') {
+        ps = '';
+    }
+    if (ds === 'search descriptions…') {
+        ds = '';
+    }
     let keys = false;
     if (ps !== '' || ds !== '') {
         keys = [];
@@ -720,15 +841,19 @@ function search_book() {
             if (term.includes(ps)) {
                 pm = true;
             }
-            if ( scope[entry].description.toLowerCase().includes(ds) ) {
+            if (scope[entry].description.toLowerCase().includes(ds)) {
                 dm = true;
-            } 
+            }
             for (let variant in scope[entry].variants) {
                 let v_term = '^' + variant + '^';
                 if (v_term.includes(ps)) {
                     pm = true;
                 }
-                if (scope[entry].variants[variant].description.toLowerCase().includes(ds)) {
+                if (
+                    scope[entry].variants[variant].description
+                        .toLowerCase()
+                        .includes(ds)
+                ) {
                     dm = true;
                 }
             }
@@ -743,17 +868,21 @@ function search_book() {
 srch_phrase.onkeyup = search_book;
 srch_descriptions.onkeyup = search_book;
 
-romans.innerHTML = "th > θ"; // initialize pronunciations variables; for some reason, everything breaks if there's nothing initialized here. TODO: Fix that.
+romans.innerHTML = 'th > θ'; // initialize pronunciations variables; for some reason, everything breaks if there's nothing initialized here. TODO: Fix that.
 
 function get_pronunciation(word) {
     word = `^${word.replaceAll(/[^\S\n]|(\n)/gm, '^$1')}^`; // add carets for front/end searching, treat spaces as word boundaries
-    word = document.getElementById('case-sensitive').checked ? word : word.toLowerCase(); // if the case-sensitive setting is ticked, don't force to lowercase.
-    
-    // Romanizations need to be sorted by length and applied in that order. 
+    word = document.getElementById('case-sensitive').checked
+        ? word
+        : word.toLowerCase(); // if the case-sensitive setting is ticked, don't force to lowercase.
+
+    // Romanizations need to be sorted by length and applied in that order.
     // First, we need an array of all the differnt lengths of polygraphs which are used in the romanizations.
     let lengths = [];
-    for (let rom in romanizations) { lengths.push(rom.length) }
-    lengths = Array.from(new Set(lengths)).sort((a, b) => b - a); // descending order, unique. It just works. 
+    for (let rom in romanizations) {
+        lengths.push(rom.length);
+    }
+    lengths = Array.from(new Set(lengths)).sort((a, b) => b - a); // descending order, unique. It just works.
 
     // We then create a dictionary with all of these lengths as keys.
     // For each length key, its value is set to a dictionary of romanizations, such that `sort` is formatted like
@@ -764,9 +893,13 @@ function get_pronunciation(word) {
     // }
     let sort = {};
     for (let length of lengths) {
-        if ( !(length in sort) ) { sort[length] = {}; }
+        if (!(length in sort)) {
+            sort[length] = {};
+        }
         for (let rom in romanizations) {
-            if (rom.length === length) { sort[length][rom] = romanizations[rom]; }
+            if (rom.length === length) {
+                sort[length][rom] = romanizations[rom];
+            }
         }
     }
 
@@ -779,23 +912,33 @@ function get_pronunciation(word) {
     // return the processed word.
     for (let i = 0; i < word.length; i++) {
         for (let length of lengths) {
-            let substring = word.slice(i, i+length);
+            let substring = word.slice(i, i + length);
 
             let match = false;
             Object.keys(sort[length]).forEach(pattern => {
-                new_pattern = [...pattern].map((char, i) => { 
-                    return (char === '_' && substring[i] !== '^') ? substring[i] : char; 
-                }).join('');
-                if (new_pattern === substring)
-                    { match = [...sort[length][pattern]].map((char, i) => { 
-                        return (char === '_' && substring[i] !== '^') ? substring[i] : char; 
-                    }).join(''); }
+                new_pattern = [...pattern]
+                    .map((char, i) => {
+                        return char === '_' && substring[i] !== '^'
+                            ? substring[i]
+                            : char;
+                    })
+                    .join('');
+                if (new_pattern === substring) {
+                    match = [...sort[length][pattern]]
+                        .map((char, i) => {
+                            return char === '_' && substring[i] !== '^'
+                                ? substring[i]
+                                : char;
+                        })
+                        .join('');
+                }
             });
 
-            if (substring in sort[length] || match) { // †1
+            if (substring in sort[length] || match) {
+                // †1
                 let substitute = match ? match : sort[length][substring]; // †2
-                word = word.slice(0, i) + substitute + word.slice(length+i); // †3
-                i += substitute.length - 1; // †4 
+                word = word.slice(0, i) + substitute + word.slice(length + i); // †3
+                i += substitute.length - 1; // †4
                 break;
             }
         }
@@ -803,7 +946,7 @@ function get_pronunciation(word) {
     return word.replaceAll('^', ' ').trim().replaceAll('∅', ''); // (†5)
 }
 
-function update_pronunciation(input=wrd_input, output=pronun) {
+function update_pronunciation(input = wrd_input, output = pronun) {
     txt = input.value;
     output.value = get_pronunciation(txt);
 }
@@ -813,7 +956,7 @@ function generateRules(rules, categories) {
     // It takes a list of rules in the format 'pattern > substitution'
     // and a categories dictionary in the format {'S': ['one', 'two', 'three' ...] ...}.
     // It returns a new list of rules which have been permutated with every item from the
-    // categories for every rule that contains a category symbol. 
+    // categories for every rule that contains a category symbol.
 
     // Initialize an empty array to store the expanded rules
     let expandedRules = [];
@@ -828,18 +971,23 @@ function generateRules(rules, categories) {
         substitution = substitution.split('');
 
         // Create a new set of unique category symbols in the pattern
-        let uniqueCategorySymbols = [...new Set(pattern.filter(symbol => symbol in categories))];
+        let uniqueCategorySymbols = [
+            ...new Set(pattern.filter(symbol => symbol in categories)),
+        ];
 
         // Create all possible combinations of the unique category symbols.
-        let combinations = uniqueCategorySymbols.reduce((combos, symbol) => {
-            let newCombos = [];
-            for (let combo of combos) {
-                for (let item of categories[symbol]) {
-                    newCombos.push(combo.concat(item));
+        let combinations = uniqueCategorySymbols.reduce(
+            (combos, symbol) => {
+                let newCombos = [];
+                for (let combo of combos) {
+                    for (let item of categories[symbol]) {
+                        newCombos.push(combo.concat(item));
+                    }
                 }
-            }
-            return newCombos;
-        }, [[]]);
+                return newCombos;
+            },
+            [[]]
+        );
 
         // Iterate through the combinations of symbols
         for (let combo of combinations) {
@@ -848,20 +996,32 @@ function generateRules(rules, categories) {
 
             // Replace the category symbols in the pattern and substitution with the corresponding symbol in the combination
             for (let i = 0; i < uniqueCategorySymbols.length; i++) {
-                newPattern = newPattern.map(symbol => symbol === uniqueCategorySymbols[i] ? combo[i] : symbol);
+                newPattern = newPattern.map(symbol =>
+                    symbol === uniqueCategorySymbols[i] ? combo[i] : symbol
+                );
             }
 
             // GPT couldn't figure out how to do this block. Have to do this myself. If there are bugs, they're probably here.
             expandedSubstitution = expandedSubstitution.map((symbol, index) => {
-                if (uniqueCategorySymbols.includes(symbol)) { // symbol is in pattern
-                    return combo[uniqueCategorySymbols.indexOf(symbol)]
-                } else if (symbol in categories) { // symbol is not in pattern
-                    return categories[symbol][categories[[...pattern][index]].indexOf(newPattern[index])]
-                } else { return symbol } // symbol is not a category
+                if (uniqueCategorySymbols.includes(symbol)) {
+                    // symbol is in pattern
+                    return combo[uniqueCategorySymbols.indexOf(symbol)];
+                } else if (symbol in categories) {
+                    // symbol is not in pattern
+                    return categories[symbol][
+                        categories[[...pattern][index]].indexOf(
+                            newPattern[index]
+                        )
+                    ];
+                } else {
+                    return symbol;
+                } // symbol is not a category
             });
 
             // generate the new rule by joining pattern and substitution and push into expandedRules
-            let expandedRule = `${newPattern.join('')}>${expandedSubstitution.join('')}`;
+            let expandedRule = `${newPattern.join(
+                ''
+            )}>${expandedSubstitution.join('')}`;
             // expandedRule = expandedRule.replaceAll('∅', ''); // get rid of null signs // leave null signs, post-processor takes care of it
             expandedRules.push(expandedRule);
         }
@@ -870,15 +1030,16 @@ function generateRules(rules, categories) {
     return expandedRules;
 }
 
-romans.onblur = function() {
+romans.onblur = function () {
     romanizations = {}; // global
     let categories = {};
     let rules = [];
 
-    // On a first pass of the input directly in the textarea, 
+    // On a first pass of the input directly in the textarea,
     // we parse out the category definitions and rom rules.
     txt = romans.value.trim();
-    txt.split('\n').forEach( line => { // Parse each new line as a rule
+    txt.split('\n').forEach(line => {
+        // Parse each new line as a rule
         // remove all white space
         let rule = line.trim().replace(/\s+/g, '');
         // if the rule contain `::`, it is a category
@@ -905,15 +1066,18 @@ romans.onblur = function() {
     // The block below is used to update all the pronunciation values in the editor, lexicon, and phrasebook.
     update_pronunciation(); // input line
     for (entry in lexicon) {
-        if (lexicon[entry][2] === false) { // all non-irrelgular pronunciations
+        if (lexicon[entry][2] === false) {
+            // all non-irrelgular pronunciations
             lexicon[entry][0] = get_pronunciation(entry);
         }
     }
     for (category in phrasebook) {
         for (entry in phrasebook[category]) {
-            phrasebook[category][entry].pronunciation = get_pronunciation(entry);
+            phrasebook[category][entry].pronunciation =
+                get_pronunciation(entry);
             for (variant in phrasebook[category][entry].variants) {
-                phrasebook[category][entry].variants[variant].pronunciation = get_pronunciation(variant);
+                phrasebook[category][entry].variants[variant].pronunciation =
+                    get_pronunciation(variant);
             }
         }
     }
@@ -921,26 +1085,34 @@ romans.onblur = function() {
     // The lexicon and phrasebook then need to be refreshed to show these changes.
     rewrite_entries();
     update_book();
-}
+};
 romans.onblur();
 
-wrd_input.onkeyup = function(repronounce=true) {
-    if (repronounce) {update_pronunciation(); }
+wrd_input.onkeyup = function (repronounce = true) {
+    if (repronounce) {
+        update_pronunciation();
+    }
 
     if (wrd_input.value.trim() in lexicon) {
         document.getElementById('add-word-button').style.display = 'none';
         document.getElementById('definition-exists').style.display = '';
-        document.getElementById(wrd_input.value.trim()).scrollIntoView({ behavior: "smooth", block: "center" });
+        document
+            .getElementById(wrd_input.value.trim())
+            .scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
         document.getElementById('add-word-button').style.display = '';
         document.getElementById('definition-exists').style.display = 'none';
     }
 };
-phrase_input.onkeyup = function() {update_pronunciation(phrase_input, phrase_pron)};
+phrase_input.onkeyup = function () {
+    update_pronunciation(phrase_input, phrase_pron);
+};
 
 const test_romans = document.getElementById('test-romans');
 const test_romans_result = document.getElementById('test-romans-result');
-test_romans.onkeyup = function() {update_pronunciation(test_romans, test_romans_result)};
+test_romans.onkeyup = function () {
+    update_pronunciation(test_romans, test_romans_result);
+};
 
 function get_phonotactics() {
     component_txt = {
@@ -948,25 +1120,28 @@ function get_phonotactics() {
         Middle: middle_input.value.trim(),
         Final: coda_input.value.trim(),
         Vowel: vowel_input.value.trim(),
-        Illegal: illegals_input.value.trim() === '' ? '÷' : illegals_input.value, // nobody would ever use '÷' in their alphabet, right?
-    }
-    let c = {}
-    Object.keys(component_txt).forEach(
-        function(e) { c[e] = component_txt[e].split(/\s+/); });
+        Illegal:
+            illegals_input.value.trim() === '' ? '÷' : illegals_input.value, // nobody would ever use '÷' in their alphabet, right?
+    };
+    let c = {};
+    Object.keys(component_txt).forEach(function (e) {
+        c[e] = component_txt[e].split(/\s+/);
+    });
     return c;
 }
 
 function generate_word() {
     let c = get_phonotactics();
-    let r = () => Math.floor(Math.random()*2) === 0;
-    let choice = (arr) => arr[Math.floor(Math.random()*arr.length)];
+    let r = () => Math.floor(Math.random() * 2) === 0;
+    let choice = arr => arr[Math.floor(Math.random() * arr.length)];
     let word = '^';
 
-    if (r()) { word += choice(c.Vowel); }
-        else { 
-            word += choice(c.Initial);
-            word += choice(c.Vowel);
-        }
+    if (r()) {
+        word += choice(c.Vowel);
+    } else {
+        word += choice(c.Initial);
+        word += choice(c.Vowel);
+    }
 
     for (let j = 0; j < 2; j++) {
         if (r() || word.length === 2 /* word is "^vowel" */) {
@@ -974,52 +1149,61 @@ function generate_word() {
             word += choice(c.Vowel);
         }
     }
-    if (r()) { word += choice(c.Final); }
-    
-    word += '^'
-    if ( !c.Illegal.some(v => word.includes(v)) ) {
+    if (r()) {
+        word += choice(c.Final);
+    }
+
+    word += '^';
+    if (!c.Illegal.some(v => word.includes(v))) {
         return word.replace(/\^/g, '');
     } else {
         return false;
     }
 }
 
-gen_words_btn.onclick = function() {
-    let words = []
-    for (let i = 0; i < 20; i++){
+gen_words_btn.onclick = function () {
+    let words = [];
+    for (let i = 0; i < 20; i++) {
         for (let attempt = 0; attempt < 20; attempt++) {
             let word = generate_word();
-            if (word !== false && !words.includes(word)) { words.push(word); }
+            if (word !== false && !words.includes(word)) {
+                words.push(word);
+            }
             break;
         }
         if (words.length === 5) break;
     }
     let text = '';
-    for (word of words) { text += word + '\n' };
+    for (word of words) {
+        text += word + '\n';
+    }
     text = document.createTextNode(text);
     gen_words_p.replaceChildren(text);
-}
+};
 
 function complete_word() {
-    let r = () => Math.floor(Math.random()*2) === 0;
-    let choice = (arr) => arr[Math.floor(Math.random()*arr.length)];
+    let r = () => Math.floor(Math.random() * 2) === 0;
+    let choice = arr => arr[Math.floor(Math.random() * arr.length)];
     let c = get_phonotactics();
     let word = '^' + trial_input.value;
 
-    let finalize = function(word) {
+    let finalize = function (word) {
         word += '^'; // the string is in the format "^word^" so that "^" maybe be used as a character to mark the start/end of a word
-                     // in the user-defined illegal combinations
-        if ( !c.Illegal.some(v => word.includes(v)) ) {
+        // in the user-defined illegal combinations
+        if (!c.Illegal.some(v => word.includes(v))) {
             return word.replace(/\^/g, '');
         } else {
             return false;
         }
-    }
+    };
 
     let ends_in_vowel = false;
     for (var v of c.Vowel) {
         // Check if word ends in vowel; add middle consonant and vowel, or coda and end
-        if (word.includes(v) && word.lastIndexOf(v) === word.length - v.length) {
+        if (
+            word.includes(v) &&
+            word.lastIndexOf(v) === word.length - v.length
+        ) {
             if (r()) {
                 word += choice(c.Middle) + choice(c.Vowel);
                 ends_in_vowel = true;
@@ -1052,7 +1236,7 @@ function complete_word() {
     return finalize(word);
 }
 
-trial_input.onkeyup = function() {
+trial_input.onkeyup = function () {
     for (let attempt = 0; attempt < 20; attempt++) {
         let word = complete_word();
         if (word !== false) {
@@ -1062,8 +1246,8 @@ trial_input.onkeyup = function() {
         }
     }
     let text = document.createTextNode(trial_input.value); // If a legal word couldn't
-    trial_output.replaceChildren(text);                     // be found in 20 attempts
-}
+    trial_output.replaceChildren(text); // be found in 20 attempts
+};
 
 function add_rows(table, n) {
     for (let i = 0; i < n; i++) {
@@ -1086,14 +1270,14 @@ function add_columns(table, n) {
             // cell.onDrop = () => {drop(event)}
             // cell.onDragOver = () => {allowDrop(event)}
             // cell.onDragStart = () => {drag(event)}
-            cell.appendChild( document.createTextNode('—') );
+            cell.appendChild(document.createTextNode('—'));
             table.rows[i].appendChild(cell);
         });
     }
 }
 
 // EditorJS Setup
-function initialize_docs(data=false) {
+function initialize_docs(data = false) {
     let config = {
         holder: tables_pane.id,
         tools: {
@@ -1101,87 +1285,95 @@ function initialize_docs(data=false) {
             monospace: Monospace,
             header: {
                 class: Header,
-                inlineToolbar: false,
+                inlineToolbar: ['bold', 'italic', 'underline'],
             },
             paragraph: {
                 class: Paragraph,
                 inlineToolbar: true,
                 config: {
-                    placeholder: 'This panel can be used to document and describe your languge’s features in greater detail.',
-                }
+                    placeholder:
+                        'This panel can be used to document and describe your languge’s features in greater detail.',
+                },
             },
             table: {
                 class: Table,
+                inlineToolbar: true,
                 config: {
-                    rows: 3, cols: 3,
+                    rows: 3,
+                    cols: 3,
                     withHeadings: true,
-                }
-            }
-        }
-    }
+                },
+            },
+        },
+    };
     if (data) config.data = data;
     Docs = new EditorJS(config);
 }
 initialize_docs();
 
 function write_tables(tables) {
-    // Function for migrating pre-1.9 docs to the EditorJS format. 
+    // Function for migrating pre-1.9 docs to the EditorJS format.
     tables_pane.replaceChildren();
     let data = {
-        "time": Date.now(),
-        "blocks": [],
-        "version": '2.8.1'
-    }
+        time: Date.now(),
+        blocks: [],
+        version: '2.8.1',
+    };
     for (let table_data of tables) {
-        console.log("table_data:", table_data)
+        console.log('table_data:', table_data);
         let titles = table_data.match(/<p class="table-title">(.*?)<\/p>/g);
         if (!!titles) {
             titles.forEach(title => {
-                console.log("title:", title);
+                console.log('title:', title);
                 data.blocks.push({
-                    "type": "header",
-                    "data": {
-                        "text": title,
-                        "level": 1,
-                    }
+                    type: 'header',
+                    data: {
+                        text: title,
+                        level: 1,
+                    },
                 });
             });
         }
-        
+
         if (table_data.includes('<table')) {
             let table = [];
             table_data
                 .match(/<tbody>(.*?)<\/tbody>/)[1]
-                .replaceAll('</tr>', '').split('<tr>')
+                .replaceAll('</tr>', '')
+                .split('<tr>')
                 .forEach(row => {
                     table.push([...row.replaceAll('</td>', '').split('<td>')]);
                 });
             table.splice(0, 1);
-            console.log("table:", table)
+            console.log('table:', table);
             data.blocks.push({
-                "type": "table",
-                "data": {
-                    "withHeadings": false,
-                    "content": table,
-                }
+                type: 'table',
+                data: {
+                    withHeadings: false,
+                    content: table,
+                },
             });
         }
 
-        let paragraphs = table_data.match(/<p class="table-caption">(.*?)<\/p>/g);
+        let paragraphs = table_data.match(
+            /<p class="table-caption">(.*?)<\/p>/g
+        );
         if (!!paragraphs) {
-            table_data.match(/<p class="table-caption">(.*?)<\/p>/g).forEach(p_element => {
-                [...p_element.split('<br>')].forEach(paragraph => {
-                    paragraph = paragraph.replaceAll(/<.*?>/g, '');
-                    paragraph = markdown_to_html(paragraph, true);
-                    console.log("paragraph:", paragraph);
-                    data.blocks.push({
-                        "type": "paragraph",
-                        "data": {
-                            "text": paragraph,
-                        }
+            table_data
+                .match(/<p class="table-caption">(.*?)<\/p>/g)
+                .forEach(p_element => {
+                    [...p_element.split('<br>')].forEach(paragraph => {
+                        paragraph = paragraph.replaceAll(/<.*?>/g, '');
+                        paragraph = markdown_to_html(paragraph, true);
+                        console.log('paragraph:', paragraph);
+                        data.blocks.push({
+                            type: 'paragraph',
+                            data: {
+                                text: paragraph,
+                            },
+                        });
                     });
                 });
-            });
         }
     }
     initialize_docs(data);
@@ -1197,14 +1389,15 @@ function change_orthography() {
     let newVal = document.getElementById('new-pattern').value;
     let change_p = document.getElementById('change-pronunciations').checked;
     let case_s = document.getElementById('case-sensitive').checked;
-    oldVal = oldVal.replace(/\^/g, '≈')
+    oldVal = oldVal.replace(/\^/g, '≈');
     for (word in lexicon) {
         let w = '≈' + word + '≈';
-        if (w.includes(case_s ? oldVal : oldVal.toLowerCase())) { 
+        if (w.includes(case_s ? oldVal : oldVal.toLowerCase())) {
             let r = new RegExp(oldVal, case_s ? 'g' : 'gi');
             w = w.replace(r, newVal);
             w = w.replace(/≈/gi, '');
-            if (w in lexicon) { // if the new word exists, conjoin the definitions
+            if (w in lexicon) {
+                // if the new word exists, conjoin the definitions
                 lexicon[w][1] = lexicon[w][1] + '\n' + lexicon[word][1];
             } else {
                 lexicon[w] = lexicon[word];
@@ -1226,28 +1419,50 @@ function change_orthography() {
 //   File Functions
 // ––––––––––––––––––
 const { _open, _export } = require('./scripts/files');
-// TODO: More refactoring. Ultimately, none of these functions should be located here. 
+// TODO: More refactoring. Ultimately, none of these functions should be located here.
 
 function open_contents_by_version(contents) {
-    if ( !('Version' in contents) ) { _open.v1p0(contents); } 
-    else {
+    if (!('Version' in contents)) {
+        _open.v1p0(contents);
+    } else {
         switch (contents.Version) {
-            case 1.1: _open.v1p1(contents); break;
-            case 1.2: _open.v1p2(contents); break;
-            case 1.3: _open.v1p3(contents); break;
-            case 1.4: _open.v1p3(contents); break; // save file format is same as 1.3
-            case 1.5: _open.v1p5(contents); break;
-            case 1.6: _open.v1p6(contents); break;
-            case 1.7: _open.v1p7(contents); break;
-            case 1.8: _open.v1p7(contents); break; // save file format is same as 1.7
-            case '1.8.x': _open.v1p8(contents); break; // dv1.8.7 changed romanization loading
-            case 1.9: _open.v1p9(contents); break;
+            case 1.1:
+                _open.v1p1(contents);
+                break;
+            case 1.2:
+                _open.v1p2(contents);
+                break;
+            case 1.3:
+                _open.v1p3(contents);
+                break;
+            case 1.4:
+                _open.v1p3(contents);
+                break; // save file format is same as 1.3
+            case 1.5:
+                _open.v1p5(contents);
+                break;
+            case 1.6:
+                _open.v1p6(contents);
+                break;
+            case 1.7:
+                _open.v1p7(contents);
+                break;
+            case 1.8:
+                _open.v1p7(contents);
+                break; // save file format is same as 1.7
+            case '1.8.x':
+                _open.v1p8(contents);
+                break; // dv1.8.7 changed romanization loading
+            case 1.9:
+                _open.v1p9(contents);
+                break;
         }
     }
 }
 
 async function import_lex() {
-    document.querySelectorAll('.planet').forEach(planet => { // loading anim start
+    document.querySelectorAll('.planet').forEach(planet => {
+        // loading anim start
         planet.style.animationPlayState = 'running';
     });
     document.getElementById('loading-message').innerHTML = 'Loading...';
@@ -1256,80 +1471,102 @@ async function import_lex() {
     let [file_handle] = await window.showOpenFilePicker();
     await file_handle.requestPermission({ mode: 'read' });
     let file = await file_handle.getFile();
-    if ( !file.name.includes('.lexc') ) {
+    if (!file.name.includes('.lexc')) {
         window.alert('The selected file was not a .lexc file.');
-        document.querySelectorAll('.planet').forEach(planet => { // loading anim stop
+        document.querySelectorAll('.planet').forEach(planet => {
+            // loading anim stop
             planet.style.animationPlayState = 'paused';
         });
-        document.getElementById('loading-message').innerHTML = 'Incorrect file type.';
+        document.getElementById('loading-message').innerHTML =
+            'Incorrect file type.';
         window.setTimeout(() => {
             document.getElementById('loading-message').innerHTML = '';
-        }, 5000)
+        }, 5000);
         return;
     }
     let string_contents = await file.text();
     let contents = JSON.parse(string_contents);
     open_contents_by_version(contents);
 
-    file_name_input.value = file.name.split('.')[0]
+    file_name_input.value = file.name.split('.')[0];
 
-
-    document.querySelectorAll('.planet').forEach(planet => { // loading anim stop
+    document.querySelectorAll('.planet').forEach(planet => {
+        // loading anim stop
         planet.style.animationPlayState = 'paused';
     });
     document.getElementById('loading-message').innerHTML = 'Done!';
     window.setTimeout(() => {
         document.getElementById('loading-message').innerHTML = '';
-    }, 5000)
+    }, 5000);
 }
 
 async function open_lex() {
     let contents;
     // here's to hoping future me doesn't forget how callback functions work.
-    let dialog = (user_path) => {
-        showOpenDialog({
-            title: 'Open Lexicon',
-            defaultPath: `${user_path}${path.sep}Lexicons${path.sep}`,
-            properties: ['openFile']
-        }, file_path => {
-            fs.readFile(file_path[0], 'utf8', (err, data) => {
-                if (err) {
-                    console.log(err);
-                    window.alert("There was an issue loading your file. Please contact the developer."); 
-                    document.querySelectorAll('.planet').forEach(planet => { // loading anim stop
+    let dialog = user_path => {
+        showOpenDialog(
+            {
+                title: 'Open Lexicon',
+                defaultPath: `${user_path}${path.sep}Lexicons${path.sep}`,
+                properties: ['openFile'],
+            },
+            file_path => {
+                fs.readFile(file_path[0], 'utf8', (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        window.alert(
+                            'There was an issue loading your file. Please contact the developer.'
+                        );
+                        document.querySelectorAll('.planet').forEach(planet => {
+                            // loading anim stop
+                            planet.style.animationPlayState = 'paused';
+                        });
+                        document.getElementById('loading-message').innerHTML =
+                            'Couldn’t open file.';
+                        window.setTimeout(() => {
+                            document.getElementById(
+                                'loading-message'
+                            ).innerHTML = '';
+                        }, 5000);
+                        return;
+                    }
+                    contents = JSON.parse(data);
+                    open_contents_by_version(contents);
+                    file_name_input.value = path.basename(
+                        file_path[0],
+                        '.lexc'
+                    );
+                    document.querySelectorAll('.planet').forEach(planet => {
+                        // loading anim stop
                         planet.style.animationPlayState = 'paused';
                     });
-                    document.getElementById('loading-message').innerHTML = 'Couldn’t open file.';
+                    document.getElementById('loading-message').innerHTML =
+                        'Done!';
                     window.setTimeout(() => {
-                        document.getElementById('loading-message').innerHTML = '';
+                        document.getElementById('loading-message').innerHTML =
+                            '';
                     }, 5000);
-                    return
-                }
-                contents = JSON.parse(data);
-                open_contents_by_version(contents);
-                file_name_input.value = path.basename(file_path[0], '.lexc');
-                document.querySelectorAll('.planet').forEach(planet => { // loading anim stop
-                    planet.style.animationPlayState = 'paused';
                 });
-                document.getElementById('loading-message').innerHTML = 'Done!';
-                window.setTimeout(() => {
-                    document.getElementById('loading-message').innerHTML = '';
-                }, 5000);
-            });
-        });
-    }
-    document.querySelectorAll('.planet').forEach(planet => { // loading anim start
+            }
+        );
+    };
+    document.querySelectorAll('.planet').forEach(planet => {
+        // loading anim start
         planet.style.animationPlayState = 'running';
     });
     document.getElementById('loading-message').innerHTML = 'Loading...';
     await userData(user_path => {
         if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
-            fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => { dialog(user_path); });
-        } else { dialog(user_path); }
+            fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => {
+                dialog(user_path);
+            });
+        } else {
+            dialog(user_path);
+        }
     });
 }
 
-async function collect_export_data (blob=true) {
+async function collect_export_data(blob = true) {
     let documentation;
     await Docs.save().then(data => {
         documentation = data;
@@ -1345,8 +1582,8 @@ async function collect_export_data (blob=true) {
         Docs: documentation,
         HeaderTags: header_tags_text.value,
         IgnoreDiacritics: document.getElementById('ignore-diacritic').checked,
-        CaseSensitive: document.getElementById('case-sensitive').checked
-    }
+        CaseSensitive: document.getElementById('case-sensitive').checked,
+    };
 
     let exports;
     if (blob) {
@@ -1359,70 +1596,115 @@ async function collect_export_data (blob=true) {
 }
 
 async function save_as() {
-    let exports = await collect_export_data(blob=true); // needs a blob
+    let exports = await collect_export_data((blob = true)); // needs a blob
 
-    let file_handle = await window.showSaveFilePicker( {suggestedName: `${file_name_input.value}.lexc`} );
+    let file_handle = await window.showSaveFilePicker({
+        suggestedName: `${file_name_input.value}.lexc`,
+    });
     await file_handle.requestPermission({ mode: 'readwrite' });
     let file = await file_handle.createWritable();
-    try { await file.write(exports); } catch (err) { window.alert('The file failed to save. Please contact the developer.'); console.log(err); await file.close(); return }
+    try {
+        await file.write(exports);
+    } catch (err) {
+        window.alert('The file failed to save. Please contact the developer.');
+        console.log(err);
+        await file.close();
+        return;
+    }
     await file.close();
-    window.alert('The file saved successfully.')
+    window.alert('The file saved successfully.');
 }
 
 async function save_file(send_alert = true) {
     if (file_name_input.value.trim() === '') {
         if (send_alert) {
-            file_name_input.value = window.prompt("Please enter a file name before saving.");
+            file_name_input.value = window.prompt(
+                'Please enter a file name before saving.'
+            );
         } else return;
     }
-    let exports = await collect_export_data(blob=false); // needs a string or buffer
+    let exports = await collect_export_data((blob = false)); // needs a string or buffer
     try {
         userData(user_path => {
             if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
-                fs.mkdirSync(`${user_path}${path.sep}Lexicons${path.sep}`)
+                fs.mkdirSync(`${user_path}${path.sep}Lexicons${path.sep}`);
             }
-            fs.writeFileSync(`${user_path}${path.sep}Lexicons${path.sep}${file_name_input.value}.lexc`, exports, 'utf8')
+            fs.writeFileSync(
+                `${user_path}${path.sep}Lexicons${path.sep}${file_name_input.value}.lexc`,
+                exports,
+                'utf8'
+            );
         });
-        if (send_alert) { window.alert("The file has been saved."); } else { new Notification('Your file has been auto-saved.') }
-    } catch (err) { window.alert("There was a problem saving your file. Please contact the developer."); console.log(err) }
+        if (send_alert) {
+            window.alert('The file has been saved.');
+        } else {
+            new Notification('Your file has been auto-saved.');
+        }
+    } catch (err) {
+        window.alert(
+            'There was a problem saving your file. Please contact the developer.'
+        );
+        console.log(err);
+    }
 }
 
 var autosave_tracker;
-autosave_setting.onchange = function() {
+autosave_setting.onchange = function () {
     userData(user_path => {
-        fs.writeFile(user_path + path.sep + "autosave_pref.txt", String(autosave_setting.checked), 'utf8', (err) => { if (err) throw err; })
+        fs.writeFile(
+            user_path + path.sep + 'autosave_pref.txt',
+            String(autosave_setting.checked),
+            'utf8',
+            err => {
+                if (err) throw err;
+            }
+        );
     });
     if (autosave_setting.checked) {
-        autosave_tracker = window.setInterval(save_file, 300000 /* 5 minutes */, false);
+        autosave_tracker = window.setInterval(
+            save_file,
+            300000 /* 5 minutes */,
+            false
+        );
     } else {
         window.clearInterval(autosave_tracker);
     }
-}
+};
 userData(user_path => {
     if (!fs.existsSync(user_path + path.sep + 'autosave_pref.txt')) {
         fs.writeFileSync(user_path + path.sep + 'autosave_pref.txt', 'false');
         autosave_setting.checked = false;
     } else {
-        autosave_setting.checked = fs.readFileSync(user_path + path.sep + 'autosave_pref.txt', 'utf8') === 'true';
+        autosave_setting.checked =
+            fs.readFileSync(
+                user_path + path.sep + 'autosave_pref.txt',
+                'utf8'
+            ) === 'true';
     }
-}).then(_ => { autosave_setting.onchange(); });
+}).then(_ => {
+    autosave_setting.onchange();
+});
 ipcRenderer.on('app-close', _ => {
     if (autosave_setting.checked) {
         save_file(false).then(_ => {
             ipcRenderer.send('close');
         });
     } else {
-        if (window.confirm('You may have unsaved changes. Are you sure you want to exit?')) {
+        if (
+            window.confirm(
+                'You may have unsaved changes. Are you sure you want to exit?'
+            )
+        ) {
             ipcRenderer.send('close');
         }
     }
-})
+});
 
 async function import_csv() {
     let [file_handle] = await window.showOpenFilePicker();
     await file_handle.requestPermission({ mode: 'read' });
     let file = await file_handle.getFile();
-    if ( !file.name.includes('.csv') ) {
+    if (!file.name.includes('.csv')) {
         window.alert('The selected file was not a .csv file.');
         return;
     }
@@ -1435,26 +1717,36 @@ async function import_csv() {
     lexicon = {};
     for (let row of rows) {
         if (r === 'on' && row === rows[0]) continue;
-        
-        let columns = row.split(',');
-        if (columns[0].includes('\n"')) {columns[0] = columns[0].split('\n"')[1];}
-        columns[columns.length-1] = columns[columns.length-1].replace(/"$/g, '');
 
-        lexicon[columns[w]] = [get_pronunciation(columns[w]), columns[d], false, []];
+        let columns = row.split(',');
+        if (columns[0].includes('\n"')) {
+            columns[0] = columns[0].split('\n"')[1];
+        }
+        columns[columns.length - 1] = columns[columns.length - 1].replace(
+            /"$/g,
+            ''
+        );
+
+        lexicon[columns[w]] = [
+            get_pronunciation(columns[w]),
+            columns[d],
+            false,
+            [],
+        ];
     }
     rewrite_entries();
-    tab_btns[0].onclick() // Return to Lexicon tab
-    file_name_input.value = file.name.split('.')[0]
+    tab_btns[0].onclick(); // Return to Lexicon tab
+    file_name_input.value = file.name.split('.')[0];
 }
 
 async function custom_theme() {
     let [file_handle] = await window.showOpenFilePicker();
     await file_handle.requestPermission({ mode: 'read' });
     let file = await file_handle.getFile();
-    if ( !file.name.includes('.css') ) {
+    if (!file.name.includes('.css')) {
         window.alert('The selected file was not a .css file.');
         return;
-    };
+    }
     let contents = await file.text();
     let theme_path;
     await userData(user_path => {
@@ -1462,11 +1754,14 @@ async function custom_theme() {
         if (!fs.existsSync(themes_dir)) {
             fs.mkdirSync(themes_dir);
         }
-        theme_path = user_path + `${path.sep}user_themes${path.sep}` + file.name;
-        fs.writeFile(theme_path, contents, 'utf8', (err) => {
+        theme_path =
+            user_path + `${path.sep}user_themes${path.sep}` + file.name;
+        fs.writeFile(theme_path, contents, 'utf8', err => {
             if (err) throw err;
             color_theme.href = theme_path;
         });
-        fs.writeFile(user_path + `${path.sep}theme.txt`, theme_path, (err) => { if (err) throw err });
+        fs.writeFile(user_path + `${path.sep}theme.txt`, theme_path, err => {
+            if (err) throw err;
+        });
     });
 }
