@@ -20,9 +20,9 @@
     -->
     <meta charset="UTF-8" />
     <title>Lexicanter</title>
-    <link rel="stylesheet" href="index.css" />
-    <link rel="stylesheet" href="dark.css" id="color-theme"/>
-    <script defer src="main.js"></script>
+    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="styles/dark.css" id="color-theme"/>
+    <script defer src="app.js"></script>
   </head>
   <body id="body">
     <div class='tab-container'>
@@ -250,10 +250,10 @@
             </div>
             <br>
             <p>Export Lexicon</p>
-            <button onclick="export_txt()" class="hover-highlight hover-shadow">Text File</button>
-            <button onclick="export_csv()" class="hover-highlight hover-shadow">CSV</button>
-            <button onclick="export_html()" class="hover-highlight hover-shadow">HTML</button>
-            <button onclick="export_json()" class="hover-highlight hover-shadow">JSON</button>
+            <button onclick="_export.txt()" class="hover-highlight hover-shadow">Text File</button>
+            <button onclick="_export.csv()" class="hover-highlight hover-shadow">CSV</button>
+            <button onclick="_export.html()" class="hover-highlight hover-shadow">HTML</button>
+            <button onclick="_export.json()" class="hover-highlight hover-shadow">JSON</button>
             <br>
             <p>Import Lexicon from CSV</p>
             <div class="narrow">
