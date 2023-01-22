@@ -1122,7 +1122,8 @@ module.exports = {
                     body = editorjs_to_html(data, body);
                 });
                 body.style.overflow="auto";
-                body.style.padding = "12em"
+                body.style.padding = "12em";
+                body.classList.add('container');
                 export_container.appendChild(body);
 
                 let export_data = export_container.outerHTML;

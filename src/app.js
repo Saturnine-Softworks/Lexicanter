@@ -192,13 +192,21 @@ userData(user_path => {
     let theme_value = fs
         .readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
         .toString();
-    console.log(theme_value);
+
+    // This bit is specifically to correct theme locating errors caused by earlier versions and mid-development patches,
+    // and can eventually be removed.
+    if (!theme_value.includes('styles' + path.sep) && !theme_value.includes('user_themes' + path.sep)) {
+        theme_value = 'styles'+path.sep+theme_value
+    } else if (theme_value.includes('styles' + path.sep + 'styles')) {
+        theme_value = 'styles' + path.sep + path.basename(theme_value);
+    }
+
     color_theme.href = theme_value;
     theme_select.value = theme_value;
 });
 // console.log(color_theme.href);
 function change_theme() {
-    let theme = 'styles/' + theme_select.value;
+    let theme = theme_select.value;
     color_theme.href = theme;
     userData(user_path => {
         fs.writeFile(user_path + path.sep + 'theme.txt', theme, err => {

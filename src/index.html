@@ -29,7 +29,7 @@
 <body id="body">
     <div class='tab-container'>
         <div class="button-container">
-            <p class="version-info"><i>β</i>1.9.1</p>
+            <p class="version-info"><i>β</i>1.9.2</p>
             <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
             <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
             <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
@@ -319,14 +319,32 @@
                     <label for="auto-save">Auto-Save</label>
                     <input type="checkbox" id="auto-save" checked />
                     <br><br>
+                    <p class="info">Join the home of the Lexicanter project on <a target="_blank"
+                        href="https://discord.gg/uDk2XDhh8K">Discord</a></p>
+                    <br><br>
+                    <p><u>New in 1.9</u></p>
+                    <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                        • Overhauled the Documentation tab, which now uses integrated <a href="https://editorjs.io/" 
+                            target="_blank">EditorJS</a> technology. <br> Markdown is no longer supported in this tab, 
+                            in favor of the new WYSIWYG style with a toolbar visible when you highlight text. <br>
+                        • Note: The first time you load a file from an older version, there may be some formatting quirks. 
+                            Most of these should sort themselves out after saving in the new version and re-loading. 
+                            Please contact the developer if you run into persistent issues. <br>
+                        • Fixed a bug with the Open New Window button which caused it to fail to open new windows. <br>
+                        • The button to edit phrasebook entries has been change to right-click instead of left-click to
+                            make it more difficult to accidentally overwrite work in progress, and to allow for
+                            highlighting text. <br>
+                        • An HTML Docs-Only export option has been added.
+                    <br><br>
+                    </p>
                     <p><u>Patch 1.8.14</u></p>
-                    <p style="width: 70%; margin: auto;">
+                    <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                         • Fixed a few minor bugs with markdown parsing.<br>
                         • Added monospace markdown with <code>``this``</code> syntax.<br>
                         • Fixed a reported bug which affected the orthography testing area.
-                        <br><br>
+                    <br><br>
                     <p><u>New in 1.8</u></p>
-                    <p style="width: 70%; margin: auto;">
+                    <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                         • File storage has been migrated to make auto-save possible. <br>
                         • Categories can now be defined and used in your Pronunciations rules. See the <a
                             target="_blank" href="https://lexicanter.com/docs">docs page</a> for more info.<br>
@@ -341,8 +359,6 @@
                         export.<br>
                     </p>
                     <br>
-                    <p class="info">Now open: Join me on <a target="_blank"
-                            href="https://discord.gg/uDk2XDhh8K">Discord</a>!</p>
                 </div>
             </div>
         </div>
