@@ -237,7 +237,7 @@ function markdown_to_html(text, convert_legacy_docs = false) {
             .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
             .replace(/``([^\n(?:``)]*)``/gim, '<code>$1</code>') // monospace
             .replace(
-                /\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim,
+                /\[([^\n\[\]]*)\]\(([^\n\]\^\(\)]*)\)/gim,
                 '<a href="$2" target="_blank">$1</a>'
             ) // link
             .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
@@ -419,6 +419,18 @@ function rewrite_entries(keys = false) {
     entry_count.replaceChildren(count);
 }
 
+function follow_lex_link(entry) {
+    try {
+        show_pane(0);
+        document
+            .getElementById(entry)
+            .scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (e) {
+        window.alert(`Invalid lexicon link: The entry “${entry}” could not be found.`);
+        console.log(e);
+    }
+}
+
 function add_word(append = false) {
     let w = wrd_input.value.trim();
     let p = pronun.value.trim();
@@ -438,9 +450,7 @@ function add_word(append = false) {
     }
 
     rewrite_entries();
-    document
-        .getElementById(w)
-        .scrollIntoView({ behavior: 'smooth', block: 'center' });
+    follow_lex_link(w);
     wrd_input.value = '';
     def_input.value = '';
     tags_input.value = '';
@@ -1427,6 +1437,7 @@ function change_orthography() {
 //   File Functions
 // ––––––––––––––––––
 const { _open, _export } = require('./scripts/files');
+const { exists } = require('builder-util');
 // TODO: More refactoring. Ultimately, none of these functions should be located here.
 
 function open_contents_by_version(contents) {

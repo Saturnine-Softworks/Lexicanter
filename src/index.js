@@ -34,8 +34,12 @@ const createWindow = () => {
     }
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-        console.log(url);
-        if (url.includes('index.html')) {
+        mainWindow.webContents.executeJavaScript(`console.log('Forwarding link: ${decodeURI(url)}');`);
+        if (url.includes('lex::')) {
+            mainWindow.webContents.executeJavaScript(`follow_lex_link('${decodeURI(url).split('::')[1]}');`);
+            return {action: 'deny'};
+        }
+        else if (url.includes('index.html')) {
             return {
                 action: 'allow',
                 overrideBrowserWindowOptions: {
