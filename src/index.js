@@ -18,8 +18,8 @@ __dirname
 const createWindow = () => {
     // Create the browser window.
     var mainWindow = new BrowserWindow({
-        width: 728,
-        height: 800,
+        width: 900,
+        height: 900,
         autoHideMenuBar: true,
         webPreferences: {
             // devTools: false,

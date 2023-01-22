@@ -539,10 +539,20 @@ html, body {
   100% { transform: rotate(180deg); }
 }
 
+/* EditorJS Overrides */
+
 .ce-toolbar__plus {
   transition: 0.33s;
 }
 
 ::selection {
   background-color: rgba(255, 255, 255, 0.333) !important;
+}
+
+.ce-block__content {
+  max-width: 80% !important;
+}
+
+.ce-toolbar__content {
+  max-width: 90% !important;
 }
