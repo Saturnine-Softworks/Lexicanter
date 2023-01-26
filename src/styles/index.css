@@ -556,3 +556,7 @@ html, body {
 .ce-toolbar__content {
   max-width: 90% !important;
 }
+
+.cdx-monospace {
+  font-family: monospace;
+}
