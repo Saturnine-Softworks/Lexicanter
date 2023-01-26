@@ -38,8 +38,8 @@ const createWindow = () => {
         if (url.includes('lex::')) {
             mainWindow.webContents.executeJavaScript(`follow_lex_link('${decodeURI(url).split('::')[1]}');`);
             return {action: 'deny'};
-        }
-        else if (url.includes('index.html')) {
+        } else if (path.basename(url) === 'index.html') {
+            // console.log('path.basename(url):', path.basename(url)); 
             return {
                 action: 'allow',
                 overrideBrowserWindowOptions: {
@@ -50,9 +50,10 @@ const createWindow = () => {
                 },
             };
         } else {
+            mainWindow.webContents.executeJavaScript("console.log('Sending URL to shell.')");
             shell.openExternal(url);
             return { action: 'deny' };
-        }
+        };
     });
 
     // Even with contextIsolation set to false, there are some things which still require interprocess communication.

@@ -1,14 +1,10 @@
-/* Lexicanter, a constructed language organization app.
-   Copyright (C) 2023 Ethan Ray.
-   See GNU General Public License Version 3.  */
-
 /* The background color and default text color. */
 :root {
     --black: rgb(13, 0, 21);
     --lpurple: rgb(132, 0, 209);
     --purple: rgb(109, 0, 129);
     --dpurple: rgb(37, 7, 58);
-    --white: rgb(170, 170, 170);
+    --white: rgb(228, 228, 228);
 }
 
 body {
@@ -18,8 +14,12 @@ body {
 
 /* Default buttons and dropdowns use this style. */
 button, select {
+    text-align: center;
     color: var(--purple);
-    background-color:rgb(0, 0, 0);
+    background-color:var(--black);
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
 }
 
 /* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
@@ -79,7 +79,16 @@ The buttons within this container are styled the same so that they are flush, an
 
 /* The default color styling for text in the lexicon and phrasebook. */
 .lex-body {
+    font-size: 16px;
     color: var(--white);
+}
+
+.lex-entry {
+    font-size: 16px;
+}
+
+.textarea input {
+    font-size: 16px;
 }
 
 /* This is the style used for lexicon entries when the mouse is hovering over them. */
@@ -111,7 +120,7 @@ hr {
 
 /* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
 label {
-  color:rgb(125, 125, 125);
+    color:rgb(125, 125, 125);
 }
 
 /* Default colors for text input fields. */
@@ -121,14 +130,12 @@ textarea, input {
 }
 
 /* The background color for pronunciation-specific text input fields blends into the background color. */
-input[class=pronunciation],
-textarea[class=pronunciation] {
-    background-color: transparent;
+input[class=pronunciation] {
+    background-color: inherit;
 }
 
 /* Style used for pronunciation-specific text input fields on mouse hover. */
-input[class=pronunciation]:hover,
-textarea[class=pronunciation]:hover {
+input[class=pronunciation]:hover {
     background-color: rgb(110, 2, 62);
 }
 
@@ -162,7 +169,83 @@ input[type="checkbox"]::before {
     background-color: var(--lpurple);
 }
 
+/* EditorJS Color Overrides */
+/* see github.com/editor-js */
+
+/* General UI Popups */
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn,
+.ce-conversion-toolbar__label {
+    color: rgb(120, 52, 79) !important;
+}
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover,
+.ce-conversion-toolbar__label {
+    background-color: var(--lpurple) !important;
+}
+
+/* These are the buttons */
+.ce-popover,
+.ce-inline-tool,
+.ce-conversion-tool {
+    background-color: rgb(120, 52, 79) !important;
+}
+
+/* These are the containers for the buttons */
+.ce-popover--opened,
+.tc-popover--opened,
+.ce-popover__item,
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons,
+.ce-conversion-toolbar,
+.ce-inline-toolbar {
+    background-color:  rgb(38, 0, 37) !important;
+}
+
+/* The buttons on mouse hover */
+.ce-popover__item:hover,
+.ce-inline-tool:hover,
+.ce-inline-tool--active,
+.ce-conversion-tool:hover {
+    color: var(--lpurple) !important;
+    background-color: rgb(38, 0, 37) !important;
+}
+
+
+/* Paragraph placeholder text */
+.ce-paragraph[data-placeholder]:empty::before {
+    color: var(--ochre) !important;
+}
+
+/* Tables */
+/* Table editing pop-up buttons */
+.tc-popover {
+    --color-border: var(--lpurple) !important;
+    --color-background: var(--purple) !important;
+    --color-background-hover: rgb(120, 52, 79) !important;
+    --color-background-confirm: rgb(101, 3, 33) !important;
+    --color-background-confirm-hover: rgb(120, 52, 79) !important;
+    --color-text-confirm: var(--white) !important;
+}
+/* Table itself. --color-background is the highlight color */
+.tc-wrap {
+    --color-background: rgba(77, 0, 115, 0.396) !important;
+    --color-text-secondary: rgb(150, 0, 188) !important;
+    --color-border: var(--lpurple) !important;
+}
+
+:any-link{
+    color: rgb(101, 3, 33);
+}
 /* All of the used scrollbar color settings. */
+
+::selection {
+    color: rgb(77, 0, 115);
+}
+.ce-block--selected .ce-block__content {
+    background: rgba(77, 0, 115, 0.396) !important;
+}
+
 ::-webkit-scrollbar-track {
     background-color:var(--black);
 }
@@ -175,7 +258,3 @@ input[type="checkbox"]::before {
 ::-webkit-resizer {
     background-color:var(--dpurple);
 }
-
-/* Link styles */ 
-a { color: rgb(120, 52, 79);  transition: 0.5s; }
-a:hover { color: rgb(175, 77, 116); }
