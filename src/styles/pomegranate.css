@@ -1,0 +1,233 @@
+/* Lexicanter, a constructed language organization app.
+   Copyright (C) 2023 Ethan Ray.
+   See GNU General Public License Version 3.  */
+
+:root {
+    --label-color: rgb(172, 82, 104);
+    --input-bg: rgb(70, 29, 36);
+    --tab-text: rgb(129, 43, 62);
+    --lex-color: rgb(216, 177, 186);
+    --bg-color: rgb(53, 13, 16);
+    --tab-bg: rgb(66, 27, 41);
+    --border-color: rgb(177, 101, 111);
+    --info-color: rgb(146, 75, 81);
+    --container-color: rgb(104, 42, 50);
+    --btn-bg: rgb(70, 29, 39);
+    --btn-text: rgb(129, 76, 80);
+    --btn-hover-text: rgb(185, 125, 145);
+}
+
+
+/* The background color and default text color. */
+body {
+    color: var(--label-color);
+    background-color: var(--bg-color);
+}
+
+/* Default buttons and dropdowns use this style. */
+button, select {
+    color: var(--btn-text);
+    background-color: var(--btn-bg);
+}
+
+/* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
+button[id=overwrite] {
+    color: rgb(180, 0, 0);
+}
+
+/* The following two styles are used for most buttons on mouse hover. */
+.hover-highlight:hover {
+    color: var(--btn-hover-text) !important;
+}
+.hover-shadow:hover {
+    box-shadow: 0px 2px 12px rgb(52, 52, 52);
+}
+
+/*
+.button-container wraps the buttons which are used to flip between the tabs. Its background-color is only seen along the top of the screen in the tab selector. 
+The buttons within this container are styled the same so that they are flush, and appear as tabs.
+*/
+.tab-container .button-container,
+.tab-container .button-container button {
+    color: var(--tab-text);
+    background-color: var(--tab-bg);
+}
+
+/* This style applies to the button for the selected tab. By default it is the same as the body background-color. The !important flag is important for any styles used here. */
+.selected {
+    background-color: var(--bg-color) !important;
+}
+
+/* Colors and border style used for all of the panes within each tab. */
+.container {
+    color: var(--lex-color);
+    background-color: var(--container-color);
+    border: 1px solid var(--border-color);
+}
+
+/* This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab. */
+.info {
+    color: var(--info-color);
+}
+
+/* This style is used solely for the version indicator in the top right. */
+.version-info {
+    color: var(--tab-text);
+}
+
+/* The default color styling for text in the lexicon and phrasebook. */
+.lex-body {
+    color: var(--lex-color);
+}
+
+/* This is the style used for lexicon entries when the mouse is hovering over them. */
+.lex-entry:hover { 
+    background: var(--btn-bg);
+}
+
+/* These are the colors used for tags as they appear in the lexicon. */
+.tag-item {
+    color: var(--btn-hover-text);
+    background-color: var(--tab-text);
+}
+
+/* The style used for pronunciation indicators beneath words and phrases. */
+.pronunciation {
+    color: var(--info-color);
+}
+
+/* The colors used for the entry counter/search results counters in the Lexicon tab. */
+[id=entry-counter] {
+    color: var(--lex-color);
+    background-color: var(--border-color);
+}
+
+/* This style is used for dividers such as the one in the Categories pane of the Phrasebook tab. */
+hr {
+    border: 1px solid rgb(95, 129, 112);
+}
+
+/* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
+label {
+  color: var(--label-color);
+}
+
+/* Default colors for text input fields. */
+textarea, input {
+    color: var(--lex-color) !important;
+    background-color: var(--input-bg);
+}
+/* The background color for pronunciation-specific text input fields blends into the background color. */
+input[class=pronunciation],
+textarea[class=pronunciation] {
+    background-color: transparent;
+}
+
+/* Style used for pronunciation-specific text input fields on mouse hover. */
+input[class=pronunciation]:hover,
+textarea[class=pronunciation]:hover {
+    background-color: var(--input-bg);
+}
+
+/* The style used for table cells. */
+td {
+  border: 1px solid var(--tab-bg);
+  color: var(--btn-hover-text);
+}
+
+/* Styles used for alternating rows in tables. */
+tr:nth-child(odd) {
+    background-color: var(--btn-bg);
+}
+tr:nth-child(even) { 
+    background-color: var(--tab-text);
+}
+
+/* The header class style is currently unused, until I can work out the best way to make header rows and columns user-definable. */
+td[class=header] {
+    background-color: #666;
+    font-weight: bold;
+}
+
+/* All of the used scrollbar color settings. */
+::-webkit-scrollbar-track {
+    background-color: var(--input-bg);
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--bg-color);
+}  
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-color);
+}
+::-webkit-resizer {
+    background-color: var(--input-bg);
+}
+
+/* The border and background colors for checkmarks. Default themes make the background transparent. */
+input[type="checkbox"] {
+    background-color: rgba(0, 0, 0, 0);
+    border: 0.15em solid var(--info-color);
+}
+
+/* The color of the checkmark in checkboxes. */
+input[type="checkbox"]::before {
+    background-color: var(--lex-color);
+}
+
+/* Link styles */ 
+a { color: var(--btn-hover-text); transition: 0.5s; }
+a:hover { color: var(--lex-color); }
+
+
+/* EditorJS Color Overrides */
+/* see github.com/editor-js */
+
+/* General UI Popups */
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn,
+.ce-conversion-toolbar__label {
+    color: var(--info-color) !important;
+}
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover,
+.ce-conversion-toolbar__label {
+    background-color: var(--lex-color) !important;
+}
+.ce-popover,
+.ce-popover__item,
+.ce-popover--opened,
+.ce-inline-tool,
+.ce-conversion-tool {
+    background-color: var(--label-color) !important;
+}
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons,
+.ce-conversion-toolbar,
+.ce-inline-toolbar {
+    background-color: var(--btn-bg) !important;
+}
+.ce-popover__item:hover,
+.ce-inline-tool:hover,
+.ce-conversion-tool:hover {
+    background-color: var(--border-color) !important;
+}
+
+/* Paragraph placeholder text */
+.ce-paragraph[data-placeholder]:empty::before {
+    color: var(--info-color) !important;
+}
+
+/* Tables */
+.tc-popover {
+    --color-border: rgb(129, 95, 95) !important;
+    --color-background: var(--label-color) !important;
+    --color-background-hover: var(--btn-text) !important;
+    --color-background-conbtn-textm: #812b2b !important;
+    --color-background-conbtn-textm-hover: #a12929 !important;
+    --color-text-conbtn-textm: rgb(255, 255, 255) !important;
+}
+.tc-wrap {
+    --color-background: rgba(172, 146, 163, 0.396) !important;
+    --color-text-secondary: rgb(151, 120, 135) !important;
+    --color-border: rgb(228, 207, 219) !important;
+}

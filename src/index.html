@@ -29,7 +29,7 @@
 <body id="body">
     <div class='tab-container'>
         <div class="button-container">
-            <p class="version-info"><i>v</i>1.9.4</p>
+            <p class="version-info"><i>v</i>1.10.0</p>
             <button onclick="show_pane(0)" class="hover-highlight">Lexicon</button>
             <button onclick="show_pane(1)" class="hover-highlight">Phrasebook</button>
             <button onclick="show_pane(2)" class="hover-highlight">Phonology</button>
@@ -305,12 +305,21 @@
                     <p>Appearance Settings</p> <br>
                     <label for="theme-select">Color Theme</label>
                     <select name="theme-select" id="theme-select">
-                        <option value="styles/dark.css">Dark</option>
-                        <option value="styles/light.css">Light</option>
-                        <option value="styles/marine.css">Marine</option>
-                        <option value="styles/glade.css">Glade</option>
-                        <option value="styles/leatherbound.css">Leatherbound</option>
-                        <option value="styles/purple_maar.css">Purple Maar</option>
+                        <optgroup label="Simple Themes">
+                            <option value="styles/dark.css">☾ Dark</option>
+                            <option value="styles/light.css">☀ Light</option>
+                        </optgroup>
+                        <optgroup label="The Saturnine Collection">
+                            <option value="styles/marine.css">☾ Marine</option>
+                            <option value="styles/glade.css">☾ Glade</option>
+                            <option value="styles/pomegranate.css">☾ Pomegranate</option>
+                            <option value="styles/leatherbound.css">☀ Leatherbound</option>
+                            <option value="styles/wisteria.css">☀ Wisteria</option>
+                        </optgroup>
+                        <optgroup label="The Maarz Collection">
+                            <option value="styles/purple_maar.css">☾ Purple Maar</option>
+                            <option value="styles/terminal_green.css">☾ Terminal</option>
+                        </optgroup>
                     </select>
                     <br><br>
                     <button onclick="custom_theme()" class="hover-highlight hover-shadow">Load Custom Theme…</button>
