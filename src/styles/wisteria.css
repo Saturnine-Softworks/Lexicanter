@@ -71,7 +71,7 @@ label {
 
 textarea, input {
   color: rgb(92, 31, 94) !important;
-  background-color: rgb(218, 196, 224);
+  background-color: rgb(210, 181, 217);
 }
 textarea.pronunciation, input.pronunciation {
   background-color: transparent;
@@ -92,10 +92,10 @@ td {
 }
 
 tr:nth-child(odd) {
-  background-color: rgb(218, 196, 224);
+  background-color: rgb(210, 181, 217);
 }
 tr:nth-child(even) {
-  background-color: #efe5f2;
+  background-color: #e6d7ea;
 }
 
 ::-webkit-resizer {
@@ -160,17 +160,17 @@ a:hover {
 }
 
 .tc-popover {
-  --color-border: $link-text !important;
-  --color-background: $tag-bg !important;
-  --color-background-hover: $button-bg !important;
+  --color-border: rgb(144, 70, 147) !important;
+  --color-background: rgb(209, 182, 216) !important;
+  --color-background-hover: rgb(228, 212, 228) !important;
   --color-background-confirm: #812b2b !important;
   --color-background-confirm-hover: #a12929 !important;
   --color-text-confirm: white !important;
 }
 .tc-wrap {
-  --color-background: rgba(144, 144, 144, 0.396) !important;
-  --color-text-secondary: $ipa-text !important;
-  --color-border: $link-text !important;
+  --color-background: rgba(255, 255, 255, 0.396) !important;
+  --color-text-secondary: rgb(177, 145, 184) !important;
+  --color-border: rgb(144, 70, 147) !important;
 }
 
 /* Lexicanter, a constructed language organization app.

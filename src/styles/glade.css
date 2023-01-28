@@ -160,17 +160,17 @@ a:hover {
 }
 
 .tc-popover {
-  --color-border: $link-text !important;
-  --color-background: $tag-bg !important;
-  --color-background-hover: $button-bg !important;
+  --color-border: #bad8b0 !important;
+  --color-background: #4b3d29 !important;
+  --color-background-hover: #44382c !important;
   --color-background-confirm: #812b2b !important;
   --color-background-confirm-hover: #a12929 !important;
   --color-text-confirm: white !important;
 }
 .tc-wrap {
-  --color-background: rgba(144, 144, 144, 0.396) !important;
-  --color-text-secondary: $ipa-text !important;
-  --color-border: $link-text !important;
+  --color-background: rgba(255, 255, 255, 0.396) !important;
+  --color-text-secondary: #518671 !important;
+  --color-border: #bad8b0 !important;
 }
 
 /*# sourceMappingURL=glade.css.map */
