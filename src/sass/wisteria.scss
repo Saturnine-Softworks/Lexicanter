@@ -1,0 +1,31 @@
+/* Lexicanter, a constructed language organization app.
+   Copyright (C) 2023 Ethan Ray.
+   See GNU General Public License Version 3.  */
+
+@use 'theme_styles' with (
+    $body-bg: rgb(114, 60, 116),
+    $container-bg: rgb(225, 211, 230),
+    $button-bg: rgb(228, 212, 228),
+    $tag-bg: rgb(209, 182, 216),
+    $input-bg: rgb(218, 196, 224),
+    $tabs-bg: rgb(56, 18, 68),
+    $ipa-hover-bg: rgb(218, 196, 224),
+    $lex-hover-bg: rgb(114, 60, 116),
+    $ui-hover: rgb(212, 184, 223),
+    $ui-button: rgb(114, 60, 116),
+
+    $base-text: rgb(92, 31, 94),
+    $button-text: rgb(199, 151, 211),
+    $tag-text: rgb(172, 71, 212),
+    $tabs-text: rgb(209, 182, 216),
+    $hover-text: rgb(172, 71, 212),
+    $ipa-text: rgb(177, 145, 184),
+    $link-text: rgb(144, 70, 147),
+    $lex-text: rgb(141, 84, 173),
+    $lex-hover-text: rgb(225, 211, 230),
+    $label-color: rgb(147, 82, 172),
+    $info-color: rgb(177, 145, 184),
+
+    $container-border: rgb(212, 184, 223),
+    $shadow-color: #444444,
+);

@@ -1,243 +1,176 @@
-/* Lexicanter, a constructed language organization app.
-   Copyright (C) 2023 Ethan Ray.
-   See GNU General Public License Version 3.  */
-
-:root {
-    --emerald: rgb(81, 141, 104);
-    --meadow: rgb(48, 61, 51);
-    --glenn: rgb(99, 85, 61);
-    --jasmine: rgb(138, 180, 163);
-    --glade: rgb(37, 58, 37);
-    --deep-wood: rgb(41, 33, 25);
-    --evergreen: rgb(65, 119, 72);
-    --fern: rgb(81, 134, 113);
-    --spruce: rgb(54, 78, 58);
-    --oak: rgb(68, 56, 44);
-    --fir: rgb(110, 99, 79);
-    --pine: rgb(160, 149, 130);
-}
-
-/* The background color and default text color. */
 body {
-    color: var(--emerald);
-    background-color: var(--glade);
+  color: #8ab4a3;
+  background-color: #253a25;
 }
 
-/* Default buttons and dropdowns use this style. */
 button, select {
-    color: var(--fir);
-    background-color: var(--oak);
+  color: #6e634f;
+  background-color: #44382c;
+}
+button [id=overwrite], select [id=overwrite] {
+  color: darkred;
 }
 
-/* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
-button[id=overwrite] {
-    color: rgb(180, 0, 0);
-}
-
-/* The following two styles are used for most buttons on mouse hover. */
 .hover-highlight:hover {
-    color: var(--pine) !important;
+  color: #a09582;
 }
+
 .hover-shadow:hover {
-    box-shadow: 0px 2px 12px rgb(52, 52, 52);
+  box-shadow: 0px 2px 12px #1a1a1a;
 }
 
-/* This style applies to table-editing buttons. By default, the colors are the same as normal buttons */
-.table-container:focus-within .show-in-context button {
-    color: inherit;
+.tab-container .button-container, .tab-container .button-container button {
+  color: #63553d;
+  background-color: #292119;
+}
+.tab-container .button-container:hover, .tab-container .button-container button:hover {
+  color: #a09582;
 }
 
-/* This style is for the table-editing buttons when the mouse is hovering over them. */
-.table-container:focus-within .show-in-context button:hover {
-    color: var(--jasmine);
-    background-color: var(--evergreen);
-}
-
-/*
-.button-container wraps the buttons which are used to flip between the tabs. Its background-color is only seen along the top of the screen in the tab selector. 
-The buttons within this container are styled the same so that they are flush, and appear as tabs.
-*/
-.tab-container .button-container,
-.tab-container .button-container button {
-    color: var(--glenn);
-    background-color: var(--deep-wood);
-}
-
-/* This style applies to the button for the selected tab. By default it is the same as the body background-color. The !important flag is important for any styles used here. */
 .selected {
-    background-color: var(--glade) !important;
+  background-color: #253a25 !important;
 }
 
-/* Colors and border style used for all of the panes within each tab. */
 .container {
-    color: var(--jasmine);
-    background-color: var(--spruce);
-    border: 1px solid var(--evergreen);
+  background-color: #364e3a;
+  border: 1px solid #417748;
 }
 
-/* This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab. */
 .info {
-    color: var(--fern);
+  color: #518671;
 }
 
-/* This style is used solely for the version indicator in the top right. */
 .version-info {
-    color: var(--glenn);
+  color: #518d68;
 }
 
-/* The default color styling for text in the lexicon and phrasebook. */
-.lex-body {
-    color: var(--jasmine);
+.lex-entry, .lex-body {
+  color: #8ab4a3;
+}
+.lex-entry:hover {
+  background: #44382c;
+  color: #b8ad9d;
 }
 
-/* This is the style used for lexicon entries when the mouse is hovering over them. */
-.lex-entry:hover { 
-    background: var(--oak);
+.tag-item, [id=entry-counter] {
+  color: #a09582;
+  background-color: #4b3d29;
 }
 
-/* These are the colors used for tags as they appear in the lexicon. */
-.tag-item {
-    color: var(--pine);
-    background-color: var(--glenn);
-}
-
-/* The style used for pronunciation indicators beneath words and phrases. */
 .pronunciation {
-    color: var(--fern);
+  color: #518671;
 }
 
-/* The colors used for the entry counter/search results counters in the Lexicon tab. */
-[id=entry-counter] {
-    color: var(--jasmine);
-    background-color: var(--evergreen);
-}
-
-/* This style is used for dividers such as the one in the Categories pane of the Phrasebook tab. */
 hr {
-    border: 1px solid rgb(95, 129, 112);
+  border: 1px solid #8ab4a3;
 }
 
-/* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
 label {
-  color: var(--emerald);
+  color: #518d68;
 }
 
-/* Default colors for text input fields. */
 textarea, input {
-    color: var(--jasmine) !important;
-    background-color: var(--meadow);
+  color: #8ab4a3 !important;
+  background-color: #303d33;
 }
-/* The background color for pronunciation-specific text input fields blends into the background color. */
-input[class=pronunciation],
-textarea[class=pronunciation] {
-    background-color: transparent;
+textarea.pronunciation, input.pronunciation {
+  background-color: transparent;
+}
+textarea.pronunciation:hover, input.pronunciation:hover {
+  background-color: #91a58d;
+}
+textarea[type=checkbox], input[type=checkbox] {
+  background-color: transparent;
+  border: 0.15em solid #8ab4a3;
+}
+textarea[type=checkbox]::before, input[type=checkbox]::before {
+  background-color: #bad8b0;
 }
 
-/* Style used for pronunciation-specific text input fields on mouse hover. */
-input[class=pronunciation]:hover,
-textarea[class=pronunciation]:hover {
-    background-color: var(--meadow);
-}
-
-/* The style used for table cells. */
 td {
-  border: 1px solid var(--deep-wood);
-  color: var(--pine);
+  border: 1px solid #417748;
 }
 
-/* Styles used for alternating rows in tables. */
 tr:nth-child(odd) {
-    background-color: var(--oak);
+  background-color: #303d33;
 }
-tr:nth-child(even) { 
-    background-color: var(--glenn);
-}
-
-/* The header class style is currently unused, until I can work out the best way to make header rows and columns user-definable. */
-td[class=header] {
-    background-color: #666;
-    font-weight: bold;
+tr:nth-child(even) {
+  background-color: #465a4b;
 }
 
-/* All of the used scrollbar color settings. */
+::-webkit-resizer {
+  background-color: #4b3d29;
+}
+::-webkit-resizer:hover {
+  background-color: #6e634f;
+}
 ::-webkit-scrollbar-track {
-    background-color: var(--meadow);
+  background-color: #253a25;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: var(--glade);
-}  
+  background-color: #4b3d29;
+}
 ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--evergreen);
-}
-::-webkit-resizer {
-    background-color: var(--meadow);
+  background-color: #6e634f;
 }
 
-/* The border and background colors for checkmarks. Default themes make the background transparent. */
-input[type="checkbox"] {
-    background-color: rgba(0, 0, 0, 0);
-    border: 0.15em solid var(--fern);
+a {
+  color: #bad8b0;
+  transition: 0.5s;
+}
+a:hover {
+  color: #a09582;
 }
 
-/* The color of the checkmark in checkboxes. */
-input[type="checkbox"]::before {
-    background-color: var(--jasmine);
+.ce-toolbar__settings-btn, .ce-toolbar__plus {
+  color: #8ab4a3 !important;
 }
-
-/* Link styles */ 
-a { color: var(--pine); transition: 0.5s; }
-a:hover { color: var(--jasmine); }
-
-
-/* EditorJS Color Overrides */
-/* see github.com/editor-js */
-
-/* General UI Popups */
-.ce-toolbar__plus,
-.ce-toolbar__settings-btn,
-.ce-conversion-toolbar__label {
-    color: var(--fern) !important;
+.ce-toolbar:hover {
+  background-color: #44382c !important;
 }
-.ce-toolbar__plus:hover,
-.ce-toolbar__settings-btn:hover,
-.ce-conversion-toolbar__label {
-    background-color: var(--jasmine) !important;
-}
-.ce-popover,
-.ce-popover__item,
-.ce-popover--opened,
-.ce-inline-tool,
 .ce-conversion-tool {
-    background-color: var(--emerald) !important;
+  background-color: #44382c !important;
 }
-.ce-inline-toolbar__dropdown,
-.ce-inline-toolbar__buttons,
-.ce-conversion-toolbar,
-.ce-inline-toolbar {
-    background-color: var(--oak) !important;
+.ce-conversion-toolbar {
+  background-color: #4b3d29 !important;
 }
-.ce-popover__item:hover,
-.ce-inline-tool:hover,
 .ce-conversion-tool:hover {
-    background-color: var(--evergreen) !important;
+  background-color: #518671 !important;
 }
-
-/* Paragraph placeholder text */
+.ce-popover, .ce-popover--opened {
+  background-color: #44382c !important;
+}
+.ce-popover__item {
+  background-color: #44382c !important;
+}
+.ce-popover__item:hover {
+  background-color: #518671 !important;
+}
+.ce-inline-tool {
+  background-color: #4b3d29 !important;
+}
+.ce-inline-tool:hover {
+  background-color: #518671 !important;
+}
+.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
+  background-color: #4b3d29 !important;
+}
 .ce-paragraph[data-placeholder]:empty::before {
-    color: var(--fern) !important;
+  color: #518671 !important;
 }
 
-/* Tables */
 .tc-popover {
-    --color-border: rgb(95, 129, 112) !important;
-    --color-background: var(--emerald) !important;
-    --color-background-hover: var(--fir) !important;
-    --color-background-confirm: #812b2b !important;
-    --color-background-confirm-hover: #a12929 !important;
-    --color-text-confirm: rgb(255, 255, 255) !important;
+  --color-border: $link-text !important;
+  --color-background: $tag-bg !important;
+  --color-background-hover: $button-bg !important;
+  --color-background-confirm: #812b2b !important;
+  --color-background-confirm-hover: #a12929 !important;
+  --color-text-confirm: white !important;
 }
 .tc-wrap {
-    --color-background: rgba(172, 167, 146, 0.396) !important;
-    --color-text-secondary: rgb(120, 151, 131) !important;
-    --color-border: rgb(95, 129, 112) !important;
+  --color-background: rgba(144, 144, 144, 0.396) !important;
+  --color-text-secondary: $ipa-text !important;
+  --color-border: $link-text !important;
 }
+
+/*# sourceMappingURL=glade.css.map */

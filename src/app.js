@@ -109,7 +109,8 @@ async function showOpenDialog(params, callback) {
     callback(path);
 }
 
-// Document constants. TODO: Refactor.
+// Document constants.
+// TODO: Refactor.
 const tab_panes = document.querySelectorAll('.tab-container .tab-pane');
 const tab_btns = document.querySelectorAll(
     '.tab-container .button-container button'
@@ -204,7 +205,11 @@ userData(user_path => {
     color_theme.href = theme_value;
     theme_select.value = theme_value;
 });
-// console.log(color_theme.href);
+
+/**
+ * When the user changes selected theme from the dropdown in the Settings tab,
+ * this function is called. It also updates the preferred theme setting stored in user app data.
+ */
 function change_theme() {
     let theme = theme_select.value;
     color_theme.href = theme;
@@ -216,16 +221,36 @@ function change_theme() {
 }
 theme_select.onchange = change_theme;
 
+/**
+ * This function takes a string which may contain user-written markdown elements
+ * returns a string in which those elements have been converted to their HTML
+ * equivalents.
+ * The `convert_legacy_docs` parameter exists for the conversion of
+ * pre-1.9 documentation, which could include user-written markdown,
+ * to the new EditorJS WYSIWIG format which requires specific classes.
+ * To allow the user to use common markdown notation to style their text.
+ * 
+ * @param {string} text The string with markdown to be converted to HTML.
+ * @param {bool} convert_legacy_docs By default, false.
+ * @returns {string} The converted string.
+ * 
+ * **MARKDOWN FORMAT**:
+ * ```
+ * ***bold italic***
+ * **bold** *italic*
+ * __underline__
+ * ~~strikethrough~~
+ * ^[super]script
+ * ~[sub]script
+ * [external links](url)
+ * --- (horizontal rule)
+ * ```
+ */
+// TODO: This code is very WET and needs to be made DRY.
+// TODO: Backslash escaping still needs to be implemented.
+// ? There may be a much more robust, pre-existing library for this exact purpose.
+// TODO: Improve markdown regex.
 function markdown_to_html(text, convert_legacy_docs = false) {
-    // To allow the user to use common markdown notation to style their text.
-    // ***bold italic***
-    // **bold** *italic*
-    // __underline__
-    // ~~strikethrough~~
-    // ^[super]script
-    // ~[sub]script
-    // [external links](url)
-    // --- horizontal rule
     if (!convert_legacy_docs) {
         let toHTML = text
             .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
@@ -241,7 +266,6 @@ function markdown_to_html(text, convert_legacy_docs = false) {
                 '<a href="$2" target="_blank">$1</a>'
             ) // link
             .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
-        // TODO: Backslash escaping.
         return toHTML.trim();
     } else {
         let toHTML = text
@@ -261,7 +285,6 @@ function markdown_to_html(text, convert_legacy_docs = false) {
                 '<a href="$2" target="_blank">$1</a>'
             ) // link
             .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
-        // TODO: Backslash escaping.
         return toHTML.trim();
     }
 }
@@ -1437,7 +1460,6 @@ function change_orthography() {
 //   File Functions
 // ––––––––––––––––––
 const { _open, _export } = require('./scripts/files');
-const { exists } = require('builder-util');
 // TODO: More refactoring. Ultimately, none of these functions should be located here.
 
 function open_contents_by_version(contents) {

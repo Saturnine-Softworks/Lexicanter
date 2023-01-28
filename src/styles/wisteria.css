@@ -1,234 +1,180 @@
+body {
+  color: rgb(92, 31, 94);
+  background-color: rgb(114, 60, 116);
+}
+
+button, select {
+  color: rgb(199, 151, 211);
+  background-color: rgb(228, 212, 228);
+}
+button [id=overwrite], select [id=overwrite] {
+  color: darkred;
+}
+
+.hover-highlight:hover {
+  color: rgb(172, 71, 212);
+}
+
+.hover-shadow:hover {
+  box-shadow: 0px 2px 12px #444444;
+}
+
+.tab-container .button-container, .tab-container .button-container button {
+  color: rgb(209, 182, 216);
+  background-color: rgb(56, 18, 68);
+}
+.tab-container .button-container:hover, .tab-container .button-container button:hover {
+  color: rgb(172, 71, 212);
+}
+
+.selected {
+  background-color: rgb(114, 60, 116) !important;
+}
+
+.container {
+  background-color: rgb(225, 211, 230);
+  border: 1px solid rgb(212, 184, 223);
+}
+
+.info {
+  color: rgb(177, 145, 184);
+}
+
+.version-info {
+  color: rgb(147, 82, 172);
+}
+
+.lex-entry, .lex-body {
+  color: rgb(141, 84, 173);
+}
+.lex-entry:hover {
+  background: rgb(114, 60, 116);
+  color: rgb(225, 211, 230);
+}
+
+.tag-item, [id=entry-counter] {
+  color: rgb(172, 71, 212);
+  background-color: rgb(209, 182, 216);
+}
+
+.pronunciation {
+  color: rgb(177, 145, 184);
+}
+
+hr {
+  border: 1px solid rgb(92, 31, 94);
+}
+
+label {
+  color: rgb(147, 82, 172);
+}
+
+textarea, input {
+  color: rgb(92, 31, 94) !important;
+  background-color: rgb(218, 196, 224);
+}
+textarea.pronunciation, input.pronunciation {
+  background-color: transparent;
+}
+textarea.pronunciation:hover, input.pronunciation:hover {
+  background-color: rgb(218, 196, 224);
+}
+textarea[type=checkbox], input[type=checkbox] {
+  background-color: transparent;
+  border: 0.15em solid rgb(92, 31, 94);
+}
+textarea[type=checkbox]::before, input[type=checkbox]::before {
+  background-color: rgb(144, 70, 147);
+}
+
+td {
+  border: 1px solid rgb(212, 184, 223);
+}
+
+tr:nth-child(odd) {
+  background-color: rgb(218, 196, 224);
+}
+tr:nth-child(even) {
+  background-color: #efe5f2;
+}
+
+::-webkit-resizer {
+  background-color: rgb(114, 60, 116);
+}
+::-webkit-resizer:hover {
+  background-color: rgb(212, 184, 223);
+}
+::-webkit-scrollbar-track {
+  background-color: rgb(114, 60, 116);
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgb(114, 60, 116);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(212, 184, 223);
+}
+
+a {
+  color: rgb(144, 70, 147);
+  transition: 0.5s;
+}
+a:hover {
+  color: rgb(172, 71, 212);
+}
+
+.ce-toolbar__settings-btn, .ce-toolbar__plus {
+  color: rgb(92, 31, 94) !important;
+}
+.ce-toolbar:hover {
+  background-color: rgb(228, 212, 228) !important;
+}
+.ce-conversion-tool {
+  background-color: rgb(228, 212, 228) !important;
+}
+.ce-conversion-toolbar {
+  background-color: rgb(209, 182, 216) !important;
+}
+.ce-conversion-tool:hover {
+  background-color: rgb(177, 145, 184) !important;
+}
+.ce-popover, .ce-popover--opened {
+  background-color: rgb(228, 212, 228) !important;
+}
+.ce-popover__item {
+  background-color: rgb(228, 212, 228) !important;
+}
+.ce-popover__item:hover {
+  background-color: rgb(177, 145, 184) !important;
+}
+.ce-inline-tool {
+  background-color: rgb(209, 182, 216) !important;
+}
+.ce-inline-tool:hover {
+  background-color: rgb(177, 145, 184) !important;
+}
+.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
+  background-color: rgb(209, 182, 216) !important;
+}
+.ce-paragraph[data-placeholder]:empty::before {
+  color: rgb(177, 145, 184) !important;
+}
+
+.tc-popover {
+  --color-border: $link-text !important;
+  --color-background: $tag-bg !important;
+  --color-background-hover: $button-bg !important;
+  --color-background-confirm: #812b2b !important;
+  --color-background-confirm-hover: #a12929 !important;
+  --color-text-confirm: white !important;
+}
+.tc-wrap {
+  --color-background: rgba(144, 144, 144, 0.396) !important;
+  --color-text-secondary: $ipa-text !important;
+  --color-border: $link-text !important;
+}
+
 /* Lexicanter, a constructed language organization app.
    Copyright (C) 2023 Ethan Ray.
    See GNU General Public License Version 3.  */
 
-:root {
-    --label-color: rgb(147, 82, 172);
-    --input-bg: rgb(218, 196, 224);
-    --tab-text: rgb(209, 182, 216);
-    --lex-color: rgb(141, 84, 173);
-    --bg-color: rgb(114, 60, 116);
-    --tab-bg: rgb(56, 18, 68);
-    --border-color: rgb(212, 184, 223);
-    --info-color: rgb(177, 145, 184);
-    --container-color: rgb(225, 211, 230);
-    --btn-bg: rgb(228, 212, 228);
-    --btn-text: rgb(199, 151, 211);
-    --btn-hover-text: rgb(172, 71, 212);
-}
-
-
-/* The background color and default text color. */
-body {
-    color: var(--label-color);
-    background-color: var(--bg-color);
-}
-
-/* Default buttons and dropdowns use this style. */
-button, select {
-    color: var(--btn-text);
-    background-color: var(--btn-bg);
-}
-
-/* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
-button[id=overwrite] {
-    color: rgb(180, 0, 0);
-}
-
-/* The following two styles are used for most buttons on mouse hover. */
-.hover-highlight:hover {
-    color: var(--btn-hover-text) !important;
-}
-.hover-shadow:hover {
-    box-shadow: 0px 2px 12px rgb(52, 52, 52);
-}
-
-/*
-.button-container wraps the buttons which are used to flip between the tabs. Its background-color is only seen along the top of the screen in the tab selector. 
-The buttons within this container are styled the same so that they are flush, and appear as tabs.
-*/
-.tab-container .button-container,
-.tab-container .button-container button {
-    color: var(--tab-text);
-    background-color: var(--tab-bg);
-}
-
-/* This style applies to the button for the selected tab. By default it is the same as the body background-color. The !important flag is important for any styles used here. */
-.selected {
-    background-color: var(--bg-color) !important;
-}
-
-/* Colors and border style used for all of the panes within each tab. */
-.container {
-    color: var(--lex-color);
-    background-color: var(--container-color);
-    border: 1px solid var(--border-color);
-}
-
-/* This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab. */
-.info {
-    color: var(--info-color);
-}
-
-/* This style is used solely for the version indicator in the top right. */
-.version-info {
-    color: var(--tab-text);
-}
-
-/* The default color styling for text in the lexicon and phrasebook. */
-.lex-body {
-    color: var(--lex-color);
-}
-
-/* This is the style used for lexicon entries when the mouse is hovering over them. */
-.lex-entry:hover { 
-    background: var(--bg-color);
-    color: var(--container-color);
-}
-
-/* These are the colors used for tags as they appear in the lexicon. */
-.tag-item {
-    color: var(--btn-hover-text);
-    background-color: var(--tab-text);
-}
-
-/* The style used for pronunciation indicators beneath words and phrases. */
-.pronunciation {
-    color: var(--info-color);
-}
-
-/* The colors used for the entry counter/search results counters in the Lexicon tab. */
-[id=entry-counter] {
-    color: var(--lex-color);
-    background-color: var(--border-color);
-}
-
-/* This style is used for dividers such as the one in the Categories pane of the Phrasebook tab. */
-hr {
-    border: 1px solid rgb(95, 129, 112);
-}
-
-/* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
-label {
-  color: var(--label-color);
-}
-
-/* Default colors for text input fields. */
-textarea, input {
-    color: var(--lex-color) !important;
-    background-color: var(--input-bg);
-}
-/* The background color for pronunciation-specific text input fields blends into the background color. */
-input[class=pronunciation],
-textarea[class=pronunciation] {
-    background-color: transparent;
-}
-
-/* Style used for pronunciation-specific text input fields on mouse hover. */
-input[class=pronunciation]:hover,
-textarea[class=pronunciation]:hover {
-    background-color: var(--input-bg);
-}
-
-/* The style used for table cells. */
-td {
-  border: 1px solid var(--tab-bg);
-  color: var(--btn-hover-text);
-}
-
-/* Styles used for alternating rows in tables. */
-tr:nth-child(odd) {
-    background-color: var(--btn-bg);
-}
-tr:nth-child(even) { 
-    background-color: var(--tab-text);
-}
-
-/* The header class style is currently unused, until I can work out the best way to make header rows and columns user-definable. */
-td[class=header] {
-    background-color: #666;
-    font-weight: bold;
-}
-
-/* All of the used scrollbar color settings. */
-::-webkit-scrollbar-track {
-    background-color: var(--input-bg);
-}
-::-webkit-scrollbar-thumb {
-    background-color: var(--bg-color);
-}  
-::-webkit-scrollbar-thumb:hover {
-    background-color: var(--border-color);
-}
-::-webkit-resizer {
-    background-color: var(--input-bg);
-}
-
-/* The border and background colors for checkmarks. Default themes make the background transparent. */
-input[type="checkbox"] {
-    background-color: rgba(0, 0, 0, 0);
-    border: 0.15em solid var(--info-color);
-}
-
-/* The color of the checkmark in checkboxes. */
-input[type="checkbox"]::before {
-    background-color: var(--lex-color);
-}
-
-/* Link styles */ 
-a { color: var(--btn-hover-text); transition: 0.5s; }
-a:hover { color: var(--lex-color); }
-
-
-/* EditorJS Color Overrides */
-/* see github.com/editor-js */
-
-/* General UI Popups */
-.ce-toolbar__plus,
-.ce-toolbar__settings-btn,
-.ce-conversion-toolbar__label {
-    color: var(--info-color) !important;
-}
-.ce-toolbar__plus:hover,
-.ce-toolbar__settings-btn:hover,
-.ce-conversion-toolbar__label {
-    background-color: var(--lex-color) !important;
-}
-.ce-popover,
-.ce-popover__item,
-.ce-popover--opened,
-.ce-inline-tool,
-.ce-conversion-tool {
-    background-color: var(--btn-bg) !important;
-}
-.ce-inline-toolbar__dropdown,
-.ce-inline-toolbar__buttons,
-.ce-conversion-toolbar,
-.ce-inline-toolbar {
-    background-color: var(--border-color) !important;
-}
-.ce-popover__item:hover,
-.ce-inline-tool:hover,
-.ce-conversion-tool:hover {
-    background-color: var(--btn-text) !important;
-}
-
-/* Paragraph placeholder text */
-.ce-paragraph[data-placeholder]:empty::before {
-    color: var(--info-color) !important;
-}
-
-/* Tables */
-.tc-popover {
-    --color-border: rgb(126, 95, 129) !important;
-    --color-background: var(--border-color) !important;
-    --color-background-hover: var(--btn-text) !important;
-    --color-background-conbtn-textm: #812b2b !important;
-    --color-background-conbtn-textm-hover: #a12929 !important;
-    --color-text-conbtn-textm: rgb(255, 255, 255) !important;
-}
-.tc-wrap {
-    --color-background: rgba(170, 146, 172, 0.396) !important;
-    --color-text-secondary: rgb(147, 120, 151) !important;
-    --color-border: rgb(80, 40, 92) !important;
-}
+/*# sourceMappingURL=wisteria.css.map */

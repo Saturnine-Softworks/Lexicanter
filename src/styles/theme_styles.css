@@ -1,162 +1,162 @@
 body {
-  color: #b97d91;
-  background-color: #4b041e;
+  color: #000;
+  background-color: #000;
 }
 
 button, select {
-  color: #ad687b;
-  background-color: #751d40;
+  color: #000;
+  background-color: #000;
 }
 button [id=overwrite], select [id=overwrite] {
   color: darkred;
 }
 
 .hover-highlight:hover {
-  color: #e8d1d7;
+  color: #000;
 }
 
 .hover-shadow:hover {
-  box-shadow: 0px 2px 12px #343434;
+  box-shadow: 0px 2px 12px #000;
 }
 
 .tab-container .button-container, .tab-container .button-container button {
-  color: #a54358;
-  background-color: #330609;
+  color: #000;
+  background-color: #000;
 }
 .tab-container .button-container:hover, .tab-container .button-container button:hover {
-  color: #e8d1d7;
+  color: #000;
 }
 
 .selected {
-  background-color: #4b041e !important;
+  background-color: #000 !important;
 }
 
 .container {
-  background-color: #692633;
-  border: 1px solid #b1656f;
+  background-color: #000;
+  border: 1px solid #000;
 }
 
 .info {
-  color: #b65e79;
+  color: #000;
 }
 
 .version-info {
-  color: #d38e9f;
+  color: #000;
 }
 
 .lex-entry, .lex-body {
-  color: #b97d91;
+  color: #000;
 }
 .lex-entry:hover {
-  background: #461d27;
-  color: #d5aab5;
+  background: #000;
+  color: #000;
 }
 
 .tag-item, [id=entry-counter] {
-  color: #b97d91;
-  background-color: #872850;
+  color: #000;
+  background-color: #000;
 }
 
 .pronunciation {
-  color: #a0556d;
+  color: #000;
 }
 
 hr {
-  border: 1px solid #b97d91;
+  border: 1px solid #000;
 }
 
 label {
-  color: #d38e9f;
+  color: #000;
 }
 
 textarea, input {
-  color: #b97d91 !important;
-  background-color: #4d1929;
+  color: #000 !important;
+  background-color: #000;
 }
 textarea.pronunciation, input.pronunciation {
   background-color: transparent;
 }
 textarea.pronunciation:hover, input.pronunciation:hover {
-  background-color: #8c3f49;
+  background-color: #000;
 }
 textarea[type=checkbox], input[type=checkbox] {
   background-color: transparent;
-  border: 0.15em solid #b97d91;
+  border: 0.15em solid #000;
 }
 textarea[type=checkbox]::before, input[type=checkbox]::before {
-  background-color: #f4a2b4;
+  background-color: #000;
 }
 
 td {
-  border: 1px solid #b1656f;
+  border: 1px solid #000;
 }
 
 tr:nth-child(odd) {
-  background-color: #4d1929;
+  background-color: #000;
 }
 tr:nth-child(even) {
-  background-color: #74263e;
+  background-color: #1a1a1a;
 }
 
 ::-webkit-resizer {
-  background-color: #6c3644;
+  background-color: #000;
 }
 ::-webkit-resizer:hover {
-  background-color: #994459;
+  background-color: #000;
 }
 ::-webkit-scrollbar-track {
-  background-color: #4b041e;
+  background-color: #000;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #6c3644;
+  background-color: #000;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #994459;
+  background-color: #000;
 }
 
 a {
-  color: #f4a2b4;
+  color: #000;
   transition: 0.5s;
 }
 a:hover {
-  color: #e8d1d7;
+  color: #000;
 }
 
 .ce-toolbar__settings-btn, .ce-toolbar__plus {
-  color: #b97d91 !important;
+  color: #000 !important;
 }
 .ce-toolbar:hover {
-  background-color: #751d40 !important;
+  background-color: #000 !important;
 }
 .ce-conversion-tool {
-  background-color: #751d40 !important;
+  background-color: #000 !important;
 }
 .ce-conversion-toolbar {
-  background-color: #872850 !important;
+  background-color: #000 !important;
 }
 .ce-conversion-tool:hover {
-  background-color: #b65e79 !important;
+  background-color: #000 !important;
 }
 .ce-popover, .ce-popover--opened {
-  background-color: #751d40 !important;
+  background-color: #000 !important;
 }
 .ce-popover__item {
-  background-color: #751d40 !important;
+  background-color: #000 !important;
 }
 .ce-popover__item:hover {
-  background-color: #b65e79 !important;
+  background-color: #000 !important;
 }
 .ce-inline-tool {
-  background-color: #872850 !important;
+  background-color: #000 !important;
 }
 .ce-inline-tool:hover {
-  background-color: #b65e79 !important;
+  background-color: #000 !important;
 }
 .ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
-  background-color: #872850 !important;
+  background-color: #000 !important;
 }
 .ce-paragraph[data-placeholder]:empty::before {
-  color: #a0556d !important;
+  color: #000 !important;
 }
 
 .tc-popover {
@@ -173,8 +173,4 @@ a:hover {
   --color-border: $link-text !important;
 }
 
-/* Lexicanter, a constructed language organization app.
-   Copyright (C) 2023 Ethan Ray.
-   See GNU General Public License Version 3.  */
-
-/*# sourceMappingURL=pomegranate.css.map */
+/*# sourceMappingURL=theme_styles.css.map */

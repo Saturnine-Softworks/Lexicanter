@@ -1,0 +1,204 @@
+// Lexicanter, a constructed language organization app.
+// Copyright (C) 2023 Ethan Ray.
+// See GNU General Public License Version 3.
+
+// Initialize color vars
+$body-bg: #000 !default
+$container-bg: #000 !default
+$button-bg: #000 !default
+$tag-bg: #000 !default
+$input-bg: #000 !default
+$ipa-hover-bg: #000 !default
+$tabs-bg: #000 !default
+$lex-hover-bg: #000 !default
+
+$base-text: #000 !default
+$button-text: #000 !default
+$tag-text: #000 !default
+$tabs-text: #000 !default
+$hover-text: #000 !default
+$ipa-text: #000 !default
+$link-text: #000 !default
+$lex-text: #000 !default
+$lex-hover-text: #000 !default
+$label-color: #000 !default
+$info-color: #000 !default
+$ui-hover: #000 !default
+$ui-button: #000 !default
+
+$container-border: #000 !default
+$shadow-color: #000 !default
+
+body
+    color: $base-text
+    background-color: $body-bg
+
+// Default buttons and dropdowns use this style.
+button, select 
+    color: $button-text
+    background-color: $button-bg
+
+    // This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry.
+    [id=overwrite]
+        color: darkred
+
+// The following two styles are used for most buttons on mouse hover.
+.hover-highlight:hover 
+    color: $hover-text
+
+.hover-shadow:hover 
+    box-shadow: 0px 2px 12px $shadow-color
+
+// .button-container wraps the buttons which are used to flip between the tabs. Its background-color is only seen along the top of the screen in the tab selector.
+// The buttons within this container are styled the same so that they are flush, and appear as tabs.
+.tab-container .button-container 
+    &, button
+        color: $tabs-text
+        background-color: $tabs-bg
+        &:hover
+            color: $hover-text
+
+// This style applies to the button for the selected tab. By default it is the same as the body background-color. The !important flag is important for any styles used here.
+.selected 
+    background-color: $body-bg !important
+
+// Colors and border style used for all of the panes within each tab.
+.container 
+    background-color: $container-bg
+    border: 1px solid $container-border
+
+// This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab.
+.info 
+    color: $info-color
+
+// This style is used solely for the version indicator in the top right.
+.version-info 
+    color: $label-color
+
+// The default color styling for text in the lexicon and phrasebook.
+.lex
+    &-entry, &-body
+        color: $lex-text
+
+        // This is the style used for lexicon entries when the mouse is hovering over them.
+    &-entry:hover
+        background: $lex-hover-bg
+        color: $lex-hover-text
+
+// These are the colors used for tags as they appear in the lexicon.
+.tag-item, [id=entry-counter]
+    color: $tag-text
+    background-color: $tag-bg
+
+// The style used for pronunciation indicators beneath words and phrases.
+.pronunciation 
+    color: $ipa-text
+
+// This style is used for dividers such as the one in the Categories pane of the Phrasebook tab.
+hr 
+    border: 1px solid $base-text
+
+// The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition'
+label 
+  color: $label-color
+
+// Default colors for text input fields.
+textarea, input 
+    &.pronunciation
+        background-color: transparent
+        &:hover
+            background-color: $ipa-hover-bg
+
+    color: $base-text !important
+    background-color: $input-bg
+    
+    // The border and background colors for checkmarks. Default themes make the background transparent.
+    &[type="checkbox"] 
+        background-color: transparent
+        border: 0.15em solid $base-text
+        &::before 
+            background-color: $link-text
+
+// The style used for table cells.
+td 
+  border: 1px solid $container-border
+
+// Styles used for alternating rows in tables.
+tr
+    &:nth-child(odd) 
+        background-color: $input-bg
+    &:nth-child(even)  
+        background-color: lighten($input-bg, 10%)
+
+// All of the used scrollbar color settings.
+::-webkit
+    &-resizer 
+        background-color: $ui-button
+        &:hover
+            background-color: $ui-hover
+    &-scrollbar
+        &-track 
+            background-color: $body-bg
+        &-thumb 
+            background-color: $ui-button
+            &:hover 
+                background-color: $ui-hover
+
+// Link styles
+a  
+    color: $link-text
+    transition: 0.5s 
+
+    &:hover
+        color: $hover-text
+
+
+// EditorJS Color Overrides
+// see github.com/editor-js
+// General UI Popups
+.ce
+    &-toolbar
+        &__settings-btn, &__plus
+            color: $base-text !important
+        &:hover
+            background-color: $button-bg !important
+    
+    &-conversion-tool
+            background-color: $button-bg !important
+            &bar
+                background-color: $tag-bg !important
+            &:hover
+                background-color: $info-color !important
+    &-popover
+        &, &--opened
+            background-color: $button-bg !important
+        &__item
+            background-color: $button-bg !important
+            &:hover
+                background-color: $info-color !important
+    
+    &-inline-tool
+        background-color: $tag-bg !important
+        &:hover
+            background-color: $info-color !important
+        &bar
+            &, &__dropdown, &__buttons
+                background-color: $tag-bg !important
+
+    // Paragraph placeholder text
+    &-paragraph[data-placeholder]:empty::before
+        color: $ipa-text !important
+
+// Tables
+.tc
+    &-popover
+        --color-border: $link-text !important
+        --color-background: $tag-bg !important
+        --color-background-hover: $button-bg !important
+        --color-background-confirm: #812b2b !important
+        --color-background-confirm-hover: #a12929 !important
+        --color-text-confirm: white !important
+    &-wrap 
+        --color-background: rgba(144, 144, 144, 0.396) !important
+        --color-text-secondary: $ipa-text !important
+        --color-border: $link-text !important

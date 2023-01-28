@@ -1,7 +1,3 @@
-/* Lexicanter, a constructed language organization app.
-   Copyright (C) 2023 Ethan Ray.
-   See GNU General Public License Version 3.  */
-
 @font-face {
   font-family: Noto;
   src: url(../rsrc/Noto_Sans/NotoSans-Regular.ttf);
@@ -24,7 +20,6 @@
   font-style: italic;
   font-weight: bold;
 }
-
 @font-face {
   font-family: Gentium;
   src: url(../rsrc/Gentium/Gentium-Regular.ttf);
@@ -47,53 +42,36 @@
   font-style: italic;
   font-weight: bold;
 }
+html, body {
+  align-items: center;
+}
 
 body {
   font-family: Noto;
-  font-size: 14px;
-  min-width: 500px;
-  min-height: 500px;
+  font-size: 11pt;
+  min-width: 600px;
+  min-height: 600px;
   margin: 0px;
   overflow: hidden;
 }
 
 button {
   font-family: Noto;
-  font-size: 14px;
+  font-size: 11pt;
   transition-duration: 0.33s;
 }
 button[id=overwrite] {
-  font-weight:bold
-}
-
-.table-container .show-in-context {
-  display:none;
-}
-
-.table-container:focus-within .show-in-context {
-  display:inline-flex;
-}
-
-.table-container:focus-within .show-in-context button {
-  border-radius: 0px;
-  font-size: 12px;
-}
-
-.table-container:focus-within .show-in-context button:hover {
-  /* place-holder; this style only contains colors */
-  font-size: 12px;
+  font-weight: bold;
 }
 
 .tab-container {
   width: 100vw;
   height: 100vh;
 }
-
 .tab-container .button-container {
   width: 100%;
   text-align: center;
 }
-
 .tab-container .button-container button {
   border: none;
   outline: none;
@@ -101,96 +79,112 @@ button[id=overwrite] {
   height: 100%;
   width: fit-content;
 }
-
 .tab-container .tab-pane {
   height: 80%;
   box-sizing: border-box;
   display: none;
 }
 
-.row {display: flex;}
-.column {flex: 50%}
-
-.text-left {text-align: left;}
-.text-right {text-align: right;}
-.text-center {text-align: center;}
-
-.prelined {white-space: pre-line;} /* This is solely to make the \n character work from the JS side */
-
-p {margin: 0px;}
-
-/* EditorJS Styles */
-div[id=tables-pane] {
-  font-family: Gentium !important;
+.row {
+  display: flex;
 }
+
+.column {
+  flex: 50%;
+}
+
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+
+.prelined {
+  white-space: pre-line;
+  /* This is solely to make the \n character work from the JS side */
+}
+
+p {
+  margin: 0px;
+}
+
+div[id=tables-pane] {
+  font-family: Gentium;
+  font-size: 11pt;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-style: italic;
   padding-top: 1em !important;
 }
 
 .info {
-  font-size: 14px;
+  font-family: Noto;
+  font-size: 11pt;
   font-style: italic;
   line-height: 1.5em;
 }
 
 .phonology {
-  width: 95%;
   font-family: Gentium;
-  font-size: 15px;
+  font-size: 11pt;
+  width: 95%;
 }
 
 .version-info {
+  font-family: Noto;
+  font-size: 7pt;
   text-align: left;
-  font-size: 10px;
   display: inline;
   float: right;
 }
 
 .lex-body {
-  font-family: Gentium;
-  font-size: 15px;
   white-space: pre-line;
+}
+.lex-entry {
+  font-family: Gentium;
+  font-size: 11pt;
+  transition: 0.3s;
+  padding: 1em;
 }
 
 .variants {
-  font-size: 14px
+  font-family: Gentium;
+  font-size: 11pt;
 }
-
 .variants div.column {
-  margin: .6em;
+  margin: 0.6em;
 }
 
 .capitalize {
   text-transform: capitalize;
 }
 
-.lex-entry {
-  transition: .3s;
-  padding: 1em;
-  font-family: Gentium;
-  font-size: 15px;
-}
-
 .tag-item {
-  border-radius: 4px;
-  width: fit-content;
   font-family: Noto;
-  font-size: 9px;
+  font-size: 7pt;
+  border-radius: 7%;
+  width: fit-content;
+  padding: 0.2em;
+  margin: 0.2em;
   text-transform: uppercase;
-  padding: .2em;
-  margin: .2em;
   display: inline-block;
 }
 
 [id=entry-counter] {
-  border-radius: 4px;
-  width: fit-content;
   font-family: Noto;
-  font-size: 10px;
-  font-weight: bold;
+  font-size: 7pt;
+  border-radius: 7%;
+  width: fit-content;
+  padding: 0.2em;
+  margin: 0.2em;
   text-transform: uppercase;
-  padding: .2em;
+  font-weight: bold;
   margin: auto;
 }
 
@@ -217,12 +211,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 label {
-  font-size: 13px;
+  font-family: Noto;
+  font-size: 11pt;
+}
+
+.pronunciation {
+  font-family: Gentium;
+  font-size: 9pt;
 }
 
 textarea, input {
   font-family: Gentium;
-  font-size: 15px;
+  font-size: 11pt;
   display: flex;
   text-align: center;
   padding: 4px;
@@ -230,30 +230,51 @@ textarea, input {
   border: none;
   border-radius: 3px;
   width: 80%;
+  resize: vertical;
+  transition: 0.2s;
 }
-
-input[class=pronunciation],
-textarea[class=pronunciation] {
-    transition: 0.33s;
+textarea .pronunciation, input .pronunciation {
+  font-family: Gentium;
+  font-size: 9pt;
 }
-
-.header input {width: 70%;}
-
-input[type=number] {
+textarea[type=number], input[type=number] {
   padding: 1px;
   width: 4em;
+}
+textarea[type=checkbox], input[type=checkbox] {
+  appearance: none;
+  margin: auto;
+  font: inherit;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+}
+textarea[type=checkbox]::before, input[type=checkbox]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+}
+textarea[type=checkbox]:checked::before, input[type=checkbox]:checked::before {
+  transform: scale(1);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.header input {
+  width: 70%;
 }
 
 .narrow {
   width: 50%;
   margin: auto;
 }
-
 .narrow-col {
   width: 15%;
 }
-
-textarea {resize: vertical;}
 
 .search {
   text-align: left;
@@ -261,34 +282,23 @@ textarea {resize: vertical;}
   margin: 2px auto 2px auto;
 }
 
-.pronunciation {
-  font-size: 13px;
-}
-
-input[class=pronunciation] {
-  font-size: 13px;
-  transition: .2s;
-}
-
-.table-container { 
-  font-family: Gentium;
-  font-size: 15px;
-  margin: auto; 
-  padding: 30px 5%;
-}
-
 table {
   border-collapse: collapse;
-  width: 100%;
+  width: 95%;
 }
-
-.table-title {
+table-container {
   font-family: Gentium;
+  font-size: 11pt;
+  margin: auto;
+  padding: 30px 5%;
+}
+table-title {
+  font-family: Gentium;
+  font-size: 14pt;
   font-style: italic;
-  font-size: 17px;
 }
 
-td { 
+td {
   padding: 2px 6px 2px 6px;
   user-select: none;
 }
@@ -296,50 +306,28 @@ td {
 ::-webkit-scrollbar {
   width: 9px;
 }
-::-webkit-scrollbar-thumb { 
-  border-radius: 6px; 
-  transition: .2s;
+::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  transition: 0.2s;
 }
-::-webkit-scrollbar-button { display: none; }
-::-webkit-scrollbar-corner { border-radius: 6px 0px 0px 0px; }
-::-webkit-resizer { border-radius: 6px 0px 0px 0px; }
-
-input[type="checkbox"] {
-  appearance: none;
-  margin: auto;
-  font: inherit;
-  width: 1.15em;
-  height: 1.15em;
-  border-radius: 0.15em;
-  transform: translateY(-0.075em);
-  display: grid;
-  place-content: center;
+::-webkit-scrollbar-button {
+  display: none;
+}
+::-webkit-scrollbar-corner {
+  border-radius: 6px 0px 0px 0px;
+}
+::-webkit-resizer {
+  border-radius: 6px 0px 0px 0px;
 }
 
-input[type="checkbox"]:checked::before {
-  transform: scale(1);
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-}
-
-input[type="checkbox"]::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  transform: scale(0);
-  transition: 120ms transform ease-in-out;
-}
-
-hr { 
-  margin-bottom: .2em;
-  margin-top: .2em;
+hr {
+  margin-bottom: 0.2em;
+  margin-top: 0.2em;
   max-width: 50%;
   padding: 0px;
   border-radius: 6px;
 }
 
-html, body {
-  align-items: center;
-}
 .milkyWay {
   width: 100px;
   height: 100px;
@@ -348,10 +336,14 @@ html, body {
   position: relative;
   border-radius: 50%;
 }
-.planet::before,
-.planet::after,
-.milkyWay::before,
-.milkyWay::after {
+.milkyWay .planet {
+  border: 1px solid white;
+  animation-name: orbit;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-play-state: paused;
+}
+.milkyWay .planet::before, .milkyWay .planet::after {
   position: absolute;
   content: "";
   display: block;
@@ -361,20 +353,15 @@ html, body {
   position: absolute;
   border-radius: 50%;
 }
+
 .sun {
-  background: #f1c40f;
+  background: #faca09;
   width: 10%;
   height: 10%;
   top: 45%;
   left: 45%;
 }
-.planet {
-  border:1px solid white;
-  animation-name: orbit;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  animation-play-state: paused;
-}
+
 .mercury {
   width: 20%;
   height: 20%;
@@ -383,12 +370,13 @@ html, body {
   animation-duration: 2s;
 }
 .mercury::before {
-  background: #7f8c8d;
+  background: #9fb5b6;
   width: 16%;
   height: 16%;
   top: -8%;
   left: 42%;
 }
+
 .venus {
   width: 30%;
   height: 30%;
@@ -403,6 +391,7 @@ html, body {
   top: -5%;
   left: 45%;
 }
+
 .earth {
   width: 40%;
   height: 40%;
@@ -411,20 +400,21 @@ html, body {
   animation-duration: 4s;
 }
 .earth::before {
-  background: #3498db;
+  background: #208fd8;
   width: 10%;
   height: 10%;
   top: -5%;
   left: 45%;
 }
 .earth::after {
-  background: #27ae60;
+  background: #33c470;
   width: 10%;
   height: 6%;
   top: -3%;
   left: 45%;
   transform: rotate(45deg);
 }
+
 .mars {
   width: 50%;
   height: 50%;
@@ -439,6 +429,7 @@ html, body {
   top: -3%;
   left: 47%;
 }
+
 .jupiter {
   width: 60%;
   height: 60%;
@@ -447,12 +438,13 @@ html, body {
   animation-duration: 6s;
 }
 .jupiter::before {
-  background: #CD9155;
+  background: #d4975a;
   width: 10%;
   height: 10%;
   top: -5%;
   left: 45%;
 }
+
 .saturn {
   width: 70%;
   height: 70%;
@@ -475,6 +467,7 @@ html, body {
   left: 45.5%;
   transform: rotate(-15deg);
 }
+
 .uranus {
   width: 80%;
   height: 80%;
@@ -490,13 +483,14 @@ html, body {
   left: 48%;
 }
 .uranus::after {
-  background: #64BEF8;
+  background: #b0d0e5;
   width: 8%;
   height: 0.5%;
-  top: -0%;
+  top: 0%;
   left: 46.25%;
   transform: rotate(-15deg);
 }
+
 .neptune {
   width: 90%;
   height: 90%;
@@ -505,20 +499,21 @@ html, body {
   animation-duration: 9s;
 }
 .neptune::before {
-  background: #2980b9;
+  background: #1269a3;
   width: 4%;
   height: 4%;
   top: -1%;
   left: 49%;
 }
 .neptune::after {
-  background: #64BEF8;
+  background: #91cbf2;
   width: 6%;
   height: 0.5%;
-  top: .5%;
+  top: 0.5%;
   left: 48%;
   transform: rotate(-15deg);
 }
+
 .pluto {
   width: 100%;
   height: 100%;
@@ -527,7 +522,7 @@ html, body {
   animation-duration: 10s;
 }
 .pluto::before {
-  background: #95a5a6;
+  background: #b78c7a;
   width: 1%;
   height: 1%;
   top: -0.5%;
@@ -535,24 +530,26 @@ html, body {
 }
 
 @keyframes orbit {
-  0% { transform: rotate(-180deg); }
-  100% { transform: rotate(180deg); }
+  0% {
+    transform: rotate(-180deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
 }
-
 /* EditorJS Overrides */
-
 .ce-toolbar__plus {
   transition: 0.33s;
+}
+.ce-toolbar__content {
+  max-width: 90% !important;
+}
+.ce-block__content {
+  max-width: 80% !important;
 }
 
 ::selection {
   background-color: rgba(255, 255, 255, 0.333) !important;
 }
 
-.ce-block__content {
-  max-width: 80% !important;
-}
-
-.ce-toolbar__content {
-  max-width: 90% !important;
-}
+/*# sourceMappingURL=index.css.map */

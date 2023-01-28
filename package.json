@@ -6,7 +6,9 @@
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
-    "publish": "bash publish"
+    "test-mac": "electron-builder --mac --publish never",
+    "test-win": "electron-builder --win --publish never",
+    "publish": "bash publish.bash"
   },
   "repository": "https://github.com/RayDawn/Lexicanter-Electron",
   "publish": {
