@@ -71,7 +71,7 @@ label {
 
 textarea, input {
   color: #b4b4b4 !important;
-  background-color: #202020;
+  background-color: #151515;
 }
 textarea.pronunciation, input.pronunciation {
   background-color: transparent;
@@ -92,10 +92,10 @@ td {
 }
 
 tr:nth-child(odd) {
-  background-color: #202020;
+  background-color: #151515;
 }
 tr:nth-child(even) {
-  background-color: #3a3a3a;
+  background-color: #2f2f2f;
 }
 
 ::-webkit-resizer {

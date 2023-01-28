@@ -1,6 +1,6 @@
 # Electron-Builder Distribution
 dist/
-publish
+publish.bash
 
 # Logs
 logs

@@ -12,7 +12,7 @@ button [id=overwrite], select [id=overwrite] {
 }
 
 .hover-highlight:hover {
-  color: white;
+  color: #fafafa;
 }
 
 .hover-shadow:hover {
@@ -24,7 +24,7 @@ button [id=overwrite], select [id=overwrite] {
   background-color: #082329;
 }
 .tab-container .button-container:hover, .tab-container .button-container button:hover {
-  color: white;
+  color: #fafafa;
 }
 
 .selected {
@@ -119,7 +119,7 @@ a {
   transition: 0.5s;
 }
 a:hover {
-  color: white;
+  color: #fafafa;
 }
 
 .ce-toolbar__settings-btn, .ce-toolbar__plus {
