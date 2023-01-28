@@ -413,11 +413,12 @@ $selection-color: #ffffff55
             transition: 0.33s
         &__content
             max-width: 90% !important
-    &-block__content
-        max-width: 80% !important
+    &-block
+        &__content
+            max-width: 80% !important
 
-    &--selected &__content
-        background-color: $selection-color !important
+        &--selected &__content
+            background-color: $selection-color !important
 
 ::selection 
     background-color: $selection-color !important
