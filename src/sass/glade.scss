@@ -29,3 +29,5 @@
     $shadow-color: #1a1a1a,
     $container-border: #417748,
 );
+
+@use 'orbits' with ($orbit-ring-color: #c7b29d);

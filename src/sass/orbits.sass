@@ -1,0 +1,150 @@
+$orbit-ring-color: #fff !default
+
+.milkyWay 
+    width: 100px
+    height: 100px
+    background: transparent
+    margin: auto
+    position: relative
+    border-radius: 50%
+    .planet
+        border:1px solid $orbit-ring-color
+        animation-name: orbit
+        animation-iteration-count: infinite
+        animation-timing-function: linear
+        animation-play-state: paused
+        &::before, &::after
+            position: absolute
+            content: ""
+            display: block
+            border-radius: 50%
+    & > div 
+        position: absolute
+        border-radius: 50%
+
+@mixin ring($i)
+    $width: (10 + (10*$i)) - 0%
+    width: $width
+    height: $width
+
+    $corner: (45 - (5*$i)) - 0%
+    top: calc($corner - 1px)
+    left: calc($corner - 1px)
+
+    animation-duration: $i + 1s
+
+@mixin size($diameter)
+    width: $diameter + 0%
+    height: $diameter + 0%
+
+.sun 
+    background: #faca09
+    @include size(10)
+    top: 45%
+    left: 45%
+
+.mercury 
+    @include ring(1)
+    &::before 
+        background: #9fb5b6
+        @include size(16)
+        top: -8%
+        left: 42%
+
+.venus 
+    @include ring(2)
+    &::before 
+        background: #ECC98E
+        @include size(10)
+        top: -5%
+        left: 45%
+
+.earth 
+    @include ring(3)
+    &::before 
+        background: #208fd8
+        @include size(10)
+        top: -5%
+        left: 45%
+    &::after 
+        background: #33c470
+        width: 10%
+        height: 6%
+        top: -3%
+        left: 45%
+        transform: rotate(45deg)
+
+.mars 
+    @include ring(4)
+    &::before 
+        background: #d35400
+        @include size(6)
+        top: -3%
+        left: 47%
+
+.jupiter 
+    @include ring(5)
+    &::before 
+        background: #d4975a
+        @include size(10)
+        top: -5%
+        left: 45%
+
+.saturn
+    @include ring(6)
+    &::before 
+        background: #E4D191
+        @include size(7)
+        top: -4%
+        left: 48%
+    &::after 
+        background: #F0E4C1
+        width: 12%
+        height: 1%
+        top: -1%
+        left: 45.5%
+        transform: rotate(-15deg)
+
+.uranus 
+    @include ring(7)
+    &::before 
+        background: #3498db
+        @include size(5)
+        top: -2%
+        left: 48%
+    &::after 
+        background: #b0d0e5
+        width: 8%
+        height: 0.5%
+        top: -0%
+        left: 46.25%
+        transform: rotate(-15deg)
+
+.neptune 
+    @include ring(8)
+    &::before 
+        background: #1269a3
+        @include size(4)
+        top: -1%
+        left: 49%
+    &::after 
+        background: #91cbf2
+        width: 6%
+        height: 0.5%
+        top: .5%
+        left: 48%
+        transform: rotate(-15deg)
+
+.pluto 
+    @include ring(9)
+    &::before 
+        background: #b78c7a
+        @include size(2)
+        top: -0.5%
+        left: 49%
+
+@keyframes orbit 
+    0%
+      transform: rotate(-180deg) 
+    100%
+      transform: rotate(180deg) 

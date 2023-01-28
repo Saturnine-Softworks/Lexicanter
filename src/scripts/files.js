@@ -1031,7 +1031,7 @@ module.exports = {
                         <!-- Phrasebook -->
                         <div class="row" style="height:90vh;">
                             <!-- Categories -->
-                            <div class="container column" style="max-width: 18%;">
+                            <div class="container column sidebar">
                                 <p>Categories</p>
                                 <hr />
                                 <div class="column scrolled" style="max-height: 90%;" id="category-body">
@@ -1121,7 +1121,6 @@ module.exports = {
                 await Docs.save().then(data => {
                     body = editorjs_to_html(data, body);
                 });
-                body.style.overflow="auto";
                 body.style.padding = "12em";
                 body.classList.add('container');
                 export_container.appendChild(body);

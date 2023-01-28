@@ -1,44 +1,98 @@
-/* Lexicanter, a constructed language organization app.
-   Copyright (C) 2023 Ethan Ray.
-   See GNU General Public License Version 3.  */
+// Lexicanter, a constructed language organization app.
+// Copyright (C) 2023 Ethan Ray.
+// See GNU General Public License Version 3.
 
 @import url('https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,4000,7001,4001,700&display=swap')
 
 body 
-    overflow: auto
+    overflow-y: auto
     text-align: center
+    margin: auto
 
-.search-row  
-    display: inline-flex 
+.container 
+    overflow-x: clip
+    overflow-y: auto
 
 .lex-body 
-    font-family: 'Gentium Book Plus', serif
+    font-family: "Gentium Book Plus", serif
 
 .tag-item 
     font-family: sans-serif
 
+.search 
+    font-family: "Gentium Book Plus", serif
 
 .phonology, .pronunciation 
-    font-family: 'Gentium Book Plus', serif !important
-
-.search 
-    font-family: 'Gentium Book Plus', serif
-
+    font-family: "Gentium Book Plus", serif !important
 
 [id=entry-counter] 
     font-family: sans-serif
-
+    
 td 
     text-align: center
-    background: transparent
+    
+tr 
+    background-color: transparent !important
 
-.table
-    &-container , &-title
-        font-family: 'Gentium Book Plus', serif
+table 
     border-collapse: collapse
+    margin: auto
+    align-self: center
+
+.table-container, .table-title 
+    font-family: "Gentium Book Plus", serif
+    align-items: center
 
 button 
     display: none
-
-.info  
+    
+.info 
     display: none
+
+.search-row 
+    display: inline-flex
+
+@media only screen and (min-device-width: 601px) 
+    .sidebar 
+        max-width: 18% !important
+
+@media only screen and (max-device-width: 600px) 
+    body
+        width: 100vw !important
+        font-size: 12pt
+        padding: 2vw
+        &> h1
+            font-size: 36pt
+    div
+        &.container
+            height: 60vh !important
+    
+        &.column 
+            display: block
+    
+        &.sidebar 
+            max-height: 18vh
+    
+        &.row 
+            display: block
+            min-width: 96vw !important
+            margin-bottom: 36vh
+
+        &.variants
+            margin-bottom: 4rem
+        
+    .lex
+        &-entry, &-body
+            font-size: 16pt !important
+    
+    .capitalize
+        font-size: 24pt !important
+
+    .tag-item, [id=entry-counter]
+        font-size: 16pt
+    
+    .search, .sidebar p
+        font-size: 24pt
+    
+    td
+        font-size: 18pt !important 

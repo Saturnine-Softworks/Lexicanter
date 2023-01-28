@@ -1,0 +1,211 @@
+.milkyWay {
+  width: 100px;
+  height: 100px;
+  background: transparent;
+  margin: auto;
+  position: relative;
+  border-radius: 50%;
+}
+.milkyWay .planet {
+  border: 1px solid #fff;
+  animation-name: orbit;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-play-state: paused;
+}
+.milkyWay .planet::before, .milkyWay .planet::after {
+  position: absolute;
+  content: "";
+  display: block;
+  border-radius: 50%;
+}
+.milkyWay > div {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.sun {
+  background: #faca09;
+  width: 10%;
+  height: 10%;
+  top: 45%;
+  left: 45%;
+}
+
+.mercury {
+  width: 20%;
+  height: 20%;
+  top: calc(40% - 1px);
+  left: calc(40% - 1px);
+  animation-duration: 2s;
+}
+.mercury::before {
+  background: #9fb5b6;
+  width: 16%;
+  height: 16%;
+  top: -8%;
+  left: 42%;
+}
+
+.venus {
+  width: 30%;
+  height: 30%;
+  top: calc(35% - 1px);
+  left: calc(35% - 1px);
+  animation-duration: 3s;
+}
+.venus::before {
+  background: #ECC98E;
+  width: 10%;
+  height: 10%;
+  top: -5%;
+  left: 45%;
+}
+
+.earth {
+  width: 40%;
+  height: 40%;
+  top: calc(30% - 1px);
+  left: calc(30% - 1px);
+  animation-duration: 4s;
+}
+.earth::before {
+  background: #208fd8;
+  width: 10%;
+  height: 10%;
+  top: -5%;
+  left: 45%;
+}
+.earth::after {
+  background: #33c470;
+  width: 10%;
+  height: 6%;
+  top: -3%;
+  left: 45%;
+  transform: rotate(45deg);
+}
+
+.mars {
+  width: 50%;
+  height: 50%;
+  top: calc(25% - 1px);
+  left: calc(25% - 1px);
+  animation-duration: 5s;
+}
+.mars::before {
+  background: #d35400;
+  width: 6%;
+  height: 6%;
+  top: -3%;
+  left: 47%;
+}
+
+.jupiter {
+  width: 60%;
+  height: 60%;
+  top: calc(20% - 1px);
+  left: calc(20% - 1px);
+  animation-duration: 6s;
+}
+.jupiter::before {
+  background: #d4975a;
+  width: 10%;
+  height: 10%;
+  top: -5%;
+  left: 45%;
+}
+
+.saturn {
+  width: 70%;
+  height: 70%;
+  top: calc(15% - 1px);
+  left: calc(15% - 1px);
+  animation-duration: 7s;
+}
+.saturn::before {
+  background: #E4D191;
+  width: 7%;
+  height: 7%;
+  top: -4%;
+  left: 48%;
+}
+.saturn::after {
+  background: #F0E4C1;
+  width: 12%;
+  height: 1%;
+  top: -1%;
+  left: 45.5%;
+  transform: rotate(-15deg);
+}
+
+.uranus {
+  width: 80%;
+  height: 80%;
+  top: calc(10% - 1px);
+  left: calc(10% - 1px);
+  animation-duration: 8s;
+}
+.uranus::before {
+  background: #3498db;
+  width: 5%;
+  height: 5%;
+  top: -2%;
+  left: 48%;
+}
+.uranus::after {
+  background: #b0d0e5;
+  width: 8%;
+  height: 0.5%;
+  top: 0%;
+  left: 46.25%;
+  transform: rotate(-15deg);
+}
+
+.neptune {
+  width: 90%;
+  height: 90%;
+  top: calc(5% - 1px);
+  left: calc(5% - 1px);
+  animation-duration: 9s;
+}
+.neptune::before {
+  background: #1269a3;
+  width: 4%;
+  height: 4%;
+  top: -1%;
+  left: 49%;
+}
+.neptune::after {
+  background: #91cbf2;
+  width: 6%;
+  height: 0.5%;
+  top: 0.5%;
+  left: 48%;
+  transform: rotate(-15deg);
+}
+
+.pluto {
+  width: 100%;
+  height: 100%;
+  top: calc(0% - 1px);
+  left: calc(0% - 1px);
+  animation-duration: 10s;
+}
+.pluto::before {
+  background: #b78c7a;
+  width: 2%;
+  height: 2%;
+  top: -0.5%;
+  left: 49%;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(-180deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+/*# sourceMappingURL=orbits.css.map */

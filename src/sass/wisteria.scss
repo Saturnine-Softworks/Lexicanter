@@ -29,3 +29,5 @@
     $container-border: rgb(212, 184, 223),
     $shadow-color: #444444,
 );
+
+@use 'orbits' with ($orbit-ring-color: rgb(56, 9, 44))

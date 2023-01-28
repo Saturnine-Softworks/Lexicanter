@@ -547,11 +547,12 @@ hr {
 .ce-block__content {
   max-width: 80% !important;
 }
+.ce--selected .ce__content {
+  background-color: rgba(255, 255, 255, 0.3333333333) !important;
+}
 
 ::selection {
-  background-color: rgba(255, 255, 255, 0.333) !important;
+  background-color: rgba(255, 255, 255, 0.3333333333) !important;
 }
 
-.cdx-monospace {
-  font-family: monospace;
-}
+/*# sourceMappingURL=index.css.map */

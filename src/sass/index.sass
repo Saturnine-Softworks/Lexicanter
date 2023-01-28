@@ -406,6 +406,7 @@ hr
 
 
 /* EditorJS Overrides */
+$selection-color: #ffffff55    
 .ce
     &-toolbar
         &__plus 
@@ -415,5 +416,8 @@ hr
     &-block__content
         max-width: 80% !important
 
+    &--selected &__content
+        background-color: $selection-color !important
+
 ::selection 
-    background-color: rgba(255, 255, 255, 0.333) !important
+    background-color: $selection-color !important
