@@ -552,4 +552,6 @@ hr {
   background-color: rgba(255, 255, 255, 0.333) !important;
 }
 
-/*# sourceMappingURL=index.css.map */
+.cdx-monospace {
+  font-family: monospace;
+}

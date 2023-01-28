@@ -12,37 +12,25 @@ const Header = require('@editorjs/header');
 const Paragraph = require('@editorjs/paragraph');
 const Table = require('@editorjs/table');
 const Underline = require('@editorjs/underline');
-class Monospace {
-    // EditorJS custom class
-    static get isInline() {
-        return true;
-    }
-    static get sanitize() {
-        return {
-            code: {
-                class: 'cdx-monospace',
-            },
-        };
-    }
-    get state() {
-        return this._state;
-    }
-    set state(state) {
-        this._state = state;
-
-        this.button.classList.toggle(
-            this.api.styles.inlineToolButtonActive,
-            state
-        );
-    }
+class Monospace { // EditorJS custom class
+    static get CSS() {
+        return 'cdx-monospace';
+    };
+    
     constructor({ api }) {
         this.api = api;
         this.button = null;
-        this._state = false;
-
-        this.tag = 'code';
-        this.class = 'cdx-monospace';
+        this.tag = 'CODE';
+        this.iconClasses = {
+            base: this.api.styles.inlineToolButton,
+            active: this.api.styles.inlineToolButtonActive,
+        };
     }
+
+    static get isInline() {
+        return true;
+    }
+    
     render() {
         this.button = document.createElement('button');
         this.button.type = 'button';
@@ -50,33 +38,70 @@ class Monospace {
         this.button.classList.add(this.api.styles.inlineToolButton);
         return this.button;
     }
+    
     surround(range) {
-        if (this.state) {
-            this.unwrap(range);
+        if (!range) {
             return;
         }
-        this.wrap(range);
+        const termWrapper = this.api.selection.findParentTag(this.tag, Monospace.CSS);
+    
+        // If start or end of selection is in the highlighted block
+        if (termWrapper) {
+            this.unwrap(termWrapper);
+        } else {
+            this.wrap(range);
+        }
     }
+
+    // Wrap selection with term-tag
     wrap(range) {
-        const selectedText = range.extractContents();
-        const monospaced = document.createElement(this.tag);
-        monospaced.classList.add(this.class);
-        monospaced.appendChild(selectedText);
-        range.insertNode(monospaced);
-        this.api.selection.expandToTag(monospaced);
+        const m = document.createElement(this.tag);
+    
+        m.classList.add(Monospace.CSS);
+    
+        /** SurroundContent throws an error if the Range splits a non-Text node with only one of its boundary points
+         *  @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Range/surroundContents}
+         *  // range.surroundContents(span);
+         */
+        m.appendChild(range.extractContents());
+        range.insertNode(m);
+    
+        // Expand (add) selection to highlighted block
+        this.api.selection.expandToTag(m);
     }
-    unwrap(range) {
-        const monospaced = this.api.selection.findParentTag(
-            this.tag,
-            this.class
-        );
-        const text = range.extractContents();
-        monospaced.remove();
-        range.insertNode(text);
+    
+
+    // Unwrap term-tag
+    unwrap(termWrapper) {
+        // Expand selection to all term-tag
+        this.api.selection.expandToTag(termWrapper);
+
+        const sel = window.getSelection();
+        const range = sel.getRangeAt(0);
+        const unwrappedContent = range.extractContents();
+    
+        // Remove empty term-tag
+        termWrapper.parentNode.removeChild(termWrapper);
+    
+        // Insert extracted content
+        range.insertNode(unwrappedContent);
+    
+        // Restore selection
+        sel.removeAllRanges();
+        sel.addRange(range);
     }
+
     checkState() {
-        const monospaced = this.api.selection.findParentTag(this.tag);
-        this.state = !!monospaced;
+        const termTag = this.api.selection.findParentTag(this.tag, Monospace.CSS);
+        this.button.classList.toggle(this.iconClasses.active, !!termTag);
+    }
+    
+    static get sanitize() {
+        return {
+            code: {
+                class: Monospace.CSS,
+            },
+        };
     }
 }
 var Docs;
@@ -272,13 +297,13 @@ function markdown_to_html(text, convert_legacy_docs = false) {
             .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
             .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
             .replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
-            .replace(/__([^\n(?:__)]*)__/gim, '<u class="cdx-underline">$1</u>') // underlined
+            .replace(/__([^\n(?:__)]*)__/gim, '<U class="cdx-underline">$1</U>') // underlined
             .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
             .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
             .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
             .replace(
                 /``([^\n(?:``)]*)``/gim,
-                '<code class="cdx-monospace">$1</code>'
+                '<CODE class="cdx-monospace">$1</CODE>'
             ) // monospace
             .replace(
                 /\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim,
@@ -1326,7 +1351,7 @@ function initialize_docs(data = false) {
             monospace: Monospace,
             header: {
                 class: Header,
-                inlineToolbar: ['bold', 'italic', 'underline'],
+                inlineToolbar: true,
             },
             paragraph: {
                 class: Paragraph,
