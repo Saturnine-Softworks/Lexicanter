@@ -8,7 +8,7 @@
     "start": "electron-forge start",
     "test-mac": "electron-builder --mac --publish never",
     "test-win": "electron-builder --win --publish never",
-    "publish": "bash publish.bash"
+    "publish": "bash bash/publish.bash"
   },
   "repository": "https://github.com/Saturnine-Softworks/Lexicanter-Electron",
   "publish": {
