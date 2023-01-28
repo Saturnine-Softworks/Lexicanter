@@ -1,162 +1,162 @@
 body {
-  color: #d1dee2;
-  background-color: #00363d;
+  color: #b97d91;
+  background-color: #4b041e;
 }
 
 button, select {
-  color: #c2c9c9;
-  background-color: #61828d;
+  color: #ad687b;
+  background-color: #751d40;
 }
 button [id=overwrite], select [id=overwrite] {
   color: darkred;
 }
 
 .hover-highlight:hover {
-  color: #fafafa;
+  color: #e8d1d7;
 }
 
 .hover-shadow:hover {
-  box-shadow: 0px 2px 12px #242424;
+  box-shadow: 0px 2px 12px #343434;
 }
 
 .tab-container .button-container, .tab-container .button-container button {
-  color: #5d8a92;
-  background-color: #082329;
+  color: #a54358;
+  background-color: #330609;
 }
 .tab-container .button-container:hover, .tab-container .button-container button:hover {
-  color: #fafafa;
+  color: #e8d1d7;
 }
 
 .selected {
-  background-color: #00363d !important;
+  background-color: #4b041e !important;
 }
 
 .container {
-  background-color: #223f48;
-  border: 1px solid #98a9aa;
+  background-color: #692633;
+  border: 1px solid #b1656f;
 }
 
 .info {
-  color: #6da3aa;
+  color: #b65e79;
 }
 
 .version-info {
-  color: #dfe3e6;
+  color: #d38e9f;
 }
 
 .lex-entry, .lex-body {
-  color: #abd6d3;
+  color: #b97d91;
 }
 .lex-entry:hover {
-  background: #4b6b70;
-  color: #abd6d3;
+  background: #461d27;
+  color: #d5aab5;
 }
 
 .tag-item, [id=entry-counter] {
-  color: #b3cdd3;
-  background-color: #60888f;
+  color: #b97d91;
+  background-color: #872850;
 }
 
 .pronunciation {
-  color: #538b92;
+  color: #a0556d;
 }
 
 hr {
-  border: 1px solid #d1dee2;
+  border: 1px solid #b97d91;
 }
 
 label {
-  color: #dfe3e6;
+  color: #d38e9f;
 }
 
 textarea, input {
-  color: #d1dee2 !important;
-  background-color: #36565c;
+  color: #b97d91 !important;
+  background-color: #4d1929;
 }
 textarea.pronunciation, input.pronunciation {
   background-color: transparent;
 }
 textarea.pronunciation:hover, input.pronunciation:hover {
-  background-color: #81a1a7;
+  background-color: #8c3f49;
 }
 textarea[type=checkbox], input[type=checkbox] {
   background-color: transparent;
-  border: 0.15em solid #d1dee2;
+  border: 0.15em solid #b97d91;
 }
 textarea[type=checkbox]::before, input[type=checkbox]::before {
-  background-color: #a1ced7;
+  background-color: #f4a2b4;
 }
 
 td {
-  border: 1px solid #98a9aa;
+  border: 1px solid #b1656f;
 }
 
 tr:nth-child(odd) {
-  background-color: #36565c;
+  background-color: #4d1929;
 }
 tr:nth-child(even) {
-  background-color: #49747c;
+  background-color: #74263e;
 }
 
 ::-webkit-resizer {
-  background-color: #708d94;
+  background-color: #6c3644;
 }
 ::-webkit-resizer:hover {
-  background-color: #78afbc;
+  background-color: #994459;
 }
 ::-webkit-scrollbar-track {
-  background-color: #00363d;
+  background-color: #4b041e;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #708d94;
+  background-color: #6c3644;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #78afbc;
+  background-color: #994459;
 }
 
 a {
-  color: #a1ced7;
+  color: #f4a2b4;
   transition: 0.5s;
 }
 a:hover {
-  color: #fafafa;
+  color: #e8d1d7;
 }
 
 .ce-toolbar__settings-btn, .ce-toolbar__plus {
-  color: #d1dee2 !important;
+  color: #b97d91 !important;
 }
 .ce-toolbar:hover {
-  background-color: #61828d !important;
+  background-color: #751d40 !important;
 }
 .ce-conversion-tool {
-  background-color: #61828d !important;
+  background-color: #751d40 !important;
 }
 .ce-conversion-toolbar {
-  background-color: #60888f !important;
+  background-color: #872850 !important;
 }
 .ce-conversion-tool:hover {
-  background-color: #6da3aa !important;
+  background-color: #b65e79 !important;
 }
 .ce-popover, .ce-popover--opened {
-  background-color: #61828d !important;
+  background-color: #751d40 !important;
 }
 .ce-popover__item {
-  background-color: #61828d !important;
+  background-color: #751d40 !important;
 }
 .ce-popover__item:hover {
-  background-color: #6da3aa !important;
+  background-color: #b65e79 !important;
 }
 .ce-inline-tool {
-  background-color: #60888f !important;
+  background-color: #872850 !important;
 }
 .ce-inline-tool:hover {
-  background-color: #6da3aa !important;
+  background-color: #b65e79 !important;
 }
 .ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
-  background-color: #60888f !important;
+  background-color: #872850 !important;
 }
 .ce-paragraph[data-placeholder]:empty::before {
-  color: #538b92 !important;
+  color: #a0556d !important;
 }
 
 .tc-popover {
@@ -177,4 +177,4 @@ a:hover {
    Copyright (C) 2023 Ethan Ray.
    See GNU General Public License Version 3.  */
 
-/*# sourceMappingURL=marine.css.map */
+/*# sourceMappingURL=pomegranate.css.map */

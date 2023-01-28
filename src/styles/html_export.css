@@ -1,53 +1,54 @@
 /* Lexicanter, a constructed language organization app.
-   Copyright (C) 2023 Ethan Ray.
-   See GNU General Public License Version 3.  */
-
-@import url('https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
+ * Copyright (C) 2023 Ethan Ray.
+ * See GNU General Public License Version 3.  */
+@import url("https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,4000,7001,4001,700&display=swap");
 body {
-    overflow: auto;
-    text-align: center;
+  overflow: auto;
+  text-align: center;
 }
 
-.search-row { display: inline-flex; }
+.search-row {
+  display: inline-flex;
+}
 
 .lex-body {
-    font-family: 'Gentium Book Plus', serif;
+  font-family: "Gentium Book Plus", serif;
 }
 
 .tag-item {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
 
-.phonology,
-.pronunciation {
-    font-family: 'Gentium Book Plus', serif !important;
+.phonology, .pronunciation {
+  font-family: "Gentium Book Plus", serif !important;
 }
 
 .search {
-    font-family: 'Gentium Book Plus', serif;
+  font-family: "Gentium Book Plus", serif;
 }
 
 [id=entry-counter] {
-    font-family: sans-serif;
-}
-
-.table-container {
-    font-family: 'Gentium Book Plus', serif;
-}
-
-.table-title {
-    font-family: 'Gentium Book Plus', serif;
-}
-
-button {
-    display: none;
-}
-
-.info { 
-    display: none;
+  font-family: sans-serif;
 }
 
 td {
-    text-align: center;
+  text-align: center;
+  background: transparent;
 }
+
+.table {
+  border-collapse: collapse;
+}
+.table-container, .table-title {
+  font-family: "Gentium Book Plus", serif;
+}
+
+button {
+  display: none;
+}
+
+.info {
+  display: none;
+}
+
+/*# sourceMappingURL=html_export.css.map */

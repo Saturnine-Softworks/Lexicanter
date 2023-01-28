@@ -1,0 +1,31 @@
+/* Lexicanter, a constructed language organization app.
+   Copyright (C) 2023 Ethan Ray.
+   See GNU General Public License Version 3.  */
+
+@use 'theme_styles' with (
+    $body-bg: #00363d,
+    $container-bg: #223f48,
+    $input-bg: #36565c,
+    $tabs-bg: #082329,
+    $lex-hover-bg: #4b6b70,
+    $button-bg: #61828d,
+    $tag-bg: #60888f,
+    $ipa-hover-bg: #81a1a7,
+    $ui-button: #708d94,
+    $ui-hover: #78afbc,
+
+    $base-text: #d1dee2,
+    $lex-text: #abd6d3,
+    $lex-hover-text: #abd6d3,
+    $tag-text: #b3cdd3,
+    $tabs-text: #5d8a92,
+    $button-text: #c2c9c9,
+    $hover-text: #fafafa,
+    $ipa-text: #538b92,
+    $link-text: #a1ced7,
+    $label-color: #dfe3e6,
+    $info-color: #6da3aa,
+
+    $shadow-color: #242424,
+    $container-border: #98a9aa,
+);
