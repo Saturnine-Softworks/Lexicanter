@@ -1564,7 +1564,6 @@ async function import_lex() {
 
 async function open_lex() {
     let contents;
-    // here's to hoping future me doesn't forget how callback functions work.
     let dialog = user_path => {
         showOpenDialog(
             {
@@ -1573,6 +1572,19 @@ async function open_lex() {
                 properties: ['openFile'],
             },
             file_path => {
+                if (file_path === undefined) {
+                    // stop orbit animation
+                    document.querySelectorAll('.planet').forEach(planet => {
+                        planet.style.animationPlayState = 'paused';
+                    });
+                    document.getElementById('loading-message').innerHTML =
+                        'No file selected.';
+                    window.setTimeout(() => {
+                        document.getElementById('loading-message').innerHTML =
+                            '';
+                    }, 5000);
+                    return;
+                }
                 fs.readFile(file_path[0], 'utf8', (err, data) => {
                     if (err) {
                         console.log(err);
