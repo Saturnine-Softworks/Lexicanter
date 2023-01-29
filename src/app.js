@@ -1,6 +1,8 @@
-// Lexicanter, a constructed language organization app.
-// Copyright (C) 2023 Ethan Ray.
-// See GNU General Public License Version 3.
+/**
+ * Lexicanter, a constructed language organization app.
+ * Copyright (C) 2023 Ethan Ray.
+ * See GNU General Public License Version 3.
+ */
 
 // Module requirements
 const { ipcRenderer } = require('electron');
@@ -105,12 +107,14 @@ class Monospace { // EditorJS custom class
     }
 }
 var Docs;
-
-// This function grabs the path to the userData directory and calls back with it.
-// Usage:
-// userData(path => {
-//     ... code which needs to use the userData path ...
-// });
+/**
+ * This function grabs the path to the userData directory and calls back with it.
+ * @param {function} callback - The callback function to call with the userData path.
+ * @example
+ * userData(path => {
+ *     // ... code which needs to use the userData path ...
+ * });
+ */ 
 async function userData(callback) {
     let path;
     await ipcRenderer.invoke('getUserDataPath').then(result => {
@@ -135,11 +139,9 @@ async function showOpenDialog(params, callback) {
 }
 
 // Document constants.
-// TODO: Refactor.
+// TODO: Refactor. Possible that none of this is necessary if a framework is used.
 const tab_panes = document.querySelectorAll('.tab-container .tab-pane');
-const tab_btns = document.querySelectorAll(
-    '.tab-container .button-container button'
-);
+const tab_btns = document.querySelectorAll('.tab-container .button-container button');
 
 const alphabet_input = document.getElementById('alph-input');
 const fresh_order = document.getElementById('update-order');
@@ -376,7 +378,14 @@ function sort_lex_keys() {
     return final_sort;
 }
 
-function edit_entry(k) {
+/**
+ * This function is called when the user right-clicks on a word in the lexicon.
+ * It deletes the entry's data from the lexicon object and calls {@link rewrite_entries},
+ * and puts the entry's data in the input fields so that the user can edit it.
+ * If there is text in the input fields, it asks the user for overwrite confirmation.
+ * @param {string} key
+ */
+function edit_entry(key) {
     var confirmation = true;
     if (wrd_input.value !== '' || def_input.value !== '') {
         var confirmation = confirm(
@@ -384,17 +393,24 @@ function edit_entry(k) {
         );
     }
     if (confirmation) {
-        wrd_input.value = k;
-        pronun.value = lexicon[k][0];
-        def_input.value = lexicon[k][1];
-        tags_input.value = lexicon[k][3].join(' ');
-        delete lexicon[k];
+        wrd_input.value = key;
+        pronun.value = lexicon[key][0];
+        def_input.value = lexicon[key][1];
+        tags_input.value = lexicon[key][3].join(' ');
+        delete lexicon[key];
         rewrite_entries();
 
         wrd_input.onkeyup(false); // update overwrite detection, preserve irregular pronunciation
     }
 }
 
+/**
+ * This function updates the lexicon display by clearing out all the nodes in {@link lex_body}
+ * and then adding new nodes for each entry in the {@link lexicon} object. By default it writes
+ * the entire lexicon object, but if the optional parameter {@link keys} is passed, it only
+ * writes the entries with keys in the array {@link keys}.
+ * @param {Array} keys=false
+ */
 function rewrite_entries(keys = false) {
     let sorted_keys = sort_lex_keys();
     // lex_body.style.color = 'rgb(200, 200, 200)';
@@ -443,6 +459,13 @@ function rewrite_entries(keys = false) {
     entry_count.replaceChildren(count);
 }
 
+/**
+ * This functon is called when the user clicks on a lexicon link
+ * (called by the handler URI handler in index.js), when the user
+ * adds a new entry ({@link add_word}), or when the user writes an
+ * existing entry into the word input field ({@link wrd_input.onkeyup}).
+ * @param {string} entry The entry to scroll to.
+ */
 function follow_lex_link(entry) {
     try {
         show_pane(0);
@@ -455,6 +478,17 @@ function follow_lex_link(entry) {
     }
 }
 
+
+/**
+ * This function is called when the user clicks the "Add Word" button.
+ * It takes the values from the word input, pronunciation input, definition
+ * input, and tags input fields, and adds them to the lexicon. If the word
+ * already exists and `append` is `true`, it appends the definition and tags
+ * to the existing entry. If `append` is `false`, it overwrites the existing
+ * entry. It then calls {@link rewrite_entries} to update the lexicon display.
+ * @param {bool} append By default, false
+ * @returns {string}
+ */
 function add_word(append = false) {
     let w = wrd_input.value.trim();
     let p = pronun.value.trim();
@@ -482,6 +516,15 @@ function add_word(append = false) {
     return w;
 }
 
+/**
+ * This function is called when the user right-clicks on a phrasebook entry.
+ * It removes a phrase from the {@link phrasebook} object and then calls
+ * {@link update_book} to update the phrasebook display. Phrase data is
+ * moved to {@link phrase_input}, {@link phrase_pron}, and {@link phrase_desc}
+ * inputs. If the user has already entered text in these fields, it asks
+ * the user for overwrite confirmation before making any changes.
+ * @param {any} e The entry the user wants to edit
+ */
 function edit_book_entry(e) {
     let i = structuredClone(phrasebook[selected_cat][e]);
     // check that the input fields are empty
@@ -511,6 +554,13 @@ function edit_book_entry(e) {
     update_categories();
 }
 
+/**
+ * This function updates the phrasebook display by removing all nodes
+ * from {@link book_body} and then adding new nodes for each entry in
+ * the currently selected category. If `keys` is specified, it only
+ * writes the entries in the array `keys`.
+ * @param {Array} keys Defaults to false.
+ */
 function update_book(keys = false) {
     if (!keys) {
         keys = [false];
@@ -610,6 +660,10 @@ function update_book(keys = false) {
     }
 }
 
+/**
+ * Updates the category list in the categories display and calls
+ * {@link update_book} to update the phrasebook display.
+ */
 function update_categories() {
     while (cat_body.firstChild) {
         cat_body.removeChild(cat_body.lastChild);
@@ -628,6 +682,10 @@ function update_categories() {
     update_book();
 }
 
+/**
+ * Add a new phrase to the phrasebook and calls {@link update_categories} 
+ * to update the phrasebook display.
+ */
 function add_phrase() {
     let cat = cat_input.value.trim().toLowerCase();
     if (!cat.length) {
@@ -675,6 +733,13 @@ function add_phrase() {
     phrase_desc.value = '';
 }
 
+/**
+ * This function adds inputs for a variation of a phrase when
+ * the user clicks the "+ Variant" button. 
+ * @param {string} v The variant phrase.
+ * @param {string} p The pronunciation of the variant phrase.
+ * @param {string} d The description of the variant phrase.
+ */
 function add_variant(v = '', p = '', d = '') {
     let variant_prompt = document.createElement('div');
     variant_prompt.className = 'variant-div';
@@ -770,6 +835,16 @@ srch_wrd.onblur();
 srch_def.onblur();
 srch_tag.onblur();
 
+/**
+ * Searches the lexicon for a word, definition, or tag. 
+ * The character '!' is used to require an exact match.
+ * The caret '^' can be used to represent the beginning
+ * or end of a word. Searches are combinative, and only
+ * results which match all search input fields will be
+ * selected as matches. 
+ * It then calls {@link rewrite_entries} to display the results.
+ * @returns {any}
+ */
 function search_lex() {
     let s = srch_wrd.value.trim();
     let z = srch_def.value.toLowerCase().trim();
@@ -932,6 +1007,7 @@ srch_descriptions.onkeyup = search_book;
 
 romans.innerHTML = 'th > θ'; // initialize pronunciations variables; for some reason, everything breaks if there's nothing initialized here. TODO: Fix that.
 
+// TODO: The pronunciation rule format is going to be changed to the more standard `pattern/substitution/context` format. This whole function needs to be rewritten.
 function get_pronunciation(word) {
     word = `^${word.replaceAll(/[^\S\n]|(\n)/gm, '^$1')}^`; // add carets for front/end searching, treat spaces as word boundaries
     word = document.getElementById('case-sensitive').checked
@@ -965,13 +1041,15 @@ function get_pronunciation(word) {
         }
     }
 
-    // Then we go through each length of pattern, checking for patterns from the starting point of each
-    // character in the word. Given the word 'dread' and the pattern 'ad', it would find a pattern match
-    // when i = 3 and the patterns length we're checking for is 2 (†1). We then find the pronunciation to
-    // substitute at this position (†2) and use slices to replace the pattern with the substitute (†3).
-    // We add the length of the substituion string to `i` so that the next iteration skips past the part of
-    // the word we have already changed (†4). When this process is done, we remove the carets (†5) and
-    // return the processed word.
+    /** 
+     * Then we go through each length of pattern, checking for patterns from the starting point of each
+     * character in the word. Given the word 'dread' and the pattern 'ad', it would find a pattern match
+     * when i = 3 and the patterns length we're checking for is 2 (†1). We then find the pronunciation to
+     * substitute at this position (†2) and use slices to replace the pattern with the substitute (†3).
+     * We add the length of the substituion string to `i` so that the next iteration skips past the part of
+     * the word we have already changed (†4). When this process is done, we remove the carets (†5) and
+     * return the processed word. 
+     */
     for (let i = 0; i < word.length; i++) {
         for (let length of lengths) {
             let substring = word.slice(i, i + length);
@@ -1008,17 +1086,29 @@ function get_pronunciation(word) {
     return word.replaceAll('^', ' ').trim().replaceAll('∅', ''); // (†5)
 }
 
+/**
+ * Updates the pronunciation value for the word in the input field.
+ * A custom input and output field can be specified. 
+ * Uses {@link get_pronunciation} to generate the pronunciation.
+ * @param {any} input Defaults to {@link wrd_input}
+ * @param {any} output Defaults to {@link pronun}
+ */
 function update_pronunciation(input = wrd_input, output = pronun) {
     txt = input.value;
     output.value = get_pronunciation(txt);
 }
 
+/**
+ * Takes a list of rules and a dictionary of categories and returns a new list of rules
+ * which have been permutated with every item from the categories for every rule that
+ * contains a category symbol.
+ * @param {Array} rules
+ * @param {Object} categories
+ * @returns {Array} The expanded rules array.
+ * TODO: Like most of the arrays and 'dictionaries' in this codebase, new interfaces should be created instead of using the native JS types.
+ */
 function generateRules(rules, categories) {
     // This function was mostly generated by OpenAI's chatGPT @ https://chat.openai.com/chat.
-    // It takes a list of rules in the format 'pattern > substitution'
-    // and a categories dictionary in the format {'S': ['one', 'two', 'three' ...] ...}.
-    // It returns a new list of rules which have been permutated with every item from the
-    // categories for every rule that contains a category symbol.
 
     // Initialize an empty array to store the expanded rules
     let expandedRules = [];
@@ -1192,6 +1282,12 @@ function get_phonotactics() {
     return c;
 }
 
+/**
+ * Generates a random word based on the given phonotactics, pulled from the 
+ * input values of {@link onset_input}, {@link middle_input}, {@link coda_input},
+ * {@link vowel_input}, and {@link illegals_input}.
+ * @returns {string} The generated word, or `false` if one could not be generated.
+ */
 function generate_word() {
     let c = get_phonotactics();
     let r = () => Math.floor(Math.random() * 2) === 0;
@@ -1223,6 +1319,11 @@ function generate_word() {
     }
 }
 
+/**
+ * Tries to generate 5 words, and displays them in the {@link gen_words_p} element.
+ * If it fails to generate 5 words, it will try again up to 20 times. 
+ * It calls {@link generate_word} to generate each word.
+ */
 gen_words_btn.onclick = function () {
     let words = [];
     for (let i = 0; i < 20; i++) {
@@ -1243,6 +1344,12 @@ gen_words_btn.onclick = function () {
     gen_words_p.replaceChildren(text);
 };
 
+/**
+ * This function attempts to complete a partially-typed word based on the given
+ * phonotactics, pulled from the input values of {@link onset_input}, {@link middle_input}, 
+ * {@link coda_input}, {@link vowel_input}, and {@link illegals_input}.
+ * @returns {string} The generated word, or `false` if one could not be generated.
+ */
 function complete_word() {
     let r = () => Math.floor(Math.random() * 2) === 0;
     let choice = arr => arr[Math.floor(Math.random() * arr.length)];
