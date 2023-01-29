@@ -14,7 +14,7 @@ exec('NET SESSION', function (err, so, se) {
     autoUpdater.allowPrerelease = se.length === 0 ? true : false;
     console.log('allowPrerelease:', autoUpdater.allowPrerelease);
 });
-__dirname
+
 const createWindow = () => {
     // Create the browser window.
     var mainWindow = new BrowserWindow({

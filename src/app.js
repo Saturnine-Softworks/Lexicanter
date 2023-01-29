@@ -247,16 +247,11 @@ function change_theme() {
 theme_select.onchange = change_theme;
 
 /**
+ * To allow the user to use common markdown notation to style their text.
  * This function takes a string which may contain user-written markdown elements
  * returns a string in which those elements have been converted to their HTML
  * equivalents.
- * The `convert_legacy_docs` parameter exists for the conversion of
- * pre-1.9 documentation, which could include user-written markdown,
- * to the new EditorJS WYSIWIG format which requires specific classes.
- * To allow the user to use common markdown notation to style their text.
- * 
  * @param {string} text The string with markdown to be converted to HTML.
- * @param {bool} convert_legacy_docs By default, false.
  * @returns {string} The converted string.
  * 
  * **MARKDOWN FORMAT**:
@@ -271,47 +266,28 @@ theme_select.onchange = change_theme;
  * --- (horizontal rule)
  * ```
  */
-// TODO: This code is very WET and needs to be made DRY.
 // TODO: Backslash escaping still needs to be implemented.
 // ? There may be a much more robust, pre-existing library for this exact purpose.
 // TODO: Improve markdown regex.
-function markdown_to_html(text, convert_legacy_docs = false) {
-    if (!convert_legacy_docs) {
-        let toHTML = text
-            .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
-            .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
-            .replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
-            .replace(/__([^\n(?:__)]*)__/gim, '<u>$1</u>') // underlined
-            .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
-            .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
-            .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
-            .replace(/``([^\n(?:``)]*)``/gim, '<code>$1</code>') // monospace
-            .replace(
-                /\[([^\n\[\]]*)\]\(([^\n\]\^\(\)]*)\)/gim,
-                '<a href="$2" target="_blank">$1</a>'
-            ) // link
-            .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
-        return toHTML.trim();
-    } else {
-        let toHTML = text
-            .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
-            .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
-            .replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
-            .replace(/__([^\n(?:__)]*)__/gim, '<U class="cdx-underline">$1</U>') // underlined
-            .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
-            .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
-            .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
-            .replace(
-                /``([^\n(?:``)]*)``/gim,
-                '<CODE class="cdx-monospace">$1</CODE>'
-            ) // monospace
-            .replace(
-                /\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim,
-                '<a href="$2" target="_blank">$1</a>'
-            ) // link
-            .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
-        return toHTML.trim();
-    }
+function markdown_to_html(text) {
+    let toHTML = text
+        .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
+        .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
+        .replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
+        .replace(/__([^\n(?:__)]*)__/gim, '<U class="cdx-underline">$1</U>') // underlined
+        .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
+        .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
+        .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
+        .replace(
+            /``([^\n(?:``)]*)``/gim,
+            '<CODE class="cdx-monospace">$1</CODE>'
+        ) // monospace
+        .replace(
+            /\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim,
+            '<a href="$2" target="_blank">$1</a>'
+        ) // link
+        .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
+    return toHTML.trim();
 }
 
 // Lexicon handling
@@ -508,7 +484,13 @@ function add_word(append = false) {
 
 function edit_book_entry(e) {
     let i = structuredClone(phrasebook[selected_cat][e]);
-    console.log(e, i);
+    // check that the input fields are empty
+    if (phrase_input.value !== '' || phrase_pron.value !== '' || phrase_desc.value !== '') {
+        let overwrite = window.confirm('There is text in the phrase entry fields. Are you sure you want to overwrite it?');
+        if (!overwrite) {
+            return;
+        }
+    }
     phrase_input.value = e;
     phrase_pron.value = i.pronunciation;
     phrase_desc.value = i.description;
@@ -658,6 +640,11 @@ function add_phrase() {
     if (!(cat in phrasebook)) {
         phrasebook[cat] = {}; // create category if it does not exist
     }
+    // check if entry already exists
+    if (phrase_input.value.trim() in phrasebook[cat]) {
+        window.alert('This phrase already exists.')
+        return;
+    }
     // create entry as an object
     phrasebook[cat][phrase_input.value.trim()] = {
         pronunciation: phrase_pron.value.trim(),
@@ -686,8 +673,6 @@ function add_phrase() {
     phrase_input.value = '';
     phrase_pron.value = '';
     phrase_desc.value = '';
-    // cat_input.value = '';
-    // console.log(phrasebook);
 }
 
 function add_variant(v = '', p = '', d = '') {
@@ -789,12 +774,8 @@ function search_lex() {
     let s = srch_wrd.value.trim();
     let z = srch_def.value.toLowerCase().trim();
     let x = srch_tag.value.trim();
-    if (s === 'Search by word…') {
-        s = '';
-    }
-    if (z === 'search definition…') {
-        z = '';
-    }
+    if (s === 'Search by word…') s = '';
+    if (z === 'search definition…') z = '';
     if (x === 'Search by tags…' || x === '') {
         x = [];
     } else {
@@ -824,22 +805,37 @@ function search_lex() {
             }
             for (let a of l[1]) {
                 // definitions
-                if (!lexicon[word][1].toLowerCase().includes(a)) {
+                let needs_exact_match = a[0] === '!';
+                if (needs_exact_match) {
+                    pattern = new RegExp(`\\b${a.split('!')[1]}\\b`, 'i');
+                    if (!pattern.test(lexicon[word][1].toLowerCase())) { // exact word match
+                        match = false;
+                    }
+                } else if (!lexicon[word][1].toLowerCase().includes(a)) { // partial match
                     match = false;
                 }
             }
             if (lexicon[word][3].length !== 0) {
                 // has at least one tag
-                let any_tag_match;
+                let partial_tag_match = false;
+                let needs_exact_match = false;
+                let has_exact_match = false;
                 for (let tag of lexicon[word][3]) {
                     for (let a of x) {
                         // tags
+                        if (a[0] === '!') {
+                            needs_exact_match = true;
+                            if (`!${tag}` === a) {
+                                has_exact_match = true;
+                                partial_tag_match = true;
+                            }
+                        }
                         if (`^${tag}^`.includes(a)) {
-                            any_tag_match = true;
+                            partial_tag_match = true;
                         }
                     }
                 }
-                if (!any_tag_match && x.length !== 0) {
+                if ((!partial_tag_match && x.length !== 0) || (needs_exact_match && !has_exact_match)) {
                     match = false;
                 }
             } else {
@@ -1430,7 +1426,7 @@ function write_tables(tables) {
                 .forEach(p_element => {
                     [...p_element.split('<br>')].forEach(paragraph => {
                         paragraph = paragraph.replaceAll(/<.*?>/g, '');
-                        paragraph = markdown_to_html(paragraph, true);
+                        paragraph = markdown_to_html(paragraph);
                         console.log('paragraph:', paragraph);
                         data.blocks.push({
                             type: 'paragraph',

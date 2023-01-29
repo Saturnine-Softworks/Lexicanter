@@ -39,7 +39,7 @@ button, select
     background-color: $button-bg
 
     // This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry.
-    [id=overwrite]
+    &[id=overwrite]
         color: darkred
 
 // The following two styles are used for most buttons on mouse hover.
@@ -202,3 +202,6 @@ a
         --color-background: rgba(255, 255, 255, 0.396) !important
         --color-text-secondary: #{$ipa-text} !important
         --color-border: #{$link-text} !important
+
+table
+    border-color: $link-text

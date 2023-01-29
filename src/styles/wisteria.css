@@ -7,7 +7,7 @@ button, select {
   color: rgb(199, 151, 211);
   background-color: rgb(228, 212, 228);
 }
-button [id=overwrite], select [id=overwrite] {
+button[id=overwrite], select[id=overwrite] {
   color: darkred;
 }
 
@@ -171,6 +171,10 @@ a:hover {
   --color-background: rgba(255, 255, 255, 0.396) !important;
   --color-text-secondary: rgb(177, 145, 184) !important;
   --color-border: rgb(144, 70, 147) !important;
+}
+
+table {
+  border-color: rgb(144, 70, 147);
 }
 
 .milkyWay {

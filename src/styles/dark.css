@@ -7,7 +7,7 @@ button, select {
   color: #b4b4b4;
   background-color: #505050;
 }
-button [id=overwrite], select [id=overwrite] {
+button[id=overwrite], select[id=overwrite] {
   color: darkred;
 }
 
@@ -84,7 +84,7 @@ textarea[type=checkbox], input[type=checkbox] {
   border: 0.15em solid #b4b4b4;
 }
 textarea[type=checkbox]::before, input[type=checkbox]::before {
-  background-color: #1d1d1d;
+  background-color: #d7d7d7;
 }
 
 td {
@@ -115,7 +115,7 @@ tr:nth-child(even) {
 }
 
 a {
-  color: #1d1d1d;
+  color: #d7d7d7;
   transition: 0.5s;
 }
 a:hover {
@@ -160,7 +160,7 @@ a:hover {
 }
 
 .tc-popover {
-  --color-border: #1d1d1d !important;
+  --color-border: #d7d7d7 !important;
   --color-background: #3e3e3e !important;
   --color-background-hover: #505050 !important;
   --color-background-confirm: #812b2b !important;
@@ -170,7 +170,11 @@ a:hover {
 .tc-wrap {
   --color-background: rgba(255, 255, 255, 0.396) !important;
   --color-text-secondary: #929292 !important;
-  --color-border: #1d1d1d !important;
+  --color-border: #d7d7d7 !important;
+}
+
+table {
+  border-color: #d7d7d7;
 }
 
 .milkyWay {
