@@ -56,8 +56,9 @@
             <!-- Body -->
             <div class='row' style="height: 86vh">
                 <!-- Word Entry Side -->
-                <div class='container column'>
-                    <div class='text-center'>
+                <div class='container collapsible-column'>
+                    <button class="collapser" id="collapse-word-entry" onclick="collapse_panel('word-entry-panel')"></button>
+                    <div class='text-center' id="word-entry-panel">
                         <label for="wrd-input">New Word</label>
                         <input id="wrd-input" type="text">
                         <input id="pronunciation" class="pronunciation" type="text">
@@ -75,8 +76,10 @@
                             <button id="append" class="hover-shadow hover-highlight" onclick="add_word(true)">Append
                                 Definition</button>
                         </div>
+                        <div style="width: 100vw"></div>
                     </div>
                 </div>
+                
                 <!-- Lexicon -->
                 <div class='container column'>
                     <div class='text-center'>

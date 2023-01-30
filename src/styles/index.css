@@ -1,3 +1,4 @@
+@charset "UTF-8";
 @font-face {
   font-family: Noto;
   src: url(../rsrc/Noto_Sans/NotoSans-Regular.ttf);
@@ -59,9 +60,28 @@ button {
   font-family: Noto;
   font-size: 11pt;
   transition-duration: 0.33s;
+  cursor: pointer;
 }
 button[id=overwrite] {
   font-weight: bold;
+}
+button.collapser {
+  max-width: 1em;
+  height: 100%;
+  border-color: transparent !important;
+  background-color: rgba(17, 17, 17, 0.0666666667);
+  display: flex;
+  float: right;
+  margin: 0px;
+  padding: 0px;
+}
+button.collapser:hover {
+  border-color: rgba(255, 255, 255, 0.2666666667) !important;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+button.collapser::after {
+  content: "‖";
+  margin: auto;
 }
 
 .tab-container {
@@ -87,10 +107,20 @@ button[id=overwrite] {
 
 .row {
   display: flex;
+  margin: auto;
 }
 
 .column {
-  flex: 50%;
+  width: 100%;
+}
+
+.collapsible-column {
+  min-width: 2%;
+  width: fit-content;
+}
+
+.collapsed {
+  display: none;
 }
 
 .text-left {

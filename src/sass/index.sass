@@ -51,8 +51,26 @@ body
 button 
     @include font(Noto)
     transition-duration: 0.33s
+    cursor: pointer
     &[id=overwrite] 
         font-weight: bold
+    
+    &.collapser
+        max-width: 1em
+        height: 100%
+        border-color: transparent !important
+        background-color: #11111111
+        display: flex
+        float: right
+        margin: 0px
+        padding: 0px
+        &:hover
+            border-color: #ffffff44 !important
+            background-color: #00000033
+        &::after
+            content: "‖"
+            margin: auto
+
 
 .tab-container 
     width: 100vw
@@ -73,8 +91,16 @@ button
 
 .row 
     display: flex
+    margin: auto
 .column
-    flex: 50%
+    width: 100%
+
+.collapsible-column
+    min-width: 2%
+    width: fit-content
+
+.collapsed
+    display: none
 
 .text
     &-left 
