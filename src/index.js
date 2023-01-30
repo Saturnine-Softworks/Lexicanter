@@ -4,7 +4,7 @@
 
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
-const { fork, exec } = require('child_process');
+const { exec } = require('child_process');
 
 const { autoUpdater, AppUpdater } = require('electron-updater');
 // Auto-updater flags
@@ -43,6 +43,7 @@ const createWindow = () => {
             return {
                 action: 'allow',
                 overrideBrowserWindowOptions: {
+                    autoHideMenuBar: true,
                     webPreferences: {
                         nodeIntegration: true,
                         contextIsolation: false,
