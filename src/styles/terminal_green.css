@@ -1,0 +1,339 @@
+/* The background color and default text color. */
+:root {
+    --black: rgb(0, 1, 0);
+    --green:rgb(0, 197, 49);
+    --white: rgb(228, 228, 228);
+}
+
+@keyframes backgroundColorPalette {
+    0% {
+      color: var(--green);
+    }
+    100% {
+      color: var(--white);
+    }
+  }
+
+body {
+    color: var(--green);
+    background-color: var(--black)
+}
+
+@keyframes backgroundColorPalette2 {
+    0% {
+      color: var(--black);
+      background-color: var(--green);
+      --color-background-confirm: var(--green) !important;
+    }
+    100% {
+      color: var(--green);
+      background-color: var(--black);
+      --color-background-confirm: var(--black) !important;
+    }
+  }
+body {
+    color: var(--green);
+    background-color: var(--black)
+}
+
+#alph-input, #update-order {
+    border: 0ch;
+}
+
+/* Default buttons and dropdowns use this style. */
+button, select, #append, .hover-highlight.hover-shadow {
+    text-align: center;
+    color: var(--green);
+    background-color:var(--black);
+    border: 2px solid var(--green);
+    border-radius: 0px;
+    transition: 0s;
+}
+
+/* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
+button[id=overwrite] {
+    animation-name: backgroundColorPalette;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: steps(2, jump-none);
+    border: 2px solid var(--green);
+}
+
+/* The following two styles are used for most buttons on mouse hover. */
+.hover-highlight:hover {
+    color: var(--white);
+}
+/*.hover-shadow:hover {
+    box-shadow: 0px 2px 12px rgb(33, 26, 36);
+}*/
+
+/* This style applies to table-editing buttons. By default, the colors are the same as normal buttons */
+.table-container:focus-within .show-in-context button {
+    color: inherit;
+}
+
+/* This style is for the table-editing buttons when the mouse is hovering over them. */
+.table-container:focus-within .show-in-context button:hover {
+    color:var(--white);
+    background-color:var(--black);
+}
+
+/*
+.button-container wraps the buttons which are used to flip between the tabs. Its background-color is only seen along the top of the screen in the tab selector. 
+The buttons within this container are styled the same so that they are flush, and appear as tabs.
+*/
+.tab-container .button-container,
+.tab-container .button-container button {
+    background-color:black;
+}
+
+/* This style applies to the button for the selected tab. By default it is the same as the body background-color. The !important flag is important for any styles used here. */
+.selected {
+    color: var(--white) !important;
+    background-color: var(--black) !important;
+    border: 4px solid var(--green);
+}
+
+/* Colors and border style used for all of the panes within each tab. */
+.container {
+    background-color:var(--black);
+    border: 4px solid var(--green);
+}
+
+/* This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab. */
+.info {
+    color: var(--white);
+}
+
+/* This style is used solely for the version indicator in the top right. */
+.version-info {
+    color: var(--green);
+}
+
+/* The default color styling for text in the lexicon and phrasebook. */
+.lex-body {
+    color: var(--green);
+}
+
+.lex-entry {
+    transition: 0s
+}
+
+.textarea input {
+    color: var(--green);
+}
+
+/* This is the style used for lexicon entries when the mouse is hovering over them. */
+.lex-entry:hover { 
+    color: var(--white);
+    border: 4px solid var(--green);
+}
+
+.lex-entry:hover .pronunciation  { 
+    color: var(--white);
+}
+/* These are the colors used for tags as they appear in the lexicon. */
+.tag-item {
+    color:var(--black);
+    background-color: var(--green);
+}
+
+/* The style used for pronunciation indicators beneath words and phrases. */
+.pronunciation {
+    color: rgba(0, 197, 49, 0.575);
+}
+
+/* The colors used for the entry counter/search results counters in the Lexicon tab. */
+[id=entry-counter] {
+    color:var(--green);
+    background-color: var(--black);
+}
+
+/* This style is used for dividers such as the one in the Categories pane of the Phrasebook tab. */
+hr {
+    border: 1px solid var(--green);
+}
+
+/* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
+label {
+    color:rgba(0, 197, 49, 0.575);
+}
+
+/* Default colors for text input fields. */
+textarea, input {
+    text-align: center;
+    color: var(--green) !important;
+    background-color: var(--black);
+    transition: 0s;
+    border: 2px solid var(--green);
+}
+
+/* The background color for pronunciation-specific text input fields blends into the background color. */
+input[class=pronunciation] {
+    background-color: inherit;
+    transition: 0s;
+    padding-top: 0.5%;
+    padding-bottom: 0.5%;
+    margin:auto;
+    border-top-left-radius: 0%;
+    border-top-right-radius: 0%;
+    vertical-align: middle;
+}
+
+.search {
+    text-align: center;
+}
+
+/* Style used for pronunciation-specific text input fields on mouse hover. */
+input[class=pronunciation]:hover {
+    color: var(--white);
+}
+
+input[id=wrd-input], #phrase, #test-romans {
+    border-bottom: none;
+    border-bottom-left-radius: 0%;
+    border-bottom-right-radius: 0%;
+    margin-bottom: 0px;
+}
+/* The style used for table cells. */
+td {
+  border: 1px solid var(--black);
+}
+
+
+/* The border and background colors for checkmarks. Default themes make the background transparent. */
+input[type="checkbox"] {
+    border: 0.15em solid var(--green);
+}
+/* The color of the checkmark in checkboxes. */
+input[type="checkbox"]::before {
+    background-color: var(--green);
+}
+
+/* EditorJS Color Overrides */
+/* see github.com/editor-js */
+
+/* General UI Popups */
+.ce-toolbar__plus,
+.ce-toolbar__settings-btn,
+.ce-conversion-toolbar__label {
+    color: var(--green) !important;
+}
+.ce-toolbar__plus:hover,
+.ce-toolbar__settings-btn:hover,
+.ce-conversion-toolbar__label {
+    background-color: var(--black) !important;
+}
+
+/* These are the buttons */
+.ce-popover,
+.ce-inline-tool,
+.ce-conversion-tool {
+    background-color: var(--black) !important;
+}
+
+/* These are the containers for the buttons */
+.ce-popover--opened,
+.tc-popover--opened,
+.ce-popover__item,
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons,
+.ce-conversion-toolbar,
+.ce-inline-toolbar {
+    background-color:  var(--black) !important;
+    border-radius: 0%;
+}
+
+.ce-inline-toolbar {
+    border: 2px solid var(--green);
+    border-radius: 0%;
+}
+
+/* The buttons on mouse hover */
+.ce-popover__item:hover,
+.ce-inline-tool:hover,
+.ce-inline-tool--active,
+.ce-conversion-tool:hover {
+    color: var(--white) !important;
+    background-color: var(--green) !important;
+}
+
+
+/* Paragraph placeholder text */
+.ce-paragraph[data-placeholder]:empty::before {
+    color: var(--white) !important;
+}
+
+/* Tables */
+/* Table editing pop-up buttons */
+.tc-popover {
+    --color-border: var(--green) !important;
+    --color-background: var(--black) !important;
+    --color-background-hover: rgba(0, 197, 49, 0.396) !important;
+    --color-background-confirm: var(--black) !important;
+    --color-background-hover-confirm: var(--black);
+    --color-text-confirm: var(--white) !important;
+}
+
+.tc-popover.tc-popover--opened, .tc-popover.tc-popover--opened *{
+    border-radius: 0%;
+}
+
+div.tc-popover__item.tc-popover__item--confirm {
+    animation-name: backgroundColorPalette2;
+    animation-duration: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-timing-function: steps(2, jump-none);
+}
+
+/* Table itself. --color-background is the highlight color */
+.tc-wrap {
+    --color-background: rgba(0, 197, 49, 0.396) !important;
+    --color-text-secondary: var(--green) !important;
+    --color-border: var(--green) !important;
+}
+
+:any-link {
+    color: var(--white);
+    text-decoration: none !important;
+}
+/* All of the used scrollbar color settings. */
+
+::selection {
+    color: var(--black);
+    background: var(--green) !important;
+}
+.container,
+button,
+textarea,
+input {
+    border-radius: 0px !important;
+}
+
+.ce-block--selected .ce-block__content {
+    background: rgba(0, 197, 49, 0.396) !important;
+}
+
+:is(input, textarea):focus {
+    outline: none;
+    border: 2px solid var(--white) !important;
+}
+
+::-webkit-scrollbar-track {
+    background-color:rgba(0, 197, 49, 0.396);
+}
+::-webkit-scrollbar-thumb {
+    background-color:var(--green);
+    border-radius: 0%;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--green);
+}
+::-webkit-resizer {
+    background-color:var(--green);
+    border: 0cm;
+    margin: 0cm;
+    border-radius: 0%;
+}
