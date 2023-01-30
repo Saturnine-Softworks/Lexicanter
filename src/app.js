@@ -226,14 +226,6 @@ userData(user_path => {
         .readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
         .toString();
 
-    // This bit is specifically to correct theme locating errors caused by earlier versions and mid-development patches,
-    // and can eventually be removed.
-    if (!theme_value.includes('styles' + path.sep) && !theme_value.includes('user_themes' + path.sep)) {
-        theme_value = 'styles'+path.sep+theme_value
-    } else if (theme_value.includes('styles' + path.sep + 'styles')) {
-        theme_value = 'styles' + path.sep + path.basename(theme_value);
-    }
-
     color_theme.href = theme_value;
     theme_select.value = theme_value;
 });
