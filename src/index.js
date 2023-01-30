@@ -9,11 +9,7 @@ const { exec } = require('child_process');
 const { autoUpdater, AppUpdater } = require('electron-updater');
 // Auto-updater flags
 autoUpdater.autoDownload = true;
-exec('NET SESSION', function (err, so, se) {
-    // If the app is run as admin, it will check for pre-release versions to download; otherwise it will only check for releases.
-    autoUpdater.allowPrerelease = se.length === 0 ? true : false;
-    console.log('allowPrerelease:', autoUpdater.allowPrerelease);
-});
+autoUpdater.allowPrerelease = false;
 
 const createWindow = () => {
     // Create the browser window.

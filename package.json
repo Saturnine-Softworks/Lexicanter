@@ -10,7 +10,7 @@
     "test-win": "electron-builder --win --publish never",
     "publish": "bash bash/publish.bash"
   },
-  "repository": "https://github.com/Saturnine-Softworks/Lexicanter-Electron",
+  "repository": "https://github.com/Saturnine-Softworks/Lexicanter",
   "publish": {
     "provider": "github",
     "releaseType": "release"
