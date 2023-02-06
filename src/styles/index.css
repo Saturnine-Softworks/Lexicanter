@@ -83,6 +83,23 @@ button.collapser::after {
   content: "‖";
   margin: auto;
 }
+button.collapser-h {
+  max-height: 1.33em;
+  width: 100% !important;
+  border-color: transparent !important;
+  background-color: rgba(17, 17, 17, 0.0666666667);
+  display: flex;
+  margin: 0px;
+  padding: 0px;
+}
+button.collapser-h:hover {
+  border-color: rgba(255, 255, 255, 0.2666666667) !important;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+button.collapser-h::after {
+  content: "═";
+  margin: auto;
+}
 
 .tab-container {
   width: 100vw;
@@ -102,12 +119,14 @@ button.collapser::after {
 .tab-container .tab-pane {
   height: 80%;
   box-sizing: border-box;
-  display: none;
 }
 
 .row {
   display: flex;
   margin: auto;
+}
+.row:has(~ .collapsible-row .collapsed) {
+  height: 90vh !important;
 }
 
 .column {
@@ -117,6 +136,10 @@ button.collapser::after {
 .collapsible-column {
   min-width: 2%;
   width: fit-content;
+}
+
+.collapsible-row:has(.collapsed) {
+  height: 3vh !important;
 }
 
 .collapsed {
@@ -219,7 +242,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .scrolled {
-  max-height: 72vh;
   overflow-y: auto;
   overflow-x: wrap;
 }
@@ -308,8 +330,13 @@ textarea[type=checkbox]:checked::before, input[type=checkbox]:checked::before {
 
 .search {
   text-align: left;
-  width: 90%;
+  width: 100%;
   margin: 2px auto 2px auto;
+}
+
+.search-container {
+  padding: 0 0.5em 0 0.5em;
+  position: relative;
 }
 
 table {

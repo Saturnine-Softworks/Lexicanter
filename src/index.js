@@ -67,8 +67,10 @@ const createWindow = () => {
     mainWindow.on('close', function (e) {
         // Prompt user to save changes on quit (or auto-save) via IPC.
         if (mainWindow) {
-            e.preventDefault();
-            mainWindow.send('app-close');
+            mainWindow = null;
+            app.quit();
+            /* e.preventDefault();
+            mainWindow.send('app-close'); */
         }
     });
     ipcMain.on('close', _ => {

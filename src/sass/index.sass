@@ -70,7 +70,21 @@ button
         &::after
             content: "‖"
             margin: auto
-
+    
+    &.collapser-h
+        max-height: 1.33em
+        width: 100% !important
+        border-color: transparent !important
+        background-color: #11111111
+        display: flex
+        margin: 0px
+        padding: 0px
+        &:hover
+            border-color: #ffffff44 !important
+            background-color: #00000033
+        &::after
+            content: "═"
+            margin: auto
 
 .tab-container 
     width: 100vw
@@ -87,17 +101,24 @@ button
     .tab-pane 
         height: 80%
         box-sizing: border-box
-        display: none
 
 .row 
     display: flex
     margin: auto
+
+    &:has(~ .collapsible-row .collapsed)
+        height: 90vh !important
+
 .column
     width: 100%
 
 .collapsible-column
     min-width: 2%
     width: fit-content
+
+.collapsible-row
+    &:has(.collapsed)
+        height: 3vh !important
 
 .collapsed
     display: none
@@ -168,7 +189,6 @@ h1, h2, h3, h4, h5, h6
     margin: auto
 
 .scrolled
-    max-height: 72vh
     overflow-y: auto
     overflow-x: wrap
 
@@ -236,8 +256,12 @@ textarea, input
 
 .search 
     text-align: left
-    width: 90%
+    width: 100%
     margin: 2px auto 2px auto
+
+.search-container
+    padding: 0 .5em 0 .5em
+    position: relative
 
 table 
     border-collapse: collapse
