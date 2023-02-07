@@ -8,7 +8,6 @@
 const { ipcRenderer } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const $ = (jQuery = require('jquery'));
 const EditorJS = require('@editorjs/editorjs');
 const Header = require('@editorjs/header');
 const Paragraph = require('@editorjs/paragraph');
@@ -270,22 +269,16 @@ theme_select.onchange = change_theme;
 // TODO: Improve markdown regex.
 function markdown_to_html(text) {
     let toHTML = text
-        .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gim, '<b><i>$1</i></b>') // bold italic
-        .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gim, '<b>$1</b>') // bold
-        .replace(/\*([^\n\*]*)\*/gim, '<i>$1</i>') // italic
-        .replace(/__([^\n(?:__)]*)__/gim, '<U class="cdx-underline">$1</U>') // underlined
-        .replace(/~~([^\n(?:~~)]*)~~/gim, '<strike>$1</strike>') // strikethrough
-        .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gim, '<sup>$1</sup>') // superscript
-        .replace(/~\[([^\n(?:\^\[)\]]*)\]/gim, '<sub>$1</sub>') // subscript
-        .replace(
-            /``([^\n(?:``)]*)``/gim,
-            '<CODE class="cdx-monospace">$1</CODE>'
-        ) // monospace
-        .replace(
-            /\[([^\n(?:\^\[)\]]*)\]\(([^\n(?:\]\())\)]*)\)/gim,
-            '<a href="$2" target="_blank">$1</a>'
-        ) // link
-        .replace(/\n?---\n?/gim, '<hr>'); // horizontal rule
+        .replace(/\[([^\n]*)\]\(([^\n\)]*)\)/gm, '<a href="$2" target="_blank" rel="noreferrer">$1</a>') // link
+        .replace(/\*\*\*([^\n(?:\*\*\*)]*)\*\*\*/gm, '<b><i>$1</i></b>') // bold italic
+        .replace(/\*\*([^\n(?:\*\*)]*)\*\*/gm, '<b>$1</b>') // bold
+        .replace(/\*([^\n\*]*)\*/gm, '<i>$1</i>') // italic
+        .replace(/__([^\n(?:__)]*)__/gm, '<U class="cdx-underline">$1</U>') // underlined
+        .replace(/~~([^\n(?:~~)]*)~~/gm, '<strike>$1</strike>') // strikethrough
+        .replace(/\^\[([^\n(?:\^\[)\]]*)\]/gm, '<sup>$1</sup>') // superscript
+        .replace(/~\[([^\n(?:\^\[)\]]*)\]/gm, '<sub>$1</sub>') // subscript
+        .replace(/``([^\n(?:``)]*)``/gm, '<CODE class="cdx-monospace">$1</CODE>') // monospace
+        .replace(/\n?---\n?/gm, '<hr>'); // horizontal rule
     return toHTML.trim();
 }
 
@@ -488,13 +481,20 @@ function follow_lex_link(entry) {
  */
 function add_word(append = false) {
     let w = wrd_input.value.trim();
+    if (!w) { return; }
     let p = pronun.value.trim();
-    let d = def_input.value.trim(); // allow markdown in definitions
-    let t;
-    if (tags_input.value !== '') {
-        t = tags_input.value.trim().split(/\s+/g);
-    } else {
-        t = [];
+    let d = def_input.value.trim(); 
+    if (!d) { return; }
+    let t = !!tags_input.value? tags_input.value.trim().split(/\s+/g) : [];
+
+    let test = `${w}`
+    alphabet_input.value.split(/\s+/g).forEach((letter) => {
+        test = test.replaceAll(letter, '');
+        console.log(test, letter);
+    });
+    if (!!test) {
+        if (!window.confirm('The word contains characters not present in your alphabet. Are you sure you want to add it?'))
+            return;
     }
 
     if (!append) {
@@ -1793,13 +1793,6 @@ async function save_as() {
 }
 
 async function save_file(send_alert = true) {
-    if (file_name_input.value.trim() === '') {
-        if (send_alert) {
-            file_name_input.value = window.prompt(
-                'Please enter a file name before saving.'
-            );
-        } else return;
-    }
     let exports = await collect_export_data((blob = false)); // needs a string or buffer
     try {
         userData(user_path => {
@@ -1863,17 +1856,17 @@ userData(user_path => {
 });
 ipcRenderer.on('app-close', _ => {
     if (autosave_setting.checked) {
-        save_file(false).then(_ => {
-            ipcRenderer.send('close');
-        });
-    } else {
-        if (
-            window.confirm(
-                'You may have unsaved changes. Are you sure you want to exit?'
-            )
-        ) {
-            ipcRenderer.send('close');
+        if (!file_name_input.value.trim()) {
+            if (window.confirm('There is no file name, so your work cannot be saved. Are you sure you want to exit?'))
+                ipcRenderer.send('close');
+        } else {
+            save_file(false).then(_ => {
+                ipcRenderer.send('close');
+            });
         }
+    } else {
+        if (window.confirm('You may have unsaved changes. Are you sure you want to exit?'))
+            ipcRenderer.send('close');
     }
 });
 
