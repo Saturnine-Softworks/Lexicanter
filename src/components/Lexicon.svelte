@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { lexicon, word_input, word_pronunciation, case_sensitive, alphabet, ignore_diacritics } from '../stores.js';
     import { alphabetize } from '../scripts/alphabetize.js';
     import { get_pronunciation } from '../scripts/phonetics.js';
@@ -91,21 +91,11 @@
     function search_lex() {
         let words_search = $case_sensitive?  search_words.trim() : search_words.toLowerCase().trim();
         let definitions_search = search_definitions.toLowerCase().trim();
-        let tags_search = search_tags.toLowerCase().trim();
-        if (!tags_search) { tags_search = []; }
-        else { tags_search = tags_search.split(/\s+/g); }
+        let tags_search = search_tags.toLowerCase().trim()? search_tags.toLowerCase().trim().split(/\s+/g) : [];
         keys = [];
         if (!!words_search || !!definitions_search || !!tags_search) {
-            let l = [words_search + '|', definitions_search + '|'];
-            // Turn l into a list of [search by word terms, search by def terms]
-            for (let e of l) {
-                let n = l.indexOf(e);
-                l[n] = [];
-                e = e.split('|');
-                for (let a of e) {
-                    l[n].push(a.trim());
-                }
-            }
+            // Turn l into a list of [search by word terms, search by def terms
+            let l = [[...words_search.split('|')], [...definitions_search.split('|')]];
             for (let word in $lexicon) {
                 let w = `^${word}^`;
                 let match = true;
@@ -119,7 +109,7 @@
                     // definitions
                     let needs_exact_match = a[0] === '!';
                     if (needs_exact_match) {
-                        pattern = new RegExp(`\\b${a.split('!')[1]}\\b`, 'i');
+                        let pattern = new RegExp(`\\b${a.split('!')[1]}\\b`, 'i');
                         if (!pattern.test($lexicon[word][1].toLowerCase())) { // exact word match
                             match = false;
                         }

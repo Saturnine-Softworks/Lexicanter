@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
     import { theme, autosave } from '../stores.js';
-    import { userData } from '../scripts/files.js'
+    import { userData, save_file } from '../scripts/files.js'
     const fs = require('fs');
     const path = require('path');
 
@@ -75,7 +75,7 @@
             theme_path = user_path + path.sep + 'user_themes' + path.sep + file.name;
             fs.writeFile(theme_path, contents, 'utf8', err => {
                 if (err) throw err;
-                color_theme.href = theme_path;
+                $theme = theme_path;
             });
             fs.writeFile(user_path + path.sep + 'theme.txt', theme_path, err => {
                 if (err) throw err;

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     const fs = require('fs');
     const path = require('path');
     import { file_name, lexicon, phrasebook, alphabet, romans_input, 
@@ -75,7 +75,7 @@
                 file_path => {
                     if (file_path === undefined) {
                         // stop orbit animation
-                        document.querySelectorAll('.planet').forEach(planet => {
+                        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
                             planet.style.animationPlayState = 'paused';
                         });
                         loading_message = 'No file selected.';
@@ -90,7 +90,7 @@
                             window.alert(
                                 'There was an issue loading your file. Please contact the developer.'
                             );
-                            document.querySelectorAll('.planet').forEach(planet => {
+                            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
                                 // loading anim stop
                                 planet.style.animationPlayState = 'paused';
                             });
@@ -101,7 +101,7 @@
                         contents = JSON.parse(data);
                         read_contents(contents);
                         $file_name = path.basename(file_path[0], '.lexc');
-                        document.querySelectorAll('.planet').forEach(planet => {
+                        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
                             // loading anim stop
                             planet.style.animationPlayState = 'paused';
                         });
@@ -111,7 +111,7 @@
                 }
             );
         };
-        document.querySelectorAll('.planet').forEach(planet => {
+        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
             // loading anim start
             planet.style.animationPlayState = 'running';
         });
@@ -129,7 +129,7 @@
      * Allows the user to import a .lexc file from their computer.
      */
     async function import_file() {
-        document.querySelectorAll('.planet').forEach(planet => {
+        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
             planet.style.animationPlayState = 'running';
         });
         loading_message = 'Loading...';
@@ -139,7 +139,7 @@
         let file = await file_handle.getFile();
         if (!file.name.includes('.lexc')) {
             window.alert('The selected file was not a .lexc file.');
-            document.querySelectorAll('.planet').forEach(planet => {
+            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
                 planet.style.animationPlayState = 'paused';
             });
             loading_message = 'Incorrect file type.';
@@ -151,7 +151,7 @@
         read_contents(contents);
         $file_name = file.name.split('.')[0];
 
-        document.querySelectorAll('.planet').forEach(planet => {
+        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
             planet.style.animationPlayState = 'paused';
         });
         loading_message = 'Done!';
@@ -165,7 +165,7 @@
     function change_orthography() {
         old_pattern = old_pattern.replace(/\^/g, '÷');
         new_pattern = new_pattern.replace(/\^/g, '÷');
-        for (word in $lexicon) {
+        for (let word in $lexicon) {
             let w = '÷' + word + '÷';
             if (w.includes($case_sensitive? old_pattern : old_pattern.toLowerCase())) {
                 let r = new RegExp(old_pattern, $case_sensitive ? 'g' : 'gi');
@@ -225,7 +225,7 @@
             </div>
             <br>
             <button class="hover-highlight hover-shadow"
-                onclick="window.open('index.html', '_blank', 'height=900, width=900');">Open New Window</button>
+                on:click={() => window.open('index.html', '_blank', 'height=900, width=900')}>Open New Window</button>
             <br>
             <p>Change Pronunciations & Orthography</p>
             <div class="narrow">

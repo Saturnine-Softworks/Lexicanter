@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { romans_input, onsets, medials, codas, vowels, illegals } from "../stores";
     import { get_pronunciation, writeRomans, complete_word, generate_word } from '../scripts/phonetics.js';
     let trial = ''; let ortho_test = '';
@@ -31,9 +31,9 @@
             <p style="font-family: Gentium">{trial_completion}</p>
             <br>
             <button class="hover-highlight hover-shadow" 
-                on:click={() => generated_words = Array(24).fill().map(_ => generate_word())}
+                on:click={() => generated_words = Array(24).fill(null).map(_ => generate_word())}
                     >Generate Words</button>
-            {#each Array(generated_words.length/3).fill() as _, i}
+            {#each Array(generated_words.length/3).fill(null) as _, i}
                 <div class="row">
                     {#each generated_words.slice(i * 3, i * 3 + 3) as word}
                         <div class="column">

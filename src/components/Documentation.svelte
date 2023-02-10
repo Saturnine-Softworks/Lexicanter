@@ -1,4 +1,4 @@
-<script>
+<script lang='ts'>
     import { initialize_docs } from '../scripts/docs.js';
     initialize_docs(false);
 </script>

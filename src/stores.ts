@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 // Initial states for all the global variables across the app
-export let file_name = writable('NewLanguage');
+export let file_name = writable('Unnamed Language');
 
 export let case_sensitive = writable(false);
 export let ignore_diacritics = writable(true);
@@ -27,7 +27,7 @@ export let codas = writable('');
 export let vowels = writable('');
 export let illegals = writable('');
 
-export let Docs = writable();
+export let Docs: any = writable();
 
 export let theme = writable('styles/dark.css');
 export let autosave = writable(true);

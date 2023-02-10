@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { phrasebook, selected_category } from '../stores.js';
     import { createEventDispatcher } from 'svelte';
     const dispatch = createEventDispatcher();

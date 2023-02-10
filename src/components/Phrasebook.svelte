@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import { phrasebook, phrase_input, phrase_description, phrase_pronunciation, 
         selected_category, category_input, variant_inputs } from "../stores";
     import { get_pronunciation } from "../scripts/phonetics";
@@ -114,7 +114,7 @@
             description: description,
             variants: {},
         };
-        for (let variant of variant_inputs) {
+        for (let variant of $variant_inputs) {
             let phrase = variant.phrase.trim();
             if (!phrase) continue;
             let description = variant.description.trim();

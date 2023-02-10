@@ -6,7 +6,6 @@ export function alphabetize(lexicon) {
     let $alphabet = get(alphabet);
     let $ignore_diacritics = get(ignore_diacritics);
     let $case_sensitive = get(case_sensitive);
-    1 <= 2 >= 1
     let all_words = structuredClone(lexicon);
     let tag_ordered_lexes = [];
     for (let tag of priority_tags) {
@@ -40,7 +39,7 @@ export function alphabetize(lexicon) {
         let list = [];
         for (let word of group) {
             // case sensitivity
-            let w = $case_sensitive? word : word.toLowerCase();
+            let w: string = $case_sensitive? word : word.toLowerCase();
 
             // diacritic sensitivity
             w = $ignore_diacritics? w.normalize('NFD').replace(/\p{Diacritic}/gu, '') : w;
@@ -51,7 +50,7 @@ export function alphabetize(lexicon) {
                     `${order.indexOf(token)}.`
                 );
             }
-            let append = w.split('.');
+            let append: any[] = w.split('.');
             for (let i of append) {
                 append[append.indexOf(i)] = +i || 0;
             }

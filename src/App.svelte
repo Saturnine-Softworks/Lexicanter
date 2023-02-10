@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     const { ipcRenderer } = require('electron');
 	import Lexicon from './components/Lexicon.svelte';
 	import Phrasebook from './components/Phrasebook.svelte';
@@ -8,6 +8,8 @@
 	import Settings from './components/Settings.svelte';
     import { theme, autosave } from './stores.js';
     import { save_file } from './scripts/files.js';
+    import type { SvelteComponent } from 'svelte';
+    import type { SvelteComponentTyped } from 'svelte/types/runtime/internal/dev';
 
     const tabs = [Lexicon, Phrasebook, Phonology, Documentation, File, Settings]
     const tab_btns = ['Lexicon', 'Phrasebook', 'Phonology', 'Documentation', 'File', 'Settings'];

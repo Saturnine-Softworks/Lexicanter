@@ -1,5 +1,4 @@
-<script>
-    import { get_pronunciation } from "../scripts/phonetics";
+<script lang='ts'>
     import { createEventDispatcher } from 'svelte';
 
     export let phrase = '';
