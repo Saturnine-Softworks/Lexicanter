@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import EditorJS from '@editorjs/editorjs';
 // Initial states for all the global variables across the app
 export let file_name = writable('Unnamed Language');
 
@@ -19,7 +20,11 @@ export let category_input = writable('');
 export let selected_category = writable('');
 export let variant_inputs = writable([]);
 
-export let romanizations = writable({'th': 'θ'});
+interface Romanizations {
+    [index: string]: string;
+}
+let roms: Romanizations = {'th': 'θ'};
+export let romanizations = writable(roms);
 export let romans_input = writable('th > θ');
 export let onsets = writable('');
 export let medials = writable('');
@@ -27,7 +32,7 @@ export let codas = writable('');
 export let vowels = writable('');
 export let illegals = writable('');
 
-export let Docs: any = writable();
+export let Docs = writable(new EditorJS);
 
 export let theme = writable('styles/dark.css');
 export let autosave = writable(true);

@@ -1,14 +1,19 @@
 import { Docs } from "../stores";
-import { get } from "svelte/store";
-const EditorJS = require('@editorjs/editorjs');
-const Header = require('@editorjs/header');
-const Paragraph = require('@editorjs/paragraph');
-const Table = require('@editorjs/table');
-const Underline = require('@editorjs/underline');
+import EditorJS from '@editorjs/editorjs';
+import Header from '@editorjs/header';
+import Paragraph from '@editorjs/paragraph';
+import Table from '@editorjs/table';
+import Underline from '@editorjs/underline';
 class Monospace { // EditorJS custom class
+    api: any;
+    button: null | HTMLButtonElement;
+    tag: string;
+    iconClasses: any;
+
     static get CSS() {
         return 'cdx-monospace';
     };
+
     constructor({ api }) {
         this.api = api;
         this.button = null;
@@ -97,6 +102,7 @@ class Monospace { // EditorJS custom class
 export function initialize_docs(data) {
     let config = {
         holder: 'docs-tab',
+        data: null,
         tools: {
             underline: Underline,
             monospace: Monospace,
@@ -109,7 +115,7 @@ export function initialize_docs(data) {
                 inlineToolbar: true,
                 config: {
                     placeholder:
-                        'This panel can be used to document and describe your languge’s features in greater detail.',
+                    'This panel can be used to document and describe your languge’s features in greater detail.',
                 },
             },
             table: {

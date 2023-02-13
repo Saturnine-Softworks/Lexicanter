@@ -1,19 +1,21 @@
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
 const path = require('path');
-import { get } from 'svelte/store';
+import { Writable, get } from 'svelte/store';
+import type { OutputData } from '@editorjs/editorjs';
+import type { Language } from './types';
 import { lexicon, alphabet, phrasebook, onsets, medials, codas, vowels, illegals, autosave,
-    romans_input, Docs, header_tags, case_sensitive, ignore_diacritics, file_name 
-} from '../stores.js'
-import { writeRomans } from './phonetics.js';
-import { initialize_docs } from './docs.js';
+    romans_input, Docs, header_tags, case_sensitive, ignore_diacritics, file_name, theme
+} from '../stores'
+import { writeRomans, get_pronunciation } from './phonetics';
+import { initialize_docs } from './docs';
 
 /**
  * This function is used to get the user's data path.
- * @param {function} callback
+ * @param {function (user_path: string): void} callback
  */
-export async function userData (callback) {
-    let path;
+export async function userData (callback: (user_path: string) => void) {
+    let path: string;
     await ipcRenderer.invoke('getUserDataPath').then(result => {
         path = result;
     });
@@ -27,28 +29,27 @@ export async function userData (callback) {
  * @param {any} params
  * @param {function} callback
  */
-export async function showOpenDialog (params, callback) {
-    let path;
-    await ipcRenderer.invoke('showOpenDialog', params).then(result => {
+export async function showOpenDialog (params: any, callback: (path: string) => void) {
+    let path: string;
+    await ipcRenderer.invoke('showOpenDialog', params).then((result: string) => {
         path = result;
     });
     callback(path);
 }
 
 /**
- * Collects all the data to be exported into one JSON string
- * or Blob object.
- * @param {boolean} return_blob
- * @returns {Blob | string} The data to be exported.
+ * Collects all the data to be exported into one JSON string.
+ * @returns {string} The data to be exported.
  */
-async function collect_export_data (return_blob) {
-    let documentation;
+async function collect_export_data (): Promise<string> {
+    let documentation: OutputData;
     await get(Docs).save().then(data => {
         documentation = data;
     });
-    const arrayify = (store) => get(store).trim().split(/\s+/g);
+    const arrayify = (store: Writable<string>) => get(store).trim().split(/\s+/g);
     // Version 2.0
-    let export_data = {
+    let export_data: Language = {
+        Name: get(file_name),
         Version: 2.0,
         Lexicon: get(lexicon),
         Alphabet: get(alphabet).trim(),
@@ -66,23 +67,19 @@ async function collect_export_data (return_blob) {
         IgnoreDiacritics: get(ignore_diacritics),
         CaseSensitive: get(case_sensitive),
     };
-    let exports;
-    if (return_blob) {
-        exports = new Blob([JSON.stringify(export_data)]);
-    } else {
-        exports = JSON.stringify(export_data);
-    }
+    let exports: string;
+    exports = JSON.stringify(export_data);
     return exports;
 }
 
 /**
  * Converts the Editor.js JSON data to HTML and 
  * appends it to the provided container element.
- * @param {Object} data The Editor.js JSON data
+ * @param {OutputData} data The Editor.js JSON data
  * @param {HTMLElement} container The container element
  * @returns {HTMLElement} The container element with the HTML inserted
  */
-function editorjs_to_html(data, container) {
+function editorjs_to_html(data: OutputData, container: HTMLElement): HTMLElement {
     for (let element of data.blocks) {
         switch (element.type) {
             case 'header':
@@ -100,7 +97,7 @@ function editorjs_to_html(data, container) {
             case 'table':
                 let table = document.createElement('table');
                 let tbody = document.createElement('tbody');
-                element.data.content.forEach(row => {
+                element.data.content.forEach((row: string[]) => {
                     let tr = document.createElement('tr');
                     row.forEach(cell => {
                         let td = document.createElement('td');
@@ -128,7 +125,7 @@ export async function save_file () {
         );
         file_name.set(name);
     }
-    let exports = await collect_export_data((blob = false)); // needs a string or buffer
+    let exports = await collect_export_data();
     try {
         userData(user_path => {
             if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
@@ -165,9 +162,10 @@ export async function save_file () {
  */ 
 export const saveAs = {
     lexc: async () => {
-        let exports = await collect_export_data((true)); // needs a blob
+        let exports: Blob;
+        collect_export_data().then(jsonString => {exports = new Blob([jsonString])});
         let file_handle = await window.showSaveFilePicker({
-            suggestedName: `${get(f)}.lexc`,
+            suggestedName: `${get(file_name)}.lexc`,
         });
         await file_handle.requestPermission({ mode: 'readwrite' });
         let file = await file_handle.createWritable();
@@ -233,7 +231,8 @@ export const saveAs = {
         window.alert('The file exported successfully.');
     },
     json: async () => {
-        let export_data = collect_export_data(true);
+        let export_data: Blob;
+        collect_export_data().then(jsonString => {export_data = new Blob([jsonString])});
 
         let file_handle = await window.showSaveFilePicker({
             suggestedName: `${get(file_name)}.json`,
@@ -304,8 +303,8 @@ export const saveAs = {
                     // Lowercase alphabet if case-sensitivity is unticked
                     var alphabet = ${
                         get(case_sensitive)
-                        ? JSON.stringify(alphabet_input.value.trim()) 
-                        : JSON.stringify(alphabet_input.value.trim().toLowerCase())
+                        ? JSON.stringify(get(alphabet).trim()) 
+                        : JSON.stringify(get(alphabet).trim().toLowerCase())
                     };
                     let order = alphabet.trim().split(/\\s+/);
                     // to make sure we find the largest tokens first, i.e. for cases where 'st' comes before 'str' alphabetically
@@ -635,9 +634,9 @@ export const saveAs = {
                 path.join(path.dirname(__dirname), 'styles/index.css'),
                 'utf8'
             );
-            let theme = document.createElement('style');
-            theme.innerHTML = fs.readFileSync(
-                path.join(path.dirname(__dirname), theme_select.value),
+            let themeElement = document.createElement('style');
+            themeElement.innerHTML = fs.readFileSync(
+                path.join(path.dirname(__dirname), get(theme)),
                 'utf8'
             );
             let overrides = document.createElement('style');
@@ -646,7 +645,7 @@ export const saveAs = {
                 'utf8'
             );
     
-            let documentation = document.createElement('div');
+            let documentation: HTMLElement = document.createElement('div');
             documentation.classList.add('container', 'column', 'scrolled');
             // Convert EditorJS save data to HTML.
             await get(Docs).save().then(data => {
@@ -712,7 +711,7 @@ export const saveAs = {
                 <br><br>
             `;
     
-            head.append(styles, theme, overrides);
+            head.append(styles, themeElement, overrides);
             export_container.append(head, body, scripts);
     
             let export_data = export_container.outerHTML;
@@ -756,9 +755,9 @@ export const saveAs = {
                 path.join(path.dirname(__dirname), 'styles/index.css'),
                 'utf8'
             );
-            let theme = document.createElement('style');
-            theme.innerHTML = fs.readFileSync(
-                path.join(path.dirname(__dirname), theme_select.value),
+            let themeElement = document.createElement('style');
+            themeElement.innerHTML = fs.readFileSync(
+                path.join(path.dirname(__dirname), get(theme)),
                 'utf8'
             );
             let overrides = document.createElement('style');
@@ -766,10 +765,10 @@ export const saveAs = {
                 path.join(path.dirname(__dirname), 'styles/html_export.css'),
                 'utf8'
             );
-            head.append(styles, theme, overrides);
+            head.append(styles, themeElement, overrides);
             export_container.appendChild(head);
     
-            let body = document.createElement('body');
+            let body: HTMLElement = document.createElement('body');
             await get(Docs).save().then(data => {
                 body = editorjs_to_html(data, body);
             });

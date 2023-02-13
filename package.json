@@ -60,6 +60,7 @@
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
     "@tsconfig/svelte": "^2.0.0",
+    "@types/node": "^18.13.0",
     "@types/wicg-file-system-access": "^2020.9.5",
     "electron": "^22.2.0",
     "electron-builder": "^22.10.3",

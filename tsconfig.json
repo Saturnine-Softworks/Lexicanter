@@ -5,6 +5,7 @@
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
 
   "compilerOptions": {
-    "types": [ "@types/wicg-file-system-access"] // Adds the FileSystemAccess API types
+    "types": ["@types/wicg-file-system-access", "node"], // Adds the FileSystemAccess API types
+    "lib": ["es2021", "dom"]
    }
 }
