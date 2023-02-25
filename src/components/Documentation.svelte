@@ -1,6 +1,6 @@
 <script lang='ts'>
-    import { initialize_docs } from '../scripts/docs.js';
-    initialize_docs(false);
+    import { initializeDocs } from '../scripts/docs.js';
+    initializeDocs(false);
 </script>
 <div class="tab-pane" spellcheck="false">
     <div class="container row text-center" style="height: 90vh; overflow-y: auto;">

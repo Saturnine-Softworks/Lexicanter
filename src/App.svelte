@@ -6,10 +6,9 @@
     import Documentation from './components/Documentation.svelte';
 	import File from './components/File.svelte';
 	import Settings from './components/Settings.svelte';
-    import { theme, autosave } from './stores.js';
-    import { save_file } from './scripts/files.js';
-    import type { SvelteComponent } from 'svelte';
-    import type { SvelteComponentTyped } from 'svelte/types/runtime/internal/dev';
+    import { theme, autosave } from './stores';
+    import { saveFile } from './scripts/files';
+    import * as diagnostics from './scripts/diagnostics';
 
     const tabs = [Lexicon, Phrasebook, Phonology, Documentation, File, Settings]
     const tab_btns = ['Lexicon', 'Phrasebook', 'Phonology', 'Documentation', 'File', 'Settings'];
@@ -24,12 +23,17 @@
      */
     ipcRenderer.on('app-close', _ => {
         if ($autosave) {
-            save_file().then(_ => { ipcRenderer.send('close'); });
+                diagnostics.logAction('Autosaving before exit.');
+            saveFile().then(_ => {
+                window.setTimeout(() => ipcRenderer.send('close'), 1000); // Give time for the notification to show
+            });
         } else {
             if ( window.confirm('You may have unsaved changes. Are you sure you want to exit?') )
                 ipcRenderer.send('close');
         }
     });
+    let version: string;
+    ipcRenderer.invoke('getVersion').then((v: string) => version = v);
 </script>
 
 <link rel="stylesheet" href="{$theme}" />
@@ -37,7 +41,7 @@
 <body id="body">
     <div class='tab-container'>
         <div class="button-container">
-            <p class="version-info"><i>v</i>2.0.0</p>
+            <p class="version-info"><i>v</i>{version}</p>
             {#each tab_btns as tab, i}
                 <button on:click={() => selectedTab = i}
                     class:selected={selectedTab === i} class='hover-highlight'>{tab}</button>

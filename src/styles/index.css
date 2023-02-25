@@ -54,6 +54,7 @@ body {
   min-height: 600px;
   margin: 0px;
   overflow: hidden;
+  -webkit-app-region: drag;
 }
 
 button {
@@ -61,6 +62,8 @@ button {
   font-size: 11pt;
   transition-duration: 0.33s;
   cursor: pointer;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none;
 }
 button[id=overwrite] {
   font-weight: bold;
@@ -104,6 +107,7 @@ button.collapser-h::after {
 .tab-container {
   width: 100vw;
   height: 100vh;
+  -webkit-user-select: none;
 }
 .tab-container .button-container {
   width: 100%;
@@ -119,6 +123,8 @@ button.collapser-h::after {
 .tab-container .tab-pane {
   height: 80%;
   box-sizing: border-box;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: text;
 }
 
 .row {
@@ -180,6 +186,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 11pt;
   font-style: italic;
   line-height: 1.5em;
+  -webkit-user-select: none;
 }
 
 .phonology {
@@ -194,6 +201,7 @@ h1, h2, h3, h4, h5, h6 {
   text-align: left;
   display: inline;
   float: right;
+  -webkit-user-select: none;
 }
 
 .lex-body {
@@ -265,6 +273,7 @@ h1, h2, h3, h4, h5, h6 {
 label {
   font-family: Noto;
   font-size: 11pt;
+  -webkit-user-select: none;
 }
 
 .pronunciation {

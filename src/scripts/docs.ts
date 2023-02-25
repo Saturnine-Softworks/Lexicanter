@@ -1,5 +1,5 @@
-import { Docs } from "../stores";
-import EditorJS from '@editorjs/editorjs';
+import { docsEditor } from "../stores";
+import EditorJS, { type OutputData } from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import Paragraph from '@editorjs/paragraph';
 import Table from '@editorjs/table';
@@ -99,7 +99,7 @@ class Monospace { // EditorJS custom class
  * will be initialized with an empty document.
  * @param {Object} data
  */
-export function initialize_docs(data) {
+export function initializeDocs(data: OutputData | false): void {
     let config = {
         holder: 'docs-tab',
         data: null,
@@ -131,5 +131,5 @@ export function initialize_docs(data) {
     };
     
     if (data) config.data = data;
-    Docs.set(new EditorJS(config));
+    docsEditor.set(new EditorJS(config));
 };

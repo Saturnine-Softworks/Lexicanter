@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { phrasebook, selected_category } from '../stores.js';
+    import { Language, selectedCategory } from '../stores';
     import { createEventDispatcher } from 'svelte';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
@@ -10,25 +10,25 @@
         {phrase}
     </p>
     <p class="pronunciation">
-        {$phrasebook[$selected_category][phrase].pronunciation}
+        {$Language.Phrasebook[$selectedCategory][phrase].pronunciations.General.ipa}
     </p>
     <p class="prelined">
-        {$phrasebook[$selected_category][phrase].description}
+        {$Language.Phrasebook[$selectedCategory][phrase].description}
     </p>
-    {#if !!Object.keys($phrasebook[$selected_category][phrase].variants).length}
+    {#if !!Object.keys($Language.Phrasebook[$selectedCategory][phrase].variants).length}
         <p>⋲ ᴠᴀʀɪᴀɴᴛꜱ ⋺</p>
-        {#each Array(Math.ceil(Object.keys($phrasebook[$selected_category][phrase].variants).length / 3)) as _, i}
+        {#each Array(Math.ceil(Object.keys($Language.Phrasebook[$selectedCategory][phrase].variants).length / 3)) as _, i}
             <div class="row">
-                {#each Object.keys($phrasebook[$selected_category][phrase].variants).slice(i * 3, i * 3 + 3) as variant}
+                {#each Object.keys($Language.Phrasebook[$selectedCategory][phrase].variants).slice(i * 3, i * 3 + 3) as variant}
                     <div class="column">
                         <p style="font-style: italic">
                             {variant}
                         </p>
                         <p class="pronunciation">
-                            {$phrasebook[$selected_category][phrase].variants[variant].pronunciation}
+                            {$Language.Phrasebook[$selectedCategory][phrase].variants[variant].pronunciations.General.ipa}
                         </p>
                         <p class="prelined">
-                            {$phrasebook[$selected_category][phrase].variants[variant].description}
+                            {$Language.Phrasebook[$selectedCategory][phrase].variants[variant].description}
                         </p>
                     </div>
                 {/each}

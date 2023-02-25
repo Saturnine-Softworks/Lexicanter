@@ -1,15 +1,27 @@
 <script lang="ts">
-    import { lexicon } from '../stores.js';
+    import { Language } from '../stores.js';
     import { createEventDispatcher } from 'svelte';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
-    export let entry = '';
+    export let entry: string = '';
 </script>
+<style>
+    .sense {
+        font-weight: bold;
+        display: inline-block;
+        width: 1rem;
+    }
+</style>
 <div id='{entry}' class="lex-entry prelined" on:contextmenu={edit}>
     <p  style="font-style: italic">{entry}</p>
-    <p class='pronunciation'>{$lexicon[entry][0]}</p>
-    {#each $lexicon[entry][3] as tag}
-        <div class='tag-item'>{tag}</div>
+    {#each Object.values($Language.Lexicon[entry].pronunciations) as Pronunciation}
+        <p class='pronunciation'>{Pronunciation.ipa}</p>
     {/each}
-    <p>{$lexicon[entry][1]}</p>
+    {#each $Language.Lexicon[entry].Senses as Sense, i}
+        <div class='sense'>{i+1}.</div>
+        {#each Sense.tags as tag}
+            <div class='tag-item'>{tag}</div>
+        {/each}
+        <p>{Sense.definition}</p>
+    {/each}
 </div>

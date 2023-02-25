@@ -1,8 +1,10 @@
 // TODO: The pronunciation rule format is going to be changed to the more standard `pattern/substitution/context` format. This whole function needs to be rewritten.
 import { get } from 'svelte/store';
-import { romanizations, romans_input, case_sensitive, lexicon, word_input, word_pronunciation,
-    phrasebook, phrase_input, phrase_pronunciation, onsets, medials, codas, vowels, illegals
+import { 
+    Language, pronunciationRules, wordInput, wordPronunciation, phraseInput, phrasePronunciation 
 } from '../stores.js';
+import type * as Lexc from './types';
+const Lang = () => get(Language);
 
 /**
  * Takes a word and returns its pronunciation based on
@@ -12,10 +14,10 @@ import { romanizations, romans_input, case_sensitive, lexicon, word_input, word_
  */
 export function get_pronunciation(word: string) {
     // TODO: Rewrite most of this code for readability; it currently requires a lot of comments to understand.
-    let $romanizations = get(romanizations);
-    let $case_sensitive = get(case_sensitive);
+    let $romanizations = get(pronunciationRules);
+    let caseSensitive = Lang().CaseSensitive;
     word = `^${word.replaceAll(/[^\S\n]|(\n)/gm, '^$1')}^`; // add carets for front/end searching, treat spaces as word boundaries
-    word = $case_sensitive? word : word.toLowerCase(); // if the case-sensitive setting is ticked, don't force to lowercase.
+    word = caseSensitive? word : word.toLowerCase(); // if the case-sensitive setting is ticked, don't force to lowercase.
     // Romanizations need to be sorted by length and applied in that order.
     // First, we need an array of all the differnt lengths of polygraphs which are used in the romanizations.
     let lengths: number[] = [];
@@ -37,9 +39,13 @@ export function get_pronunciation(word: string) {
         if (!(length in sort)) {
             sort[length] = {};
         }
-        for (let rom in $romanizations) {
-            if (rom.length === length) {
-                sort[length][rom] = $romanizations[rom];
+        for (let romRules in $romanizations) {
+            for (let romLect in $romanizations[romRules]) {
+                for (let rom of $romanizations[romRules][romLect]) {
+                    if (rom.length === length) {
+                        sort[length][rom] = $romanizations[romRules][romLect][rom];
+                    }
+                }
             }
         }
     }
@@ -178,7 +184,8 @@ export function writeRomans () {
 
     // On a first pass of the input directly in the textarea,
     // we parse out the category definitions and rom rules.
-    let txt = get(romans_input);
+    // TODO: For now this just uses the default General dialect.
+    let txt: string = Lang().Pronunciations.General;
     txt.split('\n').forEach(line => {
         // Parse each new line as a rule
         // remove all white space
@@ -205,31 +212,33 @@ export function writeRomans () {
     });
 
     // The block below is used to update all the pronunciation values in the editors, lexicon, and phrasebook.
-    word_pronunciation.set(get_pronunciation(get(word_input)));
-    let $lexicon = get(lexicon);
-    for (let entry in $lexicon) {
-        if ($lexicon[entry][2] === false) {
+    wordPronunciation.set(get_pronunciation(get(wordInput)));
+    let lexicon: Lexc.Lexicon = Lang().Lexicon;
+    for (let word in lexicon) {
+        // TODO: Check pronunciations of all dialects
+        if (lexicon[word].pronunciations.General.irregular === false) {
             // all non-irrelgular pronunciations
-            $lexicon[entry][0] = get_pronunciation(entry);
+            lexicon[word].pronunciations.General.ipa = get_pronunciation(word);
         }
     }
-    lexicon.set($lexicon);
+    Lang().Lexicon = lexicon;
 
-    phrase_pronunciation.set(get_pronunciation(get(phrase_input)));
-    let $phrasebook = get(phrasebook);
+    phrasePronunciation.set(get_pronunciation(get(phraseInput)));
+    let phrasebook: Lexc.Phrasebook = Lang().Phrasebook;
     for (let category in phrasebook) {
         for (let entry in phrasebook[category]) {
-            phrasebook[category][entry].pronunciation =
+            // TODO: Check pronunciations of all dialects
+            phrasebook[category][entry].pronunciations.General.ipa =
                 get_pronunciation(entry);
             for (let variant in phrasebook[category][entry].variants) {
-                phrasebook[category][entry].variants[variant].pronunciation =
+                phrasebook[category][entry].variants[variant].pronunciations.General.ipa =
                     get_pronunciation(variant);
             }
         }
     }
-    phrasebook.set($phrasebook);
+    Lang().Phrasebook = phrasebook;
 
-    romanizations.set($romanizations);
+    pronunciationRules.set($romanizations);
 };
 
 /**
@@ -241,11 +250,11 @@ export function complete_word(trial) {
     let random_boolean = () => Math.floor(Math.random() * 2) === 0;
     let choice = arr => arr[Math.floor(Math.random() * arr.length)];
     let inventory = {
-        Onsets: get(onsets).split(/\s+/g),
-        Medials: get(medials).split(/\s+/g), 
-        Codas: get(codas).split(/\s+/g),
-        Vowels: get(vowels).split(/\s+/g),
-        Illegals: !!get(illegals)? get(illegals).split(/\s+/g) : ['N/A']
+        Onsets: Lang().Phonotactics.General.Onsets,
+        Medials: Lang().Phonotactics.General.Medials, 
+        Codas: Lang().Phonotactics.General.Codas,
+        Vowels: Lang().Phonotactics.General.Vowels,
+        Illegals: Lang().Phonotactics.General.Illegals? Lang().Phonotactics.General.Illegals : []
     }
     let word = '^' + trial;
 
@@ -308,11 +317,11 @@ export function complete_word(trial) {
 export function generate_word() {
     const attempt = () => {
         let inventory = {
-            Onsets: get(onsets).split(/\s+/g),
-            Medials: get(medials).split(/\s+/g),
-            Codas: get(codas).split(/\s+/g),
-            Vowels: get(vowels).split(/\s+/g),
-            Illegals: !!get(illegals)? get(illegals).split(/\s+/g) : ['N/A']
+            Onsets: Lang().Phonotactics.General.Onsets,
+            Medials: Lang().Phonotactics.General.Medials,
+            Codas: Lang().Phonotactics.General.Codas,
+            Vowels: Lang().Phonotactics.General.Vowels,
+            Illegals: Lang().Phonotactics.General.Illegals? Lang().Phonotactics.General.Illegals : []
         }
         let random_boolean = () => Math.floor(Math.random() * 2) === 0;
         let choice = arr => arr[Math.floor(Math.random() * arr.length)];

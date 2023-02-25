@@ -1,17 +1,32 @@
 import { get } from 'svelte/store';
-import { case_sensitive, ignore_diacritics, alphabet, header_tags } from '../stores.js';
+import { Language } from '../stores';
+import type * as Lexc from './types';
+const Lang = () => get(Language);
 
-export function alphabetize(lexicon) {
-    let priority_tags = get(header_tags).toLowerCase().trim().split(/\s+/);
-    let $alphabet = get(alphabet);
-    let $ignore_diacritics = get(ignore_diacritics);
-    let $case_sensitive = get(case_sensitive);
+/**
+ * Takes a Lexicon object and returns an array of words in the alphabetical order
+ * of the language, defined by the Alphabet property in the language file, and 
+ * with the any words which contain any HeaderTags at the top.
+ * @param lexicon - the lexicon object
+ * @returns An array of words, sorted by the alphabetical order of the language.
+ */
+export function alphabetize(lexicon: Lexc.Lexicon) {
+    let priority_tags = Lang().HeaderTags.toLowerCase().trim().split(/\s+/);
+    let $alphabet = Lang().Alphabet;
+    let $ignore_diacritics = Lang().IgnoreDiacritics;
+    let $case_sensitive = Lang().CaseSensitive;
     let all_words = structuredClone(lexicon);
     let tag_ordered_lexes = [];
     for (let tag of priority_tags) {
         tag_ordered_lexes.push([]);
         for (let word in all_words) {
-            if (lexicon[word][3].includes(tag)) {
+            if ((():string[] => {
+                    let tags = [];
+                    Lang().Lexicon[word].Senses.forEach((sense: Lexc.Sense) => {
+                        tags.push(...sense.tags);
+                    });
+                    return tags
+                })().includes(tag)) {
                 tag_ordered_lexes[tag_ordered_lexes.length - 1].push(word);
             }
         }

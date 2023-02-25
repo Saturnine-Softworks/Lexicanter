@@ -1,9 +1,11 @@
 <script lang="ts">
-    import { theme, autosave } from '../stores.js';
-    import { userData, save_file } from '../scripts/files.js'
+    import { theme, autosave, useDialects } from '../stores';
+    import { userData, saveFile } from '../scripts/files'
+    import { Language } from '../stores';
     const fs = require('fs');
     const path = require('path');
-
+    let lectsInputs: string[];
+    $: lectsInputs = [...$Language.Lects];
     /**
      * When the app loads, this block runs to check if the user has
      * previously set a theme preference. If not, it creates a file in the
@@ -98,7 +100,7 @@
         });
         if ($autosave) {
             var autosave_tracker = window.setInterval(
-                save_file,
+                saveFile,
                 300000 /* 5 minutes */,
                 false
             );
@@ -113,30 +115,65 @@
     <div class="row" style="height: 95vh">
         <div class="container column scrolled" style="height: 90vh;">
             <p>Appearance Settings</p> <br>
-            <label for="theme-select">Color Theme</label>
-            <select name="theme-select" id="theme-select" bind:value={$theme} on:change={change_theme}>
-                <optgroup label="Simple Themes">
-                    <option value="styles/dark.css">☾ Dark</option>
-                    <option value="styles/light.css">☀ Light</option>
-                </optgroup>
-                <optgroup label="The Saturnine Collection">
-                    <option value="styles/marine.css">☾ Marine</option>
-                    <option value="styles/glade.css">☾ Glade</option>
-                    <option value="styles/pomegranate.css">☾ Pomegranate</option>
-                    <option value="styles/leatherbound.css">☀ Leatherbound</option>
-                    <option value="styles/wisteria.css">☀ Wisteria</option>
-                </optgroup>
-                <optgroup label="The Maarz Collection">
-                    <option value="styles/purple_maar.css">☾ Purple Maar</option>
-                    <option value="styles/terminal_green.css">☾ Terminal</option>
-                </optgroup>
-            </select>
+            <label>Color Theme
+                <select 
+                    name="theme-select" id="theme-select" 
+                    bind:value={$theme} 
+                    on:change={change_theme}
+                >
+                    <optgroup label="Simple Themes">
+                        <option value="styles/dark.css">☾ Dark</option>
+                        <option value="styles/light.css">☀ Light</option>
+                    </optgroup>
+                    <optgroup label="The Saturnine Collection">
+                        <option value="styles/marine.css">☾ Marine</option>
+                        <option value="styles/glade.css">☾ Glade</option>
+                        <option value="styles/pomegranate.css">☾ Pomegranate</option>
+                        <option value="styles/leatherbound.css">☀ Leatherbound</option>
+                        <option value="styles/wisteria.css">☀ Wisteria</option>
+                    </optgroup>
+                    <optgroup label="The Maarz Collection">
+                        <option value="styles/purple_maar.css">☾ Purple Maar</option>
+                        <option value="styles/terminal_green.css">☾ Terminal</option>
+                    </optgroup>
+                </select>
+            </label>
             <br><br>
-            <button on:click={custom_theme} class="hover-highlight hover-shadow">Load Custom Theme…</button>
+            <button class="hover-highlight hover-shadow" on:click={custom_theme}> Load Custom Theme… </button>
+            <br><br>
+            <p>Advanced Settings</p>
+            <label>Use Dialects
+                <input type="checkbox" bind:checked={$useDialects}/>
+                {#if $useDialects}
+                    {#each $Language.Lects as _, lectIndex}
+                        <div class="narrow">
+                            <input type="text" style="display: inline-block"
+                                bind:value={lectsInputs[lectIndex]}
+                                on:blur={() => {
+                                    for (let word in $Language.Lexicon) {
+                                        $Language.Lexicon[word].Senses.forEach(sense => {
+                                            sense.lects = sense.lects.map(lect => {
+                                                if (lect === $Language.Lects[lectIndex]) {
+                                                    return lectsInputs[lectIndex];
+                                                } else {
+                                                    return lect;
+                                                }
+                                            });
+                                        });
+                                    }
+                                }}
+                            />
+                            <button class="hover-highlight hover-shadow" style="display: inline-block"> - </button>
+                        </div>
+                    {/each}
+                    <button class="hover-highlight hover-shadow" on:click={() => { $Language.Lects.push(''); }}> + Lect </button>
+                {/if}
+            </label>
             <br><br>
             <p>Saving Settings</p>
-            <label for="auto-save">Auto-Save</label>
-            <input type="checkbox" id="auto-save" bind:checked={$autosave} on:change={change_autosave_pref}/>
+            <label>Auto-Save
+                <input type="checkbox" bind:checked={$autosave} on:change={change_autosave_pref}/>
+            </label>
             <br><br>
             <p class="info">
                 Join the home of the Lexicanter project on <a rel="noreferrer" target="_blank" href="https://discord.gg/uDk2XDhh8K">Discord</a>

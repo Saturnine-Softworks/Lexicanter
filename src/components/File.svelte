@@ -1,16 +1,16 @@
 <script lang="ts">
     const fs = require('fs');
     const path = require('path');
-    import { file_name, lexicon, phrasebook, alphabet, romans_input, 
-        Docs, case_sensitive, ignore_diacritics, selected_category,
-        onsets, medials, codas, vowels, illegals, header_tags
-    } from '../stores.js';
-    import { userData, showOpenDialog, save_file, openLegacy, saveAs, import_csv } from '../scripts/files.js';
-    import { writeRomans } from '../scripts/phonetics.js';
-    import { initialize_docs } from '../scripts/docs.js';
+    import { docsEditor, Language, selectedCategory } from '../stores';
+    import type * as Lexc from '../scripts/types';
+    import type { OutputData } from '@editorjs/editorjs';
+    import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV } from '../scripts/files';
+    import { writeRomans } from '../scripts/phonetics';
+    import { initializeDocs } from '../scripts/docs';
+    import * as diagnostics from '../scripts/diagnostics';
     $: loading_message = '';
-    let csv_headers = true; let csv_words = 2; let csv_definitions = 3;
-    let old_pattern = ''; let new_pattern = '';
+    let csvHeaders = true; let csvWords = 2; let csvDefinitions = 3;
+    let oldPattern = ''; let newPattern = '';
 
     /**
      * Parses the contents of an opened .lexc file and loads the data into the app.
@@ -18,10 +18,11 @@
      * @param {Object} contents - The contents of the opened file.
      */
     function read_contents (contents) {
-        if (contents.Version < 2) {
+        if (typeof contents.Version === 'number') {
             try { openLegacy[contents.Version](contents); }
             catch (err) {
-                window.alert(`
+                // TODO: window.alert() freezes text inputs on Windows computers and all instances need to be replaced with a custom dialog.
+                window.alert(` 
                     The file you attempted to open was saved by an old version of Lexicanter (Version ~${contents.Version}), 
                     which is no longer supported. Please contact the developer for assistance; the file is likely recoverable.
                 `);
@@ -30,42 +31,42 @@
         }
         try {
             loading_message = 'Loading settings...';
-            $case_sensitive = contents.CaseSensitive;
-            $ignore_diacritics = contents.IgnoreDiacritics;
-            $header_tags = contents.HeaderTags;
+            $Language.CaseSensitive = contents.CaseSensitive;
+            $Language.IgnoreDiacritics = contents.IgnoreDiacritics;
+            $Language.HeaderTags = contents.HeaderTags;
             loading_message = 'Loading alphabet...';
-            $alphabet = contents.Alphabet;
+            $Language.Alphabet = contents.Alphabet;
             loading_message = 'Loading lexicon...';
-            $lexicon = contents.Lexicon;
+            $Language.Lexicon = contents.Lexicon;
             loading_message = 'Loading phrasebook...';
-            $phrasebook = contents.Phrasebook;
+            $Language.Phrasebook = contents.Phrasebook;
             loading_message = 'Loading documentation...';
-            let docs_data = contents.Docs;
-            $Docs.destroy();
-            initialize_docs(docs_data);
-            $selected_category = Object.keys($phrasebook)[0]; 
-            loading_message = 'Loading romanizations...';
-            $romans_input = contents.Romanization; writeRomans();
+            let docs_data: OutputData = contents.Docs;
+            $Language.Docs = docs_data;
+            $docsEditor.destroy();
+            initializeDocs(docs_data);
+            $selectedCategory = Object.keys($Language.Phrasebook)[0]; 
+            loading_message = 'Loading pronunciation rules...';
+            $Language.Pronunciations = contents.Pronunciations; writeRomans();
             loading_message = 'Loading phonotactics...';
-            $onsets = contents.Phonotactics.Onsets.join(' ');
-            $medials = contents.Phonotactics.Medials.join(' ');
-            $codas = contents.Phonotactics.Codas.join(' ');
-            $vowels = contents.Phonotactics.Vowels.join(' ');
-            $illegals = contents.Phonotactics.Illegals.join(' ');
+            $Language.Phonotactics = contents.Phonotactics;
         } catch (err) {
             window.alert(
                 'There was a problem loading the contents of the file. Please contact the developer for assistance.'
             );
+            diagnostics.logError('Attempted to open a file.', err);
             console.log(err);
+        } finally {
+            diagnostics.logAction(`Opened and read the contents of '${$Language.Name}'.'`);
         }
     }
     
     /**
      * Opens a .lexc file from the user app data folder.
      */
-    async function open_file () {
+    async function openFile () {
         let contents;
-        let dialog = user_path => {
+        let dialog = (user_path: string) => {
             showOpenDialog(
                 {
                     title: 'Open Lexicon',
@@ -84,12 +85,13 @@
                         }, 5000);
                         return;
                     }
-                    fs.readFile(file_path[0], 'utf8', (err, data) => {
+                    fs.readFile(file_path[0], 'utf8', (err, data: string) => {
                         if (err) {
                             console.log(err);
                             window.alert(
                                 'There was an issue loading your file. Please contact the developer.'
-                            );
+                                );
+                            diagnostics.logError('Attempted to open a file.', err);
                             document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
                                 // loading anim stop
                                 planet.style.animationPlayState = 'paused';
@@ -100,7 +102,7 @@
                         }
                         contents = JSON.parse(data);
                         read_contents(contents);
-                        $file_name = path.basename(file_path[0], '.lexc');
+                        $Language.Name = path.basename(file_path[0], '.lexc');
                         document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
                             // loading anim stop
                             planet.style.animationPlayState = 'paused';
@@ -119,6 +121,7 @@
         await userData(user_path => {
             if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
                 fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => {
+                    diagnostics.logAction(`Created the 'Lexicons' folder in the user data folder at '${user_path}'.`);
                     dialog(user_path);
                 });
             } else { dialog(user_path); }
@@ -128,7 +131,7 @@
     /**
      * Allows the user to import a .lexc file from their computer.
      */
-    async function import_file() {
+    async function importFile() {
         document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
             planet.style.animationPlayState = 'running';
         });
@@ -149,7 +152,7 @@
         let string_contents = await file.text();
         let contents = JSON.parse(string_contents);
         read_contents(contents);
-        $file_name = file.name.split('.')[0];
+        $Language.Name = file.name.split('.')[0];
 
         document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
             planet.style.animationPlayState = 'paused';
@@ -163,25 +166,25 @@
      * to a new one, throughout the lexicon. 
      */
     function change_orthography() {
-        old_pattern = old_pattern.replace(/\^/g, '÷');
-        new_pattern = new_pattern.replace(/\^/g, '÷');
-        for (let word in $lexicon) {
+        oldPattern = oldPattern.replace(/\^/g, '÷');
+        newPattern = newPattern.replace(/\^/g, '÷');
+        for (let word in $Language.Lexicon) {
             let w = '÷' + word + '÷';
-            if (w.includes($case_sensitive? old_pattern : old_pattern.toLowerCase())) {
-                let r = new RegExp(old_pattern, $case_sensitive ? 'g' : 'gi');
-                w = w.replace(r, new_pattern);
+            if (w.includes($Language.CaseSensitive? oldPattern : oldPattern.toLowerCase())) {
+                let r = new RegExp(oldPattern, $Language.CaseSensitive ? 'g' : 'gi');
+                w = w.replace(r, newPattern);
                 w = w.replace(/÷/gi, '');
-                if (w in $lexicon) {
+                if (w in $Language.Lexicon) {
                     // if the new word exists, conjoin the definitions
-                    $lexicon[w][1] = $lexicon[w][1] + '\n' + $lexicon[word][1];
+                    $Language.Lexicon[w][1] = $Language.Lexicon[w][1] + '\n' + $Language.Lexicon[word][1];
                 } else {
-                    $lexicon[w] = $lexicon[word];
+                    $Language.Lexicon[w] = $Language.Lexicon[word];
                 }
-                delete $lexicon[word];
+                delete $Language.Lexicon[word];
             }
         }
-        writeRomans(); $lexicon = $lexicon;
-        old_pattern = ''; new_pattern = '';
+        writeRomans(); $Language.Lexicon = $Language.Lexicon;
+        oldPattern = ''; newPattern = '';
     }
 
 </script>
@@ -191,12 +194,12 @@
         <div class="column container" style="overflow-y:auto">
             <p>Document</p>
             <label for="file-name">Name</label>
-            <input type="text" id="file-name" bind:value={$file_name}/>
+            <input type="text" id="file-name" bind:value={$Language.Name}/>
             <br>
             <div class="narrow row">
                 <div class="column">
-                    <button on:click={save_file} class="hover-highlight hover-shadow">Save…</button>
-                    <button on:click={open_file} class="hover-highlight hover-shadow">Open…</button>
+                    <button on:click={saveFile} class="hover-highlight hover-shadow">Save…</button>
+                    <button on:click={openFile} class="hover-highlight hover-shadow">Open…</button>
                     <p class="info">Save your lexicon or open a previously saved one.</p>
                 </div>
                 <div class="column"> 
@@ -211,17 +214,17 @@
                 </div>
                 <div class="column">
                     <button on:click={saveAs.lexc} class="hover-highlight hover-shadow">Export…</button>
-                    <button on:click={import_file} class="hover-highlight hover-shadow">Import…</button>
+                    <button on:click={importFile} class="hover-highlight hover-shadow">Import…</button>
                     <p class="info">Export and import your own copies of the lexicon file.</p>
                 </div>
             </div>
             <br>
             <p>Lexicon Header Tags</p>
             <div class="narrow">
-                <textarea bind:value={$header_tags}></textarea>
-                <label for="header-tags" class="info">
+                <textarea bind:value={$Language.HeaderTags}></textarea>
+                <p class="info">
                     Entries with these tags will be sorted separately at the top of the lexicon.
-                </label>
+                </p>
             </div>
             <br>
             <button class="hover-highlight hover-shadow"
@@ -230,9 +233,9 @@
             <p>Change Pronunciations & Orthography</p>
             <div class="narrow">
                 <label for="ortho-pattern">Orthography Pattern</label>
-                <input id="ortho-pattern" type="text" bind:value={old_pattern}/>
+                <input id="ortho-pattern" type="text" bind:value={oldPattern}/>
                 <label for="new-pattern">Replace With</label>
-                <input id="new-pattern" type="text" bind:value={new_pattern}/>
+                <input id="new-pattern" type="text" bind:value={newPattern}/>
                 <button class="hover-highlight hover-shadow" on:click={change_orthography}>Commit Change</button>
             </div>
             <br>
@@ -243,7 +246,7 @@
                     <button on:click={saveAs.html.all} class="hover-highlight hover-shadow">Everything</button>
                 </div>
                 <div class="column">
-                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">Docs Only</button>
+                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">docsEditor Only</button>
                 </div>
             </div>
             <button on:click={saveAs.txt} class="hover-highlight hover-shadow">Text File</button>
@@ -255,17 +258,17 @@
                 <div class="row">
                     <div class="column">
                         <label for="word-column">Words Column</label>
-                        <input type="number" id="word-column" bind:value={csv_words}/>
+                        <input type="number" id="word-column" bind:value={csvWords}/>
                     </div>
                     <div class="column">
                         <label for="def-column">Definitions Column</label>
-                        <input type="number" id="def-column" bind:value={csv_definitions}/>
+                        <input type="number" id="def-column" bind:value={csvDefinitions}/>
                     </div>
                 </div>
             </div>
             <label for="row-one-is-labels">First Row Is Column Labels</label>
-            <input type="checkbox" id="row-one-is-labels" bind:checked={csv_headers}/>
-            <button on:click={() => import_csv(csv_headers, csv_words, csv_definitions)} class="hover-highlight hover-shadow">Import</button>
+            <input type="checkbox" id="row-one-is-labels" bind:checked={csvHeaders}/>
+            <button on:click={() => importCSV(csvHeaders, csvWords, csvDefinitions)} class="hover-highlight hover-shadow">Import</button>
             <br><br>
         </div>
     </div>

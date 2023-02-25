@@ -1,10 +1,11 @@
 <script lang="ts">
-    import { romans_input, onsets, medials, codas, vowels, illegals } from "../stores";
+    import { Language, useDialects } from "../stores";
     import { get_pronunciation, writeRomans, complete_word, generate_word } from '../scripts/phonetics.js';
     let trial = ''; let ortho_test = '';
     $: trial_completion = complete_word(trial);
     $: test_pronunciation = get_pronunciation(ortho_test);
     $: generated_words = Array(24).fill('');
+    $: selectedDialect = ''
 </script>
 <!-- Phonology Tab -->
 <div class="tab-pane">
@@ -12,19 +13,19 @@
         <!-- Phonotactics -->
         <div class="container column scrolled" style="height: 100%">
             <label for="onsets">Onset Consonants</label>
-            <textarea id="onsets" class="phonology" bind:value={$onsets}></textarea>
+            <textarea id="onsets" class="phonology" bind:value={$Language.Phonotactics.General.Onsets}></textarea>
             <br>
             <label for="medials">Medial Consonants</label>
-            <textarea id="medials" class="phonology" bind:value={$medials}></textarea>
+            <textarea id="medials" class="phonology" bind:value={$Language.Phonotactics.General.Medials}></textarea>
             <br>
             <label for="codas">Coda Consonants</label>
-            <textarea id="codas" class="phonology" bind:value={$codas}></textarea>
+            <textarea id="codas" class="phonology" bind:value={$Language.Phonotactics.General.Codas}></textarea>
             <br>
             <label for="vowels">Vowels</label>
-            <textarea id="vowels" class="phonology" bind:value={$vowels}></textarea>
+            <textarea id="vowels" class="phonology" bind:value={$Language.Phonotactics.General.Vowels}></textarea>
             <br>
             <label for="illegals">Illegal Combinations</label>
-            <textarea id="illegals" class="phonology" bind:value={$illegals}></textarea>
+            <textarea id="illegals" class="phonology" bind:value={$Language.Phonotactics.General.Illegals}></textarea>
             <br><br>
             <label for="trial">Trial Words</label>
             <input type="text" id="trial" bind:value={trial}/>
@@ -46,13 +47,25 @@
         </div>
         <!-- Romanization -->
         <div class="container column scrolled" style="height: 100%">
-            <label for="romans">Pronunciations</label>
-            <textarea id="romans" rows="30" style="text-align: left" class="prelined" 
-                bind:value={$romans_input} on:blur={writeRomans}></textarea>
+            <label>Pronunciations
+                <textarea 
+                    class="prelined" rows="26" style="text-align: left" 
+                    on:blur={writeRomans} 
+                    bind:value={$Language.Pronunciations.General} 
+                />
+            </label>
             <br><br>
-            <label for="test-romans">Orthography Testing</label>
-            <textarea id="test-romans" rows="4" class="prelined" bind:value={ortho_test}></textarea>
-            <textarea id="test-romans-result" class="pronunciation" readonly>{test_pronunciation}</textarea>
+            <label>Orthography Testing
+                <textarea 
+                    class="prelined" rows="4" 
+                    bind:value={ortho_test}
+                />
+            </label>
+            <textarea
+                class="pronunciation"
+                bind:value={test_pronunciation}
+                readonly
+            />
         </div>
     </div>
 </div>
