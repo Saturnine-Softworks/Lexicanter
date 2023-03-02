@@ -1798,11 +1798,22 @@ async function save_file(send_alert = true) {
     let exports = await collect_export_data((blob = false)); // needs a string or buffer
     try {
         userData(user_path => {
-            if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
-                fs.mkdirSync(`${user_path}${path.sep}Lexicons${path.sep}`);
+            const lexiconFoler = `${user_path}${path.sep}Lexicons${path.sep}`;
+            const date = new Date().toString().split(' G')[0].replaceAll(':', '⦂'); // normal colons are turned into slashes in the file name
+            const backupFolder = `${user_path}${path.sep}Backups${path.sep}`;
+            if (!fs.existsSync(lexiconFoler)) {
+                fs.mkdirSync(lexiconFoler);
+            }
+            if (!fs.existsSync(backupFolder)) {
+                fs.mkdirSync(backupFolder);
             }
             fs.writeFileSync(
                 `${user_path}${path.sep}Lexicons${path.sep}${file_name_input.value}.lexc`,
+                exports,
+                'utf8'
+            );
+            fs.writeFileSync(
+                `${user_path}${path.sep}Backups${path.sep}${file_name_input.value} @ ${date}.lexc`,
                 exports,
                 'utf8'
             );
@@ -1863,7 +1874,10 @@ ipcRenderer.on('app-close', _ => {
                 ipcRenderer.send('close');
         } else {
             save_file(false).then(_ => {
-                ipcRenderer.send('close');
+                window.setTimeout(
+                    () => ipcRenderer.send('close'),
+                    1000 // Give time for things to wrap up
+                );
             });
         }
     } else {

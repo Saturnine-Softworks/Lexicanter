@@ -1,11 +1,11 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "1.11.1",
+  "version": "1.11.2",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "electron .",
     "test-mac": "electron-builder --mac --publish never",
     "test-win": "electron-builder --win --publish never",
     "publish": "bash bash/publish.bash"
