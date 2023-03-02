@@ -190,6 +190,20 @@ h1, h2, h3, h4, h5, h6
     @include capitalize()
     display: inline-block
 
+.sense
+    @include font(Gentium, $mid-font)
+    @include small-items()
+    font-weight: bold
+    font-style: italic
+    display: inline-block
+    background-color: transparent
+    margin-top: 1em
+
+.lect
+    @include font(Noto, $mid-font)
+    font-style: italic
+    margin-top: 0.1em
+
 [id=entry-counter]
     @include font(Noto, $small-font)
     @include small-items()

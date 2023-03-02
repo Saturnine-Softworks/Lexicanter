@@ -1,5 +1,8 @@
 <script lang="ts">
     const { ipcRenderer } = require('electron');
+    const vex = require('vex-js');
+    vex.registerPlugin(require('vex-dialog'));
+    vex.defaultOptions.className = 'vex-theme-os';
 	import Lexicon from './components/Lexicon.svelte';
 	import Phrasebook from './components/Phrasebook.svelte';
 	import Phonology from './components/Phonology.svelte';

@@ -1,11 +1,13 @@
 <script lang="ts">
-    import { theme, autosave, useDialects } from '../stores';
+    import { theme, autosave, useDialects, pronunciationRules, pronunciations, wordInput } from '../stores';
     import { userData, saveFile } from '../scripts/files'
     import { Language } from '../stores';
+    import type * as Lexc from '../scripts/types';
     const fs = require('fs');
     const path = require('path');
-    let lectsInputs: string[];
-    $: lectsInputs = [...$Language.Lects];
+    const vex = require('vex-js');
+    import { debug, logAction } from '../scripts/diagnostics';
+    import { get_pronunciation } from '../scripts/phonetics';
     /**
      * When the app loads, this block runs to check if the user has
      * previously set a theme preference. If not, it creates a file in the
@@ -101,13 +103,117 @@
         if ($autosave) {
             var autosave_tracker = window.setInterval(
                 saveFile,
-                300000 /* 5 minutes */,
+                600000 /* 10 minutes */,
                 false
             );
         } else {
             window.clearInterval(autosave_tracker);
         };
     };
+
+    /**
+     * Changes the name of a lect in the $Language.Lects array and updates
+     * all instances of that lect in the file.
+     * @param lect The name of the lect to be changed
+     * @param name The new name of the lect
+     * @param index The index of the lect in the $Language.Lects array
+     */
+    function changeLectName(lect: string, name: string, index: number): void {
+        if (name === '') {
+            vex.dialog.alert('The lect name cannot be blank.');
+            return;
+        }
+        if (name === lect) {
+            vex.dialog.alert('The lect name is unchanged.');
+            return;
+        }
+        if ($Language.Lects.includes(name)) {
+            vex.dialog.alert('A lect with that name already exists.');
+            return;
+        }
+        $Language.Lects[index] = name;
+        $Language.Lects = [...$Language.Lects];
+        Object.keys($Language.Lexicon).forEach((word: string) => {
+            if ($Language.Lexicon[word].pronunciations.hasOwnProperty(lect)) {
+                $Language.Lexicon[word].pronunciations[name] = $Language.Lexicon[word].pronunciations[lect];
+                delete $Language.Lexicon[word].pronunciations[lect];
+            }
+            $Language.Lexicon[word].Senses.forEach((sense: Lexc.Sense) => {
+                if (sense.lects.includes(lect)) {
+                    sense.lects.splice(sense.lects.indexOf(lect), 1);
+                    sense.lects.push(name);
+                }
+            })
+        })
+        $Language.Pronunciations[name] = $Language.Pronunciations[lect];
+        $pronunciationRules[name] = $pronunciationRules[lect];
+        if ($pronunciations.hasOwnProperty(lect)) {
+            $pronunciations[name] = $pronunciations[lect];
+            delete $pronunciations[lect];
+        }
+        delete $Language.Pronunciations[lect];
+        delete $pronunciationRules[lect];
+    }
+
+    function deleteLect (lect: string, i: number) {
+        $Language.Lects.splice(i, 1);
+        $Language.Lects = [...$Language.Lects];
+        delete $Language.Pronunciations[lect];
+        delete $pronunciationRules[lect];
+        delete $pronunciations[lect]
+        Object.keys($Language.Lexicon).forEach((word: string) => {
+            if ($Language.Lexicon[word].pronunciations[lect]) {
+                delete $Language.Lexicon[word].pronunciations[lect];
+            }
+            $Language.Lexicon[word].Senses.forEach((sense: Lexc.Sense, i: number) => {
+                if (sense.lects.includes(lect)) {
+                    sense.lects.splice(sense.lects.indexOf(lect), 1);
+                }
+                if (!sense.lects) {
+                    $Language.Lexicon[word].Senses.splice(i, 1);
+                }
+            })
+        });
+        $Language.Lexicon = {...$Language.Lexicon};
+    }
+
+    function confirmUseLectsChange () {
+        if (!$useDialects) {
+            vex.dialog.confirm({
+                message: `Are you sure you want to disable lect features? Only the data for the lect "${$Language.Lects[0]}" will be kept.`,
+                callback: ((response: boolean) => {
+                    if (response) {
+                        let keep = $Language.Lects[0];
+                        $Language.Lects = ['General'];
+
+                        Object.keys($Language.Lexicon).forEach((word: string) => {
+                            $Language.Lexicon[word].Senses = $Language.Lexicon[word].Senses.filter((sense: Lexc.Sense) => {
+                                return sense.lects.includes(keep);
+                            })
+                            $Language.Lexicon[word].Senses.forEach((sense: Lexc.Sense) => {
+                                sense.lects = ['General'];
+                            })
+                            if (!$Language.Lexicon[word].Senses) {
+                                delete $Language.Lexicon[word];
+                            }
+                            $Language.Lexicon[word].pronunciations = {
+                                General: $Language.Lexicon[word].pronunciations[keep]
+                            }
+                        });
+                        $Language.Pronunciations = {
+                            General: $Language.Pronunciations[keep]
+                        }
+                        $pronunciationRules = {
+                            General: $pronunciationRules[keep]
+                        }
+                        $pronunciations = {
+                            General: $pronunciations[keep]
+                        }
+                    } else { $useDialects = true; }
+                })
+            });
+        }
+    }
 
 </script>
 <!-- App Settings -->
@@ -142,31 +248,57 @@
             <button class="hover-highlight hover-shadow" on:click={custom_theme}> Load Custom Theme… </button>
             <br><br>
             <p>Advanced Settings</p>
-            <label>Use Dialects
-                <input type="checkbox" bind:checked={$useDialects}/>
+            <label>Use Lects
+                <input type="checkbox" bind:checked={$useDialects} on:change={confirmUseLectsChange}/>
                 {#if $useDialects}
-                    {#each $Language.Lects as _, lectIndex}
+                    {#each $Language.Lects as lect, lectIndex}
                         <div class="narrow">
-                            <input type="text" style="display: inline-block"
-                                bind:value={lectsInputs[lectIndex]}
-                                on:blur={() => {
-                                    for (let word in $Language.Lexicon) {
-                                        $Language.Lexicon[word].Senses.forEach(sense => {
-                                            sense.lects = sense.lects.map(lect => {
-                                                if (lect === $Language.Lects[lectIndex]) {
-                                                    return lectsInputs[lectIndex];
-                                                } else {
-                                                    return lect;
-                                                }
-                                            });
-                                        });
+                            <p style="display: inline-block" id={`${lectIndex}`}>{lect}</p>
+                            <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={()=>{
+                                vex.dialog.confirm({
+                                    message: `Are you sure you want to delete the lect "${lect}"? This action cannot be undone.`,
+                                    callback: function (response) {
+                                        if (response) {
+                                            deleteLect(lect, lectIndex);
+                                            logAction(`Deleted lect: ${lect}`);
+                                            // debug.log(`Deleted lect: ${lect}`)
+                                        }
                                     }
-                                }}
-                            />
-                            <button class="hover-highlight hover-shadow" style="display: inline-block"> - </button>
+                                });
+                            }}> - </button>
+                            <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={()=>{
+                                vex.dialog.prompt({
+                                    message: 'Edit Lect Name',
+                                    placeholder: `${lect}`,
+                                    callback: function (response) {
+                                        if (response === false) {
+                                            return debug.log('User cancelled the Edit Lect Name dialog.');
+                                        }
+                                        changeLectName(lect, response, lectIndex);
+                                        logAction(`Edited lect name: ${lect} to ${response}`);
+                                        // debug.log(`Edited lect name: ${lect} to ${response}`)
+                                    }
+                                })
+                            }}> ✏ </button>
                         </div>
                     {/each}
-                    <button class="hover-highlight hover-shadow" on:click={() => { $Language.Lects.push(''); }}> + Lect </button>
+                    <button class="hover-highlight hover-shadow" on:click={() => { 
+                        vex.dialog.prompt({
+                            message: 'Add a New Lect',
+                            placeholder: `New ${$Language.Name} Lect`,
+                            callback: function (response) {
+                                if (response === false) {
+                                    return debug.log('User cancelled the Add Lect dialog.');
+                                }
+                                $Language.Lects = [...$Language.Lects, response];
+                                $Language.Pronunciations[response] = 'place > holder';
+                                $pronunciationRules[response] = {place: 'holder'};
+                                $pronunciations[response] = get_pronunciation($wordInput, response);
+                                logAction(`Added a new lect: ${response}`);
+                                // debug.log(`Added a new lect: ${response}`)
+                            }
+                        })
+                    }}> + Lect </button>
                 {/if}
             </label>
             <br><br>

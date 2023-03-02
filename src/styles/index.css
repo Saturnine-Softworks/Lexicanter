@@ -237,6 +237,27 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
 }
 
+.sense {
+  font-family: Gentium;
+  font-size: 9pt;
+  border-radius: 7%;
+  width: fit-content;
+  padding: 0.2em;
+  margin: 0.2em;
+  font-weight: bold;
+  font-style: italic;
+  display: inline-block;
+  background-color: transparent;
+  margin-top: 1em;
+}
+
+.lect {
+  font-family: Noto;
+  font-size: 9pt;
+  font-style: italic;
+  margin-top: 0.1em;
+}
+
 [id=entry-counter] {
   font-family: Noto;
   font-size: 7pt;

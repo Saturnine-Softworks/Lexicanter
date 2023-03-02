@@ -37,19 +37,19 @@ export function logAction(action: string): void {
 
 export const debug = {
     log: (message: string) => {
-        let formatted = '\x1B[22m\x1B[4mLexc Debug\x1B[24m:\x1B[22m    ' + '\x1B[32m' + message + '\x1B[39m'
+        let formatted = '\x1B[22m\x1B[4mLexc Debug\x1B[24m:\x1B[22m ' + '\x1B[32m' + message + '\x1B[39m'
         console.log(formatted);
         ipcRenderer.invoke('debug', formatted);
     },
     logObj: (obj: any, name: string = '') => {
         let objString = JSON.stringify(obj, null, 2)
             .replace(/(.*):/g, '\x1B[32m$1\x1B[39m:');
-        let formatted = '\x1B[22m\x1B[4mLexc Debug\x1B[24m\x1B[22m    ' + '\x1B[32m"' + name + '":\x1B[39m' + '\n' + objString;
+        let formatted = '\x1B[22m\x1B[4mLexc Debug\x1B[24m\x1B[22m ' + '\x1B[32m' + name + ':\x1B[39m' + '\n' + objString;
         ipcRenderer.invoke('debug', formatted);
         console.log(formatted);
     },    
     warn: (message: string) => {
-        let formatted = '\x1B[22m\x1B[4mLexc Debug\x1B[24m\x1B[22m    ' + '\x1B[33m' + message + '\x1B[39m'
+        let formatted = '\x1B[22m\x1B[4mLexc Debug\x1B[24m\x1B[22m ' + '\x1B[33m' + message + '\x1B[39m'
         ipcRenderer.invoke('debug', formatted);
         console.log(formatted);
     }

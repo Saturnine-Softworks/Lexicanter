@@ -1,62 +1,83 @@
 <script lang="ts">
-    import { Language, phraseInput, phrasePronunciation, selectedCategory, categoryInput } from "../stores";
+    import { Language, phraseInput, phrasePronunciations, selectedCategory, categoryInput, useDialects } from "../stores";
+    import { debug } from "../scripts/diagnostics";
     import type * as Lexc from "../scripts/types"
     import { get_pronunciation } from "../scripts/phonetics";
     import PhraseEntry from "./PhraseEntry.svelte";
     import VariantInput from "./VariantInput.svelte";
+    import SenseInput from "./SenseInput.svelte";
+    const vex = require('vex-js');
     $categoryInput = $selectedCategory;
-    let search_phrase = '';
-    let search_description = '';
-    let phrase_keys = [];
-    $: collapsedPanel = false;
-    $: phraseDescription = ''
-    $: variantInputs = [];
+    let searchPhrase = '';
+    let searchDescription = '';
+    let searchTags = '';
+    let lectFilter = '';
+    let phraseKeys: string[] = [];
+    let collapsedPanel = false;
+    let phraseDescription = ''
+    let variantInputs = [];
+    let lects = [...$Language.Lects];
+    let tags = '';
 
     /**
      * Searches the phrasebook within the currently selected category
      * for entries matching the search terms. Phrases which contain only
      * a match in one of their variants are also included.
-     * @returns {Array} An array of keys matching the search terms.
+     * @returns {string[]} An array of keys matching the search terms.
      */ 
-    function searchBook() {
+    function searchBook(): string[] {
         if (!$selectedCategory) return [];
-        let scope: Lexc.PhraseCategory = $Language.Phrasebook[$selectedCategory];
-        let phrase_search = search_phrase.trim();
-        let descript_search = search_description.toLowerCase().trim();
+        const scope: Lexc.PhraseCategory = $Language.Phrasebook[$selectedCategory];
+        const phrase_search = searchPhrase.trim();
+        const descript_search = searchDescription.toLowerCase().trim();
+        const tagsSearch = searchTags.toLowerCase().trim().split(/\s+/g).filter(s => !!s);
         if (!phrase_search && !descript_search) return Object.keys(scope);
 
         let keys = [];
         for (let entry in scope) {
-            let term = '^' + entry + '^';
-            let phrase_match = !phrase_search
-            let descript_match = !descript_search
+            let term = '^' + entry.replaceAll(/\s+/g, '^') + '^';
+            let phraseMatch = !phrase_search
+            let descriptMatch = !descript_search
+            let tagMatch = !tagsSearch
+            const filterLect = lectFilter? !lectFilter : scope[entry].lects.includes(lectFilter);
 
             if (term.includes(phrase_search))
-                phrase_match = true;
+                phraseMatch = true;
             if (scope[entry].description.toLowerCase().includes(descript_search)) 
-                descript_match = true;
+                descriptMatch = true;
+            if (!!tagsSearch) {
+                if (scope[entry].tags.some(tag => tagsSearch.includes(tag)))
+                    tagMatch = true;
+            }
+
 
             for (let variant in scope[entry].variants) {
                 let v_term = '^' + variant + '^';
                 if (v_term.includes(phrase_search))
-                    phrase_match = true;
+                    phraseMatch = true;
                 if (scope[entry].variants[variant].description .toLowerCase().includes(descript_search))
-                    descript_match = true;
+                    descriptMatch = true;
             }
 
-            if (phrase_match && descript_match) 
+            if (phraseMatch && descriptMatch && tagMatch && filterLect) 
                 keys.push(entry);
         }
         return keys;
     }
-    // any time $selectedCategory, search_phrase, or search_description changes, update phrase_keys
-    $: $selectedCategory, search_phrase, search_description, (() => {phrase_keys = searchBook()})(); 
+    $: {
+        // any time $selectedCategory, search_phrase, or search_description changes, update phrase_keys
+        $Language.Phrasebook;
+        $selectedCategory;
+        searchPhrase;
+        searchDescription;
+        (() => {phraseKeys = searchBook()})();
+    }
 
     /**
      * Changes the selected category and updates the category input field.
      * @param {string} category
      */
-    function select(category) {
+    function select(category: string): void {
         $selectedCategory = category;
         $categoryInput = category;
     }
@@ -67,11 +88,11 @@
      */ 
     function editPhrase(phrase: string): void {
         $phraseInput = phrase;
-        $phrasePronunciation = (() => {
-            let pronunciations = '';
-            for (let pronunciation of Object.values($Language.Phrasebook[$selectedCategory][phrase].pronunciations)) {
-                pronunciations += pronunciation.ipa + '\n';
-            }
+        $phrasePronunciations = (() => {
+            let pronunciations = {};
+            Object.keys($Language.Phrasebook[$selectedCategory][phrase].pronunciations).forEach(lect => {
+                pronunciations[lect] = $Language.Phrasebook[$selectedCategory][phrase].pronunciations[lect].ipa;
+            });
             return pronunciations;
         })();
         phraseDescription = $Language.Phrasebook[$selectedCategory][phrase].description;
@@ -83,16 +104,25 @@
                 description: $Language.Phrasebook[$selectedCategory][phrase].variants[variant].description,
             }];
         }
-        delete $Language.Phrasebook[$selectedCategory][phrase]; $Language.Phrasebook = $Language.Phrasebook;
+        delete $Language.Phrasebook[$selectedCategory][phrase];
+        if (Object.keys($Language.Phrasebook[$selectedCategory]).length === 0) {
+            delete $Language.Phrasebook[$selectedCategory];
+            $selectedCategory = '';
+        }
+        $Language = {...$Language};
     }
     
     /**
      * Adds a new blank variant to the variant_inputs array.
      */ 
-    function add_variant() {
+    function addVariant(): void {
         variantInputs = [...variantInputs, {
             phrase: '',
-            pronunciation: '',
+            pronunciations: (()=>{
+                let pronunciations = {};
+                lects.forEach(lect => pronunciations[lect] = '');
+                return pronunciations;
+            })(),
             description: '',
         }];
     }
@@ -101,59 +131,76 @@
      * Adds a phrase from the input fields to the phrasebook, including all variants,
      * and clears the input fields.
      */ 
-    function addPhrase() {
+    function addPhrase(): void {
         let newPhrase = $phraseInput.trim();
         if (!newPhrase) return;
         let description = phraseDescription.trim();
         if (!description) return;
         let category = $categoryInput.trim();
-        if (!category) return;
-        let pronunciation = $phrasePronunciation.trim();
+        if (!category) return
+        let pronunciations = {};
+        Object.keys($phrasePronunciations).forEach(lect => {
+            pronunciations[lect] = {
+                ipa: $phrasePronunciations[lect].trim(),
+                irregular: $phrasePronunciations[lect].trim() !== get_pronunciation(newPhrase, lect),
+            };
+        });
+        
+        function commit () {
+            if (!$Language.Phrasebook.hasOwnProperty(category)) $Language.Phrasebook[category] = {};
+            $Language.Phrasebook[category][newPhrase]= {
+                pronunciations: pronunciations,
+                lects: Object.keys(pronunciations),
+                tags: tags.split(/\s+/g),
+                description: description,
+                variants: (()=>{
+                    let variants = {};
+                    for (const variant of variantInputs) {
+                        const phrase = variant.phrase.trim();
+                        if (!phrase) continue;
+                        const description = variant.description.trim();
+                        if (!description) continue;
+                        let pronunciations: Lexc.EntryPronunciations = {};
+                        Object.keys(variant.pronunciations).forEach(lect => {
+                            pronunciations[lect] = {
+                                ipa: variant.pronunciations[lect].trim(),
+                                irregular: variant.pronunciations[lect].trim() !== get_pronunciation(phrase, lect),
+                            };
+                        });
+                        variants[phrase] = <Lexc.Variant> {
+                            pronunciations: pronunciations,
+                            description: description,
+                        };
+                    };
+                    return variants;
+                })(),
+            };
+            debug.logObj($Language.Phrasebook, 'Phrasebook');
 
-        if (!!$Language.Phrasebook[category][newPhrase]) {
-            let confirmation = window.confirm(
-                'This phrase already exists in this category. Are you sure you want to overwrite it?'
-            );
-            if (!confirmation) return;
+            $Language = {...$Language};
+            $phraseInput = '';
+            $phrasePronunciations = (()=>{
+                let pronunciations = {};
+                Object.keys($Language.Pronunciations).forEach(lect => {
+                    pronunciations[lect] = '';
+                });
+                return pronunciations;
+            })();
+            phraseDescription = '';
+            variantInputs = [];
+            $selectedCategory = category;
         }
 
-        $Language.Phrasebook[category][newPhrase] = {
-            pronunciations: { 
-                General: {
-                    ipa: pronunciation,
-                    irregular: pronunciation !== get_pronunciation(newPhrase),
+        if (!!$Language.Phrasebook.hasOwnProperty(category) && !!$Language.Phrasebook[category].hasOwnProperty(newPhrase)) {
+            vex.dialog.confirm({
+                message: 'This phrase already exists in this category. Are you sure you want to overwrite it?',
+                callback: (response: boolean) => {
+                    if (response) commit();
                 }
-            },
-            lects: [],
-            tags: [],
-            description: description,
-            variants: {},
-        };
-        for (let variant of variantInputs) {
-            let phrase = variant.phrase.trim();
-            if (!phrase) continue;
-            let description = variant.description.trim();
-            if (!description) continue;
-            let pronunciation = variant.pronunciation.trim();
-            $Language.Phrasebook[category][newPhrase].variants[phrase] = {
-                pronunciations: {
-                    General: {
-                        ipa: pronunciation,
-                        irregular: pronunciation !== get_pronunciation(phrase),
-                    }
-                },
-                lects: [],
-                tags: [],
-                description: description,
-            };
-        };
-
-        $Language.Phrasebook = $Language.Phrasebook;
-        $phraseInput = '';
-        $phrasePronunciation = '';
-        phraseDescription = '';
-        variantInputs = [];
-        $selectedCategory = category;
+            });
+        } else {
+            commit();
+        }
     }
 </script>
 <!-- Phrasebook Tab -->
@@ -177,22 +224,42 @@
             <!-- Search Fields -->
             <div class="row">
                 <div class="column search-container">
-                    {#if !search_phrase}
+                    {#if !searchPhrase}
                          <label for="search-phrase" style="position: absolute; top: .5em; left: 1em">Search by phrase…</label>
                     {/if}
-                    <input id="search-phrase" type="text" class="search" bind:value={search_phrase}/>
+                    <input id="search-phrase" type="text" class="search" bind:value={searchPhrase}/>
                 </div>
                 <div class="column search-container">
-                    {#if !search_description}
+                    {#if !searchTags}
+                         <label for="search-tags" style="position: absolute; top: .5em; left: 1em">Search by tags…</label>
+                    {/if}
+                    <input id="search-tags" type="text" class="search" bind:value={searchTags}/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="column search-container">
+                    {#if !searchDescription}
                         <label for="search-description" style="position: absolute; top: .5em; left: 1em">Search descriptions…</label>
                     {/if}
-                    <input id="search-description" type="text" class="search" bind:value={search_description}/>
+                    <input id="search-description" type="text" class="search" bind:value={searchDescription}/>
                 </div>
+                {#if $useDialects}
+                     <div class="column">
+                         <label>Filter by lect:
+                             <select bind:value={lectFilter}>
+                                 <option value=''>All</option>
+                                 {#each $Language.Lects as lect}
+                                     <option value={lect}>{lect}</option>
+                                 {/each}
+                             </select>
+                         </label>
+                     </div>
+                {/if}
             </div>
             <!-- Book -->
             <div class="column scrolled" id="phrasebook-body" style="max-height: 90%;">
                 {#if !!Object.keys($Language.Phrasebook).length}
-                    {#each phrase_keys as phrase}
+                    {#each phraseKeys as phrase}
                         <PhraseEntry phrase={phrase} on:edit={() => editPhrase(phrase)} />
                     {/each}
                 {:else}
@@ -208,28 +275,59 @@
         </div>
         <div class="row" class:collapsed={collapsedPanel} style="height: 92%">
             <div class="column scrolled" style="max-height: 100%">
+                
                 <label for="phrase">Phrase</label>
-                <input type="text" bind:value={$phraseInput} on:input={() => $phrasePronunciation = get_pronunciation($phraseInput)} />
-                <input type="text" class="pronunciation" bind:value={$phrasePronunciation} />
-                <label for="description">Description</label>
-                <textarea id="description" bind:value={phraseDescription}></textarea>
-                <br>
-                <label for="category">Category</label>
-                <input type="text" bind:value={$categoryInput} />
+                <input type="text" bind:value={$phraseInput} on:input={() => {
+                    lects.forEach(lect => {
+                        $phrasePronunciations[lect] = get_pronunciation($phraseInput, lect);
+                    });
+                }}/>
+                
+                {#if $useDialects}
+                    {#each lects as lect}
+                        <div class="row narrow">
+                            <div class="column text-right">
+                                <p class="lect">{lect}</p>
+                            </div>
+                            <div class="column text-left">
+                                <input type="text" class="pronunciation text-left" bind:value={$phrasePronunciations[lect]}/>
+                            </div>
+                        </div>
+                    {/each}
+                {:else}
+                    <input type="text" class="pronunciation" bind:value={$phrasePronunciations.General}/>
+                {/if}
+    
+                <SenseInput
+                    index={'hide'}
+                    bind:definition={phraseDescription}
+                    bind:tags={tags}
+                    bind:lects={lects}
+                />
+
+                <label>Category
+                    <input type="text" bind:value={$categoryInput} />
+                </label>
+
                 <button on:click={addPhrase} class="hover-shadow hover-highlight">Add Phrase</button>
             </div>
             <div class="column scrolled" style="max-height: 100%" id="variants-body">
                 {#each variantInputs as _, i}
-                    <VariantInput 
+                    <VariantInput
+                        lects={lects}
                         bind:phrase={variantInputs[i].phrase} 
-                        bind:pronunciation={variantInputs[i].pronunciation}
+                        bind:pronunciations={variantInputs[i].pronunciations}
                         bind:description={variantInputs[i].description}
-                        on:update={() => variantInputs[i].pronunciation = get_pronunciation(variantInputs[i].phrase)}
+                        on:update={() => {
+                            lects.forEach(lect => {
+                                variantInputs[i].pronunciations[lect] = get_pronunciation(variantInputs[i].phrase, lect);
+                            });
+                        }}
                     />
                 {:else}
                     <p class="info">Click the button below to add a variation for this phrase</p>
                 {/each}
-                <button on:click={add_variant} class="hover-shadow hover-highlight">+ Variant</button>
+                <button on:click={addVariant} class="hover-shadow hover-highlight">+ Variant</button>
             </div>
         </div>
     </div>

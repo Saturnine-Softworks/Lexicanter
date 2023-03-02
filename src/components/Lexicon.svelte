@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Language, wordInput, wordPronunciation } from '../stores';
+    import { Language, wordInput, pronunciations, useDialects } from '../stores';
     import type * as Lexc from '../scripts/types';
     import { alphabetize } from '../scripts/alphabetize';
     import { get_pronunciation } from '../scripts/phonetics';
@@ -7,14 +7,14 @@
     import SenseInput from './SenseInput.svelte';
     import { debug } from '../scripts/diagnostics';
 
-    let def_inputs = ['']; let tags_inputs = [''];
-    let search_words = ''; let search_definitions = ''; let search_tags = '';
-    let keys: string[];
-    $: keys = []
+    let defInputs = [''];
+    let searchWords = ''; let searchDefinitions = ''; let searchTags = '';
+    let lectFilter = '';
+    let keys: string[] = [];
 
     // Debug block
     $: {
-        debug.logObj($Language.Lexicon, 'Lexicon');
+        debug.logObj($Language, 'An update was made to the Language store');
     }
 
     let filtered_lex: Lexc.Lexicon;
@@ -22,23 +22,35 @@
         if (key in $Language.Lexicon) acc[key] = $Language.Lexicon[key];
         return acc;
     }, {});
+
     let alphabetized: string[];
-    // syntax below with IIFE is to trigger update to `alphabetized` on any change to either `$Language.Alphabet` or `keys`
-    $: $Language.Alphabet, keys, (() => { alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon) })(); 
+    $: { // Update the alphabetized lexicon when the alphabet or `keys` array changes
+        $Language.Alphabet;
+        keys;
+        (() => {
+            alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
+        })();
+    } 
 
-    let collapsedPanel: boolean;
-    $: collapsedPanel = false;
+    let collapsedPanel: boolean = false;
 
-    let senses: {
+    type senseInput = {
         definition: string;
         tags: string;
         lects: string[];
-    }[];
-    $: senses = [{
+    }
+    let senses: senseInput[] = [{
         definition: '',
         tags: '',
-        lects: ['General'],
+        lects: [...$Language.Lects],
     }];
+
+    let lectSet: string[]
+    $: { // Update the set of lects when the `senses` array changes
+        senses;
+        lectSet = Array.from(new Set(senses.map(sense => [...sense.lects]).flat()))
+    }
+
     /**
      * This function is used to delete an entry from the lexicon and
      * move it into the input fields for editing or deletion. If there
@@ -48,14 +60,17 @@
      */
     function edit_entry (word: string): void {
         let confirmation = true;
-        if (!!$wordInput || !!def_inputs[0]) {
+        if (!!$wordInput || !!defInputs[0]) {
             confirmation = confirm(
                 'There is text in the word entry fields. Are you sure you want to overwrite it?'
             );
         }
         if (confirmation) {
             $wordInput = word;
-            $wordPronunciation = $Language.Lexicon[word].pronunciations.General.ipa;
+            $pronunciations = {};
+            Object.keys($Language.Lexicon[word].pronunciations).forEach(lect => {
+                $pronunciations[lect] = $Language.Lexicon[word].pronunciations[lect].ipa;
+            });
             senses = [...$Language.Lexicon[word].Senses].map(sense => ({
                 definition: sense.definition,
                 tags: sense.tags.join(' '),
@@ -81,38 +96,44 @@
         let word = $wordInput.trim()
         if (!word) return;
         if (!senses[0].definition) return;
-        let pronunciation = $wordPronunciation.trim()
-
+        const emptySensesFilter = (sense: senseInput) => <boolean> (senses[''] !== sense) && (!!sense.definition);
+        const senseRemapper = (sense: senseInput) => <Lexc.Sense> {
+            definition: sense.definition,
+            tags: sense.tags.split(/\s+/g),
+            lects: sense.lects,
+        };
         if (!append) {
             $Language.Lexicon[word] = <Lexc.Word> {
-                pronunciations: <Lexc.EntryPronunciations> {
-                    General: {
-                        ipa: pronunciation,
-                        irregular: pronunciation !== get_pronunciation(word),
-                    }
-                }, 
-                Senses: senses.map(sense => <Lexc.Sense> {
-                    definition: sense.definition,
-                    tags: sense.tags.split(/\s+/g),
-                    lects: sense.lects,
-                }),
+                pronunciations: <Lexc.EntryPronunciations> (() => {
+                    let obj: Lexc.EntryPronunciations = {};
+                    $Language.Lects.forEach(lect => {
+                        obj[lect] = {
+                            ipa: $pronunciations[lect].trim(),
+                            irregular: $pronunciations[lect].trim() !== get_pronunciation(word, lect),
+                        }
+                    });
+                    return obj;
+                })(), 
+                Senses: senses.filter(emptySensesFilter).map(senseRemapper),
             };
         } else {
-            $Language.Lexicon[word].Senses.push(...senses.map(sense => <Lexc.Sense> {
-                definition: sense.definition,
-                tags: sense.tags.split(/\s+/g),
-                lects: sense.lects,
-            }));
+            $Language.Lexicon[word].Senses.push(...senses.filter(emptySensesFilter).map(senseRemapper));
         }
         $Language.Lexicon = {...$Language.Lexicon}; // assignment trigger
 
         // follow_lex_link(word);
         $wordInput = '';
-        $wordPronunciation = '';
+        $pronunciations = (()=>{
+            let obj = {};
+            $Language.Lects.forEach(lect => {
+                obj[lect] = ''
+            });
+            return obj;
+        })();
         senses = [{
             definition: '',
             tags: '',
-            lects: ['General'],
+            lects: [...$Language.Lects],
         }];
 
         return word;
@@ -129,16 +150,17 @@
      * @returns {any}
      */
     function search_lex(): void {
-        let words_search = $Language.CaseSensitive?  search_words.trim() : search_words.toLowerCase().trim();
-        let definitions_search = search_definitions.toLowerCase().trim();
-        let tags_search = search_tags.toLowerCase().trim()? search_tags.toLowerCase().trim().split(/\s+/g) : [];
+        let words_search = $Language.CaseSensitive?  searchWords.trim() : searchWords.toLowerCase().trim();
+        let definitions_search = searchDefinitions.toLowerCase().trim();
+        let tags_search = searchTags.toLowerCase().trim()? searchTags.toLowerCase().trim().split(/\s+/g) : [];
         keys = [];
-        if (!!words_search || !!definitions_search || !!tags_search) {
+        if (!!words_search || !!definitions_search || !!tags_search || !! lectFilter) {
             // Turn l into a list of [search by word terms, search by def terms
             let l = [[...words_search.split('|')], [...definitions_search.split('|')]];
             for (let word in $Language.Lexicon) {
-                let w = `^${word}^`;
-                let match = true;
+                const w = '^' + word.replaceAll(/\s+/g, '^') + '^';
+                let match = lectFilter? $Language.Lexicon[word].Senses.some(sense => sense.lects.includes(lectFilter)) : true;
+                if (!match) continue;
                 for (let a of l[0]) {
                     // words
                     if (!w.includes(a)) {
@@ -215,13 +237,36 @@
             <button class="collapser" on:click={ () => collapsedPanel = !collapsedPanel }></button>
             <div class:collapsed={collapsedPanel} class='text-center scrolled' style="height: 100%; overflow-x: hidden">
                 <label for="wrd-input">New Word</label>
-                <input id="wrd-input" type="text" bind:value={$wordInput} on:input={() => $wordPronunciation = get_pronunciation($wordInput)}>
-                <input id="pronunciation" class="pronunciation" type="text" bind:value={$wordPronunciation}>
+                <input id="wrd-input" type="text" bind:value={$wordInput} on:input={() => {
+                    Object.keys($pronunciations).forEach(lect => {
+                        $pronunciations[lect] = get_pronunciation($wordInput, lect);
+                    });
+                }}>
+
+                {#if $useDialects}
+                    {#each lectSet as lect}
+                        <div class="row narrow">
+                            <div class="column text-right">
+                                <p class="lect">{lect}</p>
+                            </div>
+                            <div class="column text-left">
+                                <input type="text" class="pronunciation text-left" bind:value={$pronunciations[lect]}/>
+                            </div>
+                        </div>
+                    {/each}
+                {:else}
+                    <input type="text" class="pronunciation" bind:value={$pronunciations.General}/>
+                {/if}
+                
                 {#each senses as sense, i}
-                    <SenseInput 
+                    <SenseInput
+                        index={i}
                         bind:definition={sense.definition}
                         bind:tags={sense.tags}
                         bind:lects={sense.lects}
+                        on:remove={() => {
+                            senses = senses.filter((_, j) => j !== i);
+                        }}
                     />
                 {/each}
                 <button class="hover-highlight hover-shadow" id="add-sense-button" on:click={() => {
@@ -243,23 +288,37 @@
         <div class='container column text-center' style="height: 100%">
             <div class='row'>
                 <div class="column search-container">
-                    {#if !search_words}
+                    {#if !searchWords}
                             <label for="search-wrd" style="position: absolute; top: 0.5em; left: 1em">Search by word…</label>
                     {/if}
-                    <input id="search-wrd" type="text" class="search" bind:value={search_words} on:input={search_lex}/>
+                    <input id="search-wrd" type="text" class="search" bind:value={searchWords} on:input={search_lex}/>
                 </div>
                 <div class="column search-container">
-                    {#if !search_tags}
+                    {#if !searchTags}
                             <label for="search-tag" style="position: absolute; top: 0.5em; left: 1em">Search by tags…</label>
                     {/if}
-                    <input id="search-tag" type="text" class="search" bind:value={search_tags} on:input={search_lex}/>
+                    <input id="search-tag" type="text" class="search" bind:value={searchTags} on:input={search_lex}/>
                 </div>
             </div>
-            <div class="search-container">
-                {#if !search_definitions}
-                    <label for="search-def" style="position: absolute; top: 0.33em; left: 1em">Search definitions…</label>
+            <div class="row">
+                <div class="search-container column">
+                    {#if !searchDefinitions}
+                        <label for="search-def" style="position: absolute; top: 0.33em; left: 1em">Search definitions…</label>
+                    {/if}
+                    <input id="search-def" type="text" class="search" bind:value={searchDefinitions} on:input={search_lex}/>
+                </div>
+                {#if $useDialects}
+                    <div class="column">
+                        <label>Filter by lect: 
+                            <select bind:value={lectFilter}>
+                                <option value=''>All</option>
+                                {#each $Language.Lects as lect}
+                                    <option value={lect}>{lect}</option>
+                                {/each}
+                            </select>
+                        </label>
+                    </div>
                 {/if}
-                <input id="search-def" type="text" class="search" bind:value={search_definitions} on:input={search_lex}/>
             </div>
             <div class='scrolled' style="height: 88%">
                 {#each alphabetized as word}

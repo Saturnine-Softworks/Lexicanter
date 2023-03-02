@@ -1,27 +1,34 @@
 <script lang="ts">
-    import { Language } from '../stores.js';
+    import { Language, useDialects } from '../stores.js';
     import { createEventDispatcher } from 'svelte';
+    import Pronunciations from './Pronunciations.svelte';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
     export let entry: string = '';
 </script>
-<style>
-    .sense {
-        font-weight: bold;
-        display: inline-block;
-        width: 1rem;
-    }
-</style>
 <div id='{entry}' class="lex-entry prelined" on:contextmenu={edit}>
     <p  style="font-style: italic">{entry}</p>
-    {#each Object.values($Language.Lexicon[entry].pronunciations) as Pronunciation}
-        <p class='pronunciation'>{Pronunciation.ipa}</p>
-    {/each}
+    <Pronunciations pronunciations={$Language.Lexicon[entry].pronunciations} />
     {#each $Language.Lexicon[entry].Senses as Sense, i}
-        <div class='sense'>{i+1}.</div>
+        {#if $Language.Lexicon[entry].Senses.length > 1} 
+            <div class='sense'>{i+1}.</div>
+        {/if}
         {#each Sense.tags as tag}
-            <div class='tag-item'>{tag}</div>
+            {#if !!tag}
+                <div class='tag-item'>{tag}</div>
+            {/if}
         {/each}
+        {#if $useDialects}        
+            <p class="lect">
+                {(()=>{
+                    let s = '';
+                    for (let lect of Sense.lects) {
+                        s += lect + ', ';
+                    }
+                    return s.slice(0, -2);
+                })()}
+            </p>
+        {/if}
         <p>{Sense.definition}</p>
     {/each}
 </div>

@@ -3,9 +3,12 @@
     import { get_pronunciation, writeRomans, complete_word, generate_word } from '../scripts/phonetics.js';
     let trial = ''; let ortho_test = '';
     $: trial_completion = complete_word(trial);
-    $: test_pronunciation = get_pronunciation(ortho_test);
-    $: generated_words = Array(24).fill('');
-    $: selectedDialect = ''
+    let selectedLect: string = $Language.Lects[0];
+    $: {
+        selectedLect = $useDialects? selectedLect : 'General';
+    }
+    $: test_pronunciation = get_pronunciation(ortho_test, selectedLect);
+    let generated_words = Array(24).fill('');
 </script>
 <!-- Phonology Tab -->
 <div class="tab-pane">
@@ -48,10 +51,17 @@
         <!-- Romanization -->
         <div class="container column scrolled" style="height: 100%">
             <label>Pronunciations
+                {#if $useDialects}    
+                    <select bind:value={selectedLect}>
+                        {#each $Language.Lects as lect}
+                            <option value={lect}>{lect}</option>
+                        {/each}
+                    </select>
+                {/if}
                 <textarea 
                     class="prelined" rows="26" style="text-align: left" 
-                    on:blur={writeRomans} 
-                    bind:value={$Language.Pronunciations.General} 
+                    on:blur={() => writeRomans(selectedLect)} 
+                    bind:value={$Language.Pronunciations[selectedLect]} 
                 />
             </label>
             <br><br>

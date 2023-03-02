@@ -61,6 +61,10 @@ button[id=overwrite], select[id=overwrite] {
   color: #c8b383;
 }
 
+.lect {
+  color: #c8b383;
+}
+
 hr {
   border: 1px solid #271405;
 }

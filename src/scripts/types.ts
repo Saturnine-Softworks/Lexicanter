@@ -2,7 +2,7 @@
  * @file Custom types for the language data.
  */
 
-import type { OutputData } from "@editorjs/editorjs";
+import type { OutputData } from '@editorjs/editorjs';
 
 export type Diagnostic = {
     Time: string,
@@ -56,14 +56,12 @@ export type Lexicon = {
 
 /**
  * A Variant is an object with a pronunciation and a description.
- * @property {string} pronunciation - The pronunciation of the variant phrase.
+ * @property {string} pronunciations - The pronunciations of the variant phrase.
  * @property {string} description - The description of the variant phrase.
  */
 export type Variant = {
     pronunciations: EntryPronunciations;
     description: string;
-    lects: string[];
-    tags: string[];
 }
 
 /**

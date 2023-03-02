@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { Language, selectedCategory } from '../stores';
+    import { Language, selectedCategory, useDialects } from '../stores';
     import { createEventDispatcher } from 'svelte';
+    import Pronunciations from './Pronunciations.svelte';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
     export let phrase = '';
@@ -9,9 +10,12 @@
     <p style="font-style: italic">
         {phrase}
     </p>
-    <p class="pronunciation">
-        {$Language.Phrasebook[$selectedCategory][phrase].pronunciations.General.ipa}
-    </p>
+    <Pronunciations pronunciations={$Language.Phrasebook[$selectedCategory][phrase].pronunciations} />
+    {#if !!$Language.Phrasebook[$selectedCategory][phrase].tags[0]}
+        {#each $Language.Phrasebook[$selectedCategory][phrase].tags as tag}
+            <div class="tag-item">{tag}</div>
+        {/each}
+    {/if}
     <p class="prelined">
         {$Language.Phrasebook[$selectedCategory][phrase].description}
     </p>
@@ -24,9 +28,7 @@
                         <p style="font-style: italic">
                             {variant}
                         </p>
-                        <p class="pronunciation">
-                            {$Language.Phrasebook[$selectedCategory][phrase].variants[variant].pronunciations.General.ipa}
-                        </p>
+                        <Pronunciations pronunciations={$Language.Phrasebook[$selectedCategory][phrase].variants[variant].pronunciations} />
                         <p class="prelined">
                             {$Language.Phrasebook[$selectedCategory][phrase].variants[variant].description}
                         </p>

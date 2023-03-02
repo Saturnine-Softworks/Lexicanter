@@ -3,7 +3,7 @@ import EditorJS, { type OutputData } from '@editorjs/editorjs';
 import type * as Lexc from './scripts/types'; 
 
 // Initial state for the language data
-export let Language: Writable<Lexc.Language> = writable({
+export const Language: Writable<Lexc.Language> = writable({
     Version: '2.0.0',
     Name: 'Unnamed Language',
     CaseSensitive: false,
@@ -32,20 +32,36 @@ export let Language: Writable<Lexc.Language> = writable({
 });
 
 // Initial states for all the global variables across the app
-export let wordInput = writable('');
-export let wordPronunciation = writable('');
+type PronunciationInputs = {
+    [index: string]: string
+}
+export const wordInput = writable('');
+export const pronunciations: Writable<PronunciationInputs> = writable((()=>{
+    const inputs: PronunciationInputs = {};
+    for (const lect of get(Language).Lects) {
+        inputs[lect] = '';
+    }
+    return inputs;
+})());
 
-export let phraseInput = writable('');
-export let phrasePronunciation = writable('');
-export let categoryInput = writable('');
-export let selectedCategory = writable('');
+export const phraseInput = writable('');
+export const phrasePronunciations: Writable<PronunciationInputs> = writable((()=>{
+    const inputs: PronunciationInputs = {};
+    for (const lect of get(Language).Lects) {
+        inputs[lect] = '';
+    }
+    return inputs;
+})());
 
-export let pronunciationRules: Writable<Lexc.PronunciationRules> = writable({General: {th: 'θ'}});
+export const categoryInput = writable('');
+export const selectedCategory = writable('');
 
-export let docsEditor = writable(new EditorJS);
+export const pronunciationRules: Writable<Lexc.PronunciationRules> = writable({General: {th: 'θ'}});
 
-export let theme = writable('styles/dark.css');
-export let autosave = writable(true);
-export let useDialects = writable(false);
+export const docsEditor = writable(new EditorJS);
 
-get(Language).Phonotactics
+export const theme = writable('styles/dark.css');
+export const autosave = writable(true);
+export const useDialects = writable(false);
+
+get(Language).Phonotactics;
