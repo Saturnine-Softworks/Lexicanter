@@ -1,8 +1,6 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
-    import type * as Lect from '../scripts/types';
-    import { useDialects, Language, selectedCategory } from '../stores';
-    import { get_pronunciation } from '../scripts/phonetics';
+    import type * as Lect from '../types';
+    import { useDialects } from '../stores';
 
     export let pronunciations: Lect.EntryPronunciations;
 </script>

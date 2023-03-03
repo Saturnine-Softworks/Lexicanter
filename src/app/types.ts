@@ -101,11 +101,11 @@ export type Phrasebook = {
  * @property {string[]} Illegals - These are the combinations that are not allowed in the language.
  */
 export type PhonotacticsLect = {
-    Onsets: string[];
-    Medials: string[];
-    Codas: string[];
-    Vowels: string[];
-    Illegals: string[];
+    Onsets: string;
+    Medials: string;
+    Codas: string;
+    Vowels: string;
+    Illegals: string;
 }
 
 /**

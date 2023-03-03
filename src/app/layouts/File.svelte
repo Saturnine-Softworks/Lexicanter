@@ -2,12 +2,12 @@
     const fs = require('fs');
     const path = require('path');
     import { docsEditor, Language, selectedCategory } from '../stores';
-    import type * as Lexc from '../scripts/types';
+    import type * as Lexc from '../types';
     import type { OutputData } from '@editorjs/editorjs';
-    import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV } from '../scripts/files';
-    import { writeRomans } from '../scripts/phonetics';
-    import { initializeDocs } from '../scripts/docs';
-    import * as diagnostics from '../scripts/diagnostics';
+    import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV } from '../utils/files';
+    import { writeRomans } from '../utils/phonetics';
+    import { initializeDocs } from '../utils/docs';
+    import * as diagnostics from '../utils/diagnostics';
     $: loading_message = '';
     let csvHeaders = true; let csvWords = 2; let csvDefinitions = 3;
     let oldPattern = ''; let newPattern = '';
@@ -47,7 +47,8 @@
             initializeDocs(docs_data);
             $selectedCategory = Object.keys($Language.Phrasebook)[0]; 
             loading_message = 'Loading pronunciation rules...';
-            $Language.Pronunciations = contents.Pronunciations; writeRomans();
+            $Language.Pronunciations = contents.Pronunciations; 
+            $Language.Lects.forEach(writeRomans);
             loading_message = 'Loading phonotactics...';
             $Language.Phonotactics = contents.Phonotactics;
         } catch (err) {
@@ -183,7 +184,8 @@
                 delete $Language.Lexicon[word];
             }
         }
-        writeRomans(); $Language.Lexicon = $Language.Lexicon;
+        $Language.Lects.forEach(writeRomans); 
+        $Language = {...$Language};
         oldPattern = ''; newPattern = '';
     }
 
@@ -246,7 +248,7 @@
                     <button on:click={saveAs.html.all} class="hover-highlight hover-shadow">Everything</button>
                 </div>
                 <div class="column">
-                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">docsEditor Only</button>
+                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">Docs Only</button>
                 </div>
             </div>
             <button on:click={saveAs.txt} class="hover-highlight hover-shadow">Text File</button>

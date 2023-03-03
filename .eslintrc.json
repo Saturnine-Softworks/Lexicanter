@@ -10,11 +10,12 @@
     ],
     "overrides": [
         {
-            "files": ["*.ts", "*.svelte"],
+            "files": ["*.ts", "*.js", "*.svelte"],
             "rules": {
                 "@typescript-eslint/explicit-module-boundary-types": "off",
                 "no-prototype-builtins": "off",
-                "no-extra-boolean-cast": "off"
+                "no-extra-boolean-cast": "off",
+                "@typescript-eslint/no-var-requires": "off"
             }
         }
     ],

@@ -51,12 +51,12 @@ const createWindow = () => {
     mainWindow.once('ready-to-show', () => {
         setTimeout(() => {
             loadingWindow.close();
-            mainWindow.show()
+            mainWindow.show();
         }, 1000); // give the app a second to load the theme correctly.
     });
     // Set macOS dock icon
     if (process.platform === 'darwin') {
-        app.dock.setIcon(path.join(__dirname, 'rsrc/Quill Icon.png'));
+        app.dock.setIcon(path.join(__dirname, 'res/Quill Icon.png'));
     }
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -79,15 +79,15 @@ const createWindow = () => {
                 },
             };
         } else {
-            mainWindow.webContents.executeJavaScript("console.log('Sending URL to shell.')");
+            mainWindow.webContents.executeJavaScript('console.log(\'Sending URL to shell.\')');
             shell.openExternal(url);
             return { action: 'deny' };
-        };
+        }
     });
 
     // Even with contextIsolation set to false, there are some things which still require interprocess communication.
     // IPC handlers below.
-    ipcMain.handle('getUserDataPath', _ => {
+    ipcMain.handle('getUserDataPath', () => {
         let data_path = app.getPath('userData');
         return data_path;
     });
@@ -95,7 +95,7 @@ const createWindow = () => {
         let file_path = dialog.showOpenDialogSync(params);
         return file_path;
     });
-    ipcMain.handle('getVersion', _ => {
+    ipcMain.handle('getVersion', () => {
         return version;
     });
     ipcMain.handle('debug', (_, message) => {
@@ -103,10 +103,10 @@ const createWindow = () => {
     });
 
     mainWindow.on('close', e => {
-        mainWindow.webContents.send('app-close')
+        mainWindow.webContents.send('app-close');
         e.preventDefault(); // ! DON'T PUT THIS LINE FIRST. IT BREAKS EVERYTHING. WHY? BEYOND MORTAL COMPREHENSION.
     });
-    ipcMain.on('close', _ => {
+    ipcMain.on('close', () => {
         // Renderer will send back this event when it's done confirming save and/or quit.
         mainWindow = null;
         app.quit();

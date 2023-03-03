@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { initializeDocs } from '../scripts/docs.js';
+    import { initializeDocs } from '../utils/docs';
     initializeDocs(false);
 </script>
 <div class="tab-pane" spellcheck="false">

@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { Language, useDialects, pronunciations, wordInput } from "../stores";
-    import { get_pronunciation } from "../scripts/phonetics";
-    import { debug } from "../scripts/diagnostics";
-    import { createEventDispatcher } from "svelte";
+    import { Language, useDialects, pronunciations, wordInput } from '../stores';
+    import { get_pronunciation } from '../utils/phonetics';
+    import { debug } from '../utils/diagnostics';
+    import { createEventDispatcher } from 'svelte';
     export let definition = '';
     export let tags: string;
     export let index: number | 'hide';
@@ -38,7 +38,7 @@
         <i>Sense {index + 1}</i> <br>
     {/if}
     <label>Definition
-        <textarea rows="4" bind:value={definition}></textarea>
+        <textarea rows='4' bind:value={definition}></textarea>
     </label>
     <br>
     <label for="tags">Tags</label>

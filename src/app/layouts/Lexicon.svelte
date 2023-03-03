@@ -1,11 +1,11 @@
 <script lang="ts">
     import { Language, wordInput, pronunciations, useDialects } from '../stores';
-    import type * as Lexc from '../scripts/types';
-    import { alphabetize } from '../scripts/alphabetize';
-    import { get_pronunciation } from '../scripts/phonetics';
-    import LexEntry from './LexEntry.svelte';
-    import SenseInput from './SenseInput.svelte';
-    import { debug } from '../scripts/diagnostics';
+    import type * as Lexc from '../types';
+    import { alphabetize } from '../utils/alphabetize';
+    import { get_pronunciation } from '../utils/phonetics';
+    import LexEntry from '../components/LexEntry.svelte';
+    import SenseInput from '../components/SenseInput.svelte';
+    import { debug } from '../utils/diagnostics';
 
     let defInputs = [''];
     let searchWords = ''; let searchDefinitions = ''; let searchTags = '';

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Language, useDialects } from "../stores";
-    import { get_pronunciation, writeRomans, complete_word, generate_word } from '../scripts/phonetics.js';
+    import { get_pronunciation, writeRomans, complete_word, generate_word } from '../utils/phonetics'
     let trial = ''; let ortho_test = '';
     $: trial_completion = complete_word(trial);
     let selectedLect: string = $Language.Lects[0];

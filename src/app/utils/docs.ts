@@ -1,9 +1,11 @@
-import { docsEditor } from "../stores";
+import { docsEditor } from '../stores';
 import EditorJS, { type OutputData } from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import Paragraph from '@editorjs/paragraph';
 import Table from '@editorjs/table';
 import Underline from '@editorjs/underline';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 class Monospace { // EditorJS custom class
     api: any;
     button: null | HTMLButtonElement;
@@ -12,7 +14,7 @@ class Monospace { // EditorJS custom class
 
     static get CSS() {
         return 'cdx-monospace';
-    };
+    }
 
     constructor({ api }) {
         this.api = api;
@@ -100,7 +102,7 @@ class Monospace { // EditorJS custom class
  * @param {Object} data
  */
 export function initializeDocs(data: OutputData | false): void {
-    let config = {
+    const config = {
         holder: 'docs-tab',
         data: null,
         tools: {
@@ -132,4 +134,4 @@ export function initializeDocs(data: OutputData | false): void {
     
     if (data) config.data = data;
     docsEditor.set(new EditorJS(config));
-};
+}

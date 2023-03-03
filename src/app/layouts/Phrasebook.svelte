@@ -1,11 +1,11 @@
 <script lang="ts">
     import { Language, phraseInput, phrasePronunciations, selectedCategory, categoryInput, useDialects } from "../stores";
-    import { debug } from "../scripts/diagnostics";
-    import type * as Lexc from "../scripts/types"
-    import { get_pronunciation } from "../scripts/phonetics";
-    import PhraseEntry from "./PhraseEntry.svelte";
-    import VariantInput from "./VariantInput.svelte";
-    import SenseInput from "./SenseInput.svelte";
+    import { debug } from '../utils/diagnostics';
+    import type * as Lexc from '../types';
+    import { get_pronunciation } from '../utils/phonetics';
+    import PhraseEntry from '../components/PhraseEntry.svelte';
+    import VariantInput from '../components/VariantInput.svelte';
+    import SenseInput from '../components/SenseInput.svelte';
     const vex = require('vex-js');
     $categoryInput = $selectedCategory;
     let searchPhrase = '';

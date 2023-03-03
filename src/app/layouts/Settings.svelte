@@ -1,13 +1,13 @@
 <script lang="ts">
     import { theme, autosave, useDialects, pronunciationRules, pronunciations, wordInput } from '../stores';
-    import { userData, saveFile } from '../scripts/files'
+    import { userData, saveFile } from '../utils/files';
     import { Language } from '../stores';
-    import type * as Lexc from '../scripts/types';
+    import type * as Lexc from '../types';
     const fs = require('fs');
     const path = require('path');
     const vex = require('vex-js');
-    import { debug, logAction } from '../scripts/diagnostics';
-    import { get_pronunciation } from '../scripts/phonetics';
+    import { debug, logAction } from '../utils/diagnostics';
+    import { get_pronunciation } from '../utils/phonetics';
     /**
      * When the app loads, this block runs to check if the user has
      * previously set a theme preference. If not, it creates a file in the
@@ -214,7 +214,6 @@
             });
         }
     }
-
 </script>
 <!-- App Settings -->
 <div class="tab-pane">

@@ -3,15 +3,15 @@
     const vex = require('vex-js');
     vex.registerPlugin(require('vex-dialog'));
     vex.defaultOptions.className = 'vex-theme-os';
-	import Lexicon from './components/Lexicon.svelte';
-	import Phrasebook from './components/Phrasebook.svelte';
-	import Phonology from './components/Phonology.svelte';
-    import Documentation from './components/Documentation.svelte';
-	import File from './components/File.svelte';
-	import Settings from './components/Settings.svelte';
+	import Lexicon from './layouts/Lexicon.svelte';
+	import Phrasebook from './layouts/Phrasebook.svelte';
+	import Phonology from './layouts/Phonology.svelte';
+    import Documentation from './layouts/Documentation.svelte';
+	import File from './layouts/File.svelte';
+	import Settings from './layouts/Settings.svelte';
     import { theme, autosave } from './stores';
-    import { saveFile } from './scripts/files';
-    import * as diagnostics from './scripts/diagnostics';
+    import { saveFile } from './utils/files'
+    import * as diagnostics from './utils/diagnostics'
 
     const tabs = [Lexicon, Phrasebook, Phonology, Documentation, File, Settings]
     const tab_btns = ['Lexicon', 'Phrasebook', 'Phonology', 'Documentation', 'File', 'Settings'];

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Language, useDialects } from '../stores.js';
     import { createEventDispatcher } from 'svelte';
-    import Pronunciations from './Pronunciations.svelte';
+    import Pronunciations from '../layouts/Pronunciations.svelte';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
     export let entry: string = '';

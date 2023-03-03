@@ -4,8 +4,8 @@ import {
     Language, pronunciationRules, wordInput, pronunciations, phraseInput, phrasePronunciations 
 } from '../stores.js';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { debug } from '../scripts/diagnostics';
-import type * as Lexc from './types';
+import { debug } from './diagnostics.js';
+import type * as Lexc from '../types.js';
 const Lang = () => get(Language);
 
 /**
@@ -249,11 +249,11 @@ export function complete_word(trial) {
     const random_boolean = () => Math.floor(Math.random() * 2) === 0;
     const choice = arr => arr[Math.floor(Math.random() * arr.length)];
     const inventory = {
-        Onsets: Lang().Phonotactics.General.Onsets,
-        Medials: Lang().Phonotactics.General.Medials, 
-        Codas: Lang().Phonotactics.General.Codas,
-        Vowels: Lang().Phonotactics.General.Vowels,
-        Illegals: Lang().Phonotactics.General.Illegals? Lang().Phonotactics.General.Illegals : []
+        Onsets: Lang().Phonotactics.General.Onsets.split(/\s+/g),
+        Medials: Lang().Phonotactics.General.Medials.split(/\s+/g), 
+        Codas: Lang().Phonotactics.General.Codas.split(/\s+/g),
+        Vowels: Lang().Phonotactics.General.Vowels.split(/\s+/g),
+        Illegals: Lang().Phonotactics.General.Illegals.split(/\s+/g)
     };
     let word = '^' + trial;
 
@@ -314,11 +314,11 @@ export function complete_word(trial) {
 export function generate_word() {
     const attempt = () => {
         const inventory = {
-            Onsets: Lang().Phonotactics.General.Onsets,
-            Medials: Lang().Phonotactics.General.Medials,
-            Codas: Lang().Phonotactics.General.Codas,
-            Vowels: Lang().Phonotactics.General.Vowels,
-            Illegals: Lang().Phonotactics.General.Illegals? Lang().Phonotactics.General.Illegals : []
+            Onsets: Lang().Phonotactics.General.Onsets.split(/\s+/g),
+            Medials: Lang().Phonotactics.General.Medials.split(/\s+/g),
+            Codas: Lang().Phonotactics.General.Codas.split(/\s+/g),
+            Vowels: Lang().Phonotactics.General.Vowels.split(/\s+/g),
+            Illegals: Lang().Phonotactics.General.Illegals.split(/\s+/g)
         };
         const random_boolean = () => Math.floor(Math.random() * 2) === 0;
         const choice = arr => arr[Math.floor(Math.random() * arr.length)];

@@ -1,6 +1,6 @@
 import { get, writable, type Writable } from 'svelte/store';
 import EditorJS, { type OutputData } from '@editorjs/editorjs';
-import type * as Lexc from './scripts/types'; 
+import type * as Lexc from './types'; 
 
 // Initial state for the language data
 export const Language: Writable<Lexc.Language> = writable({
@@ -16,11 +16,11 @@ export const Language: Writable<Lexc.Language> = writable({
     },
     Phonotactics: <Lexc.Phonotactics> {
         General: <Lexc.PhonotacticsLect> {
-            Onsets: [ ],
-            Medials: [ ],
-            Codas: [ ],
-            Vowels: [ ],
-            Illegals: ['÷']
+            Onsets: '',
+            Medials: '',
+            Codas: '',
+            Vowels: '',
+            Illegals: '',
         }
     },
     Lects: ['General'],

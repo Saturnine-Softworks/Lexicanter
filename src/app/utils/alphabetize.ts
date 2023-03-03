@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { Language } from '../stores';
-import type * as Lexc from './types';
+import type * as Lexc from '../types';
 const Lang = () => get(Language);
 
 /**
@@ -11,70 +11,70 @@ const Lang = () => get(Language);
  * @returns An array of words, sorted by the alphabetical order of the language.
  */
 export function alphabetize(lexicon: Lexc.Lexicon) {
-    let priority_tags = Lang().HeaderTags.toLowerCase().trim().split(/\s+/);
+    const priority_tags = Lang().HeaderTags.toLowerCase().trim().split(/\s+/);
     let $alphabet = Lang().Alphabet;
-    let $ignore_diacritics = Lang().IgnoreDiacritics;
-    let $case_sensitive = Lang().CaseSensitive;
-    let all_words = structuredClone(lexicon);
-    let tag_ordered_lexes = [];
-    for (let tag of priority_tags) {
+    const $ignore_diacritics = Lang().IgnoreDiacritics;
+    const $case_sensitive = Lang().CaseSensitive;
+    const all_words = structuredClone(lexicon);
+    const tag_ordered_lexes = [];
+    for (const tag of priority_tags) {
         tag_ordered_lexes.push([]);
-        for (let word in all_words) {
+        for (const word in all_words) {
             if ((():string[] => {
-                    let tags = [];
-                    Lang().Lexicon[word].Senses.forEach((sense: Lexc.Sense) => {
-                        tags.push(...sense.tags);
-                    });
-                    return tags
-                })().includes(tag)) {
+                const tags = [];
+                Lang().Lexicon[word].Senses.forEach((sense: Lexc.Sense) => {
+                    tags.push(...sense.tags);
+                });
+                return tags;
+            })().includes(tag)) {
                 tag_ordered_lexes[tag_ordered_lexes.length - 1].push(word);
             }
         }
-        for (let w of tag_ordered_lexes[tag_ordered_lexes.length - 1]) {
+        for (const w of tag_ordered_lexes[tag_ordered_lexes.length - 1]) {
             delete all_words[w];
         }
     }
-    let remaining_words = [];
-    for (let w in all_words) {
+    const remaining_words = [];
+    for (const w in all_words) {
         remaining_words.push(w);
     }
     tag_ordered_lexes.push(remaining_words);
 
     // Lowercase alphabet if case-sensitivity is unticked
     $alphabet = $case_sensitive? $alphabet.trim() : $alphabet.trim().toLowerCase();
-    let order = $alphabet.split(/\s+/);
+    const order = $alphabet.split(/\s+/);
     // to make sure we find the largest tokens first, i.e. for cases where 'st' comes before 'str' alphabetically
-    let find_in_order = Array.from(new Set(order)).sort(
+    const find_in_order = Array.from(new Set(order)).sort(
         (a, b) => b.length - a.length
     ); // descending, ensures uniqueness
 
-    let final_sort = [];
-    for (let group of tag_ordered_lexes) {
-        let lex = {};
-        let list = [];
-        for (let word of group) {
+    const final_sort = [];
+    for (const group of tag_ordered_lexes) {
+        const lex = {};
+        const list = [];
+        for (const word of group) {
             // case sensitivity
             let w: string = $case_sensitive? word : word.toLowerCase();
 
             // diacritic sensitivity
             w = $ignore_diacritics? w.normalize('NFD').replace(/\p{Diacritic}/gu, '') : w;
 
-            for (let token of find_in_order) {
+            for (const token of find_in_order) {
                 w = w.replace(
                     new RegExp(`${token}`, 'g'),
                     `${order.indexOf(token)}.`
                 );
             }
-            let append: any[] = w.split('.');
-            for (let i of append) {
+            const append: (string | number)[] = w.split('.');
+            for (const i of append) {
                 append[append.indexOf(i)] = +i || 0;
             }
             lex[word] = append;
             list.push(append);
         }
         list.sort((a, b) => {
-            for (let i of a) {
-                let j = b[a.indexOf(i)];
+            for (const i of a) {
+                const j = b[a.indexOf(i)];
                 if (i === j) {
                     continue;
                 }
@@ -82,15 +82,15 @@ export function alphabetize(lexicon: Lexc.Lexicon) {
             }
             return 0;
         });
-        let sorted = [];
-        for (let key in lex) {
+        const sorted = [];
+        for (const key in lex) {
             sorted.push([key, list.indexOf(lex[key])]);
         } // [ [word, index], [word, index], ...]
         sorted.sort((a, b) => a[1] - b[1]);
         for (let i = 0; i < sorted.length; i++) {
             sorted[i] = sorted[i][0];
         }
-        for (let i of sorted) {
+        for (const i of sorted) {
             final_sort.push(i);
         }
     }

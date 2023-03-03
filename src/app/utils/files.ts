@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
 const path = require('path');
 import { get } from 'svelte/store';
 import type { OutputData } from '@editorjs/editorjs';
-import type * as Lexc from './types';
-import { Language, autosave, docsEditor, theme } from '../stores'
+import type * as Lexc from '../types';
+import { Language, autosave, docsEditor, theme } from '../stores';
 import { writeRomans, get_pronunciation } from './phonetics';
 import { initializeDocs } from './docs';
 import { logError } from './diagnostics';
@@ -30,7 +31,7 @@ export async function userData (callback: (user_path: string) => void) {
  * @param {any} params
  * @param {function} callback
  */
-export async function showOpenDialog (params: any, callback: (path: string) => void) {
+export async function showOpenDialog (params, callback: (path: string) => void) {
     let path: string;
     await ipcRenderer.invoke('showOpenDialog', params).then((result: string) => {
         path = result;
@@ -57,59 +58,72 @@ async function collectExportData (): Promise<string> {
  * @returns {HTMLElement} The container element with the HTML inserted
  */
 function editorjsToHTML(data: OutputData, container: HTMLElement): HTMLElement {
-    for (let element of data.blocks) {
+    for (const element of data.blocks) {
         switch (element.type) {
-            case 'header':
-                let header = document.createElement(
-                    `h${element.data.level}`
-                );
-                header.innerHTML = element.data.text;
-                container.appendChild(header);
-                break;
-            case 'paragraph':
-                let paragraph = document.createElement('p');
-                paragraph.innerHTML = element.data.text;
-                container.appendChild(paragraph);
-                break;
-            case 'table':
-                let table = document.createElement('table');
-                let tbody = document.createElement('tbody');
-                element.data.content.forEach((row: string[]) => {
-                    let tr = document.createElement('tr');
-                    row.forEach(cell => {
-                        let td = document.createElement('td');
-                        td.innerHTML = cell;
-                        tr.appendChild(td);
-                    });
-                    tbody.appendChild(tr);
-                });
-                table.appendChild(tbody);
-                container.appendChild(table);
-                break;
+        case 'header': {
+            const header = document.createElement(
+                `h${element.data.level}`
+            );
+            header.innerHTML = element.data.text;
+            container.appendChild(header);
+            break; 
         }
+        case 'paragraph': {
+            const paragraph = document.createElement('p');
+            paragraph.innerHTML = element.data.text;
+            container.appendChild(paragraph);
+            break;
+        }
+        case 'table': {
+            const table = document.createElement('table');
+            const tbody = document.createElement('tbody');
+            element.data.content.forEach((row: string[]) => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const td = document.createElement('td');
+                    td.innerHTML = cell;
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+            container.appendChild(table);
+            break;
+        }}
     }
     return container;
 }
 
 /**
  * This function saves the language as a .lexc file
- * in the user's Lexicons folder.
+ * in the user's Lexicons folder. It also saves a timestamped backup copy.
  */
 export async function saveFile () {
     if (!Lang().Name.trim()) {
-        let name = window.prompt(
+        const name = window.prompt(
             'Please enter a file name before saving.'
         );
         Lang().Name = name;
     }
-    let exports = await collectExportData();
+    const exports = await collectExportData();
     try {
         userData(user_path => {
-            if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
-                fs.mkdirSync(`${user_path}${path.sep}Lexicons${path.sep}`);
+            const lexiconFolder = `${user_path}${path.sep}Lexicons${path.sep}`;
+            const backupsFolder = `${user_path}${path.sep}Backups${path.sep}`;
+            const timestamp = new Date().toString().split(' GMT')[0].replaceAll(':', '⦂');
+            if (!fs.existsSync(lexiconFolder)) {
+                fs.mkdirSync(lexiconFolder);
+            }
+            if (!fs.existsSync(backupsFolder)) {
+                fs.mkdirSync(backupsFolder);
             }
             fs.writeFileSync(
-                `${user_path}${path.sep}Lexicons${path.sep}${Lang().Name}.lexc`,
+                `${lexiconFolder}${Lang().Name}.lexc`,
+                exports,
+                'utf8'
+            );
+            fs.writeFileSync(
+                `${backupsFolder}${Lang().Name} @ ${timestamp}.lexc`,
                 exports,
                 'utf8'
             );
@@ -140,12 +154,12 @@ export async function saveFile () {
 export const saveAs = {
     lexc: async () => {
         let exports: Blob;
-        collectExportData().then(jsonString => {exports = new Blob([jsonString])});
-        let file_handle = await window.showSaveFilePicker({
+        collectExportData().then(jsonString => {exports = new Blob([jsonString]);});
+        const file_handle = await window.showSaveFilePicker({
             suggestedName: `${Lang().Name}.lexc`,
         });
         await file_handle.requestPermission({ mode: 'readwrite' });
-        let file = await file_handle.createWritable();
+        const file = await file_handle.createWritable();
         try { await file.write(exports); } catch (err) {
             window.alert('The file failed to save. Please contact the developer for assistance.');
             console.log(err);
@@ -158,16 +172,16 @@ export const saveAs = {
     txt: async () => {
         let export_data = '';
         const $lexicon = Lang().Lexicon;
-        for (let word in $lexicon) {
+        for (const word in $lexicon) {
             export_data += `${word}\n${$lexicon[word][0]}\n${$lexicon[word][1]}\n\n`;
         }
-        let exports = new Blob([export_data]);
+        const exports = new Blob([export_data]);
     
-        let file_handle = await window.showSaveFilePicker({
+        const file_handle = await window.showSaveFilePicker({
             suggestedName: `${Lang().Name}.txt`,
         });
         await file_handle.requestPermission({ mode: 'readwrite' });
-        let file = await file_handle.createWritable();
+        const file = await file_handle.createWritable();
         try {
             await file.write(exports);
         } catch (err) {
@@ -180,42 +194,42 @@ export const saveAs = {
         const $lexicon = Lang().Lexicon;
         const array_to_csv = (data) => {
             return data.map(row => row
-                    .map(String) // convert every value to String
-                    .map(v => v.replaceAll('"', '""')) // escape double colons
-                    .map(v => `"${v}"`) // quote it
-                    .join(',') // comma-separated
-                ).join('\r\n'); // rows starting on new lines
-        }
-        let arr_data = [['Word', 'Pronunciation', 'Definition']];
-        for (let key in $lexicon) {
+                .map(String) // convert every value to String
+                .map((v: string) => v.replaceAll('"', '""')) // escape double colons
+                .map((v: string) => `"${v}"`) // quote it
+                .join(',') // comma-separated
+            ).join('\r\n'); // rows starting on new lines
+        };
+        const arr_data = [['Word', 'Pronunciation', 'Definition']];
+        for (const key in $lexicon) {
             arr_data.push([key, $lexicon[key][0], $lexicon[key][1]]);
         }
-        let export_data = array_to_csv(arr_data);
-        let exports = new Blob([export_data]);
+        const export_data = array_to_csv(arr_data);
+        const exports = new Blob([export_data]);
     
-        let file_handle = await window.showSaveFilePicker({
+        const file_handle = await window.showSaveFilePicker({
             suggestedName: `${Lang().Name}.csv`,
         });
         await file_handle.requestPermission({ mode: 'readwrite' });
-        let file = await file_handle.createWritable();
+        const file = await file_handle.createWritable();
         try {
             await file.write(exports);
         } catch (err) {
             window.alert('The file failed to export. Please contact the developer for assistance.');
             console.log(err);
-        };
+        }
         await file.close();
         window.alert('The file exported successfully.');
     },
     json: async () => {
         let export_data: Blob;
-        collectExportData().then(jsonString => {export_data = new Blob([jsonString])});
+        collectExportData().then(jsonString => {export_data = new Blob([jsonString]);});
 
-        let file_handle = await window.showSaveFilePicker({
+        const file_handle = await window.showSaveFilePicker({
             suggestedName: `${Lang().Name}.json`,
         });
         await file_handle.requestPermission({ mode: 'readwrite' });
-        let file = await file_handle.createWritable();
+        const file = await file_handle.createWritable();
         try {
             await file.write(export_data);
         } catch (err) {
@@ -227,10 +241,10 @@ export const saveAs = {
     html: {
         all: async () => {
             // Create HTML document object
-            let export_container = document.createElement('html');
+            const export_container = document.createElement('html');
     
             // Create HTML header info
-            let head = document.createElement('head');
+            const head = document.createElement('head');
             head.innerHTML = `
                 <meta charset="UTF-8" />
                 <title>${Lang().Name}</title>
@@ -239,7 +253,7 @@ export const saveAs = {
                 <link href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
             `;
             // Create export scripts
-            let scripts = document.createElement('script');
+            const scripts = document.createElement('script');
             scripts.innerHTML = `
                 const lex_body = document.getElementById('lex-body');
                 const entry_count = document.getElementById('entry-counter');
@@ -257,8 +271,8 @@ export const saveAs = {
     
                 function sort_lex_keys() {
                     let htags = ${JSON.stringify(
-                        Lang().HeaderTags.toLowerCase().trim().split(/\\s+/)
-                    )};
+        Lang().HeaderTags.toLowerCase().trim().split(/\\s+/)
+    )};
                     let all_words = structuredClone(lexicon)
                     let tag_ordered_lexes = []
                     for (let tag of htags) {
@@ -279,10 +293,10 @@ export const saveAs = {
                 
                     // Lowercase alphabet if case-sensitivity is unticked
                     var alphabet = ${
-                        Lang().CaseSensitive
-                        ? JSON.stringify(Lang().Alphabet.trim()) 
-                        : JSON.stringify(Lang().Alphabet.trim().toLowerCase())
-                    };
+    Lang().CaseSensitive
+        ? JSON.stringify(Lang().Alphabet.trim()) 
+        : JSON.stringify(Lang().Alphabet.trim().toLowerCase())
+};
                     let order = alphabet.trim().split(/\\s+/);
                     // to make sure we find the largest tokens first, i.e. for cases where 'st' comes before 'str' alphabetically
                     find_in_order = Array.from(new Set(order)).sort((a, b) => b.length - a.length); // descending, ensures uniqueness
@@ -606,17 +620,17 @@ export const saveAs = {
                 rewrite_entries();
             `;
             // Create export styles
-            let styles = document.createElement('style');
+            const styles = document.createElement('style');
             styles.innerHTML = fs.readFileSync(
                 path.join(path.dirname(__dirname), 'styles/index.css'),
                 'utf8'
             );
-            let themeElement = document.createElement('style');
+            const themeElement = document.createElement('style');
             themeElement.innerHTML = fs.readFileSync(
                 path.join(path.dirname(__dirname), get(theme)),
                 'utf8'
             );
-            let overrides = document.createElement('style');
+            const overrides = document.createElement('style');
             overrides.innerHTML = fs.readFileSync(
                 path.join(path.dirname(__dirname), 'styles/html_export.css'),
                 'utf8'
@@ -630,7 +644,7 @@ export const saveAs = {
             });
     
             // Create export body
-            let body = document.createElement('body');
+            const body = document.createElement('body');
             body.innerHTML = `
                 <h1>${Lang().Name}</h1>
                 <div class='tab-pane text-center'>
@@ -691,16 +705,16 @@ export const saveAs = {
             head.append(styles, themeElement, overrides);
             export_container.append(head, body, scripts);
     
-            let export_data = export_container.outerHTML;
-            let exports = new Blob(['\ufeff', export_data], {
+            const export_data = export_container.outerHTML;
+            const exports = new Blob(['\ufeff', export_data], {
                 type: 'tex/html; charset=utf-8;',
             });
     
-            let file_handle = await window.showSaveFilePicker({
+            const file_handle = await window.showSaveFilePicker({
                 suggestedName: `${Lang().Name}.html`,
             });
             await file_handle.requestPermission({ mode: 'readwrite' });
-            let file = await file_handle.createWritable();
+            const file = await file_handle.createWritable();
             try {
                 console.log(typeof exports);
                 await file.write(exports);
@@ -715,10 +729,10 @@ export const saveAs = {
         },
         docs: async () => {
             // Create HTML document object
-            let export_container = document.createElement('html');
+            const export_container = document.createElement('html');
     
             // Create HTML header info
-            let head = document.createElement('head');
+            const head = document.createElement('head');
             head.innerHTML = `
                 <meta charset="UTF-8" />
                 <title>${Lang().Name} Docs</title>
@@ -727,17 +741,17 @@ export const saveAs = {
                 <link href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
             `;
             // Create export styles
-            let styles = document.createElement('style');
+            const styles = document.createElement('style');
             styles.innerHTML = fs.readFileSync(
                 path.join(path.dirname(__dirname), 'styles/index.css'),
                 'utf8'
             );
-            let themeElement = document.createElement('style');
+            const themeElement = document.createElement('style');
             themeElement.innerHTML = fs.readFileSync(
                 path.join(path.dirname(__dirname), get(theme)),
                 'utf8'
             );
-            let overrides = document.createElement('style');
+            const overrides = document.createElement('style');
             overrides.innerHTML = fs.readFileSync(
                 path.join(path.dirname(__dirname), 'styles/html_export.css'),
                 'utf8'
@@ -749,19 +763,19 @@ export const saveAs = {
             await get(docsEditor).save().then(data => {
                 body = editorjsToHTML(data, body);
             });
-            body.style.padding = "12em";
+            body.style.padding = '12em';
             body.classList.add('container');
             export_container.appendChild(body);
     
-            let export_data = export_container.outerHTML;
-            let exports = new Blob(['\ufeff', export_data], {
+            const export_data = export_container.outerHTML;
+            const exports = new Blob(['\ufeff', export_data], {
                 type: 'tex/html; charset=utf-8;',
             });
-            let file_handle = await window.showSaveFilePicker({
+            const file_handle = await window.showSaveFilePicker({
                 suggestedName: `${Lang().Name}_Docs.html`,
             });
             await file_handle.requestPermission({ mode: 'readwrite' });
-            let file = await file_handle.createWritable();
+            const file = await file_handle.createWritable();
             try {
                 await file.write(exports);
             } catch (err) {
@@ -786,7 +800,7 @@ export const openLegacy = {
      */
     1.9: (contents) => {
         try {
-            for (let key in contents.Lexicon) {
+            for (const key in contents.Lexicon) {
                 Lang().Lexicon[key] = <Lexc.Word> {
                     pronunciations: <Lexc.EntryPronunciations> {
                         General: {
@@ -800,7 +814,7 @@ export const openLegacy = {
                         tags: contents.Lexicon[key][3],
                     }],
                 };
-            };
+            }
         } catch (err) {
             window.alert('There was a problem loading the contents of the lexicon. Please contact the developer.');
             logError('Attempted to load a version 1.9 lexicon.', err);
@@ -811,16 +825,16 @@ export const openLegacy = {
         }
         try {
             Lang().Pronunciations.General = contents.Romanization;
-            writeRomans();
+            writeRomans('General');
         } catch (err) {
             window.alert('There was a problem loading the romanizations. Please contact the developer for assistance.');
             logError('Attempted to load version 1.9 romanizations.', err);
         }
         try { 
-            for (let key in contents.Phrasebook) {
+            for (const key in contents.Phrasebook) {
                 Lang().Phrasebook[key] = <Lexc.PhraseCategory> (() => {
-                    let phrases: Lexc.PhraseCategory = {};
-                    for (let phrase in contents.Phrasebook[key]) {
+                    const phrases: Lexc.PhraseCategory = {};
+                    for (const phrase in contents.Phrasebook[key]) {
                         phrases[phrase] = <Lexc.Phrase> {
                             description: contents.Phrasebook[key][phrase].description,
                             lects: ['General'],
@@ -831,28 +845,26 @@ export const openLegacy = {
                                 },
                             },
                             variants: (() => { 
-                                let variants: {[index:string]: Lexc.Variant} = {};
-                                for (let variant in contents.Phrasebook[key][phrase].variants) {
+                                const variants: {[index:string]: Lexc.Variant} = {};
+                                for (const variant in contents.Phrasebook[key][phrase].variants) {
                                     variants[variant] = {
                                         description: contents.Phrasebook[key][phrase].variants[variant].description,
-                                        lects: ['General'],
                                         pronunciations: <Lexc.EntryPronunciations> {
                                             General: {
                                                 ipa: contents.Phrasebook[key][phrase].variants[variant].pronunciation,
                                                 irregular: false,
                                             }
                                         },
-                                        tags: [],
                                     };
-                                };
+                                }
                                 return variants;
                             })(),
                             tags: [],
                         };
-                    };
+                    }
                     return phrases;
                 })();
-            };
+            }
         } catch (err) {
             window.alert('There was a problem loading the phrasebook. Please contact the developer for assistance.');
             logError('Attempted to load a version 1.9 phrasebook.', err);
@@ -881,7 +893,7 @@ export const openLegacy = {
         Lang().IgnoreDiacritics = contents.IgnoreDiacritics;
         Lang().CaseSensitive = contents.CaseSensitive;
     },
-}
+};
 
 /**
  * Imports a CSV file to the lexicon.
@@ -890,31 +902,31 @@ export const openLegacy = {
  * @param {number} definitions The column number of the definitions.
  */
 export async function importCSV(headers: boolean, words: number, definitions: number) {
-    let [file_handle] = await window.showOpenFilePicker();
+    const [file_handle] = await window.showOpenFilePicker();
     await file_handle.requestPermission({ mode: 'read' });
-    let file = await file_handle.getFile();
+    const file = await file_handle.getFile();
     if (!file.name.includes('.csv')) {
         window.alert('The selected file was not a .csv file.');
         return;
     }
-    let r = headers;
-    let w = words - 1;
-    let d = definitions - 1;
+    const r = headers;
+    const w = words - 1;
+    const d = definitions - 1;
 
-    let data = await file.text();
-    let rows = data.split('\r');
-    let $lexicon = {};
-    for (let row of rows) {
+    const data = await file.text();
+    const rows = data.split('\r');
+    const $lexicon = {};
+    for (const row of rows) {
         if (r && row === rows[0]) continue;
 
-        let columns = row.split(',');
+        const columns = row.split(',');
         if (columns[0].includes('\n"')) {
             columns[0] = columns[0].split('\n"')[1];
         }
         columns[columns.length - 1] = columns[columns.length - 1].replace(/"$/g, '');
 
         $lexicon[columns[w]] = [
-            get_pronunciation(columns[w]),
+            get_pronunciation(columns[w], Lang().Lects[0]),
             columns[d],
             false,
             [],
