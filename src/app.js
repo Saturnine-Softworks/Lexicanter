@@ -489,8 +489,10 @@ function add_word(append = false) {
 
     let test = document.getElementById('ignore-diacritic').checked
         ? `${w.normalize('NFD').replace(/\p{Diacritic}/gu, '')}` 
-        : `${w}`
-    alphabet_input.value.split(/\s+/g).forEach((letter) => {
+        : `${w}`;
+    
+    const alphabet = alphabet_input.value.trim().split(/\s+/g).sort((a, b) => b.length - a.length);
+    alphabet.forEach((letter) => {
         test = test.replaceAll(letter, '');
         console.log(test, letter);
     });
