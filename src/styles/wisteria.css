@@ -52,6 +52,31 @@ button[id=overwrite], select[id=overwrite] {
   color: rgb(225, 211, 230);
 }
 
+svg .lex-entry, svg .lex-body {
+  fill: rgb(141, 84, 173);
+}
+svg .lex-entry:hover {
+  background-color: rgb(114, 60, 116);
+  fill: rgb(225, 211, 230);
+}
+svg .tag-item {
+  fill: rgb(141, 84, 173);
+  font-weight: bold;
+}
+svg rect.lex {
+  fill: transparent;
+  transition: 0.3s;
+  rx: 10;
+  height: 3em;
+  padding: 5px;
+}
+svg rect.lex:hover, svg rect.lex:has(~ :hover) {
+  fill: rgb(114, 60, 116);
+}
+svg path {
+  stroke: rgb(141, 84, 173);
+}
+
 .tag-item, [id=entry-counter] {
   color: rgb(172, 71, 212);
   background-color: rgb(209, 182, 216);
@@ -67,6 +92,9 @@ button[id=overwrite], select[id=overwrite] {
 
 hr {
   border: 1px solid rgb(92, 31, 94);
+  border-left: none;
+  border-right: none;
+  border-top: none;
 }
 
 label {

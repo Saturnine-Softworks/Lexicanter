@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Language, useDialects, pronunciations, wordInput } from '../stores';
+    import { Language, pronunciations, wordInput } from '../stores';
     import { get_pronunciation } from '../utils/phonetics';
     import { debug } from '../utils/diagnostics';
     import { createEventDispatcher } from 'svelte';
@@ -44,7 +44,7 @@
     <label for="tags">Tags</label>
     <textarea id="tags" rows="1" bind:value={tags}></textarea>
     <br>
-    {#if $useDialects}
+    {#if $Language.UseLects}
         <label>Lects<br>
             {#each $Language.Lects as lect}
                 <label>

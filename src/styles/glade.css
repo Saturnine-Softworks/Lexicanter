@@ -52,6 +52,31 @@ button[id=overwrite], select[id=overwrite] {
   color: #b8ad9d;
 }
 
+svg .lex-entry, svg .lex-body {
+  fill: #8ab4a3;
+}
+svg .lex-entry:hover {
+  background-color: #44382c;
+  fill: #b8ad9d;
+}
+svg .tag-item {
+  fill: #8ab4a3;
+  font-weight: bold;
+}
+svg rect.lex {
+  fill: transparent;
+  transition: 0.3s;
+  rx: 10;
+  height: 3em;
+  padding: 5px;
+}
+svg rect.lex:hover, svg rect.lex:has(~ :hover) {
+  fill: #44382c;
+}
+svg path {
+  stroke: #8ab4a3;
+}
+
 .tag-item, [id=entry-counter] {
   color: #a09582;
   background-color: #4b3d29;
@@ -67,6 +92,9 @@ button[id=overwrite], select[id=overwrite] {
 
 hr {
   border: 1px solid #8ab4a3;
+  border-left: none;
+  border-right: none;
+  border-top: none;
 }
 
 label {

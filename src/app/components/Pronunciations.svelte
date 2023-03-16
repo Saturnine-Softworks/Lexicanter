@@ -1,10 +1,10 @@
 <script lang="ts">
     import type * as Lect from '../types';
-    import { useDialects } from '../stores';
+    import { Language } from '../stores';
 
     export let pronunciations: Lect.EntryPronunciations;
 </script>
-{#if $useDialects}
+{#if $Language.UseLects}
     {#each Object.keys(pronunciations) as lect}
         <div class="row">
             <div class="column text-right lect">

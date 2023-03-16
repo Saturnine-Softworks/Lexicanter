@@ -85,6 +85,32 @@ button, select
         background: $lex-hover-bg
         color: $lex-hover-text
 
+svg 
+    .lex
+        &-entry, &-body
+            fill: $lex-text
+
+        &-entry:hover
+            background-color: $lex-hover-bg
+            fill: $lex-hover-text
+
+    .tag-item
+        fill: $lex-text
+        font-weight: bold
+    
+    rect
+        &.lex
+            fill: transparent
+            transition: 0.3s
+            &:hover, &:has(~ :hover)
+                fill: $lex-hover-bg
+            rx: 10
+            height: 3em
+            padding: 5px
+    
+    path
+        stroke: $lex-text
+
 // These are the colors used for tags as they appear in the lexicon.
 .tag-item, [id=entry-counter]
     color: $tag-text
@@ -100,6 +126,9 @@ button, select
 // This style is used for dividers such as the one in the Categories pane of the Phrasebook tab.
 hr 
     border: 1px solid $base-text
+    border-left: none
+    border-right: none
+    border-top: none
 
 // The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition'
 label 

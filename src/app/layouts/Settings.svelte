@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { theme, autosave, useDialects, pronunciationRules, pronunciations, wordInput } from '../stores';
-    import { userData, saveFile } from '../utils/files';
+    import { theme, autosave, pronunciations, wordInput } from '../stores';
+    import { userData, saveFile, showOpenDialog } from '../utils/files';
     import { Language } from '../stores';
     import type * as Lexc from '../types';
     const fs = require('fs');
@@ -8,6 +8,7 @@
     const vex = require('vex-js');
     import { debug, logAction } from '../utils/diagnostics';
     import { get_pronunciation } from '../utils/phonetics';
+    import Etymology from './Etymology.svelte';
     /**
      * When the app loads, this block runs to check if the user has
      * previously set a theme preference. If not, it creates a file in the
@@ -146,20 +147,17 @@
             })
         })
         $Language.Pronunciations[name] = $Language.Pronunciations[lect];
-        $pronunciationRules[name] = $pronunciationRules[lect];
         if ($pronunciations.hasOwnProperty(lect)) {
             $pronunciations[name] = $pronunciations[lect];
             delete $pronunciations[lect];
         }
         delete $Language.Pronunciations[lect];
-        delete $pronunciationRules[lect];
     }
 
     function deleteLect (lect: string, i: number) {
         $Language.Lects.splice(i, 1);
         $Language.Lects = [...$Language.Lects];
         delete $Language.Pronunciations[lect];
-        delete $pronunciationRules[lect];
         delete $pronunciations[lect]
         Object.keys($Language.Lexicon).forEach((word: string) => {
             if ($Language.Lexicon[word].pronunciations[lect]) {
@@ -178,7 +176,7 @@
     }
 
     function confirmUseLectsChange () {
-        if (!$useDialects) {
+        if (!$Language.UseLects) {
             vex.dialog.confirm({
                 message: `Are you sure you want to disable lect features? Only the data for the lect "${$Language.Lects[0]}" will be kept.`,
                 callback: ((response: boolean) => {
@@ -203,17 +201,68 @@
                         $Language.Pronunciations = {
                             General: $Language.Pronunciations[keep]
                         }
-                        $pronunciationRules = {
-                            General: $pronunciationRules[keep]
-                        }
                         $pronunciations = {
                             General: $pronunciations[keep]
                         }
-                    } else { $useDialects = true; }
+                    } else { $Language.UseLects = true; }
                 })
             });
         }
     }
+
+    function importRelative() {
+        let contents: Lexc.Language;
+        const dialog = (user_path: string) => {
+            showOpenDialog(
+                {
+                    title: 'Import Related Lexicon',
+                    defaultPath: `${user_path}${path.sep}Lexicons${path.sep}`,
+                    properties: ['openFile'],
+                },
+                file_path => {
+                    if (!file_path) return;
+                    fs.readFile(file_path[0], 'utf8', (err, data: string) => {
+                        if (err) {
+                            console.log(err);
+                            vex.dialog.alert('There was an issue loading your file. Please contact the developer.');
+                        }
+                        try {
+                            contents = JSON.parse(data);
+                            if (!String(contents.Version).match(/^2\.[0-9]*\.[0-9]*$/)) {
+                                vex.dialog.alert('This file is not compatible with the current version of Lexicanter. Please contact the developer; the file may be recoverable.');
+                                return;
+                            }
+                            $Language.Relatives = {
+                                ...$Language.Relatives,
+                                [contents.Name]: contents.Lexicon
+                            };                        
+                            // add an etymology entry for each word in the relative lexicon
+                            for (const word in contents.Lexicon) {
+                                if (!$Language.Lexicon[word] && !$Language.Etymologies[word]) {
+                                    $Language.Etymologies[word] = {
+                                        descendants: [],
+                                        source: contents.Name,
+                                    };
+                                }
+                            }
+                        } catch (err) {
+                            vex.dialog.alert('There was an issue loading your file. Please contact the developer.');
+                            return;
+                        }
+                    });
+                }
+            );
+        };
+        userData(user_path => {
+            if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
+                fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => {
+                    logAction(`Created the 'Lexicons' folder in the user data folder at '${user_path}'.`);
+                    dialog(user_path);
+                });
+            } else { dialog(user_path); }
+        });
+    }
+
 </script>
 <!-- App Settings -->
 <div class="tab-pane">
@@ -248,8 +297,8 @@
             <br><br>
             <p>Advanced Settings</p>
             <label>Use Lects
-                <input type="checkbox" bind:checked={$useDialects} on:change={confirmUseLectsChange}/>
-                {#if $useDialects}
+                <input type="checkbox" bind:checked={$Language.UseLects} on:change={confirmUseLectsChange}/>
+                {#if $Language.UseLects}
                     {#each $Language.Lects as lect, lectIndex}
                         <div class="narrow">
                             <p style="display: inline-block" id={`${lectIndex}`}>{lect}</p>
@@ -264,7 +313,7 @@
                                         }
                                     }
                                 });
-                            }}> - </button>
+                            }}> ⌫ </button>
                             <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={()=>{
                                 vex.dialog.prompt({
                                     message: 'Edit Lect Name',
@@ -278,7 +327,25 @@
                                         // debug.log(`Edited lect name: ${lect} to ${response}`)
                                     }
                                 })
-                            }}> ✏ </button>
+                            }}> ✎ </button>
+                            <button class="hover-highlight hover-shadow" style="display: inline-block;" on:click={()=>{
+                                vex.dialog.confirm({
+                                    message: `Add all words in the lexicon to the lect ‘${lect}’?`,
+                                    callback: function (response) {
+                                        if (response) {
+                                            for (let word in $Language.Lexicon) {
+                                                $Language.Lexicon[word].Senses.forEach(sense=>{
+                                                    if (!sense.lects.includes(lect)) {
+                                                        sense.lects.push(lect);
+                                                    }
+                                                });
+                                            };
+                                            logAction(`Added all words to lect: ${lect}`);
+                                            vex.dialog.alert(`Added all senses of all words to the lect ‘${lect}’.`);
+                                        }
+                                    }
+                                });
+                            }}> ◎ </button>
                         </div>
                     {/each}
                     <button class="hover-highlight hover-shadow" on:click={() => { 
@@ -291,13 +358,40 @@
                                 }
                                 $Language.Lects = [...$Language.Lects, response];
                                 $Language.Pronunciations[response] = 'place > holder';
-                                $pronunciationRules[response] = {place: 'holder'};
                                 $pronunciations[response] = get_pronunciation($wordInput, response);
                                 logAction(`Added a new lect: ${response}`);
                                 // debug.log(`Added a new lect: ${response}`)
                             }
                         })
                     }}> + Lect </button>
+                {/if}
+            </label>
+            <br><br>
+            <label>Show Etymology
+                <input type="checkbox" bind:checked={$Language.ShowEtymology}/>
+                {#if $Language.ShowEtymology}
+                    <button class="hover-highlight hover-shadow" 
+                        on:click={() => {
+                            importRelative();
+                        }}
+                    > Import Related Lexicon </button>
+                    {#each Object.keys($Language.Relatives) as relative}
+                        <div class="narrow">
+                            <p style="display: inline-block;">{relative}</p>
+                            <button class="hover-highlight hover-shadow" style="display: inline-block;" on:click={() => {
+                                vex.dialog.confirm({
+                                    message: `Are you sure you want to delete "${relative}"? This will remove any etymology connections its entries may have.`,
+                                    callback: function (response) {
+                                        if (response) {
+                                            $Language.Etymologies = Object.fromEntries(Object.entries($Language.Etymologies).filter(([_, value]) => value.source !== relative));
+                                            delete $Language.Relatives[relative];
+                                            logAction(`Deleted relative: ${relative}`);
+                                        }
+                                    }
+                                });
+                            }}> ⌫ </button>
+                        </div>
+                    {/each}
                 {/if}
             </label>
             <br><br>

@@ -118,9 +118,7 @@ export type Phonotactics = {
 
 /**
  * `Pronunciations` is a type that is used to represent the values of the text inputs for each dialect from the 
- * Pronunciations field in the Phonology tab. It does not represent the actual pronunciation rules, which are stored 
- * in the {@link PronunciationRules} type, but rather the user-input values of the text inputs.
- * The index is the name of the dialect, and the value is the user input.
+ * Pronunciations field in the Phonology tab. 
  * @property {string} [index: string] - string;
  */
 export type Pronunciations = {
@@ -128,21 +126,21 @@ export type Pronunciations = {
 }
 
 /**
- * `PronunciationDialect` is a type that is used to represent the orthography-to-IPA transformation rules for a single dialect.
- * The index is the orthography, and the value is the IPA.
- * @property {string} [index: string] - string;
- */
-export type PronunciationLect = {
-    [index: string]: string;
+ * `Descendant` is a type that is used to represent a child entry of a word. 
+ * @property {string} word - The name of the parent entry.
+ * @property {string | ['current language']} source - The name of the language in which the parent entry is written, or
+ * 'current language' if the parent entry was chosen from the lexicon.
+ */ 
+export type Descendant = {
+    name: string;
+    source: '<< THIS LANGUAGE >>' | string;
 }
 
-/**
- * `PronunciationRules` is a type that is used to represent the orthography-to-IPA transformation rules for all dialects.
- * It stores the rules in a dictionary whose keys are the names of the dialects and whose values are {@link PronunciationLect}s.
- * @property {PronunciationDialect} [index: PronunciationDialect] - This is the name of the dialect.
- */
-export type PronunciationRules = {
-    [index: string]: PronunciationLect;
+export type Etymologies = {
+    [index: string]: {
+       descendants: Descendant[];
+       source: '<< THIS LANGUAGE >>' | string;
+    };
 }
 
 /**
@@ -177,6 +175,8 @@ export type Language = {
     Version: string;
     Name: string;
     Lexicon: Lexicon;
+    Etymologies: Etymologies;
+    Relatives: { [index: string]: Lexicon }
     Phrasebook: Phrasebook;
     Alphabet: string;
     Pronunciations: Pronunciations;
@@ -186,5 +186,7 @@ export type Language = {
     HeaderTags: string;
     CaseSensitive: boolean;
     IgnoreDiacritics: boolean;
+    ShowEtymology: boolean;
+    UseLects: boolean;
     Diagnostics: Diagnostic[];
 }

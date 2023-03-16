@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { Language, useDialects } from "../stores";
+    import { Language } from "../stores";
     import { get_pronunciation, writeRomans, complete_word, generate_word } from '../utils/phonetics'
     let trial = ''; let ortho_test = '';
     $: trial_completion = complete_word(trial);
     let selectedLect: string = $Language.Lects[0];
     $: {
-        selectedLect = $useDialects? selectedLect : 'General';
+        selectedLect = $Language.UseLects? selectedLect : 'General';
     }
     $: test_pronunciation = get_pronunciation(ortho_test, selectedLect);
     let generated_words = Array(24).fill('');
@@ -51,7 +51,7 @@
         <!-- Romanization -->
         <div class="container column scrolled" style="height: 100%">
             <label>Pronunciations
-                {#if $useDialects}    
+                {#if $Language.UseLects}    
                     <select bind:value={selectedLect}>
                         {#each $Language.Lects as lect}
                             <option value={lect}>{lect}</option>

@@ -4,17 +4,23 @@
     vex.registerPlugin(require('vex-dialog'));
     vex.defaultOptions.className = 'vex-theme-os';
 	import Lexicon from './layouts/Lexicon.svelte';
+    import Etymology from './layouts/Etymology.svelte';
 	import Phrasebook from './layouts/Phrasebook.svelte';
 	import Phonology from './layouts/Phonology.svelte';
     import Documentation from './layouts/Documentation.svelte';
 	import File from './layouts/File.svelte';
 	import Settings from './layouts/Settings.svelte';
-    import { theme, autosave } from './stores';
+    import { theme, autosave, Language } from './stores';
     import { saveFile } from './utils/files'
     import * as diagnostics from './utils/diagnostics'
 
-    const tabs = [Lexicon, Phrasebook, Phonology, Documentation, File, Settings]
-    const tab_btns = ['Lexicon', 'Phrasebook', 'Phonology', 'Documentation', 'File', 'Settings'];
+    // Debug block
+    $: {
+        // diagnostics.debug.logObj($Language, 'An update was made to the Language store', false);
+    }
+
+    const tabs = [Lexicon, Etymology, Phrasebook, Phonology, Documentation, File, Settings]
+    const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Phonology', 'Documentation', 'File', 'Settings'];
     $: selectedTab = 0;
 
     /**
@@ -46,8 +52,12 @@
         <div class="button-container">
             <p class="version-info"><i>v</i>{version}</p>
             {#each tab_btns as tab, i}
-                <button on:click={() => selectedTab = i}
-                    class:selected={selectedTab === i} class='hover-highlight'>{tab}</button>
+                {#if tab !== 'Etymology' || (tab === 'Etymology' && $Language.ShowEtymology)}
+                    <button class:selected={selectedTab === i} class='hover-highlight'
+                        on:click={() => selectedTab = i}
+                    > {tab}
+                    </button>
+                {/if}
             {/each}
         </div>
         {#each tabs as tab, i}

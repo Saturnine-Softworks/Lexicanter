@@ -1,6 +1,6 @@
 <script lang='ts'>
     import { createEventDispatcher } from 'svelte';
-    import { useDialects, Language } from '../stores';
+    import { Language } from '../stores';
     import { get_pronunciation } from '../utils/phonetics';
 
     export let phrase = '';
@@ -19,7 +19,7 @@
 
 <div class="variant-div">
     <input type="text" on:keyup={update} bind:value={phrase}/>
-    {#if $useDialects}
+    {#if $Language.UseLects}
         {#each lects as lect}
             <div class="row">
                 <div class="column text-right lect">{lect}</div>

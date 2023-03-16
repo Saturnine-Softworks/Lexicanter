@@ -1,21 +1,17 @@
 <script lang="ts">
-    import { Language, wordInput, pronunciations, useDialects } from '../stores';
+    import { Language, wordInput, pronunciations } from '../stores';
     import type * as Lexc from '../types';
-    import { alphabetize } from '../utils/alphabetize';
+    import { alphabetize, alphabetPrecheck } from '../utils/alphabetize';
     import { get_pronunciation } from '../utils/phonetics';
     import LexEntry from '../components/LexEntry.svelte';
     import SenseInput from '../components/SenseInput.svelte';
     import { debug } from '../utils/diagnostics';
+    const vex = require('vex-js');
 
     let defInputs = [''];
     let searchWords = ''; let searchDefinitions = ''; let searchTags = '';
     let lectFilter = '';
     let keys: string[] = [];
-
-    // Debug block
-    $: {
-        debug.logObj($Language, 'An update was made to the Language store');
-    }
 
     let filtered_lex: Lexc.Lexicon;
     $: filtered_lex = keys.reduce((acc, key) => {
@@ -83,19 +79,11 @@
     }
 
     /**
-     * This function is called when the user clicks the "Add Word" button.
-     * It takes the values from the word input, pronunciation input, definition
-     * input, and tags input fields, and adds them to the lexicon. If the word
-     * already exists and `append` is `true`, it appends the definition and tags
-     * to the existing entry. If `append` is `false`, it overwrites the existing
-     * entry. 
+     * Creates a new lexicon entry, or appends to an existing one.
+     * @param {string} word
      * @param {bool} append
-     * @returns {string}
      */
-    function addWord(append: boolean): string {
-        let word = $wordInput.trim()
-        if (!word) return;
-        if (!senses[0].definition) return;
+    function commitWord(word: string, append: boolean): void {
         const emptySensesFilter = (sense: senseInput) => <boolean> (senses[''] !== sense) && (!!sense.definition);
         const senseRemapper = (sense: senseInput) => <Lexc.Sense> {
             definition: sense.definition,
@@ -105,7 +93,7 @@
         if (!append) {
             $Language.Lexicon[word] = <Lexc.Word> {
                 pronunciations: <Lexc.EntryPronunciations> (() => {
-                    let obj: Lexc.EntryPronunciations = {};
+                    const obj: Lexc.EntryPronunciations = {};
                     $Language.Lects.forEach(lect => {
                         obj[lect] = {
                             ipa: $pronunciations[lect].trim(),
@@ -124,7 +112,7 @@
         // follow_lex_link(word);
         $wordInput = '';
         $pronunciations = (()=>{
-            let obj = {};
+            const obj = {};
             $Language.Lects.forEach(lect => {
                 obj[lect] = ''
             });
@@ -135,8 +123,30 @@
             tags: '',
             lects: [...$Language.Lects],
         }];
+    }
 
-        return word;
+    /**
+     * This function is called when the user clicks the "Add Word" button.
+     * It checks for empty input fields and invalid characters, and then calls
+     * {@link commitWord} to add the word to the lexicon.
+     * @param {bool} append
+     */
+    function addWord(append: boolean): void {
+        let word = $wordInput.trim()
+        if (!word) return;
+        if (!senses[0].definition) return;
+        if (!alphabetPrecheck(word)) {
+            vex.dialog.confirm({
+                message: `The word contains characters not present in the alphabet. Are you sure you want to add it?`,
+                callback: (value: boolean) => {
+                    if (value) {
+                        commitWord(word, append);
+                    };
+                }
+            });
+        } else {
+            commitWord(word, append);
+        }
     }
 
     /**
@@ -146,7 +156,6 @@
      * or end of a word. Searches are combinative, and only
      * results which match all search input fields will be
      * selected as matches. 
-     * It then calls {@link rewrite_entries} to display the results.
      * @returns {any}
      */
     function search_lex(): void {
@@ -172,20 +181,25 @@
                     let needs_exact_match = a[0] === '!';
                     if (needs_exact_match) {
                         let pattern = new RegExp(`\\b${a.split('!')[1]}\\b`, 'i');
-                        if (!pattern.test($Language.Lexicon[word][1].toLowerCase())) { // exact word match
-                            match = false;
-                        }
-                    } else if (!$Language.Lexicon[word][1].toLowerCase().includes(a)) { // partial match
+                        $Language.Lexicon[word].Senses.forEach(sense => {
+                            if (!pattern.test(sense.definition.toLowerCase())) {
+                                // no exact word match
+                                match = false;
+                            }
+                        });
+                    } else if (!$Language.Lexicon[word].Senses.some(sense => sense.definition.toLowerCase().includes(a))) { 
+                        // no partial match
                         match = false;
                     }
                 }
-                if (!!$Language.Lexicon[word][3]) {
+                if (!!$Language.Lexicon[word].Senses.some(sense => !!sense.tags[0])) {
                     // has at least one tag
                     let partial_tag_match = false;
                     let needs_exact_match = false;
                     let has_exact_match = false;
-                    for (let tag of $Language.Lexicon[word][3]) {
+                    for (let tag of $Language.Lexicon[word].Senses.map(sense => sense.tags).flat()) {
                         for (let a of tags_search) {
+                            debug.log('`a` | `tag` : ' + a + ' | ' + tag, false)
                             // tags
                             if (a[0] === '!') {
                                 needs_exact_match = true;
@@ -199,12 +213,12 @@
                             }
                         }
                     }
-                    if ((!partial_tag_match && !!tags_search) || (needs_exact_match && !has_exact_match)) {
+                    if (!!tags_search[0] && ((!partial_tag_match) || (needs_exact_match && !has_exact_match))) {
                         match = false;
                     }
                 } else {
                     // has no tags
-                    if (!!tags_search) {
+                    if (!!tags_search[0]) {
                         match = false; // at least one tag as search term
                     }
                 }
@@ -243,7 +257,7 @@
                     });
                 }}>
 
-                {#if $useDialects}
+                {#if $Language.UseLects}
                     {#each lectSet as lect}
                         <div class="row narrow">
                             <div class="column text-right">
@@ -307,7 +321,7 @@
                     {/if}
                     <input id="search-def" type="text" class="search" bind:value={searchDefinitions} on:input={search_lex}/>
                 </div>
-                {#if $useDialects}
+                {#if $Language.UseLects}
                     <div class="column">
                         <label>Filter by lect: 
                             <select bind:value={lectFilter}>
@@ -322,7 +336,7 @@
             </div>
             <div class='scrolled' style="height: 88%">
                 {#each alphabetized as word}
-                    <LexEntry entry={word} on:edit={() => edit_entry(word)}/>
+                    <LexEntry entry={word} showEtymology={true} on:edit={() => edit_entry(word)}/>
                 {:else}
                     <p class="info" id="lex-body">Add new words on the left</p>
                 {/each}

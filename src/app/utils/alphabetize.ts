@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { debug } from './diagnostics';
 import { get } from 'svelte/store';
 import { Language } from '../stores';
 import type * as Lexc from '../types';
@@ -10,7 +12,7 @@ const Lang = () => get(Language);
  * @param lexicon - the lexicon object
  * @returns An array of words, sorted by the alphabetical order of the language.
  */
-export function alphabetize(lexicon: Lexc.Lexicon) {
+export function alphabetize(lexicon: Lexc.Lexicon): string[] {
     const priority_tags = Lang().HeaderTags.toLowerCase().trim().split(/\s+/);
     let $alphabet = Lang().Alphabet;
     const $ignore_diacritics = Lang().IgnoreDiacritics;
@@ -22,7 +24,7 @@ export function alphabetize(lexicon: Lexc.Lexicon) {
         for (const word in all_words) {
             if ((():string[] => {
                 const tags = [];
-                Lang().Lexicon[word].Senses.forEach((sense: Lexc.Sense) => {
+                all_words[word].Senses.forEach((sense: Lexc.Sense) => {
                     tags.push(...sense.tags);
                 });
                 return tags;
@@ -96,3 +98,23 @@ export function alphabetize(lexicon: Lexc.Lexicon) {
     }
     return final_sort;
 }
+
+type valid = string & { __brand: 'valid' };
+/**
+ * Takes a word and returns false if it contains any characters not in the alphabet.
+ * The function takes case sensitivity and diacritic sensitivity into account.
+ * @param word - the word to check
+ * @returns false if the word contains any characters not in the alphabet.
+ */
+export function alphabetPrecheck(word: string): word is valid {
+    // check in order of length descending, solves combining diacritcs issue (i.e. 'a' would be removed from 'å', leaving the ring)
+    const alphabet = Lang().Alphabet.trim().split(/\s+/).sort((a, b) => b.length - a.length);
+    word = Lang().CaseSensitive? word : word.toLowerCase();
+    word = Lang().IgnoreDiacritics? word.normalize('NFD').replace(/\p{Diacritic}/gu, '') : word;
+    alphabet.forEach((token) => {
+        word = word.replaceAll(token, '');
+        // debug.log(`alphabetPrecheck: ${word} | ${token}`, false);
+    });
+    return !word;
+}
+

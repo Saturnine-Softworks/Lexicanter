@@ -8,7 +8,7 @@ import type * as Lexc from '../types';
 import { Language, autosave, docsEditor, theme } from '../stores';
 import { writeRomans, get_pronunciation } from './phonetics';
 import { initializeDocs } from './docs';
-import { logError } from './diagnostics';
+import * as diagnostics from './diagnostics';
 
 const Lang = () => get(Language);
 
@@ -47,6 +47,7 @@ async function collectExportData (): Promise<string> {
     await get(docsEditor).save().then(data => {
         Lang().Docs = data;
     });
+    Lang().Version = await ipcRenderer.invoke('getVersion');
     return JSON.stringify(Lang());
 }
 
@@ -817,18 +818,18 @@ export const openLegacy = {
             }
         } catch (err) {
             window.alert('There was a problem loading the contents of the lexicon. Please contact the developer.');
-            logError('Attempted to load a version 1.9 lexicon.', err);
+            diagnostics.logError('Attempted to load a version 1.9 lexicon.', err);
         }
         try { Lang().Alphabet = contents.Alphabet; } catch (err) {
             window.alert('There was a problem loading the alphabetical order. Please contact the developer for assistance.');
-            logError('Attempted to load a version 1.9 alphabet.', err);
+            diagnostics.logError('Attempted to load a version 1.9 alphabet.', err);
         }
         try {
             Lang().Pronunciations.General = contents.Romanization;
             writeRomans('General');
         } catch (err) {
             window.alert('There was a problem loading the romanizations. Please contact the developer for assistance.');
-            logError('Attempted to load version 1.9 romanizations.', err);
+            diagnostics.logError('Attempted to load version 1.9 romanizations.', err);
         }
         try { 
             for (const key in contents.Phrasebook) {
@@ -867,28 +868,28 @@ export const openLegacy = {
             }
         } catch (err) {
             window.alert('There was a problem loading the phrasebook. Please contact the developer for assistance.');
-            logError('Attempted to load a version 1.9 phrasebook.', err);
+            diagnostics.logError('Attempted to load a version 1.9 phrasebook.', err);
         }
         try {
-            Lang().Phonotactics.General.Onsets = contents.Phonotactics.Initial;
-            Lang().Phonotactics.General.Medials = contents.Phonotactics.Middle;
-            Lang().Phonotactics.General.Codas = contents.Phonotactics.Final;
-            Lang().Phonotactics.General.Vowels = contents.Phonotactics.Vowel;
-            Lang().Phonotactics.General.Illegals = contents.Phonotactics.Illegal;
+            Lang().Phonotactics.General.Onsets = contents.Phonotactics.Initial.join(' ');
+            Lang().Phonotactics.General.Medials = contents.Phonotactics.Middle.join(' ');
+            Lang().Phonotactics.General.Codas = contents.Phonotactics.Final.join(' ');
+            Lang().Phonotactics.General.Vowels = contents.Phonotactics.Vowel.join(' ');
+            Lang().Phonotactics.General.Illegals = contents.Phonotactics.Illegal.join(' ');
         } catch (err) {
             window.alert('There was a problem loading the phonotactics data. Please contact the developer for assistance.');
-            logError('Attempted to load version 1.9 phonotactics.', err);
+            diagnostics.logError('Attempted to load version 1.9 phonotactics.', err);
         }
         try { 
             get(docsEditor).destroy();
             initializeDocs(contents.Docs); 
         } catch (err) {
             window.alert('There was a problem loading the documentation data. Please contact the developer for assistance.');
-            logError('Attempted to load version 1.9 documentation.', err);
+            diagnostics.logError('Attempted to load version 1.9 documentation.', err);
         }
         try { Lang().HeaderTags = contents.HeaderTags; } catch (err) {
             window.alert('There was a problem loading the header tags.');
-            logError('Attempted to load version 1.9 header tags.', err);
+            diagnostics.logError('Attempted to load version 1.9 header tags.', err);
         }
         Lang().IgnoreDiacritics = contents.IgnoreDiacritics;
         Lang().CaseSensitive = contents.CaseSensitive;

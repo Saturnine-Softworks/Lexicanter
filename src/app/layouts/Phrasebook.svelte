@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Language, phraseInput, phrasePronunciations, selectedCategory, categoryInput, useDialects } from "../stores";
+    import { Language, phraseInput, phrasePronunciations, selectedCategory, categoryInput } from "../stores";
     import { debug } from '../utils/diagnostics';
     import type * as Lexc from '../types';
     import { get_pronunciation } from '../utils/phonetics';
@@ -243,7 +243,7 @@
                     {/if}
                     <input id="search-description" type="text" class="search" bind:value={searchDescription}/>
                 </div>
-                {#if $useDialects}
+                {#if $Language.UseLects}
                      <div class="column">
                          <label>Filter by lect:
                              <select bind:value={lectFilter}>
@@ -283,7 +283,7 @@
                     });
                 }}/>
                 
-                {#if $useDialects}
+                {#if $Language.UseLects}
                     {#each lects as lect}
                         <div class="row narrow">
                             <div class="column text-right">

@@ -51,6 +51,8 @@
             $Language.Lects.forEach(writeRomans);
             loading_message = 'Loading phonotactics...';
             $Language.Phonotactics = contents.Phonotactics;
+            $Language.ShowEtymology = contents.ShowEtymology;
+            $Language.UseLects = contents.UseLects;
         } catch (err) {
             window.alert(
                 'There was a problem loading the contents of the file. Please contact the developer for assistance.'
