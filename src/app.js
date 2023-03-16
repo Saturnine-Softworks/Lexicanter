@@ -637,12 +637,10 @@ function update_book(keys = false) {
                         );
                         let v_desc = document.createElement('p');
                         v_desc.className = 'prelined';
-                        v_desc.appendChild(
-                            document.createTextNode(
-                                phrasebook[selected_cat][entry].variants[
-                                    variant
-                                ].description
-                            )
+                        v_desc.innerHTML = markdown_to_html(
+                            phrasebook[selected_cat][entry].variants[
+                                variant
+                            ].description
                         );
 
                         vcol.append(v_phrase, v_pron, v_desc);
