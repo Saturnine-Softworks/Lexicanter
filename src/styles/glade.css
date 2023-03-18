@@ -10,6 +10,12 @@ button, select {
 button[id=overwrite], select[id=overwrite] {
   color: darkred;
 }
+button.inflection, select.inflection {
+  background-color: transparent !important;
+  border: none !important;
+  font-family: Noto;
+  font-size: 9pt;
+}
 
 .hover-highlight:hover {
   color: #a09582;
@@ -207,6 +213,14 @@ a:hover {
 
 table {
   border-color: #bad8b0;
+}
+
+.inflection td {
+  border-color: #bad8b0 !important;
+  background-color: transparent !important;
+}
+.inflection tr {
+  background-color: transparent !important;
 }
 
 .milkyWay {

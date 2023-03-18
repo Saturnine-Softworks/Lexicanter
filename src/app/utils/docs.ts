@@ -5,8 +5,13 @@ import Paragraph from '@editorjs/paragraph';
 import Table from '@editorjs/table';
 import Underline from '@editorjs/underline';
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-class Monospace { // EditorJS custom class
+enum LogLevels { // REVIEW - monkeypatch gets around type check error, can't import this from @editorjs/editorjs/types for ...reasons.
+    VERBOSE = 'VERBOSE',
+    INFO = 'INFO',
+    WARN = 'WARN',
+    ERROR = 'ERROR',
+}
+export class Monospace { // EditorJS custom class
     api: any;
     button: null | HTMLButtonElement;
     tag: string;
@@ -130,6 +135,7 @@ export function initializeDocs(data: OutputData | false): void {
                 },
             },
         },
+        logLevel: LogLevels.ERROR,
     };
     
     if (data) config.data = data;

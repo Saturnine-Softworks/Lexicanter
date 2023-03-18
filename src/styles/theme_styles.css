@@ -10,6 +10,12 @@ button, select {
 button[id=overwrite], select[id=overwrite] {
   color: darkred;
 }
+button.inflection, select.inflection {
+  background-color: transparent !important;
+  border: none !important;
+  font-family: Noto;
+  font-size: 9pt;
+}
 
 .hover-highlight:hover {
   color: #000;
@@ -207,6 +213,14 @@ a:hover {
 
 table {
   border-color: #000;
+}
+
+.inflection td {
+  border-color: #000 !important;
+  background-color: transparent !important;
+}
+.inflection tr {
+  background-color: transparent !important;
 }
 
 /*# sourceMappingURL=theme_styles.css.map */

@@ -2,6 +2,7 @@
     import { Language } from '../stores.js';
     import { createEventDispatcher } from 'svelte';
     import Pronunciations from './Pronunciations.svelte';
+    import Inflections from '../components/Inflections.svelte';
     import { debug } from '../utils/diagnostics.js';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
@@ -81,6 +82,9 @@
         {#if $Language.ShowEtymology && !!entryAncestors && showEtymology}
             <hr />
             <p class="lex-body"><i>{entryAncestors}</i></p>
+        {/if}
+        {#if $Language.ShowInflection}
+            <Inflections word={entry} tags={Sense.tags}/>
         {/if}
     {/each}
 </div>

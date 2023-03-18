@@ -20,8 +20,11 @@
     }, {});
 
     let alphabetized: string[];
-    $: { // Update the alphabetized lexicon when the alphabet or `keys` array changes
-        $Language.Alphabet;
+    $: { // Update the alphabetized lexicon when conditions change
+        $Language.Lexicon; 
+        $Language.ShowEtymology; $Language.Etymologies; 
+        $Language.ShowInflection; $Language.Inflections; 
+        $Language.Alphabet; $Language.Pronunciations;
         keys;
         (() => {
             alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
@@ -54,7 +57,7 @@
      * confirmation. 
      * @param {string} word
      */
-    function edit_entry (word: string): void {
+    function editEntry (word: string): void {
         let confirmation = true;
         if (!!$wordInput || !!defInputs[0]) {
             confirmation = confirm(
@@ -336,7 +339,7 @@
             </div>
             <div class='scrolled' style="height: 88%">
                 {#each alphabetized as word}
-                    <LexEntry entry={word} showEtymology={true} on:edit={() => edit_entry(word)}/>
+                    <LexEntry entry={word} showEtymology={true} on:edit={() => editEntry(word)}/>
                 {:else}
                     <p class="info" id="lex-body">Add new words on the left</p>
                 {/each}

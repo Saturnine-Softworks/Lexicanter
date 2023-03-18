@@ -13,14 +13,15 @@
     import { theme, autosave, Language } from './stores';
     import { saveFile } from './utils/files'
     import * as diagnostics from './utils/diagnostics'
+    import Inflection from './layouts/Inflection.svelte';
 
     // Debug block
     $: {
         // diagnostics.debug.logObj($Language, 'An update was made to the Language store', false);
     }
 
-    const tabs = [Lexicon, Etymology, Phrasebook, Phonology, Documentation, File, Settings]
-    const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Phonology', 'Documentation', 'File', 'Settings'];
+    const tabs = [Lexicon, Etymology, Phrasebook, Inflection, Phonology, Documentation, File, Settings]
+    const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Inflection', 'Phonology', 'Documentation', 'File', 'Settings'];
     $: selectedTab = 0;
 
     /**
@@ -47,12 +48,16 @@
 
 <link rel="stylesheet" href="{$theme}" />
 
-<body id="body">
+<body id="body" spellcheck="false">
     <div class='tab-container'>
         <div class="button-container">
             <p class="version-info"><i>v</i>{version}</p>
             {#each tab_btns as tab, i}
-                {#if tab !== 'Etymology' || (tab === 'Etymology' && $Language.ShowEtymology)}
+            <!-- REVIEW - Automate the inclusion/exclusion of advanced feature tabs -->
+                {#if (tab !== 'Etymology' && tab !== 'Inflection') 
+                    || (tab === 'Etymology' && $Language.ShowEtymology)
+                    || (tab === 'Inflection' && $Language.ShowInflection)
+                }
                     <button class:selected={selectedTab === i} class='hover-highlight'
                         on:click={() => selectedTab = i}
                     > {tab}

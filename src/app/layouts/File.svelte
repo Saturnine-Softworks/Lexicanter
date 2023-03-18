@@ -1,13 +1,14 @@
 <script lang="ts">
     const fs = require('fs');
     const path = require('path');
-    import { docsEditor, Language, selectedCategory } from '../stores';
+    import { docsEditor, Language, selectedCategory, fileLoadIncrement } from '../stores';
     import type * as Lexc from '../types';
     import type { OutputData } from '@editorjs/editorjs';
     import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV } from '../utils/files';
     import { writeRomans } from '../utils/phonetics';
     import { initializeDocs } from '../utils/docs';
     import * as diagnostics from '../utils/diagnostics';
+    import remakeEditors from './Inflection.svelte';
     $: loading_message = '';
     let csvHeaders = true; let csvWords = 2; let csvDefinitions = 3;
     let oldPattern = ''; let newPattern = '';
@@ -34,25 +35,30 @@
             $Language.CaseSensitive = contents.CaseSensitive;
             $Language.IgnoreDiacritics = contents.IgnoreDiacritics;
             $Language.HeaderTags = contents.HeaderTags;
+            $Language.UseLects = contents.UseLects;
+            $Language.ShowEtymology = contents.ShowEtymology;
+            $Language.ShowInflection = contents.ShowInflection;
             loading_message = 'Loading alphabet...';
             $Language.Alphabet = contents.Alphabet;
             loading_message = 'Loading lexicon...';
             $Language.Lexicon = contents.Lexicon;
             loading_message = 'Loading phrasebook...';
             $Language.Phrasebook = contents.Phrasebook;
+            $selectedCategory = Object.keys($Language.Phrasebook)[0]; 
             loading_message = 'Loading documentation...';
             let docs_data: OutputData = contents.Docs;
             $Language.Docs = docs_data;
             $docsEditor.destroy();
             initializeDocs(docs_data);
-            $selectedCategory = Object.keys($Language.Phrasebook)[0]; 
             loading_message = 'Loading pronunciation rules...';
             $Language.Pronunciations = contents.Pronunciations; 
             $Language.Lects.forEach(writeRomans);
             loading_message = 'Loading phonotactics...';
             $Language.Phonotactics = contents.Phonotactics;
-            $Language.ShowEtymology = contents.ShowEtymology;
-            $Language.UseLects = contents.UseLects;
+            loading_message = 'Loading inflections...';
+            $Language.Inflections = contents.Inflections;
+            loading_message = 'Loading etymologies...';
+            $Language.Etymologies = contents.Etymologies;
         } catch (err) {
             window.alert(
                 'There was a problem loading the contents of the file. Please contact the developer for assistance.'
@@ -60,6 +66,7 @@
             diagnostics.logError('Attempted to open a file.', err);
             console.log(err);
         } finally {
+            $fileLoadIncrement++;
             diagnostics.logAction(`Opened and read the contents of '${$Language.Name}'.'`);
         }
     }

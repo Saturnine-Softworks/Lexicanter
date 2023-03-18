@@ -42,6 +42,12 @@ button, select
     &[id=overwrite]
         color: darkred
 
+    &.inflection
+        background-color: transparent !important
+        border: none !important
+        font-family: Noto
+        font-size: 9pt
+
 // The following two styles are used for most buttons on mouse hover.
 .hover-highlight:hover 
     color: $hover-text
@@ -237,3 +243,10 @@ a
 
 table
     border-color: $link-text
+
+.inflection
+    td 
+        border-color: $link-text !important
+        background-color: transparent !important
+    tr 
+        background-color: transparent !important

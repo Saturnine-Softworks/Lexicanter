@@ -387,7 +387,34 @@ table-title {
 
 td {
   padding: 2px 6px 2px 6px;
+  text-align: center;
   user-select: none;
+}
+
+.inflection {
+  font-family: Gentium;
+  font-size: 7pt;
+}
+.inflection h1, .inflection h2, .inflection h3, .inflection h4, .inflection h5, .inflection h6 {
+  padding-top: 0.2em;
+}
+.inflection h1 {
+  font-size: 1.5em;
+}
+.inflection h2 {
+  font-size: 1.3em;
+}
+.inflection h3 {
+  font-size: 1.1em;
+}
+.inflection h4 {
+  font-size: 1em;
+}
+.inflection h5 {
+  font-size: 0.9em;
+}
+.inflection h6 {
+  font-size: 0.8em;
 }
 
 ::-webkit-scrollbar {

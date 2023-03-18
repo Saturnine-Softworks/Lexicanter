@@ -177,6 +177,8 @@ export type Language = {
     Lexicon: Lexicon;
     Etymologies: Etymologies;
     Relatives: { [index: string]: Lexicon }
+    Inflections: { tags: string[], filter: string, tables: OutputData }[];
+    ShowInflection: boolean;
     Phrasebook: Phrasebook;
     Alphabet: string;
     Pronunciations: Pronunciations;

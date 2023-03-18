@@ -2,6 +2,7 @@
 function applyRule(rule: string, input: string, categories): string {
     // eslint-disable-next-line prefer-const
     let [pattern, sub, context] = rule.split('/');
+    input = ' ' + input + ' ';
     let result = input;
 
     //SECTION - Preprocess the rule
@@ -9,18 +10,26 @@ function applyRule(rule: string, input: string, categories): string {
     const boundaryRule = /\^|#/gi;
     const negativeRule = /\{!(.+(?:\s+.+)*)\}/gi;
     const commaUnionRule = /\s*,\s*/g;
+    const spaceRule = /\s+/g;
+    const nullRule = /[∅⦰]/g;
 
     pattern = pattern
-        .replaceAll(boundaryRule, '\\b')
+        .replaceAll(boundaryRule, '\\s')
         .replaceAll(negativeRule, '(?:(?!$1).)')
         .replaceAll(unionRule, '(?:$1)')
         .replaceAll(commaUnionRule, '|')
+        .replaceAll(spaceRule, '')
+    ;
+    sub = sub
+        .replaceAll(spaceRule, '')
+        .replaceAll(nullRule, '')
     ;
     context = context
-        .replaceAll(boundaryRule, '\\b')
+        .replaceAll(boundaryRule, '\\s')
         .replaceAll(negativeRule, '(?:(?!$1).)')
         .replaceAll(unionRule, '(?:$1)')
         .replaceAll(commaUnionRule, '|')
+        .replaceAll(spaceRule, '')
     ;
 
     //SECTION - Construct RegExp rule string and map category appearances
@@ -32,56 +41,65 @@ function applyRule(rule: string, input: string, categories): string {
     const subCatMap = sub.split('').filter(char => char in categories);
     const contextCatMap = context.split('').filter(char => char in categories);
 
-    //SECTION - Apply the rule
-    result = result.replaceAll(new RegExp(regString, 'gi'), `$1${sub}$2`);
+    function getSlice(match): string {
+        //SECTION - Get the index of the pattern in the context, accounting for varying category token lengths
+        let expandedContext = context.replaceAll('\\b', '');
+        let matchContext = [];
+        if (contextCatMap.length > 0) {
+            contextCatMap.forEach(symbol => {
+                const matchMatches = match.match(new RegExp(`(?:${categories[symbol].join('|')})`, 'gi'));
+                matchContext.push([symbol, matchMatches]);
+            });
+            matchContext = [...new Set(matchContext)].sort((a, b) => b.length - a.length);
+        }
+        matchContext.forEach(([symbol, matches]) => {
+            matches.forEach(match => {
+                expandedContext = expandedContext.replace(symbol, match);
+            });
+        });
+        const indexOfPattern = expandedContext.indexOf('_');
+        
+        //SECTION - Get the slice of the match that corresponds to the pattern
 
+        const patternLength = 
+            !patternCatMap[0]
+                ? pattern.length 
+                : context === '_'
+                    ? match.length
+                    : (():number => {
+                        let length = 0;
+                        Object.entries(categories).filter(
+                            ([symbol,]: [string, string[]]) => patternCatMap.includes(symbol)
+                        ).forEach(([, values]: [string, string[]]) => {
+                            const candidate = values.find(value => match.includes(value));
+                            length += candidate? candidate.length : 0;
+                        });
+                        return length;
+                    })();
+
+        return match.slice( 
+            indexOfPattern, 
+            indexOfPattern + patternLength
+        );
+    }
+
+    //SECTION - Apply the rule
+    const matches: string[] = input.match(new RegExp(regString, 'gi'));
+    if (matches && sub.includes('_')) {
+        matches.forEach(match => {
+            const slice = getSlice(match);
+            result = result.replace(slice, sub.replaceAll('_', slice));
+        });
+    } else result = result.replaceAll(new RegExp(regString, 'gi'), `$1${sub}$2`);
+    
     if (!!subCatMap[0] && !!patternCatMap[0]) {
-        const matches: string[] | RegExpMatchArray = input.match(new RegExp(regString, 'gi'));
         let catMap: string[][] = [];
         matches;
         regString;
         if (matches) { 
             catMap = matches.map(match => {
 
-                //SECTION - Get the index of the pattern in the context, accounting for varying category token lengths
-                let expandedContext = context.replaceAll('\\b', '');
-                let matchContext = [];
-                if (contextCatMap.length > 0) {
-                    contextCatMap.forEach(symbol => {
-                        const matchMatches = match.match(new RegExp(`(?:${categories[symbol].join('|')})`, 'gi'));
-                        matchContext.push([symbol, matchMatches]);
-                    });
-                    matchContext = [...new Set(matchContext)].sort((a, b) => b.length - a.length);
-                }
-                matchContext.forEach(([symbol, matches]) => {
-                    matches.forEach(match => {
-                        expandedContext = expandedContext.replace(symbol, match);
-                    });
-                });
-                const indexOfPattern = expandedContext.indexOf('_');
-                
-                //SECTION - Get the slice of the match that corresponds to the pattern
-
-                const patternLength = 
-                    !patternCatMap[0]
-                        ? pattern.length 
-                        : context === '_'
-                            ? match.length
-                            : (():number => {
-                                let length = 0;
-                                Object.entries(categories).filter(
-                                    ([symbol,]: [string, string[]]) => patternCatMap.includes(symbol)
-                                ).forEach(([, values]: [string, string[]]) => {
-                                    const candidate = values.find(value => match.includes(value));
-                                    length += candidate? candidate.length : 0;
-                                });
-                                return length;
-                            })();
-
-                const slice = match.slice( 
-                    indexOfPattern, 
-                    indexOfPattern + patternLength
-                );
+                const slice = getSlice(match);
 
                 //SECTION - Create the map
                 const map = [
@@ -113,10 +131,10 @@ function applyRule(rule: string, input: string, categories): string {
             });
         }
     }
-    console.log(
+    /* console.log(
         input, '::', pattern + '/' + sub + '/' + context, '-> ', result
-    );
-    return result;
+    ); */
+    return result.trim();
 }
 
 export function applyRules(rules: string[], input: string, categories): string {
@@ -154,3 +172,13 @@ export function parseRules(rules: string): {rules: string[], categories: {[index
     ); */
     return result;
 }
+
+
+/* const rules = `
+à/ebis/_#
+`;
+const input = 'zucà';
+console.log(
+    input, '-->',
+    applyRules(parseRules(rules).rules, input, parseRules(rules).categories),
+); */

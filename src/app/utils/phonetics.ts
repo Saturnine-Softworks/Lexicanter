@@ -1,4 +1,3 @@
-// TODO: The pronunciation rule format is going to be changed to the more standard `pattern/substitution/context` format. This whole function needs to be rewritten.
 import { get } from 'svelte/store';
 import { 
     Language, wordInput, pronunciations, phraseInput, phrasePronunciations 
@@ -16,7 +15,6 @@ const Lang = () => get(Language);
  * @returns {string}
  */
 export function get_pronunciation(word: string, lect: string): string {
-    // TODO: Rewrite most of this code for readability; it currently requires a lot of comments to understand.
     const romanizations = Lang().Pronunciations[lect];
     const settings = parseRules(romanizations);
     return applyRules(settings.rules, word, settings.categories);
@@ -39,12 +37,13 @@ export function writeRomans (lect: string) {
     }
     Lang().Lexicon = lexicon;
 
-    // TODO: Phrasebook dialects
+    // STUB: Currently this thing only works for the default 'General' lect
+    // TODO: Phrasebook lects
     get(phrasePronunciations)[lect] = get_pronunciation(get(phraseInput), 'General');
     const phrasebook: Lexc.Phrasebook = Lang().Phrasebook;
     for (const category in phrasebook) {
         for (const entry in phrasebook[category]) {
-            // TODO: Check pronunciations of all dialects
+            // TODO: Check pronunciations of all lects
             phrasebook[category][entry].pronunciations.General.ipa =
                 get_pronunciation(entry, 'General');
             for (const variant in phrasebook[category][entry].variants) {

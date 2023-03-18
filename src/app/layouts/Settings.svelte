@@ -262,12 +262,13 @@
             } else { dialog(user_path); }
         });
     }
-
 </script>
 <!-- App Settings -->
 <div class="tab-pane">
     <div class="row" style="height: 95vh">
         <div class="container column scrolled" style="height: 90vh;">
+            <br><br>
+            
             <p>Appearance Settings</p> <br>
             <label>Color Theme
                 <select 
@@ -294,8 +295,17 @@
             </label>
             <br><br>
             <button class="hover-highlight hover-shadow" on:click={custom_theme}> Load Custom Theme… </button>
-            <br><br>
-            <p>Advanced Settings</p>
+
+            <br><hr/><br>
+
+            <p>Save Settings</p> <br>
+            <label>Auto-Save
+                <input type="checkbox" bind:checked={$autosave} on:change={change_autosave_pref}/>
+            </label>
+
+            <br><hr/><br>
+
+            <p>Advanced Settings</p> <br>
             <label>Use Lects
                 <input type="checkbox" bind:checked={$Language.UseLects} on:change={confirmUseLectsChange}/>
                 {#if $Language.UseLects}
@@ -366,8 +376,10 @@
                     }}> + Lect </button>
                 {/if}
             </label>
+
             <br><br>
-            <label>Show Etymology
+
+            <label>Show Etymology Features
                 <input type="checkbox" bind:checked={$Language.ShowEtymology}/>
                 {#if $Language.ShowEtymology}
                     <button class="hover-highlight hover-shadow" 
@@ -395,18 +407,24 @@
                 {/if}
             </label>
             <br><br>
-            <p>Saving Settings</p>
-            <label>Auto-Save
-                <input type="checkbox" bind:checked={$autosave} on:change={change_autosave_pref}/>
+            <label>Show Automatic Inflection Features
+                <input type="checkbox" bind:checked={$Language.ShowInflection}/>
             </label>
-            <br><br>
+
+            <br><hr/><br>
+
             <p class="info">
-                Join the home of the Lexicanter project on <a rel="noreferrer" target="_blank" href="https://discord.gg/uDk2XDhh8K">Discord</a>
+                Join Saturn's Sojourn, the home of the Lexicanter on <a rel="noreferrer" target="_blank" href="https://discord.gg/uDk2XDhh8K">Discord</a>!
             </p>
             <p class="info">
-                Support the continued developement of the app as a <a rel="noreferrer" target="_blank" href="https://patreon.com/saturnine_softworks">patron</a>!
+                Support the continued developement of the app as a <a rel="noreferrer" target="_blank" href="https://patreon.com/saturnine_softworks">patron</a>,
             </p>
-            <br><br>
+            <p class="info">
+                or by buying me a <a rel="noreferrer" target="_blank" href="https://ko-fi.com/saturnine_softworks">coffee</a>!
+            </p>
+            
+            <br><hr/><br>
+
             <p><u>New in 1.10</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Added three new themes: Pomegranate, Wisteria, and Terminal. <br>
@@ -416,7 +434,7 @@
                 • For HTML exports, the appearance on mobile devices has been improved. <br>
                 • Minor bug fixes for opening new windows from the File tab. <br>
                 • Lots of uner-the-hood changes for the app's appearance in preparation for future features.
-                <br><br>
+            <br><br>
             </p>
             <p><u>Patch 1.9.5</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">

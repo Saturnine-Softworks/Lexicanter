@@ -1,5 +1,6 @@
 <script lang='ts'>
     import { createEventDispatcher } from "svelte";
+    import { draw, blur } from 'svelte/transition';
     const dispatch = createEventDispatcher();
     const select = (entry: string) => {
         dispatch('select', entry);
@@ -43,19 +44,19 @@
                     y={(height)/9 - dYparents[i] - 15 + Math.max(...dYparents)}
                     width="120"
                 />
-                <text class="lex-entry"
+                <text class="lex-entry" transition:blur="{{amount: 10, duration: 999}}"
                     x={(width / (tree.parents.length + 1)) * (i + 1)}
                     y={(height)/9 - dYparents[i] + Math.max(...dYparents)}
                     text-anchor="middle"
                     dominant-baseline="middle"
                 > { parent.name } </text>
-                <text class="tag-item"
+                <text class="tag-item" transition:blur="{{amount: 10, duration: 999}}"
                     x={(width / (tree.parents.length + 1)) * (i + 1)}
                     y={(height)/9 - dYparents[i] + 15 + Math.max(...dYparents)}
                     text-anchor="middle"
                     dominant-baseline="middle"
                 > { parent.source } </text>
-                <path
+                <path transition:draw="{{duration: 999}}"
                     d = {
                         `M ${(width / (tree.parents.length + 1)) * (i + 1)}, ${(height)/9 - dYparents[i] + 20 + Math.max(...dYparents)} `
                         + `C ${(width / (tree.parents.length + 1)) * (i + 1)}, ${(height)/9 - dYparents[i] + 50 + Math.max(...dYparents)} `
@@ -74,7 +75,7 @@
                 dominant-baseline="middle"
             > { tree.name } </text>
         </g>
-        {#each (() => {console.log(tree); return tree.children})() as child, i}
+        {#each tree.children as child, i}
             <g on:mousedown={() => {
                 select(child.name)
             }}>
@@ -83,19 +84,19 @@
                     y={(height + dYchildren[i]) - height/9 - 15 - Math.max(...dYchildren)}
                     width="120"
                 />
-                <text class="lex-entry"
+                <text class="lex-entry" transition:blur="{{amount: 10, duration: 999}}"
                     x={(width / (tree.children.length + 1)) * (i + 1)}
                     y={(height + dYchildren[i]) - height/9 - Math.max(...dYchildren)}
                     text-anchor="middle"
                     dominant-baseline="middle"
                 > { child.name } </text>
-                <text class="tag-item"
+                <text class="tag-item" transition:blur="{{amount: 10, duration: 999}}"
                     x={(width / (tree.children.length + 1)) * (i + 1)}
                     y={(height + dYchildren[i]) - height/9 + 15 - Math.max(...dYchildren)}
                     text-anchor="middle"
                     dominant-baseline="middle"
                 > { child.source } </text>
-                <path
+                <path transition:draw="{{duration: 999}}"
                     d = {
                         `M ${width/2}, ${height/2 + 10} `
                         + `C ${width/2}, ${height/2 + 40} `
