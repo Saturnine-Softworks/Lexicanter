@@ -30,25 +30,25 @@ export function writeRomans (lect: string) {
     for (const word in lexicon) {
         if (lexicon[word].pronunciations.hasOwnProperty(lect)) {
             if (lexicon[word].pronunciations[lect].irregular === false) {
-                // all non-irrelgular pronunciations
                 lexicon[word].pronunciations[lect].ipa = get_pronunciation(word, lect);
             }
         }
     }
     Lang().Lexicon = lexicon;
 
-    // STUB: Currently this thing only works for the default 'General' lect
-    // TODO: Phrasebook lects
     get(phrasePronunciations)[lect] = get_pronunciation(get(phraseInput), 'General');
     const phrasebook: Lexc.Phrasebook = Lang().Phrasebook;
     for (const category in phrasebook) {
         for (const entry in phrasebook[category]) {
-            // TODO: Check pronunciations of all lects
-            phrasebook[category][entry].pronunciations.General.ipa =
-                get_pronunciation(entry, 'General');
-            for (const variant in phrasebook[category][entry].variants) {
-                phrasebook[category][entry].variants[variant].pronunciations.General.ipa =
-                    get_pronunciation(variant, 'General');
+            if (phrasebook[category][entry].pronunciations.hasOwnProperty(lect)) {
+                if (phrasebook[category][entry].pronunciations[lect].irregular === false) {
+                    phrasebook[category][entry].pronunciations[lect].ipa =
+                        get_pronunciation(entry, lect);
+                }
+                for (const variant in phrasebook[category][entry].variants) {
+                    phrasebook[category][entry].variants[variant].pronunciations[lect].ipa =
+                        get_pronunciation(variant, lect);
+                }
             }
         }
     }

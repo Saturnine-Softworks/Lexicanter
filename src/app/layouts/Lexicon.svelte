@@ -27,7 +27,9 @@
         $Language.Alphabet; $Language.Pronunciations;
         keys;
         (() => {
-            alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
+            alphabetized = [];
+             // REVIEW the timeout is to force the lexicon to clear before being repopulated
+            window.setTimeout(() => alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon), 1);
         })();
     } 
 
@@ -166,7 +168,7 @@
         let definitions_search = searchDefinitions.toLowerCase().trim();
         let tags_search = searchTags.toLowerCase().trim()? searchTags.toLowerCase().trim().split(/\s+/g) : [];
         keys = [];
-        if (!!words_search || !!definitions_search || !!tags_search || !! lectFilter) {
+        if (!!words_search || !!definitions_search || !!tags_search[0] || !!lectFilter) {
             // Turn l into a list of [search by word terms, search by def terms
             let l = [[...words_search.split('|')], [...definitions_search.split('|')]];
             for (let word in $Language.Lexicon) {
@@ -183,9 +185,9 @@
                     // definitions
                     let needs_exact_match = a[0] === '!';
                     if (needs_exact_match) {
-                        let pattern = new RegExp(`\\b${a.split('!')[1]}\\b`, 'i');
+                        let pattern = `\\b${a.split('!')[1]}\\b`;
                         $Language.Lexicon[word].Senses.forEach(sense => {
-                            if (!pattern.test(sense.definition.toLowerCase())) {
+                            if (!sense.definition.toLowerCase().match(pattern)) {
                                 // no exact word match
                                 match = false;
                             }
@@ -339,13 +341,13 @@
             </div>
             <div class='scrolled' style="height: 88%">
                 {#each alphabetized as word}
-                    <LexEntry entry={word} showEtymology={true} on:edit={() => editEntry(word)}/>
+                    <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
                 {:else}
                     <p class="info" id="lex-body">Add new words on the left</p>
                 {/each}
             </div>
             <p id="entry-counter">
-                {#if !!keys} <!-- if there is a search being attempted -->
+                {#if !!keys[0]} <!-- if there is a search being attempted -->
                     {!!keys[0]? keys.length : '0'} {(keys.length === 1 && !!keys[0])? 'Match' : 'Matches'}
                 {:else} <!-- if there is no search being attempted -->
                     {Object.keys($Language.Lexicon).length} {Object.keys($Language.Lexicon).length === 1? 'Entry' : 'Entries'}

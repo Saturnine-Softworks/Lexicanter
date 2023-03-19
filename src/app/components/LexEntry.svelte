@@ -1,23 +1,20 @@
 <script lang="ts">
-    import { Language } from '../stores.js';
+    import { Language } from '../stores';
+    import type { Word } from '../types';
     import { createEventDispatcher } from 'svelte';
+    import { blur } from 'svelte/transition';
     import Pronunciations from './Pronunciations.svelte';
     import Inflections from '../components/Inflections.svelte';
     import { debug } from '../utils/diagnostics.js';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
-    export let entry: string = '';
+    export let word: string;
+    export let source: Word;
     export let showEtymology: boolean
-    export let lexicon: string = '<< THIS LANGUAGE >>';
-    const source = () => {
-        return lexicon === '<< THIS LANGUAGE >>'
-        ? $Language.Lexicon[entry]
-        : $Language.Relatives[lexicon][entry]
-    }
 
     function getAncestors(): string {
         const ancestors: string[][] = [];
-        let currents = [entry]
+        let currents = [word]
         while (Object.keys($Language.Etymologies).some(
             word => 
             $Language.Etymologies[word].descendants
@@ -39,7 +36,7 @@
         ancestors.forEach(generation => {
             ancestorString += generation.join(', ') + ' → ';
         });
-        ancestorString = !!ancestorString? ancestorString + entry : '';
+        ancestorString = !!ancestorString? ancestorString + word : '';
         /* debug.log(`
         Ancestor String: ${ancestorString}
         !!ancestorString: ${!!ancestorString}
@@ -55,11 +52,11 @@
         entryAncestors = getAncestors();
     }
 </script>
-<div id='{entry}' class="lex-entry prelined" on:contextmenu={edit}>
-    <p  style="font-style: italic">{entry}</p>
-    <Pronunciations pronunciations={ source().pronunciations }/>
-    {#each source().Senses as Sense, i}
-        {#if source().Senses.length > 1} 
+<div id='{word}' class="lex-entry prelined" on:contextmenu={edit}>
+    <p  style="font-style: italic">{word}</p>
+    <Pronunciations pronunciations={ source.pronunciations }/>
+    {#each source.Senses as Sense, i}
+        {#if source.Senses.length > 1} 
             <div class='sense'>{i+1}.</div>
         {/if}
         {#each Sense.tags as tag}
@@ -84,7 +81,7 @@
             <p class="lex-body"><i>{entryAncestors}</i></p>
         {/if}
         {#if $Language.ShowInflection}
-            <Inflections word={entry} tags={Sense.tags}/>
+            <Inflections {word} tags={Sense.tags}/>
         {/if}
     {/each}
 </div>

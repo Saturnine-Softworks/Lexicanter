@@ -24,25 +24,35 @@
         })();
     }
     let externalAlphabetized: string[];
+    let filteredExternal: Lexc.Lexicon;
     $: {
-        $Language.Alphabet; $Language.Relatives; $Language.Etymologies;
+        $Language.Alphabet; $Language.Relatives; $Language.Etymologies; keys;
         (() => {
             const lexicon: Lexc.Lexicon = {};
             Object.keys($Language.Relatives).forEach(lexicon_name => {
                 Object.keys($Language.Relatives[lexicon_name]).forEach(entry => {
-                    if (!(entry in lexicon)) lexicon[entry] = $Language.Relatives[lexicon_name][entry];
+                    if (!(entry in $Language.Lexicon)) lexicon[entry] = $Language.Relatives[lexicon_name][entry];
                 });
             });
             Object.keys($Language.Etymologies).forEach(entry => {
-                if (!(entry in lexicon)) lexicon[entry] = { Senses: [], pronunciations: {} };
+                if (!(entry in $Language.Lexicon)) lexicon[entry] = { Senses: [], pronunciations: {} };
             });
-            externalAlphabetized = alphabetize(lexicon);
+            filteredExternal = keys.reduce((acc, key) => {
+                if (key in lexicon) acc[key] = lexicon[key];
+                return acc;
+            }, {})
+            externalAlphabetized = alphabetize(!!keys.length? filteredExternal : lexicon);
         })();
     }
 
     let search: string = '';
     function searchEntries() {
-        keys = Object.keys($Language.Lexicon).filter(entry => {
+        let mergedLexicons: Lexc.Lexicon = {};
+        for (const name in $Language.Relatives) {
+            mergedLexicons = { ...mergedLexicons, ...$Language.Relatives[name] };
+        }
+        mergedLexicons = { ...mergedLexicons, ...$Language.Lexicon };
+        keys = Object.keys(mergedLexicons).filter(entry => {
             let term: string;
             term = $Language.CaseSensitive? entry : entry.toLowerCase()
             term = $Language.IgnoreDiacritics? entry.normalize('NFD') : entry;
@@ -157,11 +167,11 @@
                          on:select={e => selectedEntry = e.detail}
                      />
                      {#if selectedEntry in $Language.Lexicon}
-                        <LexEntry entry={selectedEntry} showEtymology={false}/>
+                        <LexEntry word={selectedEntry} source={$Language.Lexicon[selectedEntry]} showEtymology={false}/>
                     {:else if Object.entries($Language.Relatives).some(([_, lex]) => Object.keys(lex).includes(selectedEntry))}
                         <LexEntry 
-                            entry={selectedEntry} 
-                            lexicon={Object.entries($Language.Relatives).find(([_, lex]) => Object.keys(lex).includes(selectedEntry))[0]}
+                            word={selectedEntry} 
+                            source={$Language.Relatives[ Object.entries($Language.Relatives).find(([_, lex]) => Object.keys(lex).includes(selectedEntry))[0] ][selectedEntry]}
                             showEtymology={false}
                         />
                     {/if}

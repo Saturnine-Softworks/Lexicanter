@@ -22,11 +22,11 @@
             block.data.content.forEach((row: string[], y: number) => {
                 row.forEach((cell: string, x: number) => {
                     const settings = sca.parseRules(htmlToText(cell));
-                    console.log(
+                    /* console.log(
                         'settings.rules:', settings.rules,
                         '\nword:', word,
                         '\nsca.applyRules(...):', sca.applyRules(settings.rules, word, settings.categories)
-                    )
+                    ); */
                     if (!settings.rules[0]) return
                     data[i][j].data.content[y][x] = sca.applyRules(settings.rules, word, settings.categories);
                 });
