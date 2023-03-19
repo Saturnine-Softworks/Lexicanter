@@ -10,6 +10,12 @@ button, select {
 button[id=overwrite], select[id=overwrite] {
   color: darkred;
 }
+button.inflection, select.inflection {
+  background-color: transparent !important;
+  border: none !important;
+  font-family: Noto;
+  font-size: 9pt;
+}
 
 .hover-highlight:hover {
   color: #000;
@@ -52,6 +58,31 @@ button[id=overwrite], select[id=overwrite] {
   color: #000;
 }
 
+svg .lex-entry, svg .lex-body {
+  fill: #000;
+}
+svg .lex-entry:hover {
+  background-color: #000;
+  fill: #000;
+}
+svg .tag-item {
+  fill: #000;
+  font-weight: bold;
+}
+svg rect.lex {
+  fill: transparent;
+  transition: 0.3s;
+  rx: 10;
+  height: 3em;
+  padding: 5px;
+}
+svg rect.lex:hover, svg rect.lex:has(~ :hover) {
+  fill: #000;
+}
+svg path {
+  stroke: #000;
+}
+
 .tag-item, [id=entry-counter] {
   color: #000;
   background-color: #000;
@@ -61,8 +92,15 @@ button[id=overwrite], select[id=overwrite] {
   color: #000;
 }
 
+.lect {
+  color: #000;
+}
+
 hr {
   border: 1px solid #000;
+  border-left: none;
+  border-right: none;
+  border-top: none;
 }
 
 label {
@@ -175,6 +213,14 @@ a:hover {
 
 table {
   border-color: #000;
+}
+
+.inflection td {
+  border-color: #000 !important;
+  background-color: transparent !important;
+}
+.inflection tr {
+  background-color: transparent !important;
 }
 
 /*# sourceMappingURL=theme_styles.css.map */

@@ -1,45 +1,45 @@
 @charset "UTF-8";
 @font-face {
   font-family: Noto;
-  src: url(../rsrc/Noto_Sans/NotoSans-Regular.ttf);
+  src: url(../res/Noto_Sans/NotoSans-Regular.ttf);
   font-style: normal;
 }
 @font-face {
   font-family: Noto;
-  src: url(../rsrc/Noto_Sans/NotoSans-Italic.ttf);
+  src: url(../res/Noto_Sans/NotoSans-Italic.ttf);
   font-style: italic;
 }
 @font-face {
   font-family: Noto;
-  src: url(../rsrc/Noto_Sans/NotoSans-Bold.ttf);
+  src: url(../res/Noto_Sans/NotoSans-Bold.ttf);
   font-style: normal;
   font-weight: bold;
 }
 @font-face {
   font-family: Noto;
-  src: url(../rsrc/Noto_Sans/NotoSans-BoldItalic.ttf);
+  src: url(../res/Noto_Sans/NotoSans-BoldItalic.ttf);
   font-style: italic;
   font-weight: bold;
 }
 @font-face {
   font-family: Gentium;
-  src: url(../rsrc/Gentium/Gentium-Regular.ttf);
+  src: url(../res/Gentium/Gentium-Regular.ttf);
   font-style: normal;
 }
 @font-face {
   font-family: Gentium;
-  src: url(../rsrc/Gentium/Gentium-Italic.ttf);
+  src: url(../res/Gentium/Gentium-Italic.ttf);
   font-style: italic;
 }
 @font-face {
   font-family: Gentium;
-  src: url(../rsrc/Gentium/Gentium-Bold.ttf);
+  src: url(../res/Gentium/Gentium-Bold.ttf);
   font-style: normal;
   font-weight: bold;
 }
 @font-face {
   font-family: Gentium;
-  src: url(../rsrc/Gentium/Gentium-BoldItalic.ttf);
+  src: url(../res/Gentium/Gentium-BoldItalic.ttf);
   font-style: italic;
   font-weight: bold;
 }
@@ -54,6 +54,7 @@ body {
   min-height: 600px;
   margin: 0px;
   overflow: hidden;
+  -webkit-app-region: drag;
 }
 
 button {
@@ -61,6 +62,8 @@ button {
   font-size: 11pt;
   transition-duration: 0.33s;
   cursor: pointer;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: none;
 }
 button[id=overwrite] {
   font-weight: bold;
@@ -83,10 +86,28 @@ button.collapser::after {
   content: "‖";
   margin: auto;
 }
+button.collapser-h {
+  max-height: 1.33em;
+  width: 100% !important;
+  border-color: transparent !important;
+  background-color: rgba(17, 17, 17, 0.0666666667);
+  display: flex;
+  margin: 0px;
+  padding: 0px;
+}
+button.collapser-h:hover {
+  border-color: rgba(255, 255, 255, 0.2666666667) !important;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+button.collapser-h::after {
+  content: "═";
+  margin: auto;
+}
 
 .tab-container {
   width: 100vw;
   height: 100vh;
+  -webkit-user-select: none;
 }
 .tab-container .button-container {
   width: 100%;
@@ -102,12 +123,16 @@ button.collapser::after {
 .tab-container .tab-pane {
   height: 80%;
   box-sizing: border-box;
-  display: none;
+  -webkit-app-region: no-drag;
+  -webkit-user-select: text;
 }
 
 .row {
   display: flex;
   margin: auto;
+}
+.row:has(~ .collapsible-row .collapsed) {
+  height: 90vh !important;
 }
 
 .column {
@@ -117,6 +142,10 @@ button.collapser::after {
 .collapsible-column {
   min-width: 2%;
   width: fit-content;
+}
+
+.collapsible-row:has(.collapsed) {
+  height: 3vh !important;
 }
 
 .collapsed {
@@ -157,6 +186,7 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 11pt;
   font-style: italic;
   line-height: 1.5em;
+  -webkit-user-select: none;
 }
 
 .phonology {
@@ -171,6 +201,7 @@ h1, h2, h3, h4, h5, h6 {
   text-align: left;
   display: inline;
   float: right;
+  -webkit-user-select: none;
 }
 
 .lex-body {
@@ -206,6 +237,27 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
 }
 
+.sense {
+  font-family: Gentium;
+  font-size: 9pt;
+  border-radius: 7%;
+  width: fit-content;
+  padding: 0.2em;
+  margin: 0.2em;
+  font-weight: bold;
+  font-style: italic;
+  display: inline-block;
+  background-color: transparent;
+  margin-top: 1em;
+}
+
+.lect {
+  font-family: Noto;
+  font-size: 9pt;
+  font-style: italic;
+  margin-top: 0.1em;
+}
+
 [id=entry-counter] {
   font-family: Noto;
   font-size: 7pt;
@@ -219,7 +271,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .scrolled {
-  max-height: 72vh;
   overflow-y: auto;
   overflow-x: wrap;
 }
@@ -243,6 +294,7 @@ h1, h2, h3, h4, h5, h6 {
 label {
   font-family: Noto;
   font-size: 11pt;
+  -webkit-user-select: none;
 }
 
 .pronunciation {
@@ -308,8 +360,13 @@ textarea[type=checkbox]:checked::before, input[type=checkbox]:checked::before {
 
 .search {
   text-align: left;
-  width: 90%;
+  width: 100%;
   margin: 2px auto 2px auto;
+}
+
+.search-container {
+  padding: 0 0.5em 0 0.5em;
+  position: relative;
 }
 
 table {
@@ -330,7 +387,34 @@ table-title {
 
 td {
   padding: 2px 6px 2px 6px;
+  text-align: center;
   user-select: none;
+}
+
+.inflection {
+  font-family: Gentium;
+  font-size: 7pt;
+}
+.inflection h1, .inflection h2, .inflection h3, .inflection h4, .inflection h5, .inflection h6 {
+  padding-top: 0.2em;
+}
+.inflection h1 {
+  font-size: 1.5em;
+}
+.inflection h2 {
+  font-size: 1.3em;
+}
+.inflection h3 {
+  font-size: 1.1em;
+}
+.inflection h4 {
+  font-size: 1em;
+}
+.inflection h5 {
+  font-size: 0.9em;
+}
+.inflection h6 {
+  font-size: 0.8em;
 }
 
 ::-webkit-scrollbar {
@@ -353,9 +437,8 @@ td {
 hr {
   margin-bottom: 0.2em;
   margin-top: 0.2em;
-  max-width: 50%;
+  max-width: 66.66%;
   padding: 0px;
-  border-radius: 6px;
 }
 
 .milkyWay {

@@ -1,0 +1,108 @@
+@charset "UTF-8";
+@keyframes vex-fadein {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes vex-fadeout {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes vex-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
+}
+.vex, .vex *, .vex *:before, .vex *:after {
+  box-sizing: border-box;
+}
+
+.vex {
+  position: fixed;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 1111;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.vex-scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
+}
+
+.vex-overlay {
+  animation: vex-fadein 0.5s;
+  position: fixed;
+  z-index: 1111;
+  background: rgba(0, 0, 0, 0.4);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.vex-overlay.vex-closing {
+  animation: vex-fadeout 0.5s forwards;
+}
+
+.vex-content {
+  animation: vex-fadein 0.5s;
+  background: #fff;
+}
+
+.vex.vex-closing .vex-content {
+  animation: vex-fadeout 0.5s forwards;
+}
+
+.vex-close:before {
+  font-family: Arial, sans-serif;
+  content: "×";
+}
+
+.vex-dialog-form {
+  margin: 0;
+}
+
+.vex-dialog-button {
+  text-rendering: optimizeLegibility;
+  appearance: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.vex-loading-spinner {
+  animation: vex-rotation 0.7s linear infinite;
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+  position: fixed;
+  z-index: 1112;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2em;
+  width: 2em;
+  background: #fff;
+}
+
+body.vex-open {
+  overflow: hidden;
+}
+
+/*# sourceMappingURL=vex.css.map */

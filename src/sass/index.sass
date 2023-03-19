@@ -47,11 +47,14 @@ body
     min-height: 600px
     margin: 0px
     overflow: hidden
+    -webkit-app-region: drag
 
 button 
     @include font(Noto)
     transition-duration: 0.33s
     cursor: pointer
+    -webkit-app-region: no-drag
+    -webkit-user-select: none
     &[id=overwrite] 
         font-weight: bold
     
@@ -70,11 +73,26 @@ button
         &::after
             content: "‖"
             margin: auto
-
+    
+    &.collapser-h
+        max-height: 1.33em
+        width: 100% !important
+        border-color: transparent !important
+        background-color: #11111111
+        display: flex
+        margin: 0px
+        padding: 0px
+        &:hover
+            border-color: #ffffff44 !important
+            background-color: #00000033
+        &::after
+            content: "═"
+            margin: auto
 
 .tab-container 
     width: 100vw
     height: 100vh
+    -webkit-user-select: none
     .button-container 
         width: 100%
         text-align: center
@@ -87,17 +105,26 @@ button
     .tab-pane 
         height: 80%
         box-sizing: border-box
-        display: none
+        -webkit-app-region: no-drag
+        -webkit-user-select: text
 
 .row 
     display: flex
     margin: auto
+
+    &:has(~ .collapsible-row .collapsed)
+        height: 90vh !important
+
 .column
     width: 100%
 
 .collapsible-column
     min-width: 2%
     width: fit-content
+
+.collapsible-row
+    &:has(.collapsed)
+        height: 3vh !important
 
 .collapsed
     display: none
@@ -128,6 +155,7 @@ h1, h2, h3, h4, h5, h6
     @include font(Noto)
     font-style: italic
     line-height: 1.5em
+    -webkit-user-select: none
 
 .phonology 
     @include font(Gentium)
@@ -138,6 +166,7 @@ h1, h2, h3, h4, h5, h6
     text-align: left
     display: inline
     float: right
+    -webkit-user-select: none
 
 .lex
     &-body 
@@ -161,6 +190,20 @@ h1, h2, h3, h4, h5, h6
     @include capitalize()
     display: inline-block
 
+.sense
+    @include font(Gentium, $mid-font)
+    @include small-items()
+    font-weight: bold
+    font-style: italic
+    display: inline-block
+    background-color: transparent
+    margin-top: 1em
+
+.lect
+    @include font(Noto, $mid-font)
+    font-style: italic
+    margin-top: 0.1em
+
 [id=entry-counter]
     @include font(Noto, $small-font)
     @include small-items()
@@ -168,7 +211,6 @@ h1, h2, h3, h4, h5, h6
     margin: auto
 
 .scrolled
-    max-height: 72vh
     overflow-y: auto
     overflow-x: wrap
 
@@ -188,6 +230,7 @@ h1, h2, h3, h4, h5, h6
 
 label 
     @include font(Noto)
+    -webkit-user-select: none
     
 .pronunciation
     @include pronunciation()
@@ -236,8 +279,12 @@ textarea, input
 
 .search 
     text-align: left
-    width: 90%
+    width: 100%
     margin: 2px auto 2px auto
+
+.search-container
+    padding: 0 .5em 0 .5em
+    position: relative
 
 table 
     border-collapse: collapse
@@ -253,7 +300,27 @@ table
 
 td    
     padding: 2px 6px 2px 6px
+    text-align: center
     user-select: none
+
+.inflection
+    @include font(Gentium, $small-font)
+
+    h1, h2, h3, h4, h5, h6 
+        padding-top: 0.2em
+    h1 
+        font-size: 1.5em
+    h2
+        font-size: 1.3em
+    h3
+        font-size: 1.1em
+    h4
+        font-size: 1em
+    h5
+        font-size: 0.9em
+    h6
+        font-size: 0.8em
+
 
 ::-webkit
     &-scrollbar 
@@ -271,9 +338,8 @@ td
 hr    
     margin-bottom: .2em
     margin-top: .2em
-    max-width: 50%
+    max-width: 66.66%
     padding: 0px
-    border-radius: 6px
 
 .milkyWay 
     width: 100px

@@ -1,32 +1,62 @@
-// Lexicanter, a constructed language organization app.
-// Copyright (C) 2023 Ethan Ray.
-// See GNU General Public License Version 3.
+/** 
+ * Lexicanter, a constructed language organization app.
+ * Copyright (C) 2023 Ethan Ray.
+ * See GNU General Public License Version 3.
+ */
 
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
-const { exec } = require('child_process');
 
-const { autoUpdater, AppUpdater } = require('electron-updater');
+const { autoUpdater } = require('electron-updater');
 // Auto-updater flags
 autoUpdater.autoDownload = true;
 autoUpdater.allowPrerelease = false;
 
+const isDev = !app.isPackaged;
+const version = app.getVersion();
+
 const createWindow = () => {
+    var loadingWindow = new BrowserWindow({
+        width: 300,
+        height: 300,
+        autoHideMenuBar: true,
+        titleBarStyle: 'hidden',
+        titleBarOverlay: true,
+        show: true,
+        webPreferences: {
+            devTools: isDev,
+            nodeIntegration: true, // these two settings are required in order to use
+            contextIsolation: false, // modules such as path and fs in renderer processes.
+        },
+    });
+    loadingWindow.setWindowButtonVisibility(false);
+    loadingWindow.loadFile(path.join(__dirname, 'loading.html'));
+
     // Create the browser window.
     var mainWindow = new BrowserWindow({
         width: 900,
         height: 900,
         autoHideMenuBar: true,
+        titleBarStyle: 'hidden',
+        titleBarOverlay: true,
+        show: false,
         webPreferences: {
-            // devTools: false,
+            devTools: isDev,
             nodeIntegration: true, // these two settings are required in order to use
             contextIsolation: false, // modules such as path and fs in renderer processes.
         },
     });
-
+    // Load the index.html of the app.
+    mainWindow.loadFile(path.join(__dirname, 'index.html'));
+    mainWindow.once('ready-to-show', () => {
+        setTimeout(() => {
+            loadingWindow.close();
+            mainWindow.show();
+        }, 1000); // give the app a second to load the theme correctly.
+    });
     // Set macOS dock icon
     if (process.platform === 'darwin') {
-        app.dock.setIcon(path.join(__dirname, 'rsrc/Quill Icon.png'));
+        app.dock.setIcon(path.join(__dirname, 'res/Quill Icon.png'));
     }
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -40,6 +70,8 @@ const createWindow = () => {
                 action: 'allow',
                 overrideBrowserWindowOptions: {
                     autoHideMenuBar: true,
+                    titleBarStyle: 'hidden',
+                    titleBarOverlay: true,
                     webPreferences: {
                         nodeIntegration: true,
                         contextIsolation: false,
@@ -47,15 +79,15 @@ const createWindow = () => {
                 },
             };
         } else {
-            mainWindow.webContents.executeJavaScript("console.log('Sending URL to shell.')");
+            mainWindow.webContents.executeJavaScript('console.log(\'Sending URL to shell.\')');
             shell.openExternal(url);
             return { action: 'deny' };
-        };
+        }
     });
 
     // Even with contextIsolation set to false, there are some things which still require interprocess communication.
     // IPC handlers below.
-    ipcMain.handle('getUserDataPath', _ => {
+    ipcMain.handle('getUserDataPath', () => {
         let data_path = app.getPath('userData');
         return data_path;
     });
@@ -63,25 +95,22 @@ const createWindow = () => {
         let file_path = dialog.showOpenDialogSync(params);
         return file_path;
     });
-
-    mainWindow.on('close', function (e) {
-        // Prompt user to save changes on quit (or auto-save) via IPC.
-        if (mainWindow) {
-            e.preventDefault();
-            mainWindow.send('app-close');
-        }
+    ipcMain.handle('getVersion', () => {
+        return version;
     });
-    ipcMain.on('close', _ => {
-        // Renderer will send back this event when it's done confirming quit or saving.
+    ipcMain.handle('debug', (_, message) => {
+        console.log(message);
+    });
+
+    mainWindow.on('close', e => {
+        mainWindow.webContents.send('app-close');
+        e.preventDefault(); // ! DON'T PUT THIS LINE FIRST. IT BREAKS EVERYTHING. WHY? BEYOND MORTAL COMPREHENSION.
+    });
+    ipcMain.on('close', () => {
+        // Renderer will send back this event when it's done confirming save and/or quit.
         mainWindow = null;
         app.quit();
     });
-
-    // Load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, 'index.html'));
-
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
 };
 
 // This method will be called when Electron has finished

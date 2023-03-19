@@ -10,6 +10,12 @@ button, select {
 button[id=overwrite], select[id=overwrite] {
   color: darkred;
 }
+button.inflection, select.inflection {
+  background-color: transparent !important;
+  border: none !important;
+  font-family: Noto;
+  font-size: 9pt;
+}
 
 .hover-highlight:hover {
   color: #e8d1d7;
@@ -52,6 +58,31 @@ button[id=overwrite], select[id=overwrite] {
   color: #d5aab5;
 }
 
+svg .lex-entry, svg .lex-body {
+  fill: #b97d91;
+}
+svg .lex-entry:hover {
+  background-color: #461d27;
+  fill: #d5aab5;
+}
+svg .tag-item {
+  fill: #b97d91;
+  font-weight: bold;
+}
+svg rect.lex {
+  fill: transparent;
+  transition: 0.3s;
+  rx: 10;
+  height: 3em;
+  padding: 5px;
+}
+svg rect.lex:hover, svg rect.lex:has(~ :hover) {
+  fill: #461d27;
+}
+svg path {
+  stroke: #b97d91;
+}
+
 .tag-item, [id=entry-counter] {
   color: #b97d91;
   background-color: #872850;
@@ -61,8 +92,15 @@ button[id=overwrite], select[id=overwrite] {
   color: #a0556d;
 }
 
+.lect {
+  color: #a0556d;
+}
+
 hr {
   border: 1px solid #b97d91;
+  border-left: none;
+  border-right: none;
+  border-top: none;
 }
 
 label {
@@ -175,6 +213,14 @@ a:hover {
 
 table {
   border-color: #f4a2b4;
+}
+
+.inflection td {
+  border-color: #f4a2b4 !important;
+  background-color: transparent !important;
+}
+.inflection tr {
+  background-color: transparent !important;
 }
 
 .milkyWay {
