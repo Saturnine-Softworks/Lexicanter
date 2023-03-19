@@ -51,7 +51,7 @@
 <body id="body" spellcheck="false">
     <div class='tab-container'>
         <div class="button-container">
-            <p class="version-info"><i>β</i>{version}</p>
+            <p class="version-info"><i>v</i>{version}</p>
             {#each tab_btns as tab, i}
             <!-- REVIEW - Automate the inclusion/exclusion of advanced feature tabs -->
                 {#if (tab !== 'Etymology' && tab !== 'Inflection') 

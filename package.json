@@ -12,14 +12,14 @@
     "publish": "npm run precompile && bash bash/publish.bash",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
-  "repository": "https://github.com/Saturnine-Softworks/Lexicanter-Beta",
+  "repository": "https://github.com/Saturnine-Softworks/Lexicanter",
   "publish": {
     "provider": "github",
     "releaseType": "release"
   },
   "build": {
-    "appId": "com.lexicanterbeta.app",
-    "productName": "Lexicanter Beta",
+    "appId": "com.lexicanter.app",
+    "productName": "Lexicanter",
     "win": {
       "target": "nsis",
       "icon": "src/rsrc/Quill Icon.ico"
