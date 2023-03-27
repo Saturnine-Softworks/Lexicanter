@@ -246,7 +246,7 @@ export function applyRules(rules: string[], input: string, categories): string {
 export function parseRules(rules: string): {rules: string[], categories: {[index: string]: string[]}} {
     const result = {
         rules: rules
-            .split('\n')
+            .split(/\n|;/)
             .map(rule => rule.trim())
             .filter(rule => rule.match(/^.*(?:\/|>).*/)) // p > s || p / s
             .map(rule => rule.match(/\/.*_.*$/) // p > s / _ || p / s / _

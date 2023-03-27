@@ -1,6 +1,6 @@
 <script lang="ts">
     const { ipcRenderer } = require('electron');
-    import { Language, wordInput, pronunciations, selectedTab } from '../stores';
+    import { Language, wordInput, pronunciations, selectedTab, hideDropdowns } from '../stores';
     import type * as Lexc from '../types';
     import { alphabetize, alphabetPrecheck } from '../utils/alphabetize';
     import { get_pronunciation } from '../utils/phonetics';
@@ -93,8 +93,14 @@
                 lects: sense.lects,
             }));
             // debug.logObj(senses, 'senses');
-            delete $Language.Lexicon[word];
-            $Language.Lexicon = {...$Language.Lexicon}; // assignment trigger
+            $hideDropdowns = true;
+            // timeout is necessary to let the dropdowns close before the lexicon is updated
+            // hiding the inflections dropdowns is necessary to prevent a persistency bug that can lead to a soft crash
+            window.setTimeout(() => {
+                let { [word]: _, ...rest } = $Language.Lexicon;
+                $Language.Lexicon = rest;
+                $hideDropdowns = false;
+            }, 50);
         }
     }
 

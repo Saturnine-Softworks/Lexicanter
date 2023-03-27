@@ -70,4 +70,4 @@ export const theme = writable('styles/dark.css');
 export const autosave = writable(true);
 export const fileLoadIncrement = writable(0);
 
-get(Language).Phonotactics;
+export const hideDropdowns = writable(false);

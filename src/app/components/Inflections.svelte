@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { Language } from "../stores";
+    import { Language, hideDropdowns } from "../stores";
     import * as diagnostics from "../utils/diagnostics";
     import { blur } from 'svelte/transition';
     import * as sca from "../utils/sca";
@@ -37,11 +37,6 @@
                 block.data.content.forEach((row: string[], y: number) => {
                     row.forEach((cell: string, x: number) => {
                         const settings = sca.parseRules(htmlToText(cell));
-                        /* console.log(
-                            'settings.rules:', settings.rules,
-                            '\nword:', word,
-                            '\nsca.applyRules(...):', sca.applyRules(settings.rules, word, settings.categories)
-                        ); */
                         if (!settings.rules[0]) return
                         data[i][j].data.content[y][x] = sca.applyRules(settings.rules, word, settings.categories);
                     });
@@ -53,7 +48,7 @@
 
 {#if data[0]}
     <button class='inflection hover-highlight' on:click={() => show = !show}>Inflections {show? '⏶' : '⏷'}</button>
-    {#if show}
+    {#if show && !$hideDropdowns}
         <div class='inflection' transition:blur='{{amount: 10, duration: 333}}'>
             {#each data.flat() as block}
                 {#if block.type === 'header'}

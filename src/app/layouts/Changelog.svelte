@@ -16,6 +16,12 @@
 
             <br><hr/><br>
 
+            <p><u>Patch 2.0.9</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • You can now write multple rules separated by a semicolon, which allows for multiple rules per table cell in the inflection tables.
+                • Fixed a reported bug which caused a soft crash when attempting to edit the last word in the lexicon if it had an inflections dropdown open.
+            <br><br>
+            </p>
             <p><u>New in 2.0</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • There is now a new sound change engine under the hood. Your old rules may no longer work; for assistance, you can contact the developer. <br>
