@@ -6,7 +6,6 @@
 
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
-
 const { autoUpdater } = require('electron-updater');
 // Auto-updater flags
 autoUpdater.autoDownload = true;
@@ -21,7 +20,7 @@ const createWindow = () => {
         height: 300,
         autoHideMenuBar: true,
         titleBarStyle: 'hidden',
-        titleBarOverlay: true,
+        titleBarOverlay: false,
         show: true,
         webPreferences: {
             devTools: isDev,
@@ -29,19 +28,22 @@ const createWindow = () => {
             contextIsolation: false, // modules such as path and fs in renderer processes.
         },
     });
-    loadingWindow.setWindowButtonVisibility(false);
+
+    if (process.platform === 'darwin') {
+        loadingWindow.setWindowButtonVisibility(false);
+    }
     loadingWindow.loadFile(path.join(__dirname, 'loading.html'));
 
     // Create the browser window.
     var mainWindow = new BrowserWindow({
-        width: 900,
+        width: 1200,
         height: 900,
         autoHideMenuBar: true,
         titleBarStyle: 'hidden',
-        titleBarOverlay: true,
+        titleBarOverlay: false,
         show: false,
         webPreferences: {
-            devTools: isDev,
+            devTools: true,
             nodeIntegration: true, // these two settings are required in order to use
             contextIsolation: false, // modules such as path and fs in renderer processes.
         },
@@ -56,32 +58,21 @@ const createWindow = () => {
     });
     // Set macOS dock icon
     if (process.platform === 'darwin') {
-        app.dock.setIcon(path.join(__dirname, 'res/Quill Icon.png'));
+        app.dock.setIcon(path.join(__dirname, 'res/alembic.png'));
+        mainWindow.setWindowButtonVisibility(false);
     }
 
-    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-        mainWindow.webContents.executeJavaScript(`console.log('Forwarding link: ${decodeURI(url)}');`);
+    const WC = mainWindow.webContents;
+    WC.on('will-navigate', function (e, url) {
         if (url.includes('lex::')) {
-            mainWindow.webContents.executeJavaScript(`follow_lex_link('${decodeURI(url).split('::')[1]}');`);
-            return {action: 'deny'};
+            e.preventDefault();
+            WC.send('lexicon link', decodeURI(url).replace('lex::', ''));
+            console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
         } else if (path.basename(url) === 'index.html') {
-            // console.log('path.basename(url):', path.basename(url)); 
-            return {
-                action: 'allow',
-                overrideBrowserWindowOptions: {
-                    autoHideMenuBar: true,
-                    titleBarStyle: 'hidden',
-                    titleBarOverlay: true,
-                    webPreferences: {
-                        nodeIntegration: true,
-                        contextIsolation: false,
-                    },
-                },
-            };
-        } else {
-            mainWindow.webContents.executeJavaScript('console.log(\'Sending URL to shell.\')');
+            e.preventDefault();
+        } else if (url != WC.getURL()) {
+            e.preventDefault();
             shell.openExternal(url);
-            return { action: 'deny' };
         }
     });
 
@@ -100,6 +91,22 @@ const createWindow = () => {
     });
     ipcMain.handle('debug', (_, message) => {
         console.log(message);
+    });
+    ipcMain.handle('platform', () => {
+        return process.platform;
+    });
+    ipcMain.on('buttonclose', () => {
+        mainWindow.webContents.send('app-close');
+    });
+    ipcMain.on('minimize', () => {
+        mainWindow.minimize();
+    });
+    ipcMain.on('maximize', () => {
+        if (mainWindow.isMaximized()) {
+            mainWindow.unmaximize();
+        } else {
+            mainWindow.maximize();
+        }
     });
 
     mainWindow.on('close', e => {

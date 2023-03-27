@@ -6,6 +6,10 @@
     export let definition = '';
     export let tags: string;
     export let index: number | 'hide';
+    const dispatch = createEventDispatcher();
+    const remove = () => dispatch('remove');
+    const commit = () => dispatch('commit');
+
     $: tags;
     export let lects: string[];
     $: {
@@ -28,9 +32,6 @@
             $pronunciations[lect] = get_pronunciation($wordInput, lect);
         }
     }
-
-    const dispatch = createEventDispatcher();
-    const remove = () => dispatch('remove');
 </script>
 
 <label>
@@ -38,7 +39,9 @@
         <i>Sense {index + 1}</i> <br>
     {/if}
     <label>Definition
-        <textarea rows='4' bind:value={definition}></textarea>
+        <textarea rows='4' bind:value={definition} on:keydown={e => {
+            if (e.key === 'Enter' && e.altKey) commit();
+        }}></textarea>
     </label>
     <br>
     <label for="tags">Tags</label>

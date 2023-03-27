@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { debug } from './diagnostics';
+import * as diagnostics from './diagnostics';
 import { get } from 'svelte/store';
 import { Language } from '../stores';
 import type * as Lexc from '../types';
@@ -13,7 +13,8 @@ const Lang = () => get(Language);
  * @returns An array of words, sorted by the alphabetical order of the language.
  */
 export function alphabetize(lexicon: Lexc.Lexicon): string[] {
-    const priority_tags = Lang().HeaderTags.toLowerCase().trim().split(/\s+/);
+    let priority_tags = Lang().HeaderTags.toLowerCase().trim().split(/\s+/);
+    if (!priority_tags[0]) priority_tags = [];
     let $alphabet = Lang().Alphabet;
     const $ignore_diacritics = Lang().IgnoreDiacritics;
     const $case_sensitive = Lang().CaseSensitive;
@@ -115,6 +116,5 @@ export function alphabetPrecheck(word: string): word is valid {
         word = word.replaceAll(token, '');
         // debug.log(`alphabetPrecheck: ${word} | ${token}`, false);
     });
-    return !word;
+    return !word.replaceAll(/\s+/g, '');
 }
-

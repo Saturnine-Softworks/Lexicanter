@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { Language, wordInput, pronunciations } from '../stores';
+    const { ipcRenderer } = require('electron');
+    import { Language, wordInput, pronunciations, selectedTab } from '../stores';
     import type * as Lexc from '../types';
     import { alphabetize, alphabetPrecheck } from '../utils/alphabetize';
     import { get_pronunciation } from '../utils/phonetics';
@@ -9,8 +10,8 @@
     const vex = require('vex-js');
 
     let defInputs = [''];
-    let searchWords = ''; let searchDefinitions = ''; let searchTags = '';
-    let lectFilter = '';
+    let searchWords = ''; let searchDefinitions = ''; let searchTags = ''; let lectFilter = '';
+    $: searchWords, searchDefinitions, searchTags, lectFilter; // Update the search when these values change
     let keys: string[] = [];
 
     let filtered_lex: Lexc.Lexicon;
@@ -27,9 +28,7 @@
         $Language.Alphabet; $Language.Pronunciations;
         keys;
         (() => {
-            alphabetized = [];
-             // REVIEW the timeout is to force the lexicon to clear before being repopulated
-            window.setTimeout(() => alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon), 1);
+            alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
         })();
     } 
 
@@ -51,6 +50,22 @@
         senses;
         lectSet = Array.from(new Set(senses.map(sense => [...sense.lects]).flat()))
     }
+
+    function scrollIntoView(word: string) {
+        const entry = document.getElementById(word);
+        if (entry) {
+            if (!!$selectedTab) $selectedTab = 0;
+            searchDefinitions = ''; searchTags = ''; searchWords = ''; lectFilter = '';
+            entry.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+            })
+        };
+    }
+    ipcRenderer.on('lexicon link', (_, word) => {
+        console.log('link:', word);
+        scrollIntoView(word);
+    });
 
     /**
      * This function is used to delete an entry from the lexicon and
@@ -77,7 +92,7 @@
                 tags: sense.tags.join(' '),
                 lects: sense.lects,
             }));
-            debug.logObj(senses, 'senses');
+            // debug.logObj(senses, 'senses');
             delete $Language.Lexicon[word];
             $Language.Lexicon = {...$Language.Lexicon}; // assignment trigger
         }
@@ -99,7 +114,7 @@
             $Language.Lexicon[word] = <Lexc.Word> {
                 pronunciations: <Lexc.EntryPronunciations> (() => {
                     const obj: Lexc.EntryPronunciations = {};
-                    $Language.Lects.forEach(lect => {
+                    Object.keys($pronunciations).filter(key => senses.map(sense => sense.lects).flat().includes(key)).forEach(lect => {
                         obj[lect] = {
                             ipa: $pronunciations[lect].trim(),
                             irregular: $pronunciations[lect].trim() !== get_pronunciation(word, lect),
@@ -140,17 +155,20 @@
         let word = $wordInput.trim()
         if (!word) return;
         if (!senses[0].definition) return;
+        if (!senses.map(sense => sense.lects).flat().length) return;
         if (!alphabetPrecheck(word)) {
             vex.dialog.confirm({
                 message: `The word contains characters not present in the alphabet. Are you sure you want to add it?`,
                 callback: (value: boolean) => {
                     if (value) {
                         commitWord(word, append);
+                        window.setTimeout(() => scrollIntoView(word), 50);
                     };
                 }
             });
         } else {
             commitWord(word, append);
+            window.setTimeout(() => scrollIntoView(word), 50);
         }
     }
 
@@ -204,7 +222,7 @@
                     let has_exact_match = false;
                     for (let tag of $Language.Lexicon[word].Senses.map(sense => sense.tags).flat()) {
                         for (let a of tags_search) {
-                            debug.log('`a` | `tag` : ' + a + ' | ' + tag, false)
+                            // debug.log('`a` | `tag` : ' + a + ' | ' + tag, false)
                             // tags
                             if (a[0] === '!') {
                                 needs_exact_match = true;
@@ -256,11 +274,14 @@
             <button class="collapser" on:click={ () => collapsedPanel = !collapsedPanel }></button>
             <div class:collapsed={collapsedPanel} class='text-center scrolled' style="height: 100%; overflow-x: hidden">
                 <label for="wrd-input">New Word</label>
-                <input id="wrd-input" type="text" bind:value={$wordInput} on:input={() => {
-                    Object.keys($pronunciations).forEach(lect => {
-                        $pronunciations[lect] = get_pronunciation($wordInput, lect);
-                    });
-                }}>
+                <input id="wrd-input" type="text"
+                    bind:value={$wordInput}
+                    on:input={() => {
+                        Object.keys($pronunciations).forEach(lect => {
+                            $pronunciations[lect] = get_pronunciation($wordInput, lect);
+                        });
+                    }}
+                >
 
                 {#if $Language.UseLects}
                     {#each lectSet as lect}
@@ -286,6 +307,7 @@
                         on:remove={() => {
                             senses = senses.filter((_, j) => j !== i);
                         }}
+                        on:commit={() => { addWord(false); }}
                     />
                 {/each}
                 <button class="hover-highlight hover-shadow" id="add-sense-button" on:click={() => {

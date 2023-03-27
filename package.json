@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "2.0.0",
+  "version": "2.0.8",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
@@ -22,14 +22,14 @@
     "productName": "Lexicanter",
     "win": {
       "target": "nsis",
-      "icon": "src/rsrc/Quill Icon.ico"
+      "icon": "src/res/alembic.ico"
     },
     "mac": {
-      "icon": "src/rsrc/Quill Icon.icns"
+      "icon": "src/res/alembic.icns"
     },
     "nsis": {
-      "installerIcon": "src/rsrc/Quill Icon.ico",
-      "installerHeaderIcon": "src/rsrc/Quill Icon.ico"
+      "installerIcon": "src/res/alembic.ico",
+      "installerHeaderIcon": "src/res/alembic.ico"
     },
     "files": [
       "src/**/*",
@@ -52,7 +52,9 @@
     "@editorjs/table": "^2.2.0",
     "@editorjs/underline": "^1.1.0",
     "@electron/remote": "^2.0.9",
+    "@types/marked": "^4.0.8",
     "electron-updater": "^5.3.0",
+    "marked": "^4.3.0",
     "vex-js": "^4.1.0"
   },
   "devDependencies": {

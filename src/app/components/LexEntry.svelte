@@ -5,6 +5,7 @@
     import { blur } from 'svelte/transition';
     import Pronunciations from './Pronunciations.svelte';
     import Inflections from '../components/Inflections.svelte';
+    import { markdownToHtml } from '../utils/markdown';
     import { debug } from '../utils/diagnostics.js';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
@@ -15,26 +16,34 @@
     function getAncestors(): string {
         const ancestors: string[][] = [];
         let currents = [word]
-        while (Object.keys($Language.Etymologies).some(
-            word => 
-            $Language.Etymologies[word].descendants
-            .some(descendant => currents.includes(descendant.name))
-        )) {
+        let maxDepth = 6;
+        while (Object.keys($Language.Etymologies)
+            .some(
+                word => 
+                $Language.Etymologies[word].descendants
+                    .some(descendant => currents.includes(descendant.name))
+            ) && maxDepth
+        ) {
+            maxDepth--;
             ancestors
             .push(Object.keys($Language.Etymologies)
-                .filter(
-                    word => 
-                    $Language.Etymologies[word].descendants
-                    .some(descendant => currents.includes(descendant.name))
-                )
+                .filter(candidateWord => {
+                    const isAncestor = $Language.Etymologies[candidateWord].descendants
+                        .some(descendant => currents.includes(descendant.name));
+                    if (ancestors.flat().includes(word) || (candidateWord === word && isAncestor)) maxDepth = 0
+                    return isAncestor;
+                })
             );
             currents = ancestors[ancestors.length - 1];
         }
         ancestors.reverse();
 
         let ancestorString = '';
+        let lastGen = '';
         ancestors.forEach(generation => {
-            ancestorString += generation.join(', ') + ' → ';
+            let newGen = generation.join(', ');
+            if (newGen !== lastGen) ancestorString += newGen + ' → ';
+            lastGen = newGen;
         });
         ancestorString = !!ancestorString? ancestorString + word : '';
         /* debug.log(`
@@ -46,9 +55,8 @@
     }
 
     let entryAncestors: string = '';
-    $: {
-        $Language.Etymologies;
-        $Language.Lexicon; $Language.Relatives
+    $: { 
+        $Language.Etymologies; $Language.Lexicon; word; source;
         entryAncestors = getAncestors();
     }
 </script>
@@ -75,7 +83,7 @@
                 })()}
             </p>
         {/if}
-        <p>{Sense.definition}</p>
+        <p>{@html markdownToHtml(Sense.definition)}</p>
         {#if $Language.ShowEtymology && !!entryAncestors && showEtymology}
             <hr />
             <p class="lex-body"><i>{entryAncestors}</i></p>

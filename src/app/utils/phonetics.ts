@@ -4,7 +4,7 @@ import {
 } from '../stores.js';
 import { applyRules, parseRules } from './sca';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { debug } from './diagnostics.js';
+import * as diagnostics from './diagnostics.js';
 import type * as Lexc from '../types.js';
 const Lang = () => get(Language);
 
@@ -15,8 +15,8 @@ const Lang = () => get(Language);
  * @returns {string}
  */
 export function get_pronunciation(word: string, lect: string): string {
-    const romanizations = Lang().Pronunciations[lect];
-    const settings = parseRules(romanizations);
+    const rules = Lang().Pronunciations[lect];
+    const settings = parseRules(rules);
     return applyRules(settings.rules, word, settings.categories);
 }
 
@@ -36,7 +36,7 @@ export function writeRomans (lect: string) {
     }
     Lang().Lexicon = lexicon;
 
-    get(phrasePronunciations)[lect] = get_pronunciation(get(phraseInput), 'General');
+    get(phrasePronunciations)[lect] = get_pronunciation(get(phraseInput), lect);
     const phrasebook: Lexc.Phrasebook = Lang().Phrasebook;
     for (const category in phrasebook) {
         for (const entry in phrasebook[category]) {
@@ -74,7 +74,7 @@ export function complete_word(trial) {
 
     const finalize = (word: string) => {
         word += '^';
-        if (!inventory.Illegals.some(v => word.includes(v))) {
+        if (!inventory.Illegals.some(v => word.includes(v)) || !inventory.Illegals[0]) {
             return word.replace(/\^/g, '');
         } else {
             return '';
@@ -157,7 +157,7 @@ export function generate_word() {
         }
     
         word += '^';
-        if (!inventory.Illegals.some(v => word.includes(v))) {
+        if (!inventory.Illegals.some(v => word.includes(v)) || !inventory.Illegals[0]) {
             return word.replace(/\^/g, '');
         } else {
             return '';

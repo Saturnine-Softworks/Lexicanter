@@ -8,7 +8,8 @@
     import { writeRomans } from '../utils/phonetics';
     import { initializeDocs } from '../utils/docs';
     import * as diagnostics from '../utils/diagnostics';
-    import remakeEditors from './Inflection.svelte';
+    import Lexicon from './Lexicon.svelte';
+    const vex = require('vex-js');
     $: loading_message = '';
     let csvHeaders = true; let csvWords = 2; let csvDefinitions = 3;
     let oldPattern = ''; let newPattern = '';
@@ -19,7 +20,7 @@
      * @param {Object} contents - The contents of the opened file.
      */
     function read_contents (contents) {
-        if (typeof contents.Version === 'number') {
+        if (typeof contents.Version === 'number' || contents.Version === '1.8.x') {
             try { openLegacy[contents.Version](contents); }
             catch (err) {
                 // TODO: window.alert() freezes text inputs on Windows computers and all instances need to be replaced with a custom dialog.
@@ -30,41 +31,49 @@
             }
             return;
         }
+        let errorMessage: string;
         try {
-            loading_message = 'Loading settings...';
+            errorMessage = 'There was a problem loading the settings of the file.'
             $Language.CaseSensitive = contents.CaseSensitive;
             $Language.IgnoreDiacritics = contents.IgnoreDiacritics;
             $Language.HeaderTags = contents.HeaderTags;
             $Language.UseLects = contents.UseLects;
             $Language.ShowEtymology = contents.ShowEtymology;
             $Language.ShowInflection = contents.ShowInflection;
-            loading_message = 'Loading alphabet...';
+
+            errorMessage = 'There was a problem loading the alphabet from the file.'
             $Language.Alphabet = contents.Alphabet;
-            loading_message = 'Loading lexicon...';
+
+            errorMessage = 'There was a problem loading the file’s lexicon data.'
             $Language.Lexicon = contents.Lexicon;
-            loading_message = 'Loading phrasebook...';
+            $Language.Lects = contents.Lects;
+            
+            errorMessage = 'There was a problem loading the file’s phrasebook data.'
             $Language.Phrasebook = contents.Phrasebook;
             $selectedCategory = Object.keys($Language.Phrasebook)[0]; 
-            loading_message = 'Loading documentation...';
+
+            errorMessage = 'There was a problem loading the file’s documentation data.'
             let docs_data: OutputData = contents.Docs;
             $Language.Docs = docs_data;
             $docsEditor.destroy();
             initializeDocs(docs_data);
-            loading_message = 'Loading pronunciation rules...';
+
+            errorMessage = 'There was a problem loading the pronunciations rules from the file.'
             $Language.Pronunciations = contents.Pronunciations; 
             $Language.Lects.forEach(writeRomans);
-            loading_message = 'Loading phonotactics...';
+
+            errorMessage = 'There was a problem loading the phonotactics rules from the file.'
             $Language.Phonotactics = contents.Phonotactics;
-            loading_message = 'Loading inflections...';
+
+            errorMessage = 'There was a problem loading the inflection rules from the file.'
             $Language.Inflections = contents.Inflections;
-            loading_message = 'Loading etymologies...';
+
+            errorMessage = 'There was a problem loading the etymology data from the file.'
             $Language.Etymologies = contents.Etymologies;
         } catch (err) {
-            window.alert(
-                'There was a problem loading the contents of the file. Please contact the developer for assistance.'
-            );
-            diagnostics.logError('Attempted to open a file.', err);
-            console.log(err);
+            vex.dialog.alert(errorMessage + ' Please contact the developer for assistance.');
+            diagnostics.logError(errorMessage, err);
+            diagnostics.debug.logObj(contents, 'File Contents');
         } finally {
             $fileLoadIncrement++;
             diagnostics.logAction(`Opened and read the contents of '${$Language.Name}'.'`);

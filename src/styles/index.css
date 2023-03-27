@@ -120,6 +120,25 @@ button.collapser-h::after {
   height: 100%;
   width: fit-content;
 }
+.tab-container .window-control {
+  text-align: left;
+  height: 0px;
+  overflow: visible;
+}
+.tab-container .window-control button {
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+.tab-container .window-control button.close:hover {
+  background-color: #9e0f0f;
+}
+.tab-container .window-control button.minimize:hover {
+  background-color: #c9c911;
+}
+.tab-container .window-control button.maximize:hover {
+  background-color: #4eb94e;
+}
 .tab-container .tab-pane {
   height: 80%;
   box-sizing: border-box;

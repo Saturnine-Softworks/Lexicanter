@@ -22,7 +22,6 @@
             const f_x = 1 - 4 * Math.pow(x - 0.5, 2);
             result.push(Math.round(f_x * Math.pow(n, 2)));
         }
-        console.log(result);
         return result;
     }
     let dYparents: number[];

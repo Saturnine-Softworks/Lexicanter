@@ -1,28 +1,64 @@
-// string format: "pattern/subsitution/context"
-function applyRule(rule: string, input: string, categories): string {
+import * as diagnostics from './diagnostics';
+import { Language } from '../stores';
+import { get } from 'svelte/store';
+const vex = require('vex-js');
+
+function applyRule(rule: string, input: string, categories: {[index: string]: string[]}): string {
+    const caseSensitive = get(Language).CaseSensitive;
+    const flags = caseSensitive ? 'g' : 'gi';
+
     // eslint-disable-next-line prefer-const
     let [pattern, sub, context] = rule.split('/');
     input = ' ' + input + ' ';
     let result = input;
 
     //SECTION - Preprocess the rule
-    const unionRule = /\{(.+)\}/gi;
-    const boundaryRule = /\^|#/gi;
-    const negativeRule = /\{!(.+(?:\s+.+)*)\}/gi;
+    const unionRule = /\{(.+)\}/g;
+    const boundaryRule = /\^|#/g;
+    const negativeRule = /\{!(.+(?:\s+.+)*)\}/g;
     const commaUnionRule = /\s*,\s*/g;
     const spaceRule = /\s+/g;
     const nullRule = /[∅⦰]/g;
+    const Symbols: string[] = [
+        '∆', '∇', '⊂', '⊃', '⊆', '⊇', '⊄', '⊅',
+        '⊈', '⊉', '⊊', '⊋', '⊍', '⊎', '⊏', '⊐',
+        '⊑', '⊒', '⊓', '⊔', '⊕', '⊖', '⊗', '⊘',
+        '⊙', '⊚', '⊛', '⊜', '⊝', '⊞', '⊟', '⊠',
+        '⊡', '⊢', '⊣', '⊤', '⊥', '⊦', '⊧', '⊨',
+        '⊩', '⊪', '⊫', '⊬', '⊭', '⊮', '⊯', '⊰',
+        '⊱', '⊲', '⊳', '⊴', '⊵', '⊶', '⊷', '⊸',
+        '⊹', '⊺', '⊻', '⊼', '⊽', '⊾', '⊿', '⋀',
+        '⋁', '⋂', '⋃', '⋄', '⋇', '⋈', '⋉', '⋊',
+        '⋋', '⋌', '⋍', '⋎', '⋏', '⋐', '⋑', '⋒',
+        '⋓', '⋔', '⋕', '⋖', '⋗', '⋘', '⋙', '⋚',
+        '⋛', '⋜', '⋝', '⋞', '⋟', '⋠', '⋡', '⋢',
+        '⋣', '⋤', '⋥', '⋦', '⋧', '⋨', '⋩', '⋪',
+        '⋫', '⋬', '⋭', '⋮', '⋯', '⋰', '⋱', '⋲',
+        '⋳', '⋴', '⋵', '⋶', '⋷', '⋸', '⋹', '⋺',
+        '⋻', '⋼', '⋽', '⋾', '⌁', '⌂', '⌃', '⌄',
+        '⌅', '⌆', '⌇', '⌈', '⌉', '⌊', '⌋', '⌑', 
+        '⌒', '⌓', '⌔', '⌕', '⌖', '⌗', '⌘', '⌙',
+    ];
+    let i = 0;
+    pattern.match(unionRule)?.forEach((match) => {
+        categories[Symbols[i]] = match.replace(unionRule, '$1').split(commaUnionRule);
+        pattern = pattern.replace(match, Symbols[i]);
+        i++;
+    });
+    sub.match(unionRule)?.forEach((match) => {
+        categories[Symbols[i]] = match.replace(unionRule, '$1').split(commaUnionRule);
+        sub = sub.replace(match, Symbols[i]);
+        i++;
+    });
 
     pattern = pattern
         .replaceAll(boundaryRule, '\\s')
         .replaceAll(negativeRule, '(?:(?!$1).)')
-        .replaceAll(unionRule, '(?:$1)')
         .replaceAll(commaUnionRule, '|')
         .replaceAll(spaceRule, '')
     ;
     sub = sub
         .replaceAll(spaceRule, '')
-        .replaceAll(nullRule, '')
     ;
     context = context
         .replaceAll(boundaryRule, '\\s')
@@ -47,7 +83,7 @@ function applyRule(rule: string, input: string, categories): string {
         let matchContext = [];
         if (contextCatMap.length > 0) {
             contextCatMap.forEach(symbol => {
-                const matchMatches = match.match(new RegExp(`(?:${categories[symbol].join('|')})`, 'gi'));
+                const matchMatches = match.match(new RegExp(`(?:${categories[symbol].join('|')})`, flags));
                 matchContext.push([symbol, matchMatches]);
             });
             matchContext = [...new Set(matchContext)].sort((a, b) => b.length - a.length);
@@ -57,8 +93,50 @@ function applyRule(rule: string, input: string, categories): string {
                 expandedContext = expandedContext.replace(symbol, match);
             });
         });
-        const indexOfPattern = expandedContext.indexOf('_');
-        
+
+        expandedContext = expandedContext.replaceAll('\\s', ' ');
+        for (const m of expandedContext.match(/\(\?:(.*)\)\?/g)? expandedContext.match(/\(\?:(.*)\)\?/g) : []) {
+            const optional = m.replace(/\(\?:(.*)\)\?/g, '$1');
+            /* console.log(
+                'm:', `'${m}'`, '|',
+                'optional:', `'${optional}'`
+            ); */
+            const testContext = expandedContext.replace(m, optional);
+            let testRegString = '(' + testContext.replace('_', `)${pattern}(`) + ')';
+            Object.entries(categories).forEach(([symbol, values]: [string, string[]]) => {
+                testRegString = testRegString.replaceAll(symbol, `(?:${values.join('|')})`);
+            });
+            
+            if (input.match(new RegExp(testRegString, flags))) {
+                expandedContext = testContext;
+            } else {
+                expandedContext = expandedContext.replace(m, '');
+            }
+        }
+        for (const m of expandedContext.match(/(.|\s)\?/g)? expandedContext.match(/(.|\s)\?/g) : []) {
+            const optional = m.replace(/(.|\s)\?/g, '$1');
+            /* console.log(
+                'm:', `'${m}'`, '|',
+                'optional:', `'${optional}'`
+            ); */
+            const testContext = expandedContext.replace(m, optional);
+            let testRegString = '(' + testContext.replace('_', `)${pattern}(`) + ')';
+            Object.entries(categories).forEach(([symbol, values]: [string, string[]]) => {
+                testRegString = testRegString.replaceAll(symbol, `(?:${values.join('|')})`);
+            });
+            
+            if (input.match(new RegExp(testRegString, flags))) {
+                expandedContext = testContext;
+            } else {
+                expandedContext = expandedContext.replace(m, '');
+            }
+        }
+
+        const indexOfPattern = 
+            expandedContext
+                .replaceAll('?', '')
+                .indexOf('_');
+
         //SECTION - Get the slice of the match that corresponds to the pattern
 
         const patternLength = 
@@ -76,44 +154,47 @@ function applyRule(rule: string, input: string, categories): string {
                         });
                         return length;
                     })();
-
-        return match.slice( 
+        /* console.log(
+            'iP:', indexOfPattern, '|',
+            'pL', patternLength, '|',
+            'match:', `'${match}'`, '->',
+            'slice:', `'${match.slice(indexOfPattern, indexOfPattern + patternLength)}'`
+        ); */
+        match = match.slice( 
             indexOfPattern, 
             indexOfPattern + patternLength
         );
+        return match;
     }
 
     //SECTION - Apply the rule
-    const matches: string[] = input.match(new RegExp(regString, 'gi'));
+    const matches: string[] = input.match(new RegExp(regString, flags));
     if (matches && sub.includes('_')) {
         matches.forEach(match => {
             const slice = getSlice(match);
             result = result.replace(slice, sub.replaceAll('_', slice));
         });
-    } else result = result.replaceAll(new RegExp(regString, 'gi'), `$1${sub}$2`);
+    } else result = result.replaceAll(new RegExp(regString, flags), `$1${sub}$2`);
     
     if (!!subCatMap[0] && !!patternCatMap[0]) {
         let catMap: string[][] = [];
-        matches;
-        regString;
         if (matches) { 
             catMap = matches.map(match => {
-
                 const slice = getSlice(match);
-
                 //SECTION - Create the map
                 const map = [
                     slice,
                     subCatMap[patternCatMap
                         .indexOf(Object.keys(categories)
                             .find(symbol => categories[symbol]
-                                .some((value: string) => 
-                                    value === slice
+                                .some( (value: string) => 
+                                    value === slice && patternCatMap.includes(symbol) 
                                 )
                             )
                         )
                     ]
                 ];
+
                 return [
                     map[0],
                     map[1],
@@ -134,13 +215,30 @@ function applyRule(rule: string, input: string, categories): string {
     /* console.log(
         input, '::', pattern + '/' + sub + '/' + context, '-> ', result
     ); */
-    return result.trim();
+    return result
+        .replaceAll(nullRule, '')
+        .trim();
 }
 
+let indialog = false;
 export function applyRules(rules: string[], input: string, categories): string {
     let result = input;
     rules.forEach(rule => {
-        result = applyRule(rule, result, categories);
+        try {
+            result = applyRule(rule, result, categories);
+        } catch (err) {
+            const error = err as Error;
+            diagnostics.logError(`Attempted to apply rule '${rule}' to '${input}'`, error);
+            if (!indialog) {
+                indialog = true;
+                vex.dialog.alert({
+                    message: `An error occurred while trying to apply rule '${rule}' to '${input}'. The rule may be invalid. If you think this is a bug, please contact the developer.`,
+                    callback: () => {
+                        indialog = false;
+                    }
+                });
+            }
+        }
     });
     return result;
 }
@@ -175,9 +273,9 @@ export function parseRules(rules: string): {rules: string[], categories: {[index
 
 
 /* const rules = `
-à/ebis/_#
+{a, e} > {i, o} / _s
 `;
-const input = 'zucà';
+const input = 'mesarase';
 console.log(
     input, '-->',
     applyRules(parseRules(rules).rules, input, parseRules(rules).categories),

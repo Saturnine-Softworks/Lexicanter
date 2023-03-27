@@ -179,7 +179,15 @@
                     <p class='info'>Select an entry from the left to view and edit its etymology.</p>
                 {/if}
                 <hr />
+                {#if !(tree?.parents? tree.parents[0] : false) && !(tree?.children? tree.children[0] : false) && !!selectedEntry}
+                    <button class="hover-highlight hover-shadow" on:click={() => {
+                        const { [selectedEntry]: _, ...rest } = $Language.Etymologies;
+                        $Language.Etymologies = rest;
+                        selectedEntry = '';
+                    }}>Delete Empty Etymology</button>
+                {/if}
                 <div class='row'>
+                    <!-- Ancestors Column -->
                     <div class='column'>
                         <p>Ancestors</p>
                         <label>Manual Entry
@@ -208,6 +216,7 @@
                             </label>
                         {/if}
                         <button class='hover-highlight hover-shadow' on:click={() => {
+                            if (!newParent[0]) return;
                             if (!(newParent[0] in $Language.Etymologies))
                                 $Language.Etymologies[newParent[0]] = {
                                     source: newParent[1] === $Language.Name? '<< THIS LANGUAGE >>' : newParent[1],
@@ -240,6 +249,8 @@
                             {/each}
                         </div>
                     </div>
+
+                    <!-- Descendants Column -->
                     <div class='column'>
                         <p>Descendants</p>
                         <label>Manual Entry
@@ -267,6 +278,7 @@
                             </label>
                         {/if}
                         <button class='hover-highlight hover-shadow' on:click={() => {
+                            if (!newChild[0]) return;
                             if (!(newChild[0] in $Language.Etymologies))
                                 $Language.Etymologies[newChild[0]] = {
                                     source: newChild[1],

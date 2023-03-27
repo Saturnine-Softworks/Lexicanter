@@ -96,12 +96,29 @@ button
     .button-container 
         width: 100%
         text-align: center
-        button 
+        button
             border: none
             outline: none
             padding: 4px
             height: 100%
             width: fit-content
+    .window-control
+        text-align: left
+        height: 0px
+        overflow: visible
+        button
+            border: none
+            outline: none
+            background-color: transparent
+            &.close
+                &:hover
+                    background-color: #9e0f0f
+            &.minimize
+                &:hover
+                    background-color: #c9c911
+            &.maximize
+                &:hover
+                    background-color: #4eb94e
     .tab-pane 
         height: 80%
         box-sizing: border-box

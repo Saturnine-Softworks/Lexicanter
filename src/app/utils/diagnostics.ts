@@ -22,14 +22,15 @@ async function userData (callback: (user_path: string) => void): Promise<void> {
  * @param {string} action - The action that was being performed when the error occurred.
  * @param {string} error - The error message.
  */
-export function logError(action: string, error: string): void {
+export function logError(action: string, error: Error): void {
     get(Language).Diagnostics.push(<Lexc.Diagnostic> {
         Time: Date(),
         Version: get(Language).Version,
         OS: platform(),
         Action: action,
-        Error: error
+        Error: error.stack
     });
+    debug.error(error.stack);
 }
 
 /**

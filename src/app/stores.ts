@@ -37,6 +37,8 @@ export const Language: Writable<Lexc.Language> = writable({
     Diagnostics: <Lexc.Diagnostic[]> [ ]
 });
 
+export const selectedTab = writable(0);
+
 // Initial states for all the global variables across the app
 type PronunciationInputs = {
     [index: string]: string

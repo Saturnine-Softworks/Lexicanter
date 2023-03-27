@@ -1,0 +1,241 @@
+p.info {
+  color: black !important;
+}
+
+body {
+  color: #564419;
+  background-color: #B6B697;
+}
+
+button, select {
+  color: #000;
+  background-color: #D1CB8C;
+}
+button[id=overwrite], select[id=overwrite] {
+  color: darkred;
+}
+
+.hover-highlight:hover {
+  color: #003E85;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0px 2px 12px #000;
+}
+
+.tab-container .button-container, .tab-container .button-container button {
+  color: #000;
+  background-color: #838364;
+}
+.tab-container .button-container:hover, .tab-container .button-container button:hover {
+  color: #003E85;
+}
+
+.selected {
+  background-color: #B6B697 !important;
+}
+
+.container {
+  background-color: #EEEEC2;
+  border: none;
+}
+
+.info {
+  color: #DAFF9F;
+}
+
+.version-info {
+  color: #000;
+}
+
+.lex-entry, .lex-body {
+  color: #000;
+}
+.lex-entry:hover {
+  background: #c9c9ab;
+  color: #000;
+}
+
+svg .lex-entry, svg .lex-body {
+  fill: #000;
+}
+svg .lex-entry:hover {
+  background-color: #c9c9ab;
+  fill: #000;
+}
+svg .tag-item {
+  fill: #000;
+  font-weight: bold;
+}
+svg rect.lex {
+  fill: transparent;
+  transition: 0.3s;
+  rx: 10;
+  height: 3em;
+  padding: 5px;
+}
+svg rect.lex:hover, svg rect.lex:has(~ :hover) {
+  fill: #c9c9ab;
+}
+svg path {
+  stroke: #000;
+}
+
+.tag-item, [id=entry-counter] {
+  color: #000;
+  background-color: #c0ba7b;
+}
+
+.pronunciation {
+  color: #000;
+}
+
+.lect {
+  color: #000;
+}
+
+hr {
+  border: 1px solid #564419;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+label {
+  color: #000;
+}
+
+textarea, input {
+  color: #2A2A00 !important;
+  background-color: #C1C19B;
+}
+textarea.pronunciation, input.pronunciation {
+  background-color: transparent;
+}
+textarea.pronunciation:hover, input.pronunciation:hover {
+  background-color: #c9c9ab;
+}
+textarea[type=checkbox], input[type=checkbox] {
+  appearance: none;
+  margin: auto;
+  font: inherit;
+  width: 1rem;
+  height: 1rem;
+  border: none;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+}
+textarea[type=checkbox]::before, input[type=checkbox]::before {
+  background-color: rgb(255, 255, 255);
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  clip-path: polygon(M 214.256 15.632 C 198.2 10.039 180.952 7 163 7 C 76.901 7 7 76.901 7 163 C 7 249.099 76.901 319 163 319 C 180.952 319 198.2 315.961 214.256 310.368 C 135.739 307.093 73 242.315 73 163 C 73 83.685 135.739 18.907 214.256 15.632 Z);
+}
+textarea[type=checkbox]:checked::before, input[type=checkbox]:checked::before {
+  transform: scale(1);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+td {
+  border: 1px solid none;
+}
+
+button.hover-highlight.hover-shadow, #theme-select, #overwrite {
+  border: none;
+}
+
+tr:nth-child(odd) {
+  background-color: #C1C19B;
+}
+tr:nth-child(even) {
+  background-color: #d5d5ba;
+}
+
+::-webkit-resizer {
+  background-color: #B6B697;
+}
+::-webkit-resizer:hover {
+  background-color: #FBFF7B;
+}
+::-webkit-scrollbar-track {
+  background-color: #B6B697;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #838364;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #FBFF7B;
+}
+
+a {
+  color: #9E0000;
+  transition: 0.5s;
+}
+a:hover {
+  color: #003E85;
+}
+
+.ce-toolbar__settings-btn, .ce-toolbar__plus {
+  color: #564419 !important;
+}
+.ce-toolbar:hover {
+  background-color: #D1CB8C !important;
+}
+.ce-conversion-tool {
+  background-color: #D1CB8C !important;
+}
+.ce-conversion-toolbar {
+  background-color: #c0ba7b !important;
+}
+.ce-conversion-tool:hover {
+  background-color: #DAFF9F !important;
+}
+.ce-popover, .ce-popover--opened {
+  background-color: #D1CB8C !important;
+}
+.ce-popover__item {
+  background-color: #D1CB8C !important;
+}
+.ce-popover__item:hover {
+  background-color: #DAFF9F !important;
+}
+.ce-inline-tool {
+  background-color: #c0ba7b !important;
+}
+.ce-inline-tool:hover {
+  background-color: #DAFF9F !important;
+}
+.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
+  background-color: #c0ba7b !important;
+}
+.ce-paragraph[data-placeholder]:empty::before {
+  color: #000 !important;
+}
+
+.tc-popover {
+  --color-border: #B6B697 !important;
+  --color-background: #c0ba7b !important;
+  --color-background-hover: #D1CB8C !important;
+  --color-background-confirm: #812b2b !important;
+  --color-background-confirm-hover: #a12929 !important;
+  --color-text-confirm: white !important;
+}
+.tc-wrap {
+  --color-background: rgba(255, 255, 255, 0.396) !important;
+  --color-text-secondary: #000 !important;
+  --color-border: #949465 !important;
+}
+
+table {
+  border-color: #B6B697;
+}
+
+.milkyWay .planet {
+  border-color: #564419;
+}
+
+/*# sourceMappingURL=bone.css.map */

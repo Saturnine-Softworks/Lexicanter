@@ -139,7 +139,9 @@
         let category = $categoryInput.trim();
         if (!category) return
         let pronunciations = {};
-        Object.keys($phrasePronunciations).forEach(lect => {
+        console.log($phrasePronunciations, lects);
+        Object.keys($phrasePronunciations).filter(lect => lects.includes(lect)).forEach(lect => {
+            console.log(lect)
             pronunciations[lect] = {
                 ipa: $phrasePronunciations[lect].trim(),
                 irregular: $phrasePronunciations[lect].trim() !== get_pronunciation(newPhrase, lect),
@@ -220,7 +222,7 @@
                 {/each}
             </div>
         </div>
-        <div class="container column">
+        <div class="container column" style='overflow: hidden'>
             <!-- Search Fields -->
             <div class="row">
                 <div class="column search-container">
@@ -257,7 +259,7 @@
                 {/if}
             </div>
             <!-- Book -->
-            <div class="column scrolled" id="phrasebook-body" style="max-height: 90%;">
+            <div class="column scrolled" id="phrasebook-body" style="max-height: 88%;">
                 {#if !!Object.keys($Language.Phrasebook).length}
                     {#each phraseKeys as phrase}
                         <PhraseEntry phrase={phrase} on:edit={() => editPhrase(phrase)} />
