@@ -16,9 +16,15 @@
 
             <br><hr/><br>
 
+            <p><u>Patch 2.0.10</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Fixed a reported bug which caused a semi-rare soft-crash in certain cases when dealing with multiple lects. <br>
+                • Fixed a reported bug which caused CSV import to fail, and improved CSV import options. 
+            <br><br>
+            </p>
             <p><u>Patch 2.0.9</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
-                • You can now write multple rules separated by a semicolon, which allows for multiple rules per table cell in the inflection tables.
+                • You can now write multple rules separated by a semicolon, which allows for multiple rules per table cell in the inflection tables. <br>
                 • Fixed a reported bug which caused a soft crash when attempting to edit the last word in the lexicon if it had an inflections dropdown open.
             <br><br>
             </p>

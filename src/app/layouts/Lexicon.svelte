@@ -9,6 +9,9 @@
     import { debug } from '../utils/diagnostics';
     const vex = require('vex-js');
 
+    ipcRenderer.on('update-lexicon-for-gods-sake-please', () => {
+        $Language.Lexicon = {...$Language.Lexicon};
+    });
     let defInputs = [''];
     let searchWords = ''; let searchDefinitions = ''; let searchTags = ''; let lectFilter = '';
     $: searchWords, searchDefinitions, searchTags, lectFilter; // Update the search when these values change

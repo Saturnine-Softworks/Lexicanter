@@ -940,43 +940,64 @@ export const openLegacy = {
     },
 };
 
+const csv = require('csv-parser');
 /**
  * Imports a CSV file to the lexicon.
  * @param {boolean} headers Whether or not the CSV file has headers.
  * @param {number} words The column number of the words.
  * @param {number} definitions The column number of the definitions.
  */
-export async function importCSV(headers: boolean, words: number, definitions: number) {
-    const [file_handle] = await window.showOpenFilePicker();
-    await file_handle.requestPermission({ mode: 'read' });
-    const file = await file_handle.getFile();
-    if (!file.name.includes('.csv')) {
-        window.alert('The selected file was not a .csv file.');
-        return;
-    }
-    const r = headers;
-    const w = words - 1;
-    const d = definitions - 1;
+export async function importCSV(headers: boolean, words: number, definitions: number, pronunciations: number|false, tags: number|false) {
+    const data = [];
+    let file_path: string;
+    words -= 1;
+    definitions -= 1;
+    if (pronunciations) pronunciations -= 1;
+    if (tags) tags -= 1;
+    showOpenDialog(
+        {
+            title: 'Open CSV File',
+            properties: ['openFile'],
+        },
+        path => {
+            if (path === undefined) return;
+            if (path[0].split('.').pop() !== 'csv') {
+                vex.dialog.alert('A CSV file was not selected.');
+                return;
+            }
+            file_path = path;
+            fs.createReadStream(path[0])
+                .pipe(csv({
+                    headers: false,
+                    skipLines: headers? 1 : 0,
+                }))
+                .on('data', (row) => {
+                    data.push(row);
+                })
+                .on('end', () => {
+                    console.log(data);
+                    const lexicon: Lexc.Lexicon = { };
+                    data.forEach(row => {
+                        lexicon[row[words]] = <Lexc.Word> {
+                            pronunciations: <Lexc.EntryPronunciations> {
+                                General: {
+                                    ipa: pronunciations? row[pronunciations] : get_pronunciation(row[words], Lang().Lects[0]),
+                                    irregular: false,
+                                }
+                            },
+                            Senses: <Lexc.Sense[]> [{
+                                definition: row[definitions],
+                                lects: [Lang().Lects[0]],
+                                tags: tags? row[tags].split(/\s+/).map((tag: string) => tag.trim()) : [],
+                            }]
+                        };
+                    });
+                    console.log(lexicon);
+                    get(Language).Lexicon = lexicon;
+                    get(Language).Name = file_path[0].split('/')[file_path[0].split('/').length - 1].split('.')[0];
 
-    const data = await file.text();
-    const rows = data.split('\r');
-    const $lexicon = {};
-    for (const row of rows) {
-        if (r && row === rows[0]) continue;
-
-        const columns = row.split(',');
-        if (columns[0].includes('\n"')) {
-            columns[0] = columns[0].split('\n"')[1];
+                    ipcRenderer.emit('update-lexicon-for-gods-sake-please');
+                });
         }
-        columns[columns.length - 1] = columns[columns.length - 1].replace(/"$/g, '');
-
-        $lexicon[columns[w]] = [
-            get_pronunciation(columns[w], Lang().Lects[0]),
-            columns[d],
-            false,
-            [],
-        ];
-    }
-    Lang().Lexicon = $lexicon;
-    Lang().Name = file.name.split('.')[0];
+    );
 }

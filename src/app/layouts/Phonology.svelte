@@ -5,7 +5,11 @@
     $: trial_completion = complete_word(trial);
     let selectedLect: string = $Language.Lects[0];
     $: {
-        selectedLect = $Language.UseLects? selectedLect : 'General';
+        $Language.Lects;
+        selectedLect = $Language.UseLects? selectedLect : $Language.Lects[0];
+        if (!$Language.Lects.includes(selectedLect)) {
+            selectedLect = $Language.Lects[0];
+        }
     }
     $: test_pronunciation = get_pronunciation(ortho_test, selectedLect);
     let generated_words = Array(24).fill('');

@@ -5,7 +5,7 @@ const vex = require('vex-js');
 
 function applyRule(rule: string, input: string, categories: {[index: string]: string[]}): string {
     const caseSensitive = get(Language).CaseSensitive;
-    const flags = caseSensitive ? 'g' : 'gi';
+    const flags = caseSensitive? 'gi' : 'g';
 
     // eslint-disable-next-line prefer-const
     let [pattern, sub, context] = rule.split('/');
