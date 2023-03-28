@@ -50,8 +50,8 @@
 
     let lectSet: string[]
     $: { // Update the set of lects when the `senses` array changes
-        senses;
-        lectSet = Array.from(new Set(senses.map(sense => [...sense.lects]).flat()))
+        senses; $Language.Lects; $Language.UseLects;
+        lectSet = Array.from(new Set(senses.map(sense => [...sense.lects]).flat().filter(lect => $Language.Lects.includes(lect))))
     }
 
     function scrollIntoView(word: string) {
@@ -286,7 +286,7 @@
                 <input id="wrd-input" type="text"
                     bind:value={$wordInput}
                     on:input={() => {
-                        Object.keys($pronunciations).forEach(lect => {
+                        lectSet.forEach(lect => {
                             $pronunciations[lect] = get_pronunciation($wordInput, lect);
                         });
                     }}
@@ -320,7 +320,7 @@
                     />
                 {/each}
                 <button class="hover-highlight hover-shadow" id="add-sense-button" on:click={() => {
-                    senses = [...senses, {definition: '', tags: '', lects: []}];
+                    senses = [...senses, {definition: '', tags: '', lects: [...$Language.Lects]}];
                 }}>Add Sense</button>
                 {#if !($wordInput in $Language.Lexicon)}
                     <button class="hover-highlight hover-shadow" id="add-word-button" on:click={() => addWord(false)}>Add Word</button>

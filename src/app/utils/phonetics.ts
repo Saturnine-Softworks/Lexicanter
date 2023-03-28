@@ -15,6 +15,7 @@ const Lang = () => get(Language);
  * @returns {string}
  */
 export function get_pronunciation(word: string, lect: string): string {
+    console.log('Requested pronunciation for ' + word + ' in ' + lect + '.');
     const rules = Lang().Pronunciations[lect];
     const settings = parseRules(rules);
     return applyRules(settings.rules, word, settings.categories);
