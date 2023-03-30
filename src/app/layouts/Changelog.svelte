@@ -15,6 +15,11 @@
             </p>
 
             <br><hr/><br>
+            <p><u>Patch 2.0.13</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Linux support!
+            <br><br>
+            </p>
             <p><u>Patch 2.0.12</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a reported bug which caused HTML export to fail. Expect expanded HTML export options in the future. <br>
