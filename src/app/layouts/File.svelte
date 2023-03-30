@@ -270,10 +270,13 @@
             <p>HTML</p>
             <div class="row narrow">
                 <div class="column">
-                    <button on:click={saveAs.html.all} class="hover-highlight hover-shadow">Everything</button>
+                    <button on:click={saveAs.html.lexicon} class="hover-highlight hover-shadow">Lexicon Only</button>
                 </div>
                 <div class="column">
-                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">Docs Only</button>
+                    <button on:click={saveAs.html.all} class="hover-highlight hover-shadow">Lexicon & Docs</button>
+                </div>
+                <div class="column">
+                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">Documentation Only</button>
                 </div>
             </div>
             <button on:click={saveAs.txt} class="hover-highlight hover-shadow">Text File</button>

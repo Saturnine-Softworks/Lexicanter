@@ -74,13 +74,7 @@
         {/each}
         {#if $Language.UseLects}        
             <p class="lect">
-                {(()=>{
-                    let s = '';
-                    for (let lect of Sense.lects) {
-                        s += lect + ', ';
-                    }
-                    return s.slice(0, -2);
-                })()}
+                {Sense.lects.join(', ')}
             </p>
         {/if}
         <p>{@html markdownToHtml(Sense.definition)}</p>

@@ -15,7 +15,17 @@
             </p>
 
             <br><hr/><br>
-
+            <p><u>Patch 2.0.12</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Fixed a reported bug which caused HTML export to fail. Expect expanded HTML export options in the future. <br>
+                • Minor optimizations. 
+            <br><br>
+            </p>
+            <p><u>Patch 2.0.11</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Fixed a reported bug which caused a semi-rare soft-crash in certain cases when dealing with multiple lects. Again.
+            <br><br>
+            </p>
             <p><u>Patch 2.0.10</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a reported bug which caused a semi-rare soft-crash in certain cases when dealing with multiple lects. <br>
