@@ -9,6 +9,7 @@
     "start": "npm run precompile && electron .",
     "build-mac": "npm run precompile && electron-builder --mac --publish never",
     "build-win": "npm run precompile && electron-builder --win --publish never",
+    "build-linux": "npm run precompile && electron-builder --linux --publish never",
     "publish": "npm run precompile && bash bash/publish.bash",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
@@ -56,6 +57,7 @@
     "csv-parser": "^3.0.0",
     "electron-updater": "^5.3.0",
     "marked": "^4.3.0",
+    "sass": "^1.60.0",
     "vex-js": "^4.1.0"
   },
   "devDependencies": {
