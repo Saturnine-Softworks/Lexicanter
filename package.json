@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
@@ -29,6 +29,7 @@
       "icon": "src/res/alembic.icns"
     },
     "linux": {
+      "target": "AppImage",
       "icon": "src/res/alembic.png",
       "category": "Office"
     },
