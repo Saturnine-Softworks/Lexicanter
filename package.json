@@ -28,6 +28,10 @@
     "mac": {
       "icon": "src/res/alembic.icns"
     },
+    "linux": {
+      "icon": "src/res/alembic.png",
+      "category": "Office"
+    },
     "nsis": {
       "installerIcon": "src/res/alembic.ico",
       "installerHeaderIcon": "src/res/alembic.ico"
