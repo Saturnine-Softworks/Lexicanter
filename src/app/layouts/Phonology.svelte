@@ -13,6 +13,7 @@
     }
     $: test_pronunciation = get_pronunciation(ortho_test, selectedLect);
     let generated_words = Array(24).fill('');
+
 </script>
 <!-- Phonology Tab -->
 <div class="tab-pane">
@@ -62,21 +63,20 @@
                         {/each}
                     </select>
                 {/if}
-                <textarea 
-                    class="prelined" rows="26" style="text-align: left" 
-                    on:blur={() => writeRomans(selectedLect)} 
-                    bind:value={$Language.Pronunciations[selectedLect]} 
+                <textarea class="prelined" rows="24" style="text-align: left" 
+                    on:blur={() => writeRomans(selectedLect)}
+                    bind:value={$Language.Pronunciations[selectedLect]}
                 />
             </label>
             <br><br>
             <label>Orthography Testing
                 <textarea 
-                    class="prelined" rows="4" 
+                    class="prelined" rows="2" 
                     bind:value={ortho_test}
                 />
             </label>
             <textarea
-                class="pronunciation"
+                class="pronunciation" rows="2"
                 bind:value={test_pronunciation}
                 readonly
             />

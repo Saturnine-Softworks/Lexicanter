@@ -214,9 +214,13 @@ export const saveAs = {
                 .join(',') // comma-separated
             ).join('\r\n'); // rows starting on new lines
         };
-        const arr_data = [['Word', 'Pronunciation', 'Definition']];
+        const arr_data = [['Word', 'Pronunciations', 'Definitions']];
         for (const key in $lexicon) {
-            arr_data.push([key, $lexicon[key][0], $lexicon[key][1]]);
+            arr_data.push([
+                key, 
+                Object.entries($lexicon[key].pronunciations).map(([lect, {ipa}]) => lect + ': ' + ipa).join(' — '), 
+                $lexicon[key].Senses.map(sense => sense.definition).join(' — ')
+            ]);
         }
         const export_data = array_to_csv(arr_data);
         const exports = new Blob([export_data]);
@@ -270,17 +274,17 @@ export const saveAs = {
             // Create export styles
             const styles = document.createElement('style');
             styles.innerHTML = fs.readFileSync(
-                `src${path.sep}styles${path.sep}index.css`,
+                path.resolve(`src${path.sep}styles${path.sep}index.css`),
                 'utf8'
             );
             const themeElement = document.createElement('style');
             themeElement.innerHTML = fs.readFileSync(
-                `src${path.sep}` + get(theme),
+                path.resolve(`src${path.sep}` + get(theme)),
                 'utf8'
             );
             const overrides = document.createElement('style');
             overrides.innerHTML = fs.readFileSync(
-                `src${path.sep}styles${path.sep}html_export.css`,
+                path.resolve(`src${path.sep}styles${path.sep}html_export.css`),
                 'utf8'
             );
     

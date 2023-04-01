@@ -1,11 +1,12 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
 
-  "include": ["src/**/**/*"],
+  "include": ["src/**/**/*", "plugin.config.js"],
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
+  "module": "es2022",
 
   "compilerOptions": {
     "types": ["svelte", "@types/wicg-file-system-access", "node"], // Adds the FileSystemAccess API types
-    "lib": ["es2021", "dom"]
+    "lib": ["es2022", "dom"]
    }
 }

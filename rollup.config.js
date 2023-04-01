@@ -43,12 +43,11 @@ export default {
         svelte({
             preprocess: [
                 sveltePreprocess({ 
-                    sourceMap: !production,
+                    sourceMap: true,
                 }),
             ],
             compilerOptions: {
                 dev: !production
-				
             }
         }),
         // we'll extract any component CSS out into
@@ -66,17 +65,17 @@ export default {
         }),
         commonjs(),
         typescript({
-            sourceMap: !production,
-            inlineSources: !production
+            sourceMap: true,
+            inlineSources: true,
         }),
 
         // In dev mode, call `npm run start` once
         // the bundle has been generated
         !production && serve(),
 
-        // Watch the `public` directory and refresh the
+        // Watch the `src` directory and refresh the
         // browser on changes when not in production
-        !production && livereload('public'),
+        !production && livereload('src'),
 
         // If we're building for production (npm run build
         // instead of npm run dev), minify

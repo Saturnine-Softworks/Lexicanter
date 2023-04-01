@@ -73,6 +73,8 @@
             $Language.Phonotactics = contents.Phonotactics;
 
             errorMessage = 'There was a problem loading the inflection rules from the file.'
+            let inflections = contents.Inflections;
+            if (!contents.Inflections.categories) inflections.categories = '';
             $Language.Inflections = contents.Inflections;
 
             errorMessage = 'There was a problem loading the etymology data from the file.'

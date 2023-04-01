@@ -28,7 +28,7 @@
         $Language.Lexicon; 
         $Language.ShowEtymology; $Language.Etymologies; 
         $Language.ShowInflection; $Language.Inflections; 
-        $Language.Alphabet; $Language.Pronunciations;
+        $Language.Alphabet;
         keys;
         (() => {
             alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)

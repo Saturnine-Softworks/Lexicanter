@@ -13,7 +13,7 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
     let result = input;
 
     //SECTION - Preprocess the rule
-    const unionRule = /\{(.+)\}/g;
+    const unionRule = /\{(.+?)\}/g;
     const boundaryRule = /\^|#/g;
     const negativeRule = /\{!(.+(?:\s+.+)*)\}/g;
     const commaUnionRule = /\s*,\s*/g;
@@ -50,11 +50,15 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
         sub = sub.replace(match, Symbols[i]);
         i++;
     });
+    context.match(unionRule)?.forEach((match) => {
+        categories[Symbols[i]] = match.replace(unionRule, '$1').split(commaUnionRule);
+        context = context.replace(match, Symbols[i]);
+        i++;
+    });
 
     pattern = pattern
         .replaceAll(boundaryRule, '\\s')
         .replaceAll(negativeRule, '(?:(?!$1).)')
-        .replaceAll(commaUnionRule, '|')
         .replaceAll(spaceRule, '')
     ;
     sub = sub
@@ -63,8 +67,6 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
     context = context
         .replaceAll(boundaryRule, '\\s')
         .replaceAll(negativeRule, '(?:(?!$1).)')
-        .replaceAll(unionRule, '(?:$1)')
-        .replaceAll(commaUnionRule, '|')
         .replaceAll(spaceRule, '')
     ;
 
@@ -174,7 +176,12 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
             const slice = getSlice(match);
             result = result.replace(slice, sub.replaceAll('_', slice));
         });
-    } else result = result.replaceAll(new RegExp(regString, flags), `$1${sub}$2`);
+    } else {
+        result;
+        regString;
+        result = result.replaceAll(new RegExp(regString, flags), `$1${sub}$2`);
+        result;
+    }
     
     if (!!subCatMap[0] && !!patternCatMap[0]) {
         let catMap: string[][] = [];
@@ -255,7 +262,10 @@ export function parseRules(rules: string): {rules: string[], categories: {[index
                     ? rule + '_'
                     : rule + '/_'
             )
-            .map(rule => rule.split(/(?:\/|>)/).map(part => part.trim()).join('/')),
+            .map(rule => rule.split(/(?:\/|>)/)
+                .map(part => part.trim())
+                .join('/'))
+            .filter(rule => rule.match(/^.+\/.*\/.*_.*$/) || rule.match(/^.+\/.*\/.*$/)),
         categories: Object.fromEntries(
             rules
                 .split('\n')
@@ -273,9 +283,9 @@ export function parseRules(rules: string): {rules: string[], categories: {[index
 
 
 /* const rules = `
-{a, e} > {i, o} / _s
+a > e / {a, b}_{a}
 `;
-const input = 'mesarase';
+const input = 'aaa';
 console.log(
     input, '-->',
     applyRules(parseRules(rules).rules, input, parseRules(rules).categories),

@@ -137,18 +137,29 @@
     <div class='row' style='height: 92vh'>
         <div class='container column scrolled'>
             {#each $Language.Inflections as inflection, i}
-                <label>Tags
-                    <div class="narrow">
-                        <textarea style="height: 1" on:change={ (e) => changeTags(e, i) } value={inflection.tags.join(' ')} />
+                <div class="row" style="width:66%">
+                    <div class="column">
+                        <label>Tags
+                            <div>
+                                <textarea rows="1" on:change={ (e) => changeTags(e, i) } value={inflection.tags.join(' ')} />
+                            </div>
+                        </label>
+                        <label>RegEx Filter
+                            <div>
+                                <p style='display: inline'>/</p>
+                                <input style='display: inline' type='text' bind:value={inflection.filter} />
+                                <p style='display: inline'>/</p>
+                            </div>
+                        </label>
                     </div>
-                </label>
-                <label>RegEx Filter
-                    <div class='narrow'>
-                        <p style='display: inline'>/</p>
-                        <input style='display: inline' type='text' bind:value={inflection.filter} />
-                        <p style='display: inline'>/</p>
+                    <div class="column">
+                        <label>Rule Categories
+                            <div>
+                                <textarea class="text-left" rows="3" bind:value={inflection.categories}></textarea>
+                            </div>
+                        </label>
                     </div>
-                </label>
+                </div>
                 <div class='codex-editor' id={`inflection ${i}`} style='font-family: Gentium'></div>
                 <div class="narrow">
                     <button class='hover-highlight hover-shadow' style='display: inline' on:click={()=>{
@@ -175,6 +186,7 @@
                         {
                             tags: [],
                             filter: '.+',
+                            categories: '',
                             tables: {
                                 blocks: [
                                     {
