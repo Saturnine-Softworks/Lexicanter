@@ -15,6 +15,16 @@
             </p>
 
             <br><hr/><br>
+
+            <p><u>Patch 2.0.14</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Fixed CSV export. <br>
+                • Fixed a reported bug with HTML export. <br>
+                • Fixed some reported and unreported issues with the sound change engine. <br>
+                • There is now a text input designated for specifying categories for sound changes in an inflection group, to make everyone's life easier.
+                • Minor optimizations and performance improvements.
+            <br><br>
+            </p>
             <p><u>Patch 2.0.13</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Linux support!
