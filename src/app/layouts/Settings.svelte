@@ -49,7 +49,7 @@
         userData(user_path => {
             fs.writeFile(user_path + path.sep + 'theme.txt', $theme, err => {
                 if (err) { 
-                    window.alert('There was a problem loading your theme. Please contact the developer for assistance.'); 
+                    vex.dialog.alert('There was a problem loading your theme. Please contact the developer for assistance.'); 
                     console.log(err) 
                 };
             });
@@ -67,7 +67,7 @@
         await file_handle.requestPermission({ mode: 'read' });
         let file = await file_handle.getFile();
         if (!file.name.includes('.css')) {
-            window.alert('The selected file was not a .css file.');
+            vex.dialog.alert('The selected file was not a .css file.');
             return;
         }
         let contents = await file.text();
