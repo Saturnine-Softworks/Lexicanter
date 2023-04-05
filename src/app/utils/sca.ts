@@ -265,7 +265,7 @@ export function parseRules(rules: string): {rules: string[], categories: {[index
             .map(rule => rule.split(/(?:\/|>)/)
                 .map(part => part.trim())
                 .join('/'))
-            .filter(rule => rule.match(/^.+\/.*\/.*_.*$/) || rule.match(/^.+\/.*\/.*$/)),
+            .filter(rule => rule.match(/^.+?\/.*?\/.*?_.*?$/) || rule.match(/^.*?\/.+?\/.*?_.*?$/)),
         categories: Object.fromEntries(
             rules
                 .split('\n')

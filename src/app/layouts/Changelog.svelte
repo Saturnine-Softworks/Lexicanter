@@ -16,6 +16,10 @@
 
             <br><hr/><br>
 
+            <p><u>Patch 2.0.16</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Fixed a small bug with the new sound change engine. <br>
+            <br><br>
             <p><u>Patch 2.0.15</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a reported bug with HTML export. <br>
