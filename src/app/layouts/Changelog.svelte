@@ -16,6 +16,12 @@
 
             <br><hr/><br>
 
+            <p><u>Patch 2.0.17</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Fixed an a reported bug with the inflections generation. <br>
+                • Fixed an issue with tag searching. <br>
+                • The font weight has been changed to an appropriate <i>Book</i> weight to improve readability on some systems and to many eyes.
+            <br><br>
             <p><u>Patch 2.0.16</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a small bug with the new sound change engine. <br>

@@ -230,6 +230,7 @@
                     let needs_exact_match = false;
                     let has_exact_match = false;
                     for (let tag of $Language.Lexicon[word].Senses.map(sense => sense.tags).flat()) {
+                        tag = tag.toLowerCase();
                         for (let a of tags_search) {
                             // debug.log('`a` | `tag` : ' + a + ' | ' + tag, false)
                             // tags
