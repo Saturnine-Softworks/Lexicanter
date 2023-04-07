@@ -15,14 +15,15 @@
     import { saveFile } from './utils/files'
     import * as diagnostics from './utils/diagnostics'
     import Inflection from './layouts/Inflection.svelte';
+    import Wiki from './layouts/Wiki.svelte';
 
     // Debug block
     $: {
         // diagnostics.debug.logObj($Language, 'An update was made to the Language store', false);
     }
 
-    const tabs = [Lexicon, Etymology, Phrasebook, Inflection, Phonology, Documentation, File, Settings, Changelog]
-    const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Inflection', 'Phonology', 'Documentation', 'File', 'Settings', 'Changelog'];
+    const tabs =     [ Lexicon,   Etymology,   Phrasebook,   Inflection,   Phonology,   Documentation,   File,   Settings,   Changelog, Wiki ];
+    const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Inflection', 'Phonology', 'Documentation', 'File', 'settings', 'history', 'help'];
 
     /**
      * This block listens for the 'app-close' event, which is sent by the main
@@ -50,13 +51,14 @@
 </script>
 
 <link rel="stylesheet" href="{$theme}" />
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <body id="body" spellcheck="false">
     <div class='tab-container'>
         <p class="window-control">
-            <button class="hover-highlight close" on:click={() => ipcRenderer.send('buttonclose')}>╳</button>
-            <button class="hover-highlight minimize" on:click={() => ipcRenderer.send('minimize')}>—</button>
-            <button class="hover-highlight maximize" on:click={() => ipcRenderer.send('maximize')}>⛶</button>
+            <button class="hover-highlight material-icons close" on:click={() => ipcRenderer.send('buttonclose')}>close</button>
+            <button class="hover-highlight material-icons minimize" on:click={() => ipcRenderer.send('minimize')}>remove</button>
+            <button class="hover-highlight material-icons maximize" on:click={() => ipcRenderer.send('maximize')}>fullscreen</button>
         </p>
         <div class="button-container">
             <p class="version-info">v{version}-{platform} —</p>
@@ -66,7 +68,13 @@
                     || (tab === 'Etymology' && $Language.ShowEtymology)
                     || (tab === 'Inflection' && $Language.ShowInflection)
                 }
-                    <button class:selected={$selectedTab === i} class='hover-highlight'
+                    <button 
+                        class:selected={$selectedTab === i} 
+                        class='hover-highlight'
+                        style={['settings', 'history', 'help'].includes(tab)
+                            ? 'font-family: Material Icons; font-size: 1em; vertical-align: bottom; height: 1.8em;'
+                            : ''
+                        }
                         on:click={() => $selectedTab = i}
                     > {tab}
                     </button>

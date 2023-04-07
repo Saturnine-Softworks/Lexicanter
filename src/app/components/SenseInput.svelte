@@ -9,6 +9,7 @@
     const dispatch = createEventDispatcher();
     const remove = () => dispatch('remove');
     const commit = () => dispatch('commit');
+    let tagSelector = 'existing tags'
 
     $: tags;
     export let lects: string[];
@@ -44,8 +45,34 @@
         }}></textarea>
     </label>
     <br>
-    <label for="tags">Tags</label>
-    <textarea id="tags" rows="1" bind:value={tags}></textarea>
+    <label>Tags
+        <div>
+            <textarea 
+                rows="1"
+                bind:value={tags}
+            />
+            <select
+                style:vertical-align=top
+                bind:value={tagSelector}
+                on:change={()=>{
+                    tags = tags + tagSelector === 'existing tags' ? '' : ` ${tagSelector}`;
+                    tagSelector = 'existing tags';
+                }}
+            >
+                <option value="existing tags">Choose Tags</option>
+                {#each Array.from(
+                    new Set( Object.keys($Language.Lexicon)
+                        .map((key) =>
+                            $Language.Lexicon[key].Senses
+                                .map(sense => sense.tags)
+                        ).flat(Infinity)
+                    )
+                ) as tag}
+                    <option value={tag}>{tag}</option>
+                {/each}
+            </select>
+        </div>
+    </label>
     <br>
     {#if $Language.UseLects}
         <label>Lects<br>

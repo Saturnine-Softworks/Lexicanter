@@ -14,8 +14,23 @@
                 or by buying me a <a rel="noreferrer" target="_blank" href="https://ko-fi.com/saturnine_softworks">coffee</a>!
             </p>
 
+            <br><br>
+
+            Below is a list of all changes made to the app since version 1.8, which is when the changelog was first added.<br>
+            If you're looking for more information about how to use the app, check the Help tab or visit the 
+            <a rel="noreferrer" target="_blank" href="https://github.com/Saturnine-Softworks/Lexicanter/wiki">Wiki</a>.<br> There is also
+            an overview <a rel="noreferrer" target="_blank" href="https://www.youtube.com/watch?v=6_AwCC4XlvU&t=151s">tutorial video</a> for release 2.0.
+            <br> If you're still having trouble, or need to contact the developer, visit us in the 
+            <a rel="noreferrer" target="_blank" href="https://discord.gg/uDk2XDhh8K">Discord server</a>. 
+
             <br><hr/><br>
 
+            <p><u>Patch 2.0.18</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • By request, added a new dropdown to Tag inputs which allows you to select from pre-existing tags in your lexicon. <br>
+                • By request, added a new Help tab. It hosts the same information as the wiki, but is accessible offline. <br>
+                • The Settings, Changelog, and Help tabs, as well as the window control buttons, now use Material Icons. 
+            <br><br>
             <p><u>Patch 2.0.17</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed an a reported bug with the inflections generation. <br>
