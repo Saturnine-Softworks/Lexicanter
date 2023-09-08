@@ -2,9 +2,8 @@ import { get, writable, type Writable } from 'svelte/store';
 import EditorJS, { type OutputData } from '@editorjs/editorjs';
 import type * as Lexc from './types'; 
 
-// Initial state for the language data
-export const Language: Writable<Lexc.Language> = writable({
-    Version: '2.0.0',
+const Default: Lexc.Language = {
+    Version: '2.1.0',
     Name: 'Unnamed Language',
     CaseSensitive: false,
     IgnoreDiacritics: true,
@@ -20,6 +19,16 @@ export const Language: Writable<Lexc.Language> = writable({
     Pronunciations: <Lexc.Pronunciations> {
         General: 'place > holder'
     },
+    Orthographies: <Lexc.Orthography[]> [{
+        name: 'Romanization',
+        font: 'Gentium',
+        root: 'rom',
+        lect: 'General',
+        rules: 'Your romanized orthography is the base form of input.',
+        display: true
+    }],
+    ShowOrthography: false,
+    ShowPronunciation: true,
     Phonotactics: <Lexc.Phonotactics> {
         General: <Lexc.PhonotacticsLect> {
             Onsets: '',
@@ -29,13 +38,23 @@ export const Language: Writable<Lexc.Language> = writable({
             Illegals: '',
         }
     },
+    UseAdvancedPhonotactics: false,
+    AdvancedPhonotactics: <Lexc.AdvancedPhonotactics> {
+        Categories: { },
+        Syllables: [],
+    },
     Lects: ['General'],
     Phrasebook: <Lexc.Phrasebook> { },
     Docs: <OutputData> {
         blocks: [ ]
     },
-    Diagnostics: <Lexc.Diagnostic[]> [ ]
-});
+    Diagnostics: <Lexc.Diagnostic[]> [ ],
+    FileTheme: 'default',
+};
+export const defaultLanguage: Writable<Lexc.Language> = writable(Default);
+
+// Initial state for the language data
+export const Language: Writable<Lexc.Language> = writable(structuredClone(Default));
 
 export const selectedTab = writable(0);
 
@@ -64,10 +83,12 @@ export const phrasePronunciations: Writable<PronunciationInputs> = writable((()=
 export const categoryInput = writable('');
 export const selectedCategory = writable('');
 
-export const docsEditor = writable(new EditorJS);
+export const docsEditor: Writable<EditorJS> = writable(new EditorJS());
 
 export const theme = writable('styles/dark.css');
 export const autosave = writable(true);
 export const fileLoadIncrement = writable(0);
 
 export const hideDropdowns = writable(false);
+
+export const referenceLanguage: Writable<Lexc.Language>|Writable<boolean> = writable(false);

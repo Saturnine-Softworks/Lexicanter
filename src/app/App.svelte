@@ -11,19 +11,21 @@
 	import File from './layouts/File.svelte';
 	import Settings from './layouts/Settings.svelte';
     import Changelog from './layouts/Changelog.svelte';
-    import { theme, autosave, selectedTab, Language } from './stores';
+    import { theme, autosave, selectedTab, Language, referenceLanguage } from './stores';
     import { saveFile } from './utils/files'
     import * as diagnostics from './utils/diagnostics'
     import Inflection from './layouts/Inflection.svelte';
+    import Orthography from './layouts/Orthography.svelte';
     import Wiki from './layouts/Wiki.svelte';
+    import Reference from './layouts/Reference.svelte';
 
     // Debug block
     $: {
         // diagnostics.debug.logObj($Language, 'An update was made to the Language store', false);
     }
 
-    const tabs =     [ Lexicon,   Etymology,   Phrasebook,   Inflection,   Phonology,   Documentation,   File,   Settings,   Changelog, Wiki ];
-    const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Inflection', 'Phonology', 'Documentation', 'File', 'settings', 'history', 'help'];
+    const tabs     = [ Lexicon,   Etymology,   Phrasebook,   Inflection,   Phonology,   Orthography,   Documentation,   File,   Settings,   Changelog, Wiki]
+    const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Inflection', 'Phonology', 'Orthography', 'Documentation', 'File', 'settings', 'history', 'help'];
 
     /**
      * This block listens for the 'app-close' event, which is sent by the main
@@ -50,41 +52,54 @@
     ipcRenderer.invoke('platform').then((p: string) => platform = p);
 </script>
 
-<link rel="stylesheet" href="{$theme}" />
+<link rel="stylesheet" href="{$Language.FileTheme === 'default'? $theme : $Language.FileTheme}" />
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <body id="body" spellcheck="false">
     <div class='tab-container'>
-        <p class="window-control">
-            <button class="hover-highlight material-icons close" on:click={() => ipcRenderer.send('buttonclose')}>close</button>
-            <button class="hover-highlight material-icons minimize" on:click={() => ipcRenderer.send('minimize')}>remove</button>
-            <button class="hover-highlight material-icons maximize" on:click={() => ipcRenderer.send('maximize')}>fullscreen</button>
-        </p>
-        <div class="button-container">
-            <p class="version-info">v{version}-{platform} —</p>
-            {#each tab_btns as tab, i}
-            <!-- REVIEW - Automate the inclusion/exclusion of advanced feature tabs -->
-                {#if (tab !== 'Etymology' && tab !== 'Inflection') 
-                    || (tab === 'Etymology' && $Language.ShowEtymology)
-                    || (tab === 'Inflection' && $Language.ShowInflection)
-                }
-                    <button 
-                        class:selected={$selectedTab === i} 
-                        class='hover-highlight'
-                        style={['settings', 'history', 'help'].includes(tab)
-                            ? 'font-family: Material Icons; font-size: 1em; vertical-align: bottom; height: 1.8em;'
-                            : ''
+        <div class="row">
+            <div class="column" style={$referenceLanguage? 'width: 66%' : 'width: 100%'}>
+                <p class="window-control">
+                    <button class="hover-highlight close material-icons" on:click={() => ipcRenderer.send('buttonclose')}>close</button>
+                    <button class="hover-highlight minimize material-icons" on:click={() => ipcRenderer.send('minimize')}>remove</button>
+                    <button class="hover-highlight maximize material-icons" on:click={() => ipcRenderer.send('maximize')}>fullscreen</button>
+                </p>
+                <div class="button-container">
+                    {#if !$referenceLanguage}
+                        <p class="version-info">v{version}-{platform} —</p>
+                    {/if}
+                    {#each tab_btns as tab, i}
+                        {#if (tab !== 'Etymology' && tab !== 'Inflection' && tab !== 'Orthography')
+                            || (tab === 'Etymology' && $Language.ShowEtymology)
+                            || (tab === 'Inflection' && $Language.ShowInflection)
+                            || (tab === 'Orthography' && $Language.ShowOrthography)
                         }
-                        on:click={() => $selectedTab = i}
-                    > {tab}
-                    </button>
-                {/if}
-            {/each}
-        </div>
-        {#each tabs as tab, i}
-            <div class:collapsed={$selectedTab !== i}>
-                <svelte:component this={tab}/>
+                            <button 
+                                class:selected={$selectedTab === i} 
+                                class='hover-highlight tab-button'
+                                style={
+                                    ['settings', 'history', 'help'].includes(tab)
+                                        ? 'font-family: "Material Icons"; font-size: 1em; vertical-align: bottom; height: 1.8em;'
+                                        : ''
+                                }
+                                on:click={() => $selectedTab = i}
+                            > {tab} </button>
+                        {/if}
+                    {/each}
+                </div>
+                {#each tabs as tab, i}
+                    <div class:collapsed={$selectedTab !== i}>
+                        <svelte:component this={tab}/>
+                    </div>
+                {/each}
             </div>
-        {/each}
+
+            {#if $referenceLanguage}
+                <div class="column tab-pane reference" style="width: 33%">
+                    <Reference/>
+                </div>
+            {/if}
+
+        </div>
     </div>
 </body>

@@ -3,13 +3,14 @@
     import { get_pronunciation } from '../utils/phonetics';
     import { debug } from '../utils/diagnostics';
     import { createEventDispatcher } from 'svelte';
+    import TagSelector from './TagSelector.svelte';
     export let definition = '';
     export let tags: string;
     export let index: number | 'hide';
     const dispatch = createEventDispatcher();
     const remove = () => dispatch('remove');
     const commit = () => dispatch('commit');
-    let tagSelector = 'existing tags'
+    let tagSelector = 'existing tags';
 
     $: tags;
     export let lects: string[];
@@ -50,27 +51,14 @@
             <textarea 
                 rows="1"
                 bind:value={tags}
-            />
-            <select
-                style:vertical-align=top
-                bind:value={tagSelector}
-                on:change={()=>{
-                    tags = tags + tagSelector === 'existing tags' ? '' : ` ${tagSelector}`;
-                    tagSelector = 'existing tags';
-                }}
-            >
-                <option value="existing tags">Choose Tags</option>
-                {#each Array.from(
-                    new Set( Object.keys($Language.Lexicon)
-                        .map((key) =>
-                            $Language.Lexicon[key].Senses
-                                .map(sense => sense.tags)
-                        ).flat(Infinity)
-                    )
-                ) as tag}
-                    <option value={tag}>{tag}</option>
-                {/each}
-            </select>
+            />  
+            <TagSelector on:select = {
+                e => tags += e.detail
+                    ? tags
+                        ? ' ' + e.detail
+                        : e.detail
+                    : '' 
+            }/>
         </div>
     </label>
     <br>

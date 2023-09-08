@@ -1,3 +1,4 @@
+<svelte:options immutable/>
 <script lang='ts'>
     import { createEventDispatcher } from "svelte";
     import { draw, blur } from 'svelte/transition';

@@ -25,10 +25,11 @@
 
     let alphabetized: string[];
     $: { // Update the alphabetized lexicon when conditions change
-        $Language.Lexicon; 
+        $Language; 
+        $Language.Lexicon; $Language.Pronunciations;
         $Language.ShowEtymology; $Language.Etymologies; 
         $Language.ShowInflection; $Language.Inflections; 
-        $Language.Alphabet;
+        $Language.Alphabet; $Language.Orthographies;
         keys;
         (() => {
             alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
@@ -230,7 +231,6 @@
                     let needs_exact_match = false;
                     let has_exact_match = false;
                     for (let tag of $Language.Lexicon[word].Senses.map(sense => sense.tags).flat()) {
-                        tag = tag.toLowerCase();
                         for (let a of tags_search) {
                             // debug.log('`a` | `tag` : ' + a + ' | ' + tag, false)
                             // tags

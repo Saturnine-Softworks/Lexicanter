@@ -9,6 +9,11 @@
     import { debug, logAction } from '../utils/diagnostics';
     import { get_pronunciation } from '../utils/phonetics';
     import Etymology from './Etymology.svelte';
+    import Orthography from './Orthography.svelte';
+    import TagSelector from '../components/TagSelector.svelte';
+
+    let tag: string = '';
+
     /**
      * When the app loads, this block runs to check if the user has
      * previously set a theme preference. If not, it creates a file in the
@@ -145,7 +150,24 @@
                     sense.lects.push(name);
                 }
             })
-        })
+        });
+        Object.keys($Language.Phrasebook).forEach(category => {
+            Object.keys($Language.Phrasebook[category]).forEach((p: string, i: number) => {
+                const phrase = $Language.Phrasebook[category][p];
+                if (phrase.pronunciations.hasOwnProperty(lect)) {
+                    phrase.pronunciations[name] = phrase.pronunciations[lect];
+                    delete phrase.pronunciations[lect];
+                }
+                if (phrase.lects.includes(lect)) {
+                    $Language.Phrasebook[category][p].lects.splice(phrase.lects.indexOf(lect), 1);
+                    $Language.Phrasebook[category][p].lects.push(name);
+                }
+            })
+        });
+
+        $Language.Orthographies.forEach(ortho => {
+            if (ortho.lect === lect) ortho.lect = name;
+        });
         $Language.Pronunciations[name] = $Language.Pronunciations[lect];
         if ($pronunciations.hasOwnProperty(lect)) {
             $pronunciations[name] = $pronunciations[lect];
@@ -171,6 +193,25 @@
                     $Language.Lexicon[word].Senses.splice(i, 1);
                 }
             })
+        });
+        Object.keys($Language.Phrasebook).forEach(category => {
+            Object.keys($Language.Phrasebook[category]).forEach((p: string, i: number) => {
+                const phrase = $Language.Phrasebook[category][p];
+                if (phrase.pronunciations[lect]) {
+                    delete phrase.pronunciations[lect];
+                }
+                if (phrase.lects.includes(lect)) {
+                    $Language.Phrasebook[category][p].lects.splice(phrase.lects.indexOf(lect), 1);
+                }
+                if (!phrase.lects) {
+                    const {[p]: _, ...rest} = $Language.Phrasebook[category];
+                    $Language.Phrasebook[category] = rest;
+                }
+            })
+        });
+
+        $Language.Orthographies.forEach(ortho => {
+            if (ortho.lect === lect) ortho.lect = $Language.Lects[0];
         });
         $Language.Lexicon = {...$Language.Lexicon};
     }
@@ -287,7 +328,6 @@
     <div class="row" style="height: 95vh">
         <div class="container column scrolled" style="height: 90vh;">
             <br><br>
-            
             <p>Appearance Settings</p> <br>
             <label>Color Theme
                 <select 
@@ -303,6 +343,7 @@
                         <option value="styles/marine.css">☾ Marine</option>
                         <option value="styles/glade.css">☾ Glade</option>
                         <option value="styles/pomegranate.css">☾ Pomegranate</option>
+                        <option value="styles/magnolia.css">☾ Magnolia</option>
                         <option value="styles/juniper.css">☀ Juniper</option>
                         <option value="styles/leatherbound.css">☀ Leatherbound</option>
                         <option value="styles/wisteria.css">☀ Wisteria</option>
@@ -311,11 +352,18 @@
                         <option value="styles/purple_maar.css">☾ Purple Maar</option>
                         <option value="styles/terminal_green.css">☾ Terminal</option>
                         <option value="styles/midnight.css">☾ Midnight</option>
+                        <option value="styles/crabapple.css">☾ Crabapple</option>
                         <option value="styles/bone.css">☀ Bone</option>
+                    </optgroup>
+                    <optgroup label="The Holiday Collection">
+                        <option value="styles/eostre2023.css">☀ Ēostre 2023</option>
                     </optgroup>
                 </select>
             </label>
-            <br><br>
+            <br>
+            <button class="hover-highlight hover-shadow" on:click={()=>{$Language.FileTheme = $theme}}> Set Current Theme as Default for This File </button>
+            <button class="hover-highlight hover-shadow" on:click={()=>{$Language.FileTheme = 'default'}}> Clear File Theme </button>
+            <br>
             <button class="hover-highlight hover-shadow" on:click={custom_theme}> Load Custom Theme… </button>
 
             <br><hr/><br>
@@ -327,14 +375,52 @@
 
             <br><hr/><br>
 
+            <p>Lexicon Settings</p> <br>
+            <label>Manage Tags<br>
+                <TagSelector on:select={e => tag = e.detail? e.detail.trim() : ''}/>
+                <p>Selected: {tag}</p>
+                {#if !!tag}
+                    <button class="hover-highlight hover-shadow" on:click={()=>{
+                        Object.keys($Language.Lexicon).forEach(word => {
+                            $Language.Lexicon[word].Senses.forEach((sense, i) => {
+                                if (sense.tags.includes(tag)) {
+                                    $Language.Lexicon[word].Senses[i].tags.splice(sense.tags.indexOf(tag), 1);
+                                }
+                            });
+                        });
+                        tag = '';
+                    }}>Delete Tag</button>
+                    <button class="hover-highlight hover-shadow" on:click={()=>{
+                        vex.dialog.prompt({
+                            message: 'New tag name:',
+                            callback: (newName) => {
+                                if (newName) {
+                                    Object.keys($Language.Lexicon).forEach(word => {
+                                        $Language.Lexicon[word].Senses.forEach((sense, i) => {
+                                            if (sense.tags.includes(tag)) {
+                                                $Language.Lexicon[word].Senses[i].tags.splice(sense.tags.indexOf(tag), 1);
+                                                $Language.Lexicon[word].Senses[i].tags.push(newName);
+                                            }
+                                        });
+                                    });
+                                    tag = newName;
+                                }
+                            }
+                        });
+                    }}>Edit Tag</button>
+                {/if}
+            </label>
+
+            <br><hr/><br>
+
             <p>Advanced Settings</p> <br>
-            <label>Use Lects
+            <label>Show Multi-Lect Features
                 <input type="checkbox" bind:checked={$Language.UseLects} on:change={confirmUseLectsChange}/>
                 {#if $Language.UseLects}
                     {#each $Language.Lects as lect, lectIndex}
                         <div class="narrow">
                             <p style="display: inline-block" id={`${lectIndex}`}>{lect}</p>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={()=>{
+                            <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={() => {
                                 if ($Language.Lects.length === 1) {
                                     vex.dialog.alert('You cannot delete the last lect.');
                                     return;
@@ -349,7 +435,7 @@
                                     }
                                 });
                             }}> ⌫ </button>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={()=>{
+                            <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={() => {
                                 vex.dialog.prompt({
                                     message: 'Edit Lect Name',
                                     placeholder: `${lect}`,
@@ -362,13 +448,13 @@
                                     }
                                 })
                             }}> ✎ </button>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block;" on:click={()=>{
+                            <button class="hover-highlight hover-shadow" style="display: inline-block;" on:click={() => {
                                 vex.dialog.confirm({
                                     message: `Add all words in the lexicon to the lect ‘${lect}’?`,
                                     callback: function (response) {
                                         if (response) {
                                             for (let word in $Language.Lexicon) {
-                                                $Language.Lexicon[word].Senses.forEach(sense=>{
+                                                $Language.Lexicon[word].Senses.forEach(sense => {
                                                     if (!sense.lects.includes(lect)) {
                                                         sense.lects.push(lect);
                                                     }
@@ -400,9 +486,10 @@
                     }}> + Lect </button>
                 {/if}
             </label>
-
+            <label>Show Pronunciations
+                <input type="checkbox" bind:checked={$Language.ShowPronunciation}/>
+            </label>
             <br><br>
-
             <label>Show Etymology Features
                 <input type="checkbox" bind:checked={$Language.ShowEtymology}/>
                 {#if $Language.ShowEtymology}
@@ -433,6 +520,24 @@
             <br><br>
             <label>Show Automatic Inflection Features
                 <input type="checkbox" bind:checked={$Language.ShowInflection}/>
+            </label>
+            <br><br>
+            <label>Show Alternate Orthography Features
+                <input type=checkbox bind:checked={$Language.ShowOrthography}/>
+                {#if $Language.ShowOrthography}
+                    <label>Display Orthographies
+                        {#each $Language.Orthographies as orthography}
+                            <div class="row narrow">
+                                <div class=column style:align=right>
+                                    <input type=checkbox bind:checked={orthography.display}/>
+                                </div>
+                                <div class="column text-left">
+                                    <p>{orthography.name}</p>
+                                </div>
+                            </div>
+                        {/each}
+                    </label>
+                {/if}
             </label>
         </div>
     </div>

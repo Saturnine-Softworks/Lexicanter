@@ -13,7 +13,7 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
     let result = input;
 
     //SECTION - Preprocess the rule
-    const unionRule = /\{(?!!)(.+?)\}/g;
+    const unionRule = /\{(.+?)\}/g;
     const boundaryRule = /\^|#/g;
     const negativeRule = /\{!(.+(?:\s+.+)*)\}/g;
     const commaUnionRule = /\s*,\s*/g;
@@ -72,11 +72,9 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
 
     //SECTION - Construct RegExp rule string and map category appearances
     let regString = '(' + context.replace('_', `)${pattern}(`) + ')';
-    regString;
     Object.entries(categories).forEach(([symbol, values]: [string, string[]]) => {
         regString = regString.replaceAll(symbol, `(?:${values.join('|')})`);
     });
-    regString;
     const patternCatMap = pattern.split('').filter(char => char in categories);
     const subCatMap = sub.split('').filter(char => char in categories);
     const contextCatMap = context.split('').filter(char => char in categories);
@@ -226,6 +224,7 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
     ); */
     return result
         .replaceAll(nullRule, '')
+        .replaceAll('␠', ' ')
         .trim();
 }
 
@@ -285,9 +284,9 @@ export function parseRules(rules: string): {rules: string[], categories: {[index
 
 
 /* const rules = `
-m/jo/#_{e, i}
+a > e / {a, b}_{a}
 `;
-const input = 'ma';
+const input = 'aaa';
 console.log(
     input, '-->',
     applyRules(parseRules(rules).rules, input, parseRules(rules).categories),

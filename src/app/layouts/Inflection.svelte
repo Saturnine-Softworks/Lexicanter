@@ -46,7 +46,6 @@
                 },
                 minHeight: 30,
                 logLevel: LogLevels.ERROR,
-                onChange: saveEditors,
             }
             const editor = new EditorJS(config);
             editors.push(editor);
@@ -109,7 +108,6 @@
             },
             minHeight: 30,
             logLevel: LogLevels.ERROR,
-            onChange: saveEditors,
         }
         const editor = new EditorJS(config);
         editors.push(editor);
@@ -135,7 +133,7 @@
 </script>
 <div class='tab-pane' spellcheck="false">
     <div class='row' style='height: 92vh'>
-        <div class='container column scrolled'>
+        <div class='container column scrolled' on:mouseleave={saveEditors}>
             {#each $Language.Inflections as inflection, i}
                 <div class="row" style="width:66%">
                     <div class="column">

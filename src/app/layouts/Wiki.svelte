@@ -23,7 +23,7 @@
             {/each}
         </div>
 
-        <div class="column scrolled" style:height=100%>
+        <div class="column scrolled" style:height=100% style:text-align=left style:margin=3em style:margin-top=0em>
             {@html markdownToHtml(wikiInfo[page])}
         </div>
     </div>

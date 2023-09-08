@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { Language } from '../stores';
+    import { Language, referenceLanguage } from '../stores';
     import { alphabetize } from '../utils/alphabetize';
     import { debug } from '../utils/diagnostics';
     import type * as Lexc from '../types';
@@ -102,10 +102,10 @@
     let tree: Node;
     let width: number; let height: number;
     $: {
-        $Language; selectedEntry;
+        selectedEntry; $Language.Etymologies;
         tree = createTreeData();
-        width = window.innerWidth * .82;
-        height = window.innerHeight * .47;
+        width = window.innerWidth * .82 * ($referenceLanguage? .66 : 1);
+        height = window.innerHeight * .47
     };
 </script>
 
@@ -118,7 +118,7 @@
             <hr />
             <div class='search-container'>
                 {#if !search}
-                    <label for='search' style='position: absolute; top: 0.333em; left: 1em'>Search…</label>
+                    <label for='search' style='position: absolute; top: 0.333em; left: 1.2em'>Search…</label>
                 {/if}
                 <input id='search' type='text' class='search' style='margin: auto; width: 90%'
                     bind:value={search}
@@ -166,7 +166,7 @@
                          {height}
                          on:select={e => selectedEntry = e.detail}
                      />
-                     {#if selectedEntry in $Language.Lexicon}
+                    {#if selectedEntry in $Language.Lexicon}
                         <LexEntry word={selectedEntry} source={$Language.Lexicon[selectedEntry]} showEtymology={false}/>
                     {:else if Object.entries($Language.Relatives).some(([_, lex]) => Object.keys(lex).includes(selectedEntry))}
                         <LexEntry 

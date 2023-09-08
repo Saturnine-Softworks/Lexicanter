@@ -25,6 +25,19 @@
 
             <br><hr/><br>
 
+            <p><u>New in 2.1</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Introduced a plain text import feature for convenient clonging on the move. <br>
+                • Added a reference window for loading secondary files in read-only mode. <br>
+                • Support for custom fonts via new Orthographies feature. <br>
+                • Under-the-hood file structure adjustments and read logic improvements. <br>
+                • New phonological evolution tools! <br>
+                • An alternative type of word generator for more advanced syllable structures. <br>
+                • The option to save theme preferences on a file-by-file basis. <br>
+                • New themes: <i>Magnolia</i> by Saturnine, <i>Crabapple</i> by Maarz, and <i>Eostre 2023</i> (a holiday theme released for beta users earlier this year). <br>
+                • A number of bugs removed; probably some bugs added. Please report them if you find them! <br>
+            <br>
+
             <p><u>Patch 2.0.18</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • By request, added a new dropdown to Tag inputs which allows you to select from pre-existing tags in your lexicon. <br>
@@ -51,7 +64,7 @@
                 • Fixed CSV export. <br>
                 • Fixed a reported bug with HTML export. <br>
                 • Fixed some reported and unreported issues with the sound change engine. <br>
-                • There is now a text input designated for specifying categories for sound changes in an inflection group, to make everyone's life easier.
+                • There is now a text input designated for specifying categories for sound changes in an inflection group, to make everyone's life easier. <br>
                 • Minor optimizations and performance improvements.
             <br><br>
             </p>

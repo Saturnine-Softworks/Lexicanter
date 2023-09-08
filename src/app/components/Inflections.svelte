@@ -1,11 +1,12 @@
 <script lang='ts'>
-    import { Language, hideDropdowns } from "../stores";
+    import { Language, hideDropdowns, referenceLanguage } from "../stores";
     import * as diagnostics from "../utils/diagnostics";
     import { blur } from 'svelte/transition';
     import * as sca from "../utils/sca";
     import type { OutputBlockData } from "@editorjs/editorjs";
     export let word: string;
     export let tags: string[];
+    export let readFromReference: boolean = false;
     let show = false;
 
     function htmlToText(html: string) {
@@ -19,7 +20,7 @@
     $: {
         word; tags; $Language.Inflections; $Language.Lexicon;
         let categories = '';
-        data = structuredClone($Language.Inflections)
+        data = structuredClone((readFromReference && typeof $referenceLanguage === 'object')? $referenceLanguage.Inflections : $Language.Inflections)
             .filter(inflection => {
                 let filter: RegExp;
                 try {

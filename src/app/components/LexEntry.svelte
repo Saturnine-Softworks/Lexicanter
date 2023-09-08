@@ -1,17 +1,20 @@
+<svelte:options immutable/>
 <script lang="ts">
     import { Language } from '../stores';
     import type { Word } from '../types';
     import { createEventDispatcher } from 'svelte';
-    import { blur } from 'svelte/transition';
     import Pronunciations from './Pronunciations.svelte';
-    import Inflections from '../components/Inflections.svelte';
+    import Inflections from './Inflections.svelte';
     import { markdownToHtml } from '../utils/markdown';
-    import { debug } from '../utils/diagnostics.js';
+    import { debug } from '../utils/diagnostics';
+    import { applyRules, parseRules } from '../utils/sca';
+    import EntryLabel from './EntryLabel.svelte';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')
     export let word: string;
     export let source: Word;
-    export let showEtymology: boolean
+    export let showEtymology: boolean;
+    export let showInflections: boolean = false;
 
     function getAncestors(): string {
         const ancestors: string[][] = [];
@@ -61,7 +64,7 @@
     }
 </script>
 <div id='{word}' class="lex-entry prelined" on:contextmenu={edit}>
-    <p  style="font-style: italic">{word}</p>
+    <EntryLabel {word} {source} />
     <Pronunciations pronunciations={ source.pronunciations }/>
     {#each source.Senses as Sense, i}
         {#if source.Senses.length > 1} 
@@ -77,13 +80,13 @@
                 {Sense.lects.join(', ')}
             </p>
         {/if}
-        <p>{@html markdownToHtml(Sense.definition)}</p>
-        {#if $Language.ShowEtymology && !!entryAncestors && showEtymology}
-            <hr />
-            <p class="lex-body"><i>{entryAncestors}</i></p>
+        <p style='margin-bottom: -1em'>{@html markdownToHtml(Sense.definition)}</p>
+        {#if $Language.ShowInflection || showInflections}
+            <Inflections {word} tags={Sense.tags} readFromReference={showInflections}/>
         {/if}
-        {#if $Language.ShowInflection}
-            <Inflections {word} tags={Sense.tags}/>
+        {#if $Language.ShowEtymology && !!entryAncestors && showEtymology}
+            <div class='tag-item'>etymology</div>
+            <p class="lex-body"><i>{entryAncestors}</i></p>
         {/if}
     {/each}
 </div>

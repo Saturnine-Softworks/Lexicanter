@@ -1,12 +1,15 @@
 <script lang="ts">
     const fs = require('fs');
     const path = require('path');
-    import { docsEditor, Language, selectedCategory, fileLoadIncrement } from '../stores';
+    import { docsEditor, Language, selectedCategory, fileLoadIncrement, referenceLanguage, defaultLanguage } from '../stores';
     import type { OutputData } from '@editorjs/editorjs';
+    import type * as Lexc from '../types';
     import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV } from '../utils/files';
-    import { writeRomans } from '../utils/phonetics';
+    import { get_pronunciation, writeRomans } from '../utils/phonetics';
     import { initializeDocs } from '../utils/docs';
     import * as diagnostics from '../utils/diagnostics';
+    import Evolver from '../components/Evolver.svelte';
+    import type { Sense } from '../types';
     const vex = require('vex-js');
     $: loading_message = '';
     let csv = {
@@ -19,7 +22,8 @@
         tags: 4,
     }
     $: csv;
-    let oldPattern = ''; let newPattern = '';
+    let plainTextImport = '';
+    $: plainTextImport;
 
     /**
      * Parses the contents of an opened .lexc file and loads the data into the app.
@@ -30,8 +34,7 @@
         if (typeof contents.Version === 'number' || contents.Version === '1.8.x') {
             try { openLegacy[contents.Version](contents); }
             catch (err) {
-                // TODO: window.alert() freezes text inputs on Windows computers and all instances need to be replaced with a custom dialog.
-                window.alert(` 
+                vex.dialog.alert(` 
                     The file you attempted to open was saved by an old version of Lexicanter (Version ~${contents.Version}), 
                     which is no longer supported. Please contact the developer for assistance; the file is likely recoverable.
                 `);
@@ -40,6 +43,9 @@
         }
         let errorMessage: string;
         try {
+            // clear language data
+            $Language = structuredClone($defaultLanguage);
+
             errorMessage = 'There was a problem loading the settings of the file.'
             $Language.CaseSensitive = contents.CaseSensitive;
             $Language.IgnoreDiacritics = contents.IgnoreDiacritics;
@@ -47,6 +53,9 @@
             $Language.UseLects = contents.UseLects;
             $Language.ShowEtymology = contents.ShowEtymology;
             $Language.ShowInflection = contents.ShowInflection;
+            if (!!contents.ShowPronunciation) {
+                $Language.ShowPronunciation = contents.ShowPronunciation;
+            }
 
             errorMessage = 'There was a problem loading the alphabet from the file.'
             $Language.Alphabet = contents.Alphabet;
@@ -69,6 +78,12 @@
             $Language.Pronunciations = contents.Pronunciations; 
             $Language.Lects.forEach(writeRomans);
 
+            errorMessage = 'There was a problem loading the orthography data from the file.'
+            if (!!contents.Orthographies) {
+                $Language.Orthographies = contents.Orthographies;
+                $Language.ShowOrthography = contents.ShowOrthography;
+            }
+            
             errorMessage = 'There was a problem loading the phonotactics rules from the file.'
             $Language.Phonotactics = contents.Phonotactics;
 
@@ -79,6 +94,17 @@
 
             errorMessage = 'There was a problem loading the etymology data from the file.'
             $Language.Etymologies = contents.Etymologies;
+
+            errorMessage = 'There was a problem loading the advanced phonotactics.';
+            if (!!contents.AdvancedPhonotactics) {
+                $Language.UseAdvancedPhonotactics = contents.UseAdvancedPhonotactics;
+                $Language.AdvancedPhonotactics = contents.AdvancedPhonotactics;
+            }
+
+            errorMessage = 'There was a problem loading the file’s theme.'
+            if (!!contents.FileTheme) {
+                $Language.FileTheme = contents.FileTheme;
+            }
         } catch (err) {
             vex.dialog.alert(errorMessage + ' Please contact the developer for assistance.');
             diagnostics.logError(errorMessage, err);
@@ -189,31 +215,141 @@
         window.setTimeout(() => { loading_message = ''; }, 5000);
     }
 
-    /**
-     * This function is used to change the a given orthograph
-     * to a new one, throughout the lexicon. 
-     */
-    function change_orthography() {
-        oldPattern = oldPattern.replace(/\^/g, '÷');
-        newPattern = newPattern.replace(/\^/g, '÷');
-        for (let word in $Language.Lexicon) {
-            let w = '÷' + word + '÷';
-            if (w.includes($Language.CaseSensitive? oldPattern : oldPattern.toLowerCase())) {
-                let r = new RegExp(oldPattern, $Language.CaseSensitive ? 'g' : 'gi');
-                w = w.replace(r, newPattern);
-                w = w.replace(/÷/gi, '');
-                if (w in $Language.Lexicon) {
-                    // if the new word exists, conjoin the definitions
-                    $Language.Lexicon[w][1] = $Language.Lexicon[w][1] + '\n' + $Language.Lexicon[word][1];
-                } else {
-                    $Language.Lexicon[w] = $Language.Lexicon[word];
+    function importPlainText(plainText: string) {
+        /**
+         * Format:
+         * word
+         * optional pronunciation
+         * 1. numbered definitions
+         * Tags: optional, space separated tags
+         * 2. numbered definitions
+         * Tags: optional, space separated tags
+         * 
+         * etc.
+         */
+        let plainTextEntries = plainTextImport.split('\n\n');
+        for (let entry of plainTextEntries) {
+            let lines = entry.split('\n');
+            let senses = []; let tags = [];
+            let word = lines[0].trim(); lines.shift();
+            let pronunciation = '';
+            if (!lines[0].match(/^[0-9]+\./g)) {
+                pronunciation = lines[0].trim(); lines.shift();
+                if (pronunciation.match(/^[\/\[].+[\/\]]$/)) {
+                    pronunciation = pronunciation.slice(1, pronunciation.length - 1);
                 }
-                delete $Language.Lexicon[word];
+            }
+            for (let line of lines) {
+                if (line.match(/^[0-9]+\./g)) {
+                    senses.push(line);
+                    if (lines[lines.indexOf(line) + 1].startsWith('Tags: ')) {
+                        tags.push(lines[lines.indexOf(line) + 1].slice(6).split(/\s+/g));
+                    } else {
+                        tags.push([]);
+                    }
+                }
+            }
+            let sensesEntry: Sense[] = [];
+            for (let sense of senses) {
+                sensesEntry.push({
+                    'definition': sense.slice(sense.indexOf('.') + 1).trim(),
+                    'tags': tags[senses.indexOf(sense)],
+                    'lects': $Language.Lects,
+                })
+            }
+            let pronunciations = {}
+            pronunciations[$Language.Lects[0]] = pronunciation? {
+                'ipa': pronunciation,
+                'irregular': true,
+            } : {
+                'ipa': get_pronunciation(word, $Language.Lects[0]),
+                'irregular': false,
+            }
+            let wordEntry = {
+                'pronunciations': pronunciations,
+                'Senses': sensesEntry
+            }
+            
+            if (word in $Language.Lexicon) {
+                vex.dialog.alert(`The word ${word} is already in the lexicon.`);
+            } else {
+                $Language.Lexicon[word] = wordEntry;
             }
         }
-        $Language.Lects.forEach(writeRomans); 
-        $Language = {...$Language};
-        oldPattern = ''; newPattern = '';
+        plainTextImport = '';
+    }
+
+    async function openReferenceFile() {
+        let contents;
+        let dialog = (userPath: string) => {
+            showOpenDialog(
+                {
+                    title: 'Open Lexicon',
+                    defaultPath: `${userPath}${path.sep}Lexicons${path.sep}`,
+                    properties: ['openFile'],
+                },
+                file_path => {
+                    if (file_path === undefined) {
+                        // stop orbit animation
+                        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                            planet.style.animationPlayState = 'paused';
+                        });
+                        loading_message = 'No file selected.';
+                        window.setTimeout(() => {
+                            loading_message = '';
+                        }, 5000);
+                        return;
+                    }
+                    fs.readFile(file_path[0], 'utf8', (err, data: string) => {
+                        if (err) {
+                            console.log(err);
+                            vex.dialog.alert(
+                                'There was an issue loading your file. Please contact the developer.'
+                                );
+                            diagnostics.logError('Attempted to open a file.', err);
+                            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                                // loading anim stop
+                                planet.style.animationPlayState = 'paused';
+                            });
+                            loading_message = 'Couldn’t open file.';
+                            window.setTimeout(() => { loading_message = ''; }, 5000);
+                            return;
+                        }
+                        contents = JSON.parse(data) as Lexc.Language;
+                        if (String(contents.Version).split('.')[0] !== '2') {
+                            vex.dialog.alert(
+                                `The file you are attempting to open as a reference was last saved in v${contents.Version} \
+                                and is not compatible with the current version. Contact the developer for assistance.`
+                            );
+                            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                                // loading anim stop
+                                planet.style.animationPlayState = 'paused';
+                            });
+                            loading_message = 'Incompatible file.';
+                            window.setTimeout(() => { loading_message = ''; }, 5000);
+                            return;
+                        }
+                        if (contents.Name === $Language.Name){
+                            vex.dialog.alert('You cannot open a reference to the same language.');
+                            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                                // loading anim stop
+                                planet.style.animationPlayState = 'paused';
+                            });
+                            loading_message = 'Same language.';
+                            window.setTimeout(() => { loading_message = ''; }, 5000);
+                            return;
+                        }
+                        $referenceLanguage = false;
+                        window.setTimeout(() => {
+                            $referenceLanguage = contents;
+                        }, 100);
+                    });
+                }
+            );
+        }
+        await userData(userPath => {
+            dialog(userPath);
+        });
     }
 
 </script>
@@ -256,17 +392,26 @@
                 </p>
             </div>
             <br>
-            <button class="hover-highlight hover-shadow"
-                on:click={() => window.open('index.html', '_blank', 'height=900, width=900')}>Open New Window</button>
+            <button class="hover-highlight hover-shadow" on:click={openReferenceFile}>Open Reference File</button>
+            {#if typeof $referenceLanguage === 'object'}
+                <p>Reference Language: {$referenceLanguage.Name}</p>
+                <button on:click={()=>$referenceLanguage = false} class="hover-highlight hover-shadow">Close Reference File</button>
+                {#if $Language.ShowEtymology}
+                    <button on:click={() => {
+                        if (typeof $referenceLanguage === 'object') { // redundant check is necessary for linter
+                            if ($referenceLanguage.Name in $Language.Relatives) {
+                                vex.dialog.alert(`There is already a relative lexicon with the name ${$referenceLanguage.Name}.`);
+                                return;
+                            }
+                            $Language.Relatives[$referenceLanguage.Name] = $referenceLanguage.Lexicon;
+                            vex.dialog.alert(`Successfully imported ${$referenceLanguage.Name} as a relative lexicon.`);
+                        }
+                    }}>Import Reference Lexicon as Related Lexicon</button>
+                {/if}
+            {/if}
             <br>
-            <p>Change Pronunciations & Orthography</p>
-            <div class="narrow">
-                <label for="ortho-pattern">Orthography Pattern</label>
-                <input id="ortho-pattern" type="text" bind:value={oldPattern}/>
-                <label for="new-pattern">Replace With</label>
-                <input id="new-pattern" type="text" bind:value={newPattern}/>
-                <button class="hover-highlight hover-shadow" on:click={change_orthography}>Commit Change</button>
-            </div>
+            <p>Evolve Language</p>
+            <Evolver/>
             <br>
             <p>Export Lexicon</p>
             <p>HTML</p>
@@ -328,6 +473,16 @@
                     csv.tags_bool? csv.tags : false
                 )
             } class="hover-highlight hover-shadow">Import</button>
+            <br>
+            <p>Import Lexicon from Plain Text</p>
+            <p class="info">Check the Help tab to read about the plain text format Lexicanter can convert into lexicon entries.</p>
+            <div class="narrow">
+                <textarea bind:value={plainTextImport} class='text-left' rows=6></textarea>
+                <button class="hover-highlight hover-shadow" on:click={()=>{
+                    importPlainText(plainTextImport);
+                    plainTextImport = '';
+                }}>Import</button>
+            </div>
             <br><br>
         </div>
     </div>

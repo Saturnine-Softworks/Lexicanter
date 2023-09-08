@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { 
-    Language, wordInput, pronunciations, phraseInput, phrasePronunciations 
+    Language, wordInput, pronunciations, phraseInput, phrasePronunciations
 } from '../stores.js';
 import { applyRules, parseRules } from './sca';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,9 +14,11 @@ const Lang = () => get(Language);
  * @param {string} word
  * @returns {string}
  */
-export function get_pronunciation(word: string, lect: string): string {
+export function get_pronunciation(word: string, lect: string, reference: false | Lexc.Language = false): string {
     // console.log('Requested pronunciation for ' + word + ' in ' + lect + '.');
-    const rules = Lang().Pronunciations[lect];
+    let rules: string;
+    if (!reference) rules = Lang().Pronunciations[lect];
+    else rules = reference.Pronunciations[lect];
     const settings = parseRules(rules);
     return applyRules(settings.rules, word, settings.categories);
 }

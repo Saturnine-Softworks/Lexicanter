@@ -106,9 +106,9 @@ export class Monospace { // EditorJS custom class
  * will be initialized with an empty document.
  * @param {Object} data
  */
-export function initializeDocs(data: OutputData | false): void {
+export function initializeDocs(data: OutputData | false, holder='docs-tab'): void {
     const config = {
-        holder: 'docs-tab',
+        holder: holder,
         data: null,
         tools: {
             underline: Underline,
@@ -136,8 +136,12 @@ export function initializeDocs(data: OutputData | false): void {
             },
         },
         logLevel: LogLevels.ERROR,
+        readOnly: holder === 'ref-docs'
     };
     
     if (data) config.data = data;
-    docsEditor.set(new EditorJS(config));
+    const editor = new EditorJS(config);
+    if (holder === 'docs-tab') {
+        docsEditor.set(editor);
+    }
 }

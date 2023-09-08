@@ -109,37 +109,48 @@ button.collapser-h::after {
   height: 100vh;
   -webkit-user-select: none;
 }
-.tab-container .button-container {
+
+.button-container {
   width: 100%;
   text-align: center;
 }
-.tab-container .button-container button {
-  border: none;
-  outline: none;
-  padding: 4px;
-  height: 100%;
-  width: fit-content;
+.button-container .tab-button {
+  border: none !important;
+  border-radius: 0px !important;
+  outline: none !important;
+  padding: 4px !important;
+  margin: 0px !important;
+  width: fit-content !important;
+  display: inline !important;
 }
-.tab-container .window-control {
+
+.window-control {
   text-align: left;
   height: 0px;
   overflow: visible;
 }
-.tab-container .window-control button {
-  border: none;
-  outline: none;
+.window-control button {
+  border: none !important;
+  outline: none !important;
   background-color: transparent;
+  display: inline !important;
+  text-align: center !important;
+  font-size: 1em;
 }
-.tab-container .window-control button.close:hover {
-  background-color: #9e0f0f;
+.window-control button.close:hover {
+  background-color: #c30a0a;
+  color: black;
 }
-.tab-container .window-control button.minimize:hover {
-  background-color: #c9c911;
+.window-control button.minimize:hover {
+  background-color: #e1e115;
+  color: black;
 }
-.tab-container .window-control button.maximize:hover {
-  background-color: #4eb94e;
+.window-control button.maximize:hover {
+  background-color: #369336;
+  color: black;
 }
-.tab-container .tab-pane {
+
+.tab-pane {
   height: 80%;
   box-sizing: border-box;
   -webkit-app-region: no-drag;
@@ -160,7 +171,7 @@ button.collapser-h::after {
 
 .collapsible-column {
   min-width: 2%;
-  width: fit-content;
+  /* width: fit-content */
 }
 
 .collapsible-row:has(.collapsed) {
@@ -197,7 +208,7 @@ div[id=tables-pane] {
 
 h1, h2, h3, h4, h5, h6 {
   font-style: italic;
-  padding-top: 1em !important;
+  padding-top: 0.25em !important;
 }
 
 .info {
@@ -410,29 +421,29 @@ td {
   user-select: none;
 }
 
-.inflection {
+.inflection, .reference {
   font-family: Gentium;
-  font-size: 7pt;
+  font-size: 9pt;
 }
-.inflection h1, .inflection h2, .inflection h3, .inflection h4, .inflection h5, .inflection h6 {
+.inflection h1, .inflection h2, .inflection h3, .inflection h4, .inflection h5, .inflection h6, .reference h1, .reference h2, .reference h3, .reference h4, .reference h5, .reference h6 {
   padding-top: 0.2em;
 }
-.inflection h1 {
+.inflection h1, .reference h1 {
   font-size: 1.5em;
 }
-.inflection h2 {
+.inflection h2, .reference h2 {
   font-size: 1.3em;
 }
-.inflection h3 {
+.inflection h3, .reference h3 {
   font-size: 1.1em;
 }
-.inflection h4 {
+.inflection h4, .reference h4 {
   font-size: 1em;
 }
-.inflection h5 {
+.inflection h5, .reference h5 {
   font-size: 0.9em;
 }
-.inflection h6 {
+.inflection h6, .reference h6 {
   font-size: 0.8em;
 }
 

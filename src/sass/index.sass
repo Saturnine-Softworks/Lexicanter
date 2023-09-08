@@ -93,37 +93,49 @@ button
     width: 100vw
     height: 100vh
     -webkit-user-select: none
-    .button-container 
-        width: 100%
-        text-align: center
-        button
-            border: none
-            outline: none
-            padding: 4px
-            height: 100%
-            width: fit-content
-    .window-control
-        text-align: left
-        height: 0px
-        overflow: visible
-        button
-            border: none
-            outline: none
-            background-color: transparent
-            &.close
-                &:hover
-                    background-color: #9e0f0f
-            &.minimize
-                &:hover
-                    background-color: #c9c911
-            &.maximize
-                &:hover
-                    background-color: #4eb94e
-    .tab-pane 
-        height: 80%
-        box-sizing: border-box
-        -webkit-app-region: no-drag
-        -webkit-user-select: text
+
+
+.button-container 
+    width: 100%
+    text-align: center
+    .tab-button
+        border: none !important
+        border-radius: 0px !important
+        outline: none !important
+        padding: 4px !important
+        margin: 0px !important
+        width: fit-content !important
+        display: inline !important
+
+.window-control
+    text-align: left
+    height: 0px
+    overflow: visible
+    button
+        border: none !important
+        outline: none !important
+        background-color: transparent
+        display: inline !important
+        text-align: center !important
+        font-size: 1em
+        &.close
+            &:hover
+                background-color: #c30a0a
+                color: black
+        &.minimize
+            &:hover
+                background-color: #e1e115
+                color: black
+        &.maximize
+            &:hover
+                background-color: #369336
+                color: black
+
+.tab-pane 
+    height: 80%
+    box-sizing: border-box
+    -webkit-app-region: no-drag
+    -webkit-user-select: text
 
 .row 
     display: flex
@@ -137,7 +149,7 @@ button
 
 .collapsible-column
     min-width: 2%
-    width: fit-content
+    /* width: fit-content */
 
 .collapsible-row
     &:has(.collapsed)
@@ -166,7 +178,7 @@ div[id=tables-pane]
 
 h1, h2, h3, h4, h5, h6 
     font-style: italic
-    padding-top: 1em !important
+    padding-top: 0.25em !important
 
 .info 
     @include font(Noto)
@@ -320,8 +332,8 @@ td
     text-align: center
     user-select: none
 
-.inflection
-    @include font(Gentium, $small-font)
+.inflection, .reference
+    @include font(Gentium, $mid-font)
 
     h1, h2, h3, h4, h5, h6 
         padding-top: 0.2em

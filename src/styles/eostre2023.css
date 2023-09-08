@@ -1,0 +1,436 @@
+body {
+  color: #f0f0d8;
+  background-color: #a0a54e;
+}
+
+button, select {
+  color: #f0f0d8;
+  background-color: #9d5685;
+}
+button[id=overwrite], select[id=overwrite] {
+  color: darkred;
+}
+button.inflection, select.inflection {
+  background-color: transparent !important;
+  border: none !important;
+  font-family: Noto;
+  font-size: 9pt;
+}
+
+.hover-highlight:hover {
+  color: #bbebce;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0px 2px 12px #1a1a1a;
+}
+
+.tab-container .button-container, .tab-container .button-container button {
+  color: #f0f0d8;
+  background-color: #90438a;
+}
+.tab-container .button-container:hover, .tab-container .button-container button:hover {
+  color: #bbebce;
+}
+
+.selected {
+  background-color: #a0a54e !important;
+}
+
+.container {
+  background-color: #51a656;
+  border: 1px solid #0F151B;
+}
+
+.info {
+  color: #b9dcbd;
+}
+
+.version-info {
+  color: #b6d8bd;
+}
+
+.lex-entry, .lex-body {
+  color: #f0f0d8;
+}
+.lex-entry:hover {
+  background: #895082;
+  color: #f0f0d8;
+}
+
+svg .lex-entry, svg .lex-body {
+  fill: #f0f0d8;
+}
+svg .lex-entry:hover {
+  background-color: #895082;
+  fill: #f0f0d8;
+}
+svg .tag-item {
+  fill: #f0f0d8;
+  font-weight: bold;
+}
+svg rect.lex {
+  fill: transparent;
+  transition: 0.3s;
+  rx: 10;
+  height: 3em;
+  padding: 5px;
+}
+svg rect.lex:hover, svg rect.lex:has(~ :hover) {
+  fill: #895082;
+}
+svg path {
+  stroke: #f0f0d8;
+}
+
+.tag-item, [id=entry-counter] {
+  color: #f0f0d8;
+  background-color: #91466f;
+}
+
+.pronunciation {
+  color: #d6d6b6;
+}
+
+.lect {
+  color: #d6d6b6;
+}
+
+hr {
+  border: 1px solid #f0f0d8;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+label {
+  color: #b6d8bd;
+}
+
+textarea, input {
+  color: #f0f0d8 !important;
+  background-color: #77b555;
+}
+textarea.pronunciation, input.pronunciation {
+  background-color: transparent;
+}
+textarea.pronunciation:hover, input.pronunciation:hover {
+  background-color: #624e5d;
+}
+textarea[type=checkbox], input[type=checkbox] {
+  background-color: transparent;
+  border: 0.15em solid #f0f0d8;
+}
+textarea[type=checkbox]::before, input[type=checkbox]::before {
+  background-color: #badcc6;
+}
+
+td {
+  border: 1px solid #0F151B;
+}
+
+tr:nth-child(odd) {
+  background-color: #77b555;
+}
+tr:nth-child(even) {
+  background-color: #93c479;
+}
+
+::-webkit-resizer {
+  background-color: #713e6e;
+}
+::-webkit-resizer:hover {
+  background-color: #94c097;
+}
+::-webkit-scrollbar-track {
+  background-color: #a0a54e;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #713e6e;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94c097;
+}
+
+a {
+  color: #badcc6;
+  transition: 0.5s;
+}
+a:hover {
+  color: #bbebce;
+}
+
+.ce-toolbar__settings-btn, .ce-toolbar__plus {
+  color: #f0f0d8 !important;
+}
+.ce-toolbar:hover {
+  background-color: #9d5685 !important;
+}
+.ce-conversion-tool {
+  background-color: #9d5685 !important;
+}
+.ce-conversion-toolbar {
+  background-color: #91466f !important;
+}
+.ce-conversion-tool:hover {
+  background-color: #b9dcbd !important;
+}
+.ce-popover, .ce-popover--opened {
+  background-color: #9d5685 !important;
+}
+.ce-popover__item {
+  background-color: #9d5685 !important;
+}
+.ce-popover__item:hover {
+  background-color: #b9dcbd !important;
+}
+.ce-inline-tool {
+  background-color: #91466f !important;
+}
+.ce-inline-tool:hover {
+  background-color: #b9dcbd !important;
+}
+.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
+  background-color: #91466f !important;
+}
+.ce-paragraph[data-placeholder]:empty::before {
+  color: #d6d6b6 !important;
+}
+
+.tc-popover {
+  --color-border: #badcc6 !important;
+  --color-background: #91466f !important;
+  --color-background-hover: #9d5685 !important;
+  --color-background-confirm: #812b2b !important;
+  --color-background-confirm-hover: #a12929 !important;
+  --color-text-confirm: white !important;
+}
+.tc-wrap {
+  --color-background: rgba(255, 255, 255, 0.396) !important;
+  --color-text-secondary: #d6d6b6 !important;
+  --color-border: #badcc6 !important;
+}
+
+table {
+  border-color: #badcc6;
+}
+
+.inflection td {
+  border-color: #badcc6 !important;
+  background-color: transparent !important;
+}
+.inflection tr {
+  background-color: transparent !important;
+}
+
+.milkyWay {
+  width: 100px;
+  height: 100px;
+  background: transparent;
+  margin: auto;
+  position: relative;
+  border-radius: 50%;
+}
+.milkyWay .planet {
+  border: 1px solid #fff;
+  animation-name: orbit;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-play-state: paused;
+}
+.milkyWay .planet::before, .milkyWay .planet::after {
+  position: absolute;
+  content: "";
+  display: block;
+  border-radius: 50%;
+}
+.milkyWay > div {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.sun {
+  background: #faca09;
+  width: 10%;
+  height: 10%;
+  top: 45%;
+  left: 45%;
+}
+
+.mercury {
+  width: 20%;
+  height: 20%;
+  top: calc(40% - 1px);
+  left: calc(40% - 1px);
+  animation-duration: 2s;
+}
+.mercury::before {
+  background: #9fb5b6;
+  width: 16%;
+  height: 16%;
+  top: -8%;
+  left: 42%;
+}
+
+.venus {
+  width: 30%;
+  height: 30%;
+  top: calc(35% - 1px);
+  left: calc(35% - 1px);
+  animation-duration: 3s;
+}
+.venus::before {
+  background: #ECC98E;
+  width: 10%;
+  height: 10%;
+  top: -5%;
+  left: 45%;
+}
+
+.earth {
+  width: 40%;
+  height: 40%;
+  top: calc(30% - 1px);
+  left: calc(30% - 1px);
+  animation-duration: 4s;
+}
+.earth::before {
+  background: #208fd8;
+  width: 10%;
+  height: 10%;
+  top: -5%;
+  left: 45%;
+}
+.earth::after {
+  background: #33c470;
+  width: 10%;
+  height: 6%;
+  top: -3%;
+  left: 45%;
+  transform: rotate(45deg);
+}
+
+.mars {
+  width: 50%;
+  height: 50%;
+  top: calc(25% - 1px);
+  left: calc(25% - 1px);
+  animation-duration: 5s;
+}
+.mars::before {
+  background: #d35400;
+  width: 6%;
+  height: 6%;
+  top: -3%;
+  left: 47%;
+}
+
+.jupiter {
+  width: 60%;
+  height: 60%;
+  top: calc(20% - 1px);
+  left: calc(20% - 1px);
+  animation-duration: 6s;
+}
+.jupiter::before {
+  background: #d4975a;
+  width: 10%;
+  height: 10%;
+  top: -5%;
+  left: 45%;
+}
+
+.saturn {
+  width: 70%;
+  height: 70%;
+  top: calc(15% - 1px);
+  left: calc(15% - 1px);
+  animation-duration: 7s;
+}
+.saturn::before {
+  background: #E4D191;
+  width: 7%;
+  height: 7%;
+  top: -4%;
+  left: 48%;
+}
+.saturn::after {
+  background: #F0E4C1;
+  width: 12%;
+  height: 1%;
+  top: -1%;
+  left: 45.5%;
+  transform: rotate(-15deg);
+}
+
+.uranus {
+  width: 80%;
+  height: 80%;
+  top: calc(10% - 1px);
+  left: calc(10% - 1px);
+  animation-duration: 8s;
+}
+.uranus::before {
+  background: #3498db;
+  width: 5%;
+  height: 5%;
+  top: -2%;
+  left: 48%;
+}
+.uranus::after {
+  background: #b0d0e5;
+  width: 8%;
+  height: 0.5%;
+  top: 0%;
+  left: 46.25%;
+  transform: rotate(-15deg);
+}
+
+.neptune {
+  width: 90%;
+  height: 90%;
+  top: calc(5% - 1px);
+  left: calc(5% - 1px);
+  animation-duration: 9s;
+}
+.neptune::before {
+  background: #1269a3;
+  width: 4%;
+  height: 4%;
+  top: -1%;
+  left: 49%;
+}
+.neptune::after {
+  background: #91cbf2;
+  width: 6%;
+  height: 0.5%;
+  top: 0.5%;
+  left: 48%;
+  transform: rotate(-15deg);
+}
+
+.pluto {
+  width: 100%;
+  height: 100%;
+  top: calc(0% - 1px);
+  left: calc(0% - 1px);
+  animation-duration: 10s;
+}
+.pluto::before {
+  background: #b78c7a;
+  width: 2%;
+  height: 2%;
+  top: -0.5%;
+  left: 49%;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(-180deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+/*# sourceMappingURL=eostre2023.css.map */

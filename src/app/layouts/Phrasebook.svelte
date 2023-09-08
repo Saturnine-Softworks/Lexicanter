@@ -177,7 +177,7 @@
                     return variants;
                 })(),
             };
-            debug.logObj($Language.Phrasebook, 'Phrasebook');
+            // debug.logObj($Language.Phrasebook, 'Phrasebook');
 
             $Language = {...$Language};
             $phraseInput = '';
