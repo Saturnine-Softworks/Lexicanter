@@ -53,8 +53,15 @@
             $Language.UseLects = contents.UseLects;
             $Language.ShowEtymology = contents.ShowEtymology;
             $Language.ShowInflection = contents.ShowInflection;
-            if (!!contents.ShowPronunciation) {
+            if (contents.hasOwnProperty('ShowPronunciation')) {
                 $Language.ShowPronunciation = contents.ShowPronunciation;
+            }
+            if (contents.hasOwnProperty('OrderByDate')) {
+                $Language.OrderByDate = contents.OrderByDate;
+            } else {
+                for (let word in contents.Lexicon) {
+                    contents.Lexicon[word].Timestamp = Date.now();
+                }
             }
 
             errorMessage = 'There was a problem loading the alphabet from the file.'
@@ -79,7 +86,7 @@
             $Language.Lects.forEach(writeRomans);
 
             errorMessage = 'There was a problem loading the orthography data from the file.'
-            if (!!contents.Orthographies) {
+            if (contents.hasOwnProperty('Orthographies')) {
                 $Language.Orthographies = contents.Orthographies;
                 $Language.ShowOrthography = contents.ShowOrthography;
             }
@@ -96,13 +103,14 @@
             $Language.Etymologies = contents.Etymologies;
 
             errorMessage = 'There was a problem loading the advanced phonotactics.';
-            if (!!contents.AdvancedPhonotactics) {
+            if (contents.hasOwnProperty('AdvancedPhonotactics')) {
                 $Language.UseAdvancedPhonotactics = contents.UseAdvancedPhonotactics;
                 $Language.AdvancedPhonotactics = contents.AdvancedPhonotactics;
+
             }
 
             errorMessage = 'There was a problem loading the file’s theme.'
-            if (!!contents.FileTheme) {
+            if (contents.hasOwnProperty('FileTheme')) {
                 $Language.FileTheme = contents.FileTheme;
             }
         } catch (err) {
@@ -267,7 +275,8 @@
             }
             let wordEntry = {
                 'pronunciations': pronunciations,
-                'Senses': sensesEntry
+                'Senses': sensesEntry,
+                'Timestamp': Date.now(),
             }
             
             if (word in $Language.Lexicon) {

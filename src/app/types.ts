@@ -43,6 +43,7 @@ export type EntryPronunciations = {
 export type Word = {
     pronunciations: EntryPronunciations;
     Senses: Sense[];
+    Timestamp: number,
 }
 
 /**
@@ -213,4 +214,5 @@ export type Language = {
     UseLects: boolean;
     Diagnostics: Diagnostic[];
     FileTheme: string;
+    OrderByDate: boolean;
 }

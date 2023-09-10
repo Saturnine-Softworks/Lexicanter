@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Language } from "../stores";
+    import { Language, fileLoadIncrement } from "../stores";
     import { get_pronunciation, writeRomans, complete_word, generate_word } from '../utils/phonetics'
     let trial = ''; let ortho_test = '';
     function setInStone (event: Event) {
@@ -14,6 +14,16 @@
 
     let APCategories = '';
     let APSyllables = '';
+
+    //NOTE - this section checks when fileLoadIncrement changes, and updates the AP fields from the Language store when it does
+    function updateAPFields() {
+        APCategories = Object.keys($Language.AdvancedPhonotactics.Categories).map(symbol => {
+            return `${symbol} :: ${$Language.AdvancedPhonotactics.Categories[symbol].join(' ')}`
+        }).join('\n');
+        APSyllables = $Language.AdvancedPhonotactics.Syllables.join('\n');
+    }
+    $: if ($fileLoadIncrement) updateAPFields();
+
     function setAPCategories() {
         $Language.AdvancedPhonotactics.Categories = {};
         APCategories.split('\n').forEach(line => {

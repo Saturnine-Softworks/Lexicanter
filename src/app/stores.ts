@@ -50,6 +50,7 @@ const Default: Lexc.Language = {
     },
     Diagnostics: <Lexc.Diagnostic[]> [ ],
     FileTheme: 'default',
+    OrderByDate: false,
 };
 export const defaultLanguage: Writable<Lexc.Language> = writable(Default);
 

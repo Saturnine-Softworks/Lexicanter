@@ -35,7 +35,7 @@
                 });
             });
             Object.keys($Language.Etymologies).forEach(entry => {
-                if (!(entry in $Language.Lexicon)) lexicon[entry] = { Senses: [], pronunciations: {} };
+                if (!(entry in $Language.Lexicon)) lexicon[entry] = { Senses: [], pronunciations: {}, Timestamp: Date.now() };
             });
             filteredExternal = keys.reduce((acc, key) => {
                 if (key in lexicon) acc[key] = lexicon[key];

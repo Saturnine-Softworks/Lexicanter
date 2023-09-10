@@ -133,6 +133,7 @@
                     return obj;
                 })(), 
                 Senses: senses.filter(emptySensesFilter).map(senseRemapper),
+                Timestamp: Date.now(),
             };
         } else {
             $Language.Lexicon[word].Senses.push(...senses.filter(emptySensesFilter).map(senseRemapper));

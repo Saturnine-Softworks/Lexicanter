@@ -25,6 +25,12 @@
 
             <br><hr/><br>
 
+            <p><u>Patch 2.1.9</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Hot fix for a bug which caused data saved by the advanced word generator not to be loaded open re-opening a file. <br>
+                • A new feature will be coming in 2.2 which requires a change to the way lexicon entries are formatted internally, which this update prepares for. <br>
+            </p>
+            <br>
             <p><u>New in 2.1</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Introduced a plain text import feature for convenient clonging on the move. <br>
@@ -36,29 +42,33 @@
                 • The option to save theme preferences on a file-by-file basis. <br>
                 • New themes: <i>Magnolia</i> by Saturnine, <i>Crabapple</i> by Maarz, and <i>Eostre 2023</i> (a holiday theme released for beta users earlier this year). <br>
                 • A number of bugs removed; probably some bugs added. Please report them if you find them! <br>
+            </p>
             <br>
-
             <p><u>Patch 2.0.18</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • By request, added a new dropdown to Tag inputs which allows you to select from pre-existing tags in your lexicon. <br>
                 • By request, added a new Help tab. It hosts the same information as the wiki, but is accessible offline. <br>
                 • The Settings, Changelog, and Help tabs, as well as the window control buttons, now use Material Icons. 
             <br><br>
+            </p>
             <p><u>Patch 2.0.17</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed an a reported bug with the inflections generation. <br>
                 • Fixed an issue with tag searching. <br>
                 • The font weight has been changed to an appropriate <i>Book</i> weight to improve readability on some systems and to many eyes.
             <br><br>
+            </p>
             <p><u>Patch 2.0.16</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a small bug with the new sound change engine. <br>
             <br><br>
+            </p>
             <p><u>Patch 2.0.15</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a reported bug with HTML export. <br>
                 • Related to the above fix, technical limitations now prevent your theme from being exported with your HTML. Solutions are being investigated.
             <br><br>
+            </p>
             <p><u>Patch 2.0.14</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed CSV export. <br>
@@ -128,17 +138,17 @@
             </p>
             <p><u>Patch 1.11.1</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
-                • Fixed a reported bug causing the Ignore Diacritics setting to be ignored during alphabet checks when adding words to the lexicon.
-            <br><br>
+                • Fixed a reported bug causing the Ignore Diacritics setting to be ignored during alphabet checks when adding words to the lexicon. <br>
             </p>
+            <br>
             <p><u>New in 1.11</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • When you attempt to add a word to the lexicon, there is now an alert if the word contains characters (or polygraphs) not present in your alphabet. <br>
                 • Fixed a reported bug causing external links in to not display correctly in the Lexicon tab specifically. <br>
                 • Fixed a reported bug preventing the app from warning you that it will not save if there is no file name given. <br>
-                • Fixed a minor bug with the Terminal theme when exported for HTML.
-            <br><br>
+                • Fixed a minor bug with the Terminal theme when exported for HTML. <br>
             </p>
+            <br>
             <p><u>New in 1.10</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Added three new themes: Pomegranate, Wisteria, and Terminal. <br>
@@ -147,23 +157,23 @@
                 • You can now search for an exact whole-word match in definitions and tags fields by using <code>!</code> as a prefix. <br>
                 • For HTML exports, the appearance on mobile devices has been improved. <br>
                 • Minor bug fixes for opening new windows from the File tab. <br>
-                • Lots of uner-the-hood changes for the app's appearance in preparation for future features.
-            <br><br>
+                • Lots of uner-the-hood changes for the app's appearance in preparation for future features. <br>
             </p>
+            <br>
             <p><u>Patch 1.9.5</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a bug causing app-quit to be impossible sometimes. <br>
                 • Fixed some minor bugs with the styles. <br>
                 • Fixed a bug causing monospace toggle in the docs tab to be undoable. <br>
-                • Fixed a bug causing external hyperlinks not to use the preferred browser, and is some cases not open at all.
-            <br><br>
+                • Fixed a bug causing external hyperlinks not to use the preferred browser, and is some cases not open at all. <br>
             </p>
+            <br>
             <p><u>Patch 1.9.4</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • You can now hyperlink to entries in the lexicon. The link format is <code>lex::word</code>. <br>
-                • The documentation tab would previously not adjust to the width of the window. That has been fixed.
-            <br><br>
+                • The documentation tab would previously not adjust to the width of the window. That has been fixed. <br>
             </p>
+            <br>
             <p><u>New in 1.9</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Overhauled the Documentation tab, which now uses integrated <a href="https://editorjs.io/" 
@@ -176,15 +186,16 @@
                 • The button to edit phrasebook entries has been change to right-click instead of left-click to
                     make it more difficult to accidentally overwrite work in progress, and to allow for
                     highlighting text. <br>
-                • An HTML Docs-Only export option has been added.
-            <br><br>
+                • An HTML Docs-Only export option has been added. <br>
             </p>
+            <br>
             <p><u>Patch 1.8.14</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a few minor bugs with markdown parsing.<br>
                 • Added monospace markdown with <code>``this``</code> syntax.<br>
-                • Fixed a reported bug which affected the orthography testing area.
-            <br><br>
+                • Fixed a reported bug which affected the orthography testing area. <br>
+            </p>
+            <br>
             <p><u>New in 1.8</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • File storage has been migrated to make auto-save possible. <br>
