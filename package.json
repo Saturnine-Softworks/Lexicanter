@@ -1,7 +1,7 @@
 {
   "name": "lexicanter",
   "productName": "Lexicanter",
-  "version": "2.1.9",
+  "version": "2.1.10",
   "description": "A lexicon management tool for constructed languages.",
   "main": "src/index.js",
   "scripts": {
@@ -70,6 +70,7 @@
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-terser": "^0.4.0",
     "@rollup/plugin-typescript": "^11.0.0",
+    "@svelte-plugins/tooltips": "^0.1.6",
     "@tsconfig/svelte": "^3.0.0",
     "@types/node": "^18.13.0",
     "@types/wicg-file-system-access": "^2020.9.5",

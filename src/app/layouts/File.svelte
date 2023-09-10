@@ -10,6 +10,7 @@
     import * as diagnostics from '../utils/diagnostics';
     import Evolver from '../components/Evolver.svelte';
     import type { Sense } from '../types';
+    import {tooltip} from '@svelte-plugins/tooltips';
     const vex = require('vex-js');
     $: loading_message = '';
     let csv = {
@@ -367,7 +368,7 @@
     <div class="row" style="height: 95vh">
         <div class="column container" style="overflow-y:auto">
             <p>Document</p>
-            <label for="file-name">Name</label>
+            <label for="file-name" use:tooltip={{position:'right'}} title={`Your file will be saved as: ${$Language.Name}.lexc`}>Name</label>
             <input type="text" id="file-name" bind:value={$Language.Name}/>
             <br>
             <div class="narrow row">
@@ -387,13 +388,16 @@
                     <p>{loading_message}</p>
                 </div>
                 <div class="column">
-                    <button on:click={saveAs.lexc} class="hover-highlight hover-shadow">Export…</button>
-                    <button on:click={importFile} class="hover-highlight hover-shadow">Import…</button>
+                    <button on:click={saveAs.lexc} class="hover-highlight hover-shadow"
+                        use:tooltip={{position:'left'}} title="Allows you to save your file to a custom location.">Export…</button>
+                    <button on:click={importFile} class="hover-highlight hover-shadow"
+                        use:tooltip={{position:'left'}} title="Makes it easier to import files from a custom location.">Import…</button>
                     <p class="info">Export and import your own copies of the lexicon file.</p>
                 </div>
             </div>
             <br>
-            <p>Lexicon Header Tags</p>
+            <p use:tooltip={{position:'top'}} title="Here you can define Header Tags. Words in the lexicon with these tags will be sorted above the rest.">
+                Lexicon Header Tags</p>
             <div class="narrow">
                 <textarea bind:value={$Language.HeaderTags}></textarea>
                 <p class="info">
@@ -401,25 +405,30 @@
                 </p>
             </div>
             <br>
-            <button class="hover-highlight hover-shadow" on:click={openReferenceFile}>Open Reference File</button>
+            <button class="hover-highlight hover-shadow" 
+                use:tooltip={{position:'top'}} title="This allows you to open a second language file in read-only mode for referencing."
+                on:click={openReferenceFile}>Open Reference File</button>
             {#if typeof $referenceLanguage === 'object'}
                 <p>Reference Language: {$referenceLanguage.Name}</p>
                 <button on:click={()=>$referenceLanguage = false} class="hover-highlight hover-shadow">Close Reference File</button>
                 {#if $Language.ShowEtymology}
-                    <button on:click={() => {
-                        if (typeof $referenceLanguage === 'object') { // redundant check is necessary for linter
-                            if ($referenceLanguage.Name in $Language.Relatives) {
-                                vex.dialog.alert(`There is already a relative lexicon with the name ${$referenceLanguage.Name}.`);
-                                return;
+                    <button 
+                        use:tooltip={{position:'top'}} title="If you are using Etymology features, this allows you to import a lexicon from another language file as a relative you can which link words to and from."
+                        on:click={() => {
+                            if (typeof $referenceLanguage === 'object') { // redundant check is necessary for linter
+                                if ($referenceLanguage.Name in $Language.Relatives) {
+                                    vex.dialog.alert(`There is already a relative lexicon with the name ${$referenceLanguage.Name}.`);
+                                    return;
+                                }
+                                $Language.Relatives[$referenceLanguage.Name] = $referenceLanguage.Lexicon;
+                                vex.dialog.alert(`Successfully imported ${$referenceLanguage.Name} as a relative lexicon.`);
                             }
-                            $Language.Relatives[$referenceLanguage.Name] = $referenceLanguage.Lexicon;
-                            vex.dialog.alert(`Successfully imported ${$referenceLanguage.Name} as a relative lexicon.`);
-                        }
                     }}>Import Reference Lexicon as Related Lexicon</button>
                 {/if}
             {/if}
             <br>
-            <p>Evolve Language</p>
+            <p use:tooltip={{position:'top'}} title="This feature allows you to apply sound change rules across your lexicon, and then save the result as a new language file.">
+                Evolve Language</p>
             <Evolver/>
             <br>
             <p>Export Lexicon</p>

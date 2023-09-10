@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Language, fileLoadIncrement } from "../stores";
-    import { get_pronunciation, writeRomans, complete_word, generate_word } from '../utils/phonetics'
+    import { get_pronunciation, writeRomans, complete_word, generate_word } from '../utils/phonetics';
+    import { tooltip } from '@svelte-plugins/tooltips';
     let trial = ''; let ortho_test = '';
     function setInStone (event: Event) {
         const target = event.target as HTMLInputElement;
@@ -78,7 +79,7 @@
     <div class="row" style="height: 92vh">
         <!-- Phonotactics -->
         <div class="container column scrolled" style="height: 100%">
-            <label>
+            <label use:tooltip={{position:'right'}} title="Turn this on to show a type of word generator better suited for complex structures.">
                 <input type="checkbox" bind:checked={$Language.UseAdvancedPhonotactics} />
                 Use Advanced Phonotactics
             </label>
@@ -86,12 +87,12 @@
             {#if $Language.UseAdvancedPhonotactics}
                 <div class="row">
                     <div class="column">
-                        <label>Categories
+                        <label use:tooltip={{position:'right'}} title="This field is for defining categories of phonemes. See the Help tab for more information.">Categories
                             <textarea class="phonology text-left" rows="12" bind:value={APCategories} on:blur={setAPCategories}/>
                         </label>
                     </div>
                     <div class="column">
-                        <label>Syllables
+                        <label use:tooltip={{position:'left'}} title="This field is for defining syllable structures. See the Help tab for more information.">Syllables
                             <textarea class="phonology text-left" rows="12" bind:value={APSyllables} on:blur={setAPSyllables}/>
                         </label>
                     </div>
@@ -101,22 +102,28 @@
                     () => generated_words = Array(24).fill(null).map(_ => generate_word_AP())
                 }>Generate Words</button>
             {:else}
-                <label for="onsets">Onset Consonants</label>
+                <label for="onsets" use:tooltip={{position:'right'}} title="This field is for defining consonants and cluster that can occur word-initially.">
+                    Onset Consonants</label>
                 <textarea id="onsets" class="phonology" bind:value={$Language.Phonotactics.General.Onsets}></textarea>
                 <br>
-                <label for="medials">Medial Consonants</label>
+                <label for="medials" use:tooltip={{position:'right'}} title="This field is for defining consonants and clusters that can occur word-medially.">
+                    Medial Consonants</label>
                 <textarea id="medials" class="phonology" bind:value={$Language.Phonotactics.General.Medials}></textarea>
                 <br>
-                <label for="codas">Coda Consonants</label>
+                <label for="codas" use:tooltip={{position:'right'}} title="This field is for defining consonants and clusters that can occur word-finally.">
+                    Coda Consonants</label>
                 <textarea id="codas" class="phonology" bind:value={$Language.Phonotactics.General.Codas}></textarea>
                 <br>
-                <label for="vowels">Vowels</label>
+                <label for="vowels" use:tooltip={{position:'right'}} title="This field is for defining vowels or sounds which can occur as a syllable’s nucleus.">
+                    Vowels</label>
                 <textarea id="vowels" class="phonology" bind:value={$Language.Phonotactics.General.Vowels}></textarea>
                 <br>
-                <label for="illegals">Illegal Combinations</label>
+                <label for="illegals" use:tooltip={{position:'right'}} title="This field is for defining combinations of characters that should never occur.">
+                    Illegal Combinations</label>
                 <textarea id="illegals" class="phonology" bind:value={$Language.Phonotactics.General.Illegals}></textarea>
                 <br><br>
-                <label for="trial">Trial Words</label>
+                <label for="trial" use:tooltip={{position:'right'}} title="This field allows you to begin typing a word while being shown possible completions for it.">
+                    Trial Words</label>
                 <input type="text" id="trial" bind:value={trial}/>
                 <p style="font-family: Gentium">{trial_completion}</p>
                 <br>
@@ -136,7 +143,8 @@
         </div>
         <!-- Romanization -->
         <div class="container column scrolled" style="height: 100%">
-            <label>Pronunciations
+            <label use:tooltip={{position:'bottom'}} title="This field is for writing pronunciation rules to convert your romanization to phonetic notation. See the Help tab for more information."
+                > Pronunciations
                 {#if $Language.UseLects}    
                     <select bind:value={selectedLect} on:change={updatePhonologyInput}>
                         {#each $Language.Lects as lect}
@@ -153,7 +161,8 @@
                 />
             </label>
             <br><br>
-            <label>Orthography Testing
+            <label use:tooltip={{position:'top'}} title="This field allows you to test that your rules are working as expected.">
+                Rule Testing
                 <textarea 
                     class="prelined" rows="2" 
                     bind:value={ortho_test}

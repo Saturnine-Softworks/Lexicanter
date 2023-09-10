@@ -6,6 +6,7 @@
     import PhraseEntry from '../components/PhraseEntry.svelte';
     import VariantInput from '../components/VariantInput.svelte';
     import SenseInput from '../components/SenseInput.svelte';
+    import { tooltip } from '@svelte-plugins/tooltips';
     const vex = require('vex-js');
     $categoryInput = $selectedCategory;
     let searchPhrase = '';
@@ -210,7 +211,8 @@
     <div class="row" style="height: 58vh;">
         <!-- Categories -->
         <div class="container column" style="max-width: 18%;">
-            <p>Categories</p>
+            <p use:tooltip={{position:'bottom'}} title="This panel will fill with category names as you assign phrases to new ones.">
+                Categories</p>
             <hr />
             <div class="column scrolled" style="max-height: 90%;" id="category-body">
                 {#each Object.keys($Language.Phrasebook) as category}
@@ -278,7 +280,8 @@
         <div class="row" class:collapsed={collapsedPanel} style="height: 92%">
             <div class="column scrolled" style="max-height: 100%">
                 
-                <label for="phrase">Phrase</label>
+                <label for="phrase" use:tooltip={{position:'right'}} title="Write a new phrase in your language here. The pronunciation is updated the same as in the Lexicon tab.">
+                    Phrase</label>
                 <input type="text" bind:value={$phraseInput} on:input={() => {
                     lects.forEach(lect => {
                         $phrasePronunciations[lect] = get_pronunciation($phraseInput, lect);
@@ -307,7 +310,7 @@
                     bind:lects={lects}
                 />
 
-                <label>Category
+                <label><p use:tooltip={{position:'right'}} title="Use this field to assign this phrase to a category, or to create a new one with this phrase as its first member.">Category</p>
                     <input type="text" bind:value={$categoryInput} />
                 </label>
 
@@ -329,7 +332,9 @@
                 {:else}
                     <p class="info">Click the button below to add a variation for this phrase</p>
                 {/each}
-                <button on:click={addVariant} class="hover-shadow hover-highlight">+ Variant</button>
+                <button on:click={addVariant} class="hover-shadow hover-highlight"
+                    use:tooltip={{position:'bottom', autoPosition: true}} title="If there are multiple ways to say your phrase, you can add variant entries for it along with descriptions."
+                >+ Variant</button>
             </div>
         </div>
     </div>
