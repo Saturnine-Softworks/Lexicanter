@@ -357,6 +357,7 @@
                     </optgroup>
                     <optgroup label="The Holiday Collection">
                         <option value="styles/eostre2023.css">☀ Ēostre 2023</option>
+                        <option value="styles/hallowseve2023.css">☾ All Hallow's Eve 2023</option>
                     </optgroup>
                 </select>
             </label>
