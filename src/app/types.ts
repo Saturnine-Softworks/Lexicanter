@@ -215,4 +215,5 @@ export type Language = {
     Diagnostics: Diagnostic[];
     FileTheme: string;
     OrderByDate: boolean;
+    SaveLocation: string;
 }

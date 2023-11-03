@@ -11,7 +11,24 @@
     import Evolver from '../components/Evolver.svelte';
     import type { Sense } from '../types';
     import {tooltip} from '@svelte-plugins/tooltips';
+    import { onMount } from 'svelte';
     const vex = require('vex-js');
+
+    let locationSelector: HTMLInputElement;
+    onMount(() => {
+        locationSelector.webkitdirectory = true;
+    });
+    function selectSaveLocation () {
+        showOpenDialog({
+            properties: ['openDirectory'],
+        }, file_path => {
+            if (file_path === undefined) {
+                return;
+            }
+            $Language.SaveLocation = file_path[0];
+        });
+    }
+
     $: loading_message = '';
     let csv = {
         headers: true,
@@ -54,6 +71,7 @@
             $Language.UseLects = contents.UseLects;
             $Language.ShowEtymology = contents.ShowEtymology;
             $Language.ShowInflection = contents.ShowInflection;
+            // check for the existence of properties so that 'undefined' is not assigned
             if (contents.hasOwnProperty('ShowPronunciation')) {
                 $Language.ShowPronunciation = contents.ShowPronunciation;
             }
@@ -63,6 +81,9 @@
                 for (let word in contents.Lexicon) {
                     contents.Lexicon[word].Timestamp = Date.now();
                 }
+            }
+            if (contents.hasOwnProperty('SaveLocation')) {
+                $Language.SaveLocation = contents.SaveLocation;
             }
 
             errorMessage = 'There was a problem loading the alphabet from the file.'
@@ -114,6 +135,7 @@
             if (contents.hasOwnProperty('FileTheme')) {
                 $Language.FileTheme = contents.FileTheme;
             }
+
         } catch (err) {
             vex.dialog.alert(errorMessage + ' Please contact the developer for assistance.');
             diagnostics.logError(errorMessage, err);
@@ -394,6 +416,11 @@
                         use:tooltip={{position:'left'}} title="Makes it easier to import files from a custom location.">Import…</button>
                     <p class="info">Export and import your own copies of the lexicon file.</p>
                 </div>
+            </div>
+            <div class='narrow'>
+                <label for="save-locations">Secondary Save Locations</label>
+                <button class='hover-highlight hover-shadow' on:click={selectSaveLocation}>Choose Location…</button> 
+                <p>Selected location: <u>{$Language.SaveLocation}<u></p>
             </div>
             <br>
             <p use:tooltip={{position:'top'}} title="Here you can define Header Tags. Words in the lexicon with these tags will be sorted above the rest.">

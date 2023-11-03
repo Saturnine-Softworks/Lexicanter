@@ -131,6 +131,13 @@ export async function saveFile () {
                     exports,
                     'utf8'
                 );
+                if (Lang().SaveLocation !== '') {
+                    fs.writeFileSync(
+                        `${Lang().SaveLocation}${path.sep}${Lang().Name}.lexc`,
+                        exports,
+                        'utf8'
+                    );
+                }
             });
             if (!get(autosave)) {
                 vex.dialog.alert(`The ${Lang().Name} file has been saved.`);
