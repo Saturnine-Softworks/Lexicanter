@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Saturnine-s-workspace-cvl2j3.us-east-1.xata.sh/db/Lexicanter",
+  "codegen": {
+    "output": "src/db/xata.ts"
+  }
+}

@@ -1,7 +1,7 @@
 <script lang="ts">
     const fs = require('fs');
     const path = require('path');
-    import { docsEditor, Language, selectedCategory, fileLoadIncrement, referenceLanguage, defaultLanguage } from '../stores';
+    import { docsEditor, Language, selectedCategory, fileLoadIncrement, referenceLanguage, defaultLanguage, autosave } from '../stores';
     import type { OutputData } from '@editorjs/editorjs';
     import type * as Lexc from '../types';
     import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV } from '../utils/files';
@@ -386,48 +386,48 @@
 
 </script>
 <!-- File Tab -->
-<div class="tab-pane">
-    <div class="row" style="height: 95vh">
-        <div class="column container" style="overflow-y:auto">
+<div class=tab-pane>
+    <div class=row style=height:95vh>
+        <div class="column container" style=overflow-y:auto>
             <p>Document</p>
-            <label for="file-name" use:tooltip={{position:'right'}} title={`Your file will be saved as: ${$Language.Name}.lexc`}>Name</label>
-            <input type="text" id="file-name" bind:value={$Language.Name}/>
+            <label for=file-name use:tooltip={{position:'right'}} title={`Your file will be saved as: ${$Language.Name}.lexc`}>Name</label>
+            <input type=text id=file-name bind:value={$Language.Name}/>
             <br>
-            <div class="narrow row">
-                <div class="column">
+            <div class='narrow row'>
+                <div class=column>
                     <button on:click={saveFile} class="hover-highlight hover-shadow">Save…</button>
                     <button on:click={openFile} class="hover-highlight hover-shadow">Open…</button>
                     <p class="info">Save your lexicon or open a previously saved one.</p>
                 </div>
-                <div class="column"> 
-                    <div class="milkyWay">
+                <div class=column> 
+                    <div class=milkyWay>
                         <!-- Loader -->
-                        <div class="sun"></div>
+                        <div class=sun></div>
                         {#each ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'] as planet}
                              <div class="planet {planet}"></div>
                         {/each}
                     </div>
                     <p>{loading_message}</p>
                 </div>
-                <div class="column">
-                    <button on:click={saveAs.lexc} class="hover-highlight hover-shadow"
-                        use:tooltip={{position:'left'}} title="Allows you to save your file to a custom location.">Export…</button>
-                    <button on:click={importFile} class="hover-highlight hover-shadow"
-                        use:tooltip={{position:'left'}} title="Makes it easier to import files from a custom location.">Import…</button>
-                    <p class="info">Export and import your own copies of the lexicon file.</p>
+                <div class=column>
+                    <button on:click={saveAs.lexc} class='hover-highlight hover-shadow'
+                        use:tooltip={{position:'left'}} title='Allows you to save your file to a custom location.'>Export…</button>
+                    <button on:click={importFile} class='hover-highlight hover-shadow'
+                        use:tooltip={{position:'left'}} title='Makes it easier to import files from a custom location.'>Import…</button>
+                    <p class=info>Export and import your own copies of the lexicon file.</p>
                 </div>
             </div>
-            <div class='narrow'>
-                <label for="save-locations">Secondary Save Locations</label>
-                <button class='hover-highlight hover-shadow' on:click={selectSaveLocation}>Choose Location…</button> 
+            <div class=narrow>
+                <label for=save-locations>Secondary Save Locations</label>
+                <button id=save-locations class='hover-highlight hover-shadow' on:click={selectSaveLocation}>Choose Location…</button> 
                 <p>Selected location: <u>{$Language.SaveLocation}<u></p>
             </div>
             <br>
-            <p use:tooltip={{position:'top'}} title="Here you can define Header Tags. Words in the lexicon with these tags will be sorted above the rest.">
+            <p use:tooltip={{position:'top'}} title='Here you can define Header Tags. Words in the lexicon with these tags will be sorted above the rest.'>
                 Lexicon Header Tags</p>
-            <div class="narrow">
+            <div class=narrow>
                 <textarea bind:value={$Language.HeaderTags}></textarea>
-                <p class="info">
+                <p class=info>
                     Entries with these tags will be sorted separately at the top of the lexicon.
                 </p>
             </div>

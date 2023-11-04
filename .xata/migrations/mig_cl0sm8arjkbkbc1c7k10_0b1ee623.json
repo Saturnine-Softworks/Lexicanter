@@ -1,0 +1,16 @@
+{
+  "id": "mig_cl0sm8arjkbkbc1c7k10",
+  "parentID": "mig_cl0sm21csn1dtvi83eug",
+  "checksum": "1:0b1ee623078563ae59271f38a73515871f56632f4e4690637a896ae0b84fc8c0",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "Owner",
+          "type": "string"
+        },
+        "table": "Languages"
+      }
+    }
+  ]
+}

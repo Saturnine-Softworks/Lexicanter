@@ -1,50 +1,105 @@
 <script lang="ts">
-    import { theme, autosave, pronunciations, wordInput } from '../stores';
-    import { userData, saveFile, showOpenDialog } from '../utils/files';
+    import { theme, autosave, pronunciations, wordInput, dbid, dbkey } from '../stores';
+    import { userData, saveFile, showOpenDialog, retrieveFromDatabase } from '../utils/files';
     import { Language } from '../stores';
-    import type * as Lexc from '../types';
+    import * as Lexc from '../types';
     const fs = require('fs');
     const path = require('path');
     const vex = require('vex-js');
     import { debug, logAction } from '../utils/diagnostics';
     import { get_pronunciation } from '../utils/phonetics';
-    import Etymology from './Etymology.svelte';
-    import Orthography from './Orthography.svelte';
     import TagSelector from '../components/TagSelector.svelte';
+    import { verifyHash } from '../utils/verification';
 
     let tag: string = '';
 
-    /**
-     * When the app loads, this block runs to check if the user has
-     * previously set a theme preference. If not, it creates a file in the
-     * user's app data folder and sets the default value to 'styles/dark.css'. 
-     * Otherwise, it reads the value from the file and sets the $theme store.
-     */
     userData(user_path => {
-        if (!fs.existsSync(user_path + path.sep + 'theme.txt')) {
-            fs.writeFileSync(user_path + path.sep + 'theme.txt', 'styles/dark.css');
+        let settings = {
+            autosave: true,
+            theme: 'styles/dark.css',
+            dbid: '',
+            dbkey: '',
         }
-        let theme_value = fs
-            .readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
-            .toString();
+        
+        // This block of code is responsible for managing user settings. It first checks if a 'settings' file exists.
+        // If it doesn't, it creates one and sets up default settings, including 'autosave' and 'theme'.
+        // It also checks for 'autosave_pref.txt' and 'theme.txt' files to import settings from, if they exist.
+        // After setting up, it writes the settings to a 'settings' file in JSON format.
+        // If the 'settings' directory does exist, it reads the 'settings' file and imports the settings from there.
+        if (!fs.existsSync(user_path + path.sep + 'settings.json')) {
+            if (fs.existsSync(user_path + path.sep + 'autosave_pref.txt')) {
+                settings.autosave = fs.readFileSync(user_path + path.sep + 'autosave_pref.txt', 'utf8') === 'true';
+                $autosave = fs.readFileSync(user_path + path.sep + 'autosave_pref.txt', 'utf8') === 'true';
+                fs.unlinkSync(user_path + path.sep + 'autosave_pref.txt');
+            } else {
+                settings.autosave = true;
+            }
+            fs.writeFileSync(user_path + path.sep + 'settings.json', 'styles/dark.css');
 
-        $theme = theme_value;
-    });
-
-    /**
-     * When the app loads, this block runs to check if the user has
-     * previously set an autosave preference. If not, it creates a file in the
-     * user's app data folder and sets the default value to true. Otherwise,
-     * it reads the value from the file and sets the $autosave store.
-     */
-    userData(user_path => {
-        if (!fs.existsSync(user_path + path.sep + 'autosave_pref.txt')) {
-            fs.writeFileSync(user_path + path.sep + 'autosave_pref.txt', 'false');
-            $autosave = true;
+            if (fs.existsSync(user_path + path.sep + 'theme.txt')) {
+                settings.theme = fs.readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
+                    .readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
+                    .toString();
+                $theme = settings.theme;
+                fs.unlinkSync(user_path + path.sep + 'theme.txt');
+            } else {
+                settings.theme = 'styles/dark.css';
+            }
+            $dbid = ''; $dbkey = '';
+            fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
         } else {
-            $autosave = fs.readFileSync(user_path + path.sep + 'autosave_pref.txt', 'utf8') === 'true';
+            settings = JSON.parse(fs.readFileSync(user_path + path.sep + 'settings.json', 'utf8'));
+            $autosave = settings.autosave;
+            $theme = settings.theme;
+            $dbid = settings.dbid; inputID = settings.dbid;
+            $dbkey = settings.dbkey; inputKey = settings.dbkey;
         }
+
     });
+
+    let inputID: string = '';
+    let inputKey: string = '';
+    $: disabledDatabase = !$Language.UploadToDatabase;
+    function setDatabaseAccount () {
+        if (inputID === '' || inputKey === '') {
+            vex.dialog.alert('Please enter both your User ID and Key.');
+            return;
+        }
+        if (verifyHash(inputID, inputKey)) {
+            $dbid = inputID;
+            $dbkey = inputKey;
+            userData(user_path => {
+                let settings = {
+                    autosave: $autosave,
+                    theme: $theme,
+                    dbid: $dbid,
+                    dbkey: $dbkey,
+                }
+                fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
+            });
+            vex.dialog.alert('Successfully verified your User ID and Key.');
+        } else {
+            vex.dialog.alert('One or both of the User ID and Key you entered is invalid.');
+        }
+    }
+
+    async function syncFromDatabase () {
+        if ($dbid === '' || $dbkey === '') {
+            vex.dialog.alert('Please enter both your User ID and Key.');
+            return;
+        }
+        if (verifyHash($dbid, $dbkey)) {
+            const queryResult = await retrieveFromDatabase();
+            if (queryResult !== false) {
+                $Language = queryResult;
+                vex.dialog.alert('Successfully synced from database.');
+            } else {
+                vex.dialog.alert('No file of this name was found in your ownership in the database.');
+            }
+        } else {
+            vex.dialog.alert('One or both of your User ID and Key is invalid.');
+        }
+    }
 
     /**
      * When the user changes selected theme from the dropdown in the Settings tab,
@@ -52,12 +107,13 @@
      */
     function change_theme() {
         userData(user_path => {
-            fs.writeFile(user_path + path.sep + 'theme.txt', $theme, err => {
-                if (err) { 
-                    vex.dialog.alert('There was a problem loading your theme. Please contact the developer for assistance.'); 
-                    console.log(err) 
-                };
-            });
+            let settings = {
+                autosave: $autosave,
+                theme: $theme,
+                dbid: $dbid,
+                dbkey: $dbkey,
+            }
+            fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
         });
     }
 
@@ -98,13 +154,14 @@
      * updates the preferred autosave setting stored in user app data.
      */ 
     function change_autosave_pref () {
+        let settings = {
+            autosave: $autosave,
+            theme: $theme,
+            dbid: $dbid,
+            dbkey: $dbkey,
+        }
         userData(user_path => {
-            fs.writeFile(
-                user_path + path.sep + 'autosave_pref.txt',
-                String($autosave),
-                'utf8',
-                err => { if (err) throw err; }
-            );
+            fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
         });
         if ($autosave) {
             var autosave_tracker = window.setInterval(
@@ -373,6 +430,26 @@
             <label>Auto-Save
                 <input type="checkbox" bind:checked={$autosave} on:change={change_autosave_pref}/>
             </label>
+
+            <div class=narrow>
+                <label>Database Uploading
+                    <p class=info>If you wish, your files can be saved to an online database so that you can sync your files across multiple 
+                        devices and the discord bot. To get your User ID and Key, please go to the Saturn's Sojourn discord server and use 
+                        the command <code>/account</code>.
+                    </p>
+                    <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'}
+                        <input type=checkbox bind:checked={$Language.UploadToDatabase}/>
+                    </span>
+                    <span>User ID: <input class:pronunciation={disabledDatabase} type=text bind:value={inputID} disabled={disabledDatabase}/></span>
+                    <br>
+                    <span>Key: <input class:pronunciation={disabledDatabase} type=text bind:value={inputKey} disabled={disabledDatabase}/></span>
+                    <button on:click={setDatabaseAccount}>Authenticate</button>
+                    <p class=info>Your ID and Key are saved to the app's internal settings, not to your file, but turning on uploading is saved per-file.</p>
+                    <br>
+                    <button class='hover-highlight hover-shadow' on:click={syncFromDatabase}>Sync From Database</button>
+                    <p class=info>This will overwrite the current file with the latest version of the file with the same name and User ID in the database.</p>
+                </label>
+            </div>
 
             <br><hr/><br>
 

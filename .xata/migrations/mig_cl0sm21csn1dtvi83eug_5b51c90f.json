@@ -1,0 +1,16 @@
+{
+  "id": "mig_cl0sm21csn1dtvi83eug",
+  "parentID": "mig_cl0slgarjkbkbc1c7jd0",
+  "checksum": "1:5b51c90f55e863971774315e4baa435023f12c9a6f5818fd17053a9358991e63",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "Name",
+          "type": "string"
+        },
+        "table": "Languages"
+      }
+    }
+  ]
+}

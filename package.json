@@ -50,6 +50,9 @@
     "name": "Ethan Ray"
   },
   "license": "GNU General Public License Version 3",
+  "engine": {
+    "node": ">=21.1.0"
+  },
   "dependencies": {
     "@editorjs/code": "^2.8.0",
     "@editorjs/editorjs": "^2.26.5",
@@ -59,9 +62,11 @@
     "@editorjs/underline": "^1.1.0",
     "@electron/remote": "^2.0.9",
     "@types/marked": "^4.0.8",
+    "@xata.io/client": "^0.26.9",
     "csv-parser": "^3.0.0",
     "electron-updater": "^5.3.0",
     "marked": "^4.3.0",
+    "node-fetch": "^3.3.2",
     "sass": "^1.60.0",
     "vex-js": "^4.1.0"
   },

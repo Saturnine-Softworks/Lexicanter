@@ -216,4 +216,5 @@ export type Language = {
     FileTheme: string;
     OrderByDate: boolean;
     SaveLocation: string;
+    UploadToDatabase: boolean;
 }

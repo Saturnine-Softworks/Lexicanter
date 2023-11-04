@@ -1,0 +1,16 @@
+{
+  "id": "mig_cl0smg1csn1dtvi83f5g",
+  "parentID": "mig_cl0sm8arjkbkbc1c7k10",
+  "checksum": "1:189bf4d96b194d5da3aacd755fb2cfe36e6b92ddca0ac34e2d70636f79eea913",
+  "operations": [
+    {
+      "addColumn": {
+        "column": {
+          "name": "File",
+          "type": "json"
+        },
+        "table": "Languages"
+      }
+    }
+  ]
+}

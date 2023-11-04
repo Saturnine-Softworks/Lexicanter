@@ -1,0 +1,11 @@
+{
+  "id": "mig_cl0slgarjkbkbc1c7jd0",
+  "checksum": "1:87e3008a01d9f046bba489d6282bd550486141b7da094ff66153eee3fe56e82b",
+  "operations": [
+    {
+      "addTable": {
+        "table": "Languages"
+      }
+    }
+  ]
+}

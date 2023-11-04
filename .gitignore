@@ -5,6 +5,11 @@ publish.bash
 # Development
 /bash
 
+# Database
+src/db/database.ts
+.env
+src/app/utils/verification.ts
+
 # Logs
 logs
 *.log
