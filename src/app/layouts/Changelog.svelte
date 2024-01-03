@@ -24,14 +24,18 @@
             <a rel="noreferrer" target="_blank" href="https://discord.gg/uDk2XDhh8K">Discord server</a>. 
 
             <br><hr/><br>
-            <p><u>New in 2.1.11</u></p>
+            <p><u>Patch 2.1.12</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Added a new default text to the Pronunciations field in the Phonology tab to better guide beginners.<br>
+                • Added an indicator on entries in the lexicon tab to show if their pronunciation was manually edited and thus not automatically updated by pronunciation rules.<br>
+            <p><u>Patch 2.1.11</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Added secondary location file saving, for those of you who want your lexicon files to save to another location on your computer every time you save. <br>
                 • Added database syncing! Get your account credentials from the Lexicanter Discord bot, and then you can sync your files to the bot and between devices. <br>
                 • A minor change to how app settings are saved. The old app settings files are now deprecated and will eventually no longer be supported. <br>
             </p>
             <br>
-            <p><u>New in 2.1.10</u></p>
+            <p><u>Patch 2.1.10</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • New tooltips have been added throughout the app. <br>
                 • New All Hallow's Eve 2023 theme in the Holiday collection! <br>
