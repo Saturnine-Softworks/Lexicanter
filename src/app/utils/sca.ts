@@ -5,7 +5,7 @@ const vex = require('vex-js');
 
 function applyRule(rule: string, input: string, categories: {[index: string]: string[]}): string {
     const caseSensitive = get(Language).CaseSensitive;
-    const flags = caseSensitive? 'gi' : 'g';
+    const flags = caseSensitive? 'g' : 'gi';
 
     // eslint-disable-next-line prefer-const
     let [pattern, sub, context] = rule.split('/');
@@ -117,10 +117,6 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
         }
         for (const m of expandedContext.match(/(.|\s)\?/g)? expandedContext.match(/(.|\s)\?/g) : []) {
             const optional = m.replace(/(.|\s)\?/g, '$1');
-            /* console.log(
-                'm:', `'${m}'`, '|',
-                'optional:', `'${optional}'`
-            ); */
             const testContext = expandedContext.replace(m, optional);
             let testRegString = '(' + testContext.replace('_', `)${pattern}(`) + ')';
             Object.entries(categories).forEach(([symbol, values]: [string, string[]]) => {
@@ -140,7 +136,6 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
                 .indexOf('_');
 
         //SECTION - Get the slice of the match that corresponds to the pattern
-
         const patternLength = 
             !patternCatMap[0]
                 ? pattern.length 
@@ -156,12 +151,6 @@ function applyRule(rule: string, input: string, categories: {[index: string]: st
                         });
                         return length;
                     })();
-        /* console.log(
-            'iP:', indexOfPattern, '|',
-            'pL', patternLength, '|',
-            'match:', `'${match}'`, '->',
-            'slice:', `'${match.slice(indexOfPattern, indexOfPattern + patternLength)}'`
-        ); */
         match = match.slice( 
             indexOfPattern, 
             indexOfPattern + patternLength
