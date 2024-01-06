@@ -24,10 +24,20 @@
             <a rel="noreferrer" target="_blank" href="https://discord.gg/uDk2XDhh8K">Discord server</a>. 
 
             <br><hr/><br>
+
+            <p><u>Patch 2.1.13</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Added an Illegals field to the Advanced Phonotactics word generator options. <br>
+                • Added the Structures inputs to the Advanced Phonotactics word generator options and the corresponding syllable category syntax for this feature.<br>
+                • (Finally) wrote the documentation on the word generator, which can be found in the Help tab. <br>
+            </p>
+            <br>
             <p><u>Patch 2.1.12</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Added a new default text to the Pronunciations field in the Phonology tab to better guide beginners.<br>
                 • Added an indicator on entries in the lexicon tab to show if their pronunciation was manually edited and thus not automatically updated by pronunciation rules.<br>
+            </p>
+            <br>
             <p><u>Patch 2.1.11</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Added secondary location file saving, for those of you who want your lexicon files to save to another location on your computer every time you save. <br>

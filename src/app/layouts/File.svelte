@@ -127,8 +127,14 @@
             errorMessage = 'There was a problem loading the advanced phonotactics.';
             if (contents.hasOwnProperty('AdvancedPhonotactics')) {
                 $Language.UseAdvancedPhonotactics = contents.UseAdvancedPhonotactics;
+                // Constructs and Illegals fields were added at the same time in 2.1.13 - only need to check for one to know if both exist
+                // REVIEW - This could also be achieved by checking if the file version is 2.1.13 or higher, which would require a Semantic Versioning parser.
+                //          Could be worth finding a SemVer parser.
+                if (!contents.AdvancedPhonotactics.hasOwnProperty('Constructs')) {
+                    contents.AdvancedPhonotactics.Constructs = [{enabled:true, structures:''}];
+                    contents.AdvancedPhonotactics.Illegals = [];
+                }
                 $Language.AdvancedPhonotactics = contents.AdvancedPhonotactics;
-
             }
 
             errorMessage = 'There was a problem loading the file’s theme.'

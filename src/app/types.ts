@@ -122,6 +122,11 @@ export type AdvancedPhonotactics = {
         [index: string]: string[];
     }
     Syllables: string[];
+    Constructs: {
+        enabled: boolean;
+        structures: string;
+    }[];
+    Illegals: string[];
 }
 
 /**

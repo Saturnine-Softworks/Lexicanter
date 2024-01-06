@@ -52,7 +52,9 @@ const Default: Lexc.Language = {
     UseAdvancedPhonotactics: false,
     AdvancedPhonotactics: <Lexc.AdvancedPhonotactics> {
         Categories: { },
-        Syllables: [],
+        Syllables: [ ],
+        Constructs: [{enabled:true, structures:''}],
+        Illegals: [ ],
     },
     Lects: ['General'],
     Phrasebook: <Lexc.Phrasebook> { },
