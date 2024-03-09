@@ -1,10 +1,10 @@
 <script lang="ts">
     const fs = require('fs');
     const path = require('path');
-    import { docsEditor, Language, selectedCategory, fileLoadIncrement, referenceLanguage, defaultLanguage, autosave } from '../stores';
+    import { docsEditor, Language, selectedCategory, fileLoadIncrement, referenceLanguage, defaultLanguage, dbid, dbkey } from '../stores';
     import type { OutputData } from '@editorjs/editorjs';
     import type * as Lexc from '../types';
-    import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV } from '../utils/files';
+    import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV, retrieveFromDatabase } from '../utils/files';
     import { get_pronunciation, writeRomans } from '../utils/phonetics';
     import { initializeDocs } from '../utils/docs';
     import * as diagnostics from '../utils/diagnostics';
@@ -12,6 +12,8 @@
     import type { Sense } from '../types';
     import {tooltip} from '@svelte-plugins/tooltips';
     import { onMount } from 'svelte';
+    import { verifyHash } from '../utils/verification';
+    import { vectorSearchTable } from '@xata.io/client';
     const vex = require('vex-js');
 
     let locationSelector: HTMLInputElement;
@@ -48,7 +50,7 @@
      * If the file is a legacy version, it is passed to the appropriate function.
      * @param {Object} contents - The contents of the opened file.
      */
-    function read_contents (contents) {
+    async function read_contents (contents) {
         if (typeof contents.Version === 'number' || contents.Version === '1.8.x') {
             try { openLegacy[contents.Version](contents); }
             catch (err) {
@@ -140,6 +142,39 @@
             errorMessage = 'There was a problem loading the file’s theme.'
             if (contents.hasOwnProperty('FileTheme')) {
                 $Language.FileTheme = contents.FileTheme;
+            }
+
+            errorMessage = 'There was a problem syncing with the database.'
+            if (contents.hasOwnProperty('UploadToDatabase')) {
+                $Language.UploadToDatabase = contents.UploadToDatabase
+                if ($Language.UploadToDatabase) {
+                    if ($dbid === '' || $dbkey === '') {
+                        vex.dialog.alert('The file you opened has database syncing turned on, but your user ID or account key are blank.');
+                        return;
+                    }
+                    if (verifyHash($dbid, $dbkey)) {
+                        const queryResult = await retrieveFromDatabase();
+                        if (queryResult !== false) {
+                            if ($Language != queryResult) {
+                                vex.dialog.confirm({
+                                    message: 'Detected changes to the file in the database. Would you like to download them?',
+                                    callback: (proceed, download = queryResult) => {
+                                        if (proceed) {
+                                            $Language = download
+                                            vex.dialog.alert('Downloaded changes.')
+                                        } else {
+                                            vex.dialog.alert('Did not download changes. If you change your mind, click the Sync From Database button in the Settings tab. This will overwrite local changes.')
+                                        }
+                                    }
+                                })
+                            }
+                        } else {
+                            vex.dialog.alert('No file of this name was found in your ownership in the database.');
+                        }
+                    } else {
+                        vex.dialog.alert('One or both of your User ID and Key is invalid.');
+                    }
+                }
             }
 
         } catch (err) {

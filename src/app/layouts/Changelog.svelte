@@ -30,6 +30,8 @@
                 • Fixed a bug with the orthography pattern replacement features which caused it to only replace the first instance of a pattern in each word.<br>
                 • Added the ability to use <code>^</code> or <code>#</code> as word-end characters in the orthography pattern replacement fields. <br>
                 • Fixed a reported bug with the Illegals field of the Advanced Phonotactics word generator which caused that field not to save its contents. <br>
+                • Fixed a bug with database syncing which caused the setting to not save for files.
+                • Files should now automatically detect when you have changes in the database on loading, and will prompt you to download the changes.
             </p>
             <br>
             <p><u>Patch 2.1.13</u></p>

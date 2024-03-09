@@ -437,7 +437,7 @@
                         devices and the discord bot. To get your User ID and Key, please go to the Saturn's Sojourn discord server and use 
                         the command <code>/account</code>.
                     </p>
-                    <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'}
+                    <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'} for this file.
                         <input type=checkbox bind:checked={$Language.UploadToDatabase}/>
                     </span>
                     <span>User ID: <input class:pronunciation={disabledDatabase} type=text bind:value={inputID} disabled={disabledDatabase}/></span>
