@@ -160,8 +160,9 @@
                                     message: 'Detected changes to the file in the database. Would you like to download them?',
                                     callback: (proceed, download = queryResult) => {
                                         if (proceed) {
-                                            $Language = download
-                                            vex.dialog.alert('Downloaded changes.')
+                                            $Language = download;
+                                            saveFile();
+                                            vex.dialog.alert('Downloaded changes and saved.')
                                         } else {
                                             vex.dialog.alert('Did not download changes. If you change your mind, click the Sync From Database button in the Settings tab. This will overwrite local changes.')
                                         }
