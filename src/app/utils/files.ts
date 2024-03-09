@@ -646,8 +646,8 @@ export async function importCSV(headers: boolean, words: number, definitions: nu
     );
 }
     
-export async function retrieveFromDatabase(): Promise<Lexc.Language|false> {
-    const hits = await xata.db.Languages.filter({Name: Lang().Name, Owner: get(dbid)}).getAll();
+export async function retrieveFromDatabase(name = Lang().Name): Promise<Lexc.Language|false> {
+    const hits = await xata.db.Languages.filter({Name: name, Owner: get(dbid)}).getAll();
     if (hits.length > 0) {
         return hits[0].File;
     } else {

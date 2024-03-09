@@ -153,7 +153,7 @@
                         return;
                     }
                     if (verifyHash($dbid, $dbkey)) {
-                        const queryResult = await retrieveFromDatabase();
+                        const queryResult = await retrieveFromDatabase(contents.Name);
                         if (queryResult !== false) {
                             if ($Language != queryResult) {
                                 vex.dialog.confirm({
