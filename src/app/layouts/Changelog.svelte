@@ -25,6 +25,13 @@
 
             <br><hr/><br>
 
+            <p><u>Patch 2.1.14</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Fixed a bug with the orthography pattern replacement features which caused it to only replace the first instance of a pattern in each word.<br>
+                • Added the ability to use <code>^</code> or <code>#</code> as word-end characters in the orthography pattern replacement fields. <br>
+                • Fixed a reported bug with the Illegals field of the Advanced Phonotactics word generator which caused that field not to save its contents. <br>
+            </p>
+            <br>
             <p><u>Patch 2.1.13</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Added an Illegals field to the Advanced Phonotactics word generator options. <br>

@@ -154,19 +154,16 @@
                         () => {
                             for (let word in $Language.Lexicon) {
                                 if (word.includes(orthographyReplacement.pattern)) {
-                                    try { 
-                                        $Language.Lexicon[word.replace(orthographyReplacement.pattern, orthographyReplacement.replacement)] = $Language.Lexicon[word];
+                                    try {
+                                        let newWord = '#' + word + '#'
+                                        let pattern = orthographyReplacement.pattern.replaceAll('^', '#')
+                                        newWord = newWord.replaceAll(pattern, orthographyReplacement.replacement)
+                                        $Language.Lexicon[newWord] = $Language.Lexicon[word];
                                         delete $Language.Lexicon[word];
                                         orthographyChangeEndMessage = 'Change applied successfully.';
-                                        window.setTimeout(() => {
-                                            orthographyChangeEndMessage = '';
-                                        }, 15000);
                                     } catch (e) {
                                         console.log(e);
                                         orthographyChangeEndMessage = 'An error occurred while applying the change. Please contact the developer for assistance and check the console.';
-                                        window.setTimeout(() => {
-                                            orthographyChangeEndMessage = '';
-                                        }, 30000);
                                     }
                                 }
                             }

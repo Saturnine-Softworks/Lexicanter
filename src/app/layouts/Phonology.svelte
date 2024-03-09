@@ -26,7 +26,8 @@
             return `${symbol} :: ${$Language.AdvancedPhonotactics.Categories[symbol].join(' ')}`
         }).join('\n');
         APSyllables = $Language.AdvancedPhonotactics.Syllables.join('\n');
-        APConstructs = $Language.AdvancedPhonotactics.Constructs
+        APConstructs = $Language.AdvancedPhonotactics.Constructs;
+        APIllegals = $Language.AdvancedPhonotactics.Illegals.join(' ');
     }
     $: if ($fileLoadIncrement) updateAPFields();
 
@@ -59,8 +60,9 @@
     }
     function setAPIllegals() {
         $Language.AdvancedPhonotactics.Illegals = [];
-        APIllegals.split(/\s+/g).forEach(line => {
-            $Language.AdvancedPhonotactics.Illegals.push(line.trim());
+        // space-separated tokens
+        APIllegals.split(/\s+/g).forEach(token => {
+            $Language.AdvancedPhonotactics.Illegals.push(token.trim());
         })
     }
 
