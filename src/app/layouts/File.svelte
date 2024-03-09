@@ -155,7 +155,7 @@
                     if (verifyHash($dbid, $dbkey)) {
                         const queryResult = await retrieveFromDatabase(contents.Name);
                         if (queryResult !== false) {
-                            if ($Language != queryResult) {
+                            if (JSON.stringify($Language.Lexicon) !== JSON.stringify(queryResult.Lexicon)) {
                                 vex.dialog.confirm({
                                     message: 'Detected changes to the file in the database. Would you like to download them?',
                                     callback: (proceed, download = queryResult) => {
