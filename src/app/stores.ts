@@ -3,7 +3,8 @@ import EditorJS, { type OutputData } from '@editorjs/editorjs';
 import type * as Lexc from './types'; 
 
 const Default: Lexc.Language = {
-    Version: '2.1.0',
+    Version: '2.1.15',
+    FileVersion: '0',
     Name: 'Unnamed Language',
     CaseSensitive: false,
     IgnoreDiacritics: true,

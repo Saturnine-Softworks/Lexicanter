@@ -57,6 +57,7 @@ async function collectExportData (): Promise<string> {
         console.log('No save function found for docs editor.', get(docsEditor));
     }
     Lang().Version = await ipcRenderer.invoke('getVersion');
+    Lang().FileVersion = (parseInt(Lang().FileVersion, 36) + 1).toString(36);
     return JSON.stringify(Lang());
 }
 
@@ -146,10 +147,10 @@ export async function saveFile () {
                 new Notification(`The ${Lang().Name} file has been saved.`);
             }
         } catch (err) {
-            vex.dialog.alert(
-                'There was a problem saving your file. Please contact the developer.'
-            );
             console.log(err);
+            vex.dialog.alert(
+                'There was a problem saving your file. The error has been printed to the console. Please contact the developer.'
+            );
         }
 
         // Save to database

@@ -191,77 +191,75 @@
      * or end of a word. Searches are combinative, and only
      * results which match all search input fields will be
      * selected as matches. 
-     * @returns {any}
      */
     function search_lex(): void {
         let words_search = $Language.CaseSensitive?  searchWords.trim() : searchWords.toLowerCase().trim();
         let definitions_search = searchDefinitions.toLowerCase().trim();
-        let tags_search = searchTags.toLowerCase().trim()? searchTags.toLowerCase().trim().split(/\s+/g) : [];
+        let tags_search = searchTags.toLowerCase().trim();
         keys = [];
-        if (!!words_search || !!definitions_search || !!tags_search[0] || !!lectFilter) {
-            // Turn l into a list of [search by word terms, search by def terms
-            let l = [[...words_search.split('|')], [...definitions_search.split('|')]];
+        if (!!words_search || !!definitions_search || !!tags_search || !!lectFilter) { // if there is at least one search term
             for (let word in $Language.Lexicon) {
-                const w = '^' + word.replaceAll(/\s+/g, '^') + '^';
-                let match = lectFilter? $Language.Lexicon[word].Senses.some(sense => sense.lects.includes(lectFilter)) : true;
-                if (!match) continue;
-                for (let a of l[0]) {
-                    // words
-                    if (!w.includes(a)) {
+                let entry = $Language.Lexicon[word];
+                let match = true;
+
+                // check lect filter
+                if ( !!lectFilter ) {
+                    if ( !entry.Senses.some(sense => sense.lects.includes(lectFilter)) ) {
                         match = false;
+                        continue;
                     }
                 }
-                for (let a of l[1]) {
-                    // definitions
-                    let needs_exact_match = a[0] === '!';
-                    if (needs_exact_match) {
-                        let pattern = `\\b${a.split('!')[1]}\\b`;
-                        $Language.Lexicon[word].Senses.forEach(sense => {
-                            if (!sense.definition.toLowerCase().match(pattern)) {
-                                // no exact word match
+
+                // check word
+                if ( !!words_search ) { 
+                    if ( words_search[0] === '!') { // requires exact match
+                        if (word !== words_search.split('!')[1]) {
+                            match = false;
+                            continue;
+                        }
+                    } else if ( !('^' + word.replaceAll(/\s+/g, '^') + '^').includes(words_search.replaceAll(/\s+/g, '^')) ) {
+                        // searches for inexact match
+                        match = false;
+                        continue;
+                    }
+                }
+
+                // check definitions
+                if ( !!definitions_search ) {
+                    if ( definitions_search[0] === '!' ) { // requires exact match
+                        if (!entry.Senses.some(sense => sense.definition === definitions_search.split('!')[1])) {
+                            match = false;
+                            continue;
+                        }
+                    } else if (!entry.Senses.some(sense => sense.definition.replaceAll(/\s+/g, '^').toLowerCase().includes(definitions_search.replaceAll(/\s+/g, '^')))) {
+                        // searches for inexact match
+                        match = false;
+                        continue;
+                    }
+                }
+
+                // check tags
+                if ( !!tags_search ) {
+                    let tag_search_array = tags_search.split(/\s+/);
+                    for (let tag_search of tag_search_array) {
+                        if (tag_search[0] === '!') { // requires exact match (per tag basis)
+                            if (!entry.Senses.some(sense => sense.tags.some(tag => tag.toLowerCase() === tag_search.split('!')[1]))) {
                                 match = false;
+                                continue;
                             }
-                        });
-                    } else if (!$Language.Lexicon[word].Senses.some(sense => sense.definition.toLowerCase().includes(a))) { 
-                        // no partial match
-                        match = false;
-                    }
-                }
-                if (!!$Language.Lexicon[word].Senses.some(sense => !!sense.tags[0])) {
-                    // has at least one tag
-                    let partial_tag_match = false;
-                    let needs_exact_match = false;
-                    let has_exact_match = false;
-                    for (let tag of $Language.Lexicon[word].Senses.map(sense => sense.tags).flat()) {
-                        for (let a of tags_search) {
-                            // debug.log('`a` | `tag` : ' + a + ' | ' + tag, false)
-                            // tags
-                            if (a[0] === '!') {
-                                needs_exact_match = true;
-                                if (`!${tag}` === a) {
-                                    has_exact_match = true;
-                                    partial_tag_match = true;
-                                }
-                            }
-                            if (`^${tag}^`.includes(a)) {
-                                partial_tag_match = true;
-                            }
+                        } else if ( !entry.Senses.some(sense => sense.tags.some(tag => `^${tag.toLowerCase()}^`.includes(tag_search))) ) { 
+                            // searches for inexact match (per tag basis)
+                            match = false;
+                            continue;
                         }
                     }
-                    if (!!tags_search[0] && ((!partial_tag_match) || (needs_exact_match && !has_exact_match))) {
-                        match = false;
-                    }
-                } else {
-                    // has no tags
-                    if (!!tags_search[0]) {
-                        match = false; // at least one tag as search term
-                    }
                 }
-                if (match) {
+
+                if ( match ) {
                     keys = [...keys, word];
                 }
             }
-            if (!keys.length) keys = [null]; // Search was attempted, no results
+            if (!keys.length) {keys = [null]}; // Search was attempted, no results
         }
     }
 </script>

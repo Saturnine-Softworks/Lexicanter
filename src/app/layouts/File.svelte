@@ -87,6 +87,9 @@
             if (contents.hasOwnProperty('SaveLocation')) {
                 $Language.SaveLocation = contents.SaveLocation;
             }
+            if (contents.hasOwnProperty('FileVersion')) {
+                $Language.FileVersion = contents.FileVersion
+            }
 
             errorMessage = 'There was a problem loading the alphabet from the file.'
             $Language.Alphabet = contents.Alphabet;
@@ -155,9 +158,21 @@
                     if (verifyHash($dbid, $dbkey)) {
                         const queryResult = await retrieveFromDatabase(contents.Name);
                         if (queryResult !== false) {
-                            if (JSON.stringify($Language.Lexicon) !== JSON.stringify(queryResult.Lexicon)) {
+                            if (queryResult.FileVersion === undefined) {
                                 vex.dialog.confirm({
-                                    message: 'Detected changes to the file in the database. Would you like to download them?',
+                                    message: `The file in the database has no FileVersion number. Would you like to overwrite it with your local version?`,
+                                    yesText: 'Upload Local Version',
+                                    callback: (proceed) => {
+                                        if (proceed) {
+                                            saveFile();
+                                            vex.dialog.alert('Saved and uploaded local file.')
+                                        }
+                                    }
+                                })
+                            } else if ( parseInt($Language.FileVersion, 36) < parseInt(queryResult.FileVersion, 36) ) {
+                                vex.dialog.confirm({
+                                    message: `Detected a newer version of the file in the database (local: ${$Language.FileVersion} | online: ${queryResult.FileVersion}). Would you like to download the changes?`,
+                                    yesText: 'Download Changes',
                                     callback: (proceed, download = queryResult) => {
                                         if (proceed) {
                                             $Language = download;

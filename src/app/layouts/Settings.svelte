@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { theme, autosave, pronunciations, wordInput, dbid, dbkey } from '../stores';
+    import { theme, autosave, pronunciations, wordInput, dbid, dbkey, fileLoadIncrement } from '../stores';
     import { userData, saveFile, showOpenDialog, retrieveFromDatabase } from '../utils/files';
     import { Language } from '../stores';
     import * as Lexc from '../types';
@@ -12,6 +12,21 @@
     import { verifyHash } from '../utils/verification';
 
     let tag: string = '';
+    let onlineFileVersion: string = '';
+    let localFileVersion: string = $Language.FileVersion;
+    async function getOnlineFileVersion() {
+        if (verifyHash($dbid, $dbkey)) {
+            let file = await retrieveFromDatabase();
+            if (file) {
+                return file.FileVersion;
+            } else return null;
+        }
+    }
+    async function setFileVersions() {
+        onlineFileVersion = await getOnlineFileVersion();
+        localFileVersion = $Language.FileVersion;
+    }
+    $: $fileLoadIncrement, setFileVersions();
 
     userData(user_path => {
         let settings = {
@@ -440,6 +455,11 @@
                     <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'} for this file.
                         <input type=checkbox bind:checked={$Language.UploadToDatabase}/>
                     </span>
+                    {#if $Language.UploadToDatabase && verifyHash($dbid, $dbkey)}
+                        Local File Version: {localFileVersion} <br>
+                        Online File Version: {onlineFileVersion} <br>
+                        <button class='hover-highlight hover-shadow' on:click={setFileVersions}>Refresh</button>
+                    {/if}
                     <span>User ID: <input class:pronunciation={disabledDatabase} type=text bind:value={inputID} disabled={disabledDatabase}/></span>
                     <br>
                     <span>Key: <input class:pronunciation={disabledDatabase} type=text bind:value={inputKey} disabled={disabledDatabase}/></span>

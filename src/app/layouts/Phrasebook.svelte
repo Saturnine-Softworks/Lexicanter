@@ -42,15 +42,14 @@
             let tagMatch = !tagsSearch
             const filterLect = lectFilter? !lectFilter : scope[entry].lects.includes(lectFilter);
 
-            if (term.includes(phrase_search))
+            if (term.toLowerCase().includes(phrase_search.toLowerCase()))
                 phraseMatch = true;
-            if (scope[entry].description.toLowerCase().includes(descript_search)) 
+            if (scope[entry].description.toLowerCase().includes(descript_search.toLowerCase())) 
                 descriptMatch = true;
             if (!!tagsSearch) {
-                if (scope[entry].tags.some(tag => tagsSearch.includes(tag)))
+                if (scope[entry].tags.some(tag => tagsSearch.includes(tag.toLowerCase())))
                     tagMatch = true;
             }
-
 
             for (let variant in scope[entry].variants) {
                 let v_term = '^' + variant + '^';

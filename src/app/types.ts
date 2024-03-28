@@ -195,6 +195,7 @@ export type Orthography = {
  */
 export type Language = {
     Version: string;
+    FileVersion: string; // base 36 number
     Name: string;
     Lexicon: Lexicon;
     Etymologies: Etymologies;
