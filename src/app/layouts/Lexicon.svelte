@@ -211,13 +211,14 @@
                 }
 
                 // check word
-                if ( !!words_search ) { 
+                if ( !!words_search ) {
+                    let caseFixedWord = $Language.CaseSensitive? word : word.toLowerCase();
                     if ( words_search[0] === '!') { // requires exact match
-                        if (word !== words_search.split('!')[1]) {
+                        if (caseFixedWord !== words_search.split('!')[1]) {
                             match = false;
                             continue;
                         }
-                    } else if ( !('^' + word.replaceAll(/\s+/g, '^') + '^').includes(words_search.replaceAll(/\s+/g, '^')) ) {
+                    } else if ( !('^' + caseFixedWord.replaceAll(/\s+/g, '^') + '^').includes(words_search.replaceAll(/\s+/g, '^')) ) {
                         // searches for inexact match
                         match = false;
                         continue;

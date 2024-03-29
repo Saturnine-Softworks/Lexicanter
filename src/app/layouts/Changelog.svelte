@@ -25,6 +25,11 @@
 
             <br><hr/><br>
 
+            <p><u>Patch 2.1.16</u></p>
+            <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
+                • Fixed a bug that occurred with lexicon searching in some files, related to case-sensitivity. <br>
+            </p>
+            <br>
             <p><u>Patch 2.1.15</u></p>
             <p style="width: 70%; margin: auto; text-align: left; line-height: 1.6">
                 • Fixed a reported bug which caused the search fields in the lexicon and phrasebook to find no matches in certain cases. <br>
