@@ -31,45 +31,36 @@
         const scope: Lexc.PhraseCategory = $Language.Phrasebook[$selectedCategory];
         const phrase_search = searchPhrase.trim();
         const descript_search = searchDescription.toLowerCase().trim();
-        const tagsSearch = searchTags.toLowerCase().trim().split(/\s+/g).filter(s => !!s);
-        if (!phrase_search && !descript_search) return Object.keys(scope);
+        const tags_search = searchTags.toLowerCase().trim();
 
         let keys = [];
         for (let entry in scope) {
             let term = '^' + entry.replaceAll(/\s+/g, '^') + '^';
-            let phraseMatch = !phrase_search
-            let descriptMatch = !descript_search
-            let tagMatch = !tagsSearch
-            const filterLect = lectFilter? !lectFilter : scope[entry].lects.includes(lectFilter);
-
-            if (term.toLowerCase().includes(phrase_search.toLowerCase()))
-                phraseMatch = true;
-            if (scope[entry].description.toLowerCase().includes(descript_search.toLowerCase())) 
-                descriptMatch = true;
-            if (!!tagsSearch) {
-                if (scope[entry].tags.some(tag => tagsSearch.includes(tag.toLowerCase())))
-                    tagMatch = true;
+            if (!phrase_search || term.toLowerCase().includes(phrase_search)) {
+                if (!descript_search || scope[entry].description.toLowerCase().includes(descript_search)) {
+                    if (!tags_search || scope[entry].tags.join(' ').toLowerCase().includes(tags_search)) {
+                        if (!lectFilter || scope[entry].lects.includes(lectFilter)) {
+                            keys.push(entry);
+                        }
+                    }
+                }
             }
-
             for (let variant in scope[entry].variants) {
-                let v_term = '^' + variant + '^';
-                if (v_term.includes(phrase_search))
-                    phraseMatch = true;
-                if (scope[entry].variants[variant].description .toLowerCase().includes(descript_search))
-                    descriptMatch = true;
+                let variantEntry = scope[entry].variants[variant];
+                let term = '^' + variant.replaceAll(/\s+/g, '^') + '^';
+                if (!phrase_search || term.toLowerCase().includes(phrase_search)) {
+                    if (!descript_search || variantEntry.description.toLowerCase().includes(descript_search)) {
+                        keys.push(entry);
+                    }
+                }
             }
-
-            if (phraseMatch && descriptMatch && tagMatch && filterLect) 
-                keys.push(entry);
         }
-        return keys;
+        return [...new Set(keys)]; // spread set syntax = no duplicate keys
     }
     $: {
-        // any time $selectedCategory, search_phrase, or search_description changes, update phrase_keys
+        // any time $selectedCategory, searchPhrase, searchTags, lectFilter, or searchDescription changes, update phrase_keys
         $Language.Phrasebook;
-        $selectedCategory;
-        searchPhrase;
-        searchDescription;
+        $selectedCategory; searchPhrase; searchDescription; searchTags; lectFilter;
         (() => {phraseKeys = searchBook()})();
     }
 
@@ -88,6 +79,7 @@
      */ 
     function editPhrase(phrase: string): void {
         $phraseInput = phrase;
+        $categoryInput = $selectedCategory;
         $phrasePronunciations = (() => {
             let pronunciations = {};
             Object.keys($Language.Phrasebook[$selectedCategory][phrase].pronunciations).forEach(lect => {

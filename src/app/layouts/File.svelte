@@ -176,6 +176,7 @@
                                     callback: (proceed, download = queryResult) => {
                                         if (proceed) {
                                             $Language = download;
+                                            initializeDocs(download.Docs);
                                             saveFile();
                                             vex.dialog.alert('Downloaded changes and saved.')
                                         } else {

@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { theme, autosave, pronunciations, wordInput, dbid, dbkey, fileLoadIncrement } from '../stores';
+    import { theme, autosave, pronunciations, wordInput, dbid, dbkey, fileLoadIncrement, docsEditor } from '../stores';
     import { userData, saveFile, showOpenDialog, retrieveFromDatabase } from '../utils/files';
     import { Language } from '../stores';
-    import * as Lexc from '../types';
+    import type * as Lexc from '../types';
     const fs = require('fs');
     const path = require('path');
     const vex = require('vex-js');
@@ -10,6 +10,7 @@
     import { get_pronunciation } from '../utils/phonetics';
     import TagSelector from '../components/TagSelector.svelte';
     import { verifyHash } from '../utils/verification';
+    import { initializeDocs } from '../utils/docs';
 
     let tag: string = '';
     let onlineFileVersion: string = '';
@@ -107,6 +108,8 @@
             const queryResult = await retrieveFromDatabase();
             if (queryResult !== false) {
                 $Language = queryResult;
+                $docsEditor.destroy();
+                initializeDocs(queryResult.Docs);
                 vex.dialog.alert('Successfully synced from database.');
             } else {
                 vex.dialog.alert('No file of this name was found in your ownership in the database.');
