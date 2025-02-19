@@ -64,7 +64,7 @@ export function alphabetize(lexicon: Lexc.Lexicon): string[] {
 
             for (const token of find_in_order) {
                 w = w.replace(
-                    new RegExp(`${token}`, 'g'),
+                    new RegExp(`${token.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}`, 'g'),
                     `${order.indexOf(token)}.`
                 );
             }

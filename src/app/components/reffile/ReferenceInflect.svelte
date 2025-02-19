@@ -7,7 +7,6 @@
     import Table from '@editorjs/table';
     import Header from '@editorjs/header';
     import Underline from '@editorjs/underline';
-    import { Monospace } from '../../utils/docs';
     enum LogLevels { // REVIEW - monkeypatch gets around type check error, can't import this from @editorjs/editorjs/types for ...reasons.
         VERBOSE = 'VERBOSE',
         INFO = 'INFO',
@@ -27,7 +26,6 @@
                 data: inflection.tables,
                 tools: {
                     underline: Underline,
-                    monospace: Monospace,
                     table: {
                         class: Table,
                         inlineToolbar: true,

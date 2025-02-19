@@ -1,8 +1,23 @@
 <script lang='ts'>
-    enum u {MAJOR, MINOR, PATCH};
+    const [MAJOR, MINOR, PATCH] = [0, 1, 2];
     const changelog = {
+        '2.1.20': {
+            type: PATCH,
+            notes: [
+                'Improved formatting options on the documentation tab, including the long-requested feature of paragraph alignment. \
+                Also, ordered and unordered lists, collapsible sections, callouts, citations, and annotations.',
+                'You can now delete files from the cloud. The app will prompt you to confirm this action, and it will not delete the file locally.'
+            ]
+        },
+        '2.1.19': {
+            type: PATCH,
+            notes: [
+                'Fixed a bug with the lexicon description search which caused the exact match <code>!</code> and begins-word <code>^</code> functions not to work.',
+                'Fixed a bug causing the alphabetizer to soft crash the app if you used parentheses in your alphabet. Other RegEx-reserved characters will work now as well.'
+            ]
+        },
         '2.1.18': {
-            type: u.PATCH,
+            type: PATCH,
             notes: [
                 'Fixed problems with the search bars in the Phrasebook tab which made them virtually useless.',
                 'Fixed another case where documentations would not be initialized when loading a database synced file on multiple devices.',
@@ -10,19 +25,19 @@
             ]
         },
         '2.1.17': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a bug with downloading lexicons on multiple devices and the documentation being left out.'
             ]
         },
         '2.1.16': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a bug that occurred with lexicon searching in some files, related to case-sensitivity.'
             ]
         },
         '2.1.15': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug which caused the search fields in the lexicon and phrasebook to find no matches in certain cases.',
                 'Changed the way that the app recognizes when changes have been made to the version of your file in the database.',
@@ -30,7 +45,7 @@
             ]
         },
         '2.1.14': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a bug with the orthography pattern replacement features which caused it to only replace the first instance of a pattern in each word.',
                 'Added the ability to use ^ or # as word-end characters in the orthography pattern replacement fields.',
@@ -40,7 +55,7 @@
             ]
         },
         '2.1.13': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Added an Illegals field to the Advanced Phonotactics word generator options.',
                 'Added the Structures inputs to the Advanced Phonotactics word generator options and the corresponding syllable category syntax for this feature.',
@@ -48,14 +63,14 @@
             ]
         },
         '2.1.12': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Added a new default text to the Pronunciations field in the Phonology tab to better guide beginners.',
                 'Added an indicator on entries in the lexicon tab to show if their pronunciation was manually edited and thus not automatically updated by pronunciation rules.'
             ]
         },
         '2.1.11': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Added secondary location file saving, for those of you who want your lexicon files to save to another location on your computer every time you save.',
                 'Added database syncing! Get your account credentials from the Lexicanter Discord bot, and then you can sync your files to the bot and between devices.',
@@ -63,21 +78,21 @@
             ]
         },
         '2.1.10': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'New tooltips have been added throughout the app.',
                 'New All Hallow\'s Eve 2023 theme in the Holiday collection!'
             ]
         },
         '2.1.9': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Hot fix for a bug which caused data saved by the advanced word generator not to be loaded open re-opening a file.',
                 'A new feature will be coming in 2.2 which requires a change to the way lexicon entries are formatted internally, which this update prepares for.'
             ]
         },
         '2.1': {
-            'type': u.MINOR,
+            'type': MINOR,
             'notes': [
                 'Introduced a plain text import feature for convenient clonging on the move.',
                 'Added a reference window for loading secondary files in read-only mode.',
@@ -91,7 +106,7 @@
             ]
         },
         '2.0.18': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'By request, added a new dropdown to Tag inputs which allows you to select from pre-existing tags in your lexicon.',
                 'By request, added a new Help tab. It hosts the same information as the wiki, but is accessible offline.',
@@ -99,7 +114,7 @@
             ]
         },
         '2.0.17': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug with the inflections generation.',
                 'Fixed an issue with tag searching.',
@@ -107,20 +122,20 @@
             ]
         },
         '2.0.16': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a small bug with the new sound change engine.'
             ]
         },
         '2.0.15': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug with HTML export.',
                 'Related to the above fix, technical limitations now prevent your theme from being exported with your HTML. Solutions are being investigated.'
             ]
         },
         '2.0.14': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed CSV export.',
                 'Fixed a reported bug with HTML export.',
@@ -130,40 +145,40 @@
             ]
         },
         '2.0.13': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Linux support!'
             ]
         },
         '2.0.12': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug which caused HTML export to fail. Expect expanded HTML export options in the future.',
                 'Minor optimizations.'
             ]
         },
         '2.0.11': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug which caused a semi-rare soft-crash in certain cases when dealing with multiple lects. Again.'
             ]
         },
         '2.0.10': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug which caused a semi-rare soft-crash in certain cases when dealing with multiple lects.',
                 'Fixed a reported bug which caused CSV import to fail, and improved CSV import options.'
             ]
         },
         '2.0.9': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'You can now write multiple rules separated by a semicolon, which allows for multiple rules per table cell in the inflection tables.',
                 'Fixed a reported bug which caused a soft crash when attempting to edit the last word in the lexicon if it had an inflections dropdown open.'
             ]
         },
         '2.0': {
-            'type': u.MAJOR,
+            'type': MAJOR,
             'notes': [
                 'There is now a new sound change engine under the hood. Your old rules may no longer work; for assistance, you can contact the developer.',
                 'Lexicon entries can now be separated into multiple Senses, each of which can have their own tags.',
@@ -177,32 +192,32 @@
             ]
         },
         '1.11.4': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug causing markdown not to work in variant descriptions of phrases.'
             ]
         },
         '1.11.3': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug causing the alphabetizer pre-check to send false alerts when certain combining diacritics on certain characters were in the alphabet in certain orders.'
             ]
         },
         '1.11.2': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'The app now saves backup versions of your files in case things go wrong.',
                 'Fixed a reported bug that caused the app to sometimes exit too quickly and not save when autosave was enabled.'
             ]
         },
         '1.11.1': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a reported bug causing the Ignore Diacritics setting to be ignored during alphabet checks when adding words to the lexicon.'
             ]
         },
         '1.11': {
-            'type': u.MINOR,
+            'type': MINOR,
             'notes': [
                 'When you attempt to add a word to the lexicon, there is now an alert if the word contains characters (or polygraphs) not present in your alphabet.',
                 'Fixed a reported bug causing external links to not display correctly in the Lexicon tab specifically.',
@@ -211,7 +226,7 @@
             ]
         },
         '1.10': {
-            'type': u.MINOR,
+            'type': MINOR,
             'notes': [
                 'Added three new themes: Pomegranate, Wisteria, and Terminal.',
                 'The word entry panel in the Lexicon tab is now collapsible.',
@@ -223,7 +238,7 @@
             ]
         },
         '1.9.5': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a bug causing app-quit to be impossible sometimes.',
                 'Fixed some minor bugs with the styles.',
@@ -232,14 +247,14 @@
             ]
         },
         '1.9.4': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'You can now hyperlink to entries in the lexicon. The link format is lex::word.',
                 'The documentation tab would previously not adjust to the width of the window. That has been fixed.'
             ]
         },
         '1.9': {
-            'type': u.MINOR,
+            'type': MINOR,
             'notes': [
                 'Overhauled the Documentation tab, which now uses integrated EditorJS technology. Markdown is no longer supported in this tab, in favor of the new WYSIWYG style with a toolbar visible when you highlight text.',
                 'Note: The first time you load a file from an older version, there may be some formatting quirks. Most of these should sort themselves out after saving in the new version and re-loading. Please contact the developer if you run into persistent issues.',
@@ -249,7 +264,7 @@
             ]
         },
         '1.8.14': {
-            'type': u.PATCH,
+            'type': PATCH,
             'notes': [
                 'Fixed a few minor bugs with markdown parsing.',
                 'Added monospace markdown with ``this`` syntax.',
@@ -257,7 +272,7 @@
             ]
         },
         '1.8': {
-            'type': u.MINOR,
+            'type': MINOR,
             'notes': [
                 'File storage has been migrated to make auto-save possible.',
                 'Categories can now be defined and used in your Pronunciations rules. See the docs page for more info.',

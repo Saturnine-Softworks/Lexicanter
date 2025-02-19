@@ -1,0 +1,13 @@
+[package]
+name = "library"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "library"
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+libc = "0.2.155"
+nom = "7.1.3"
+nom-unicode = "0.3.0"

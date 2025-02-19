@@ -15,6 +15,8 @@ import { markdownToHtml } from './markdown';
 const Lang = () => get(Language);
 const Default = get(defaultLanguage);
 import { xata } from '../../db/database';
+import type { SelectedPick } from '@xata.io/client';
+import type { LanguagesRecord } from '../../db/xata';
 
 /**
 * This function is used to get the user's data path.
@@ -653,6 +655,15 @@ export async function retrieveFromDatabase(name = Lang().Name): Promise<Lexc.Lan
         return hits[0].File;
     } else {
         return false;
+    }
+}
+
+export async function deleteFromDatabase(name = Lang().Name): Promise<Readonly<SelectedPick<LanguagesRecord, ["*"]>>|null> {
+    const hits = await xata.db.Languages.filter({Name: name, Owner: get(dbid)}).getAll();
+    if (hits.length > 0) {
+        return await xata.db.Languages.delete(hits[0].id);
+    } else {
+        return null;
     }
 }
 

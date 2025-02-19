@@ -9,6 +9,7 @@
     import { debug } from '../utils/diagnostics';
     const vex = require('vex-js');
     import { tooltip } from '@svelte-plugins/tooltips';
+    import { join } from 'path';
 
     ipcRenderer.on('update-lexicon-for-gods-sake-please', () => {
         $Language.Lexicon = {...$Language.Lexicon};
@@ -105,7 +106,7 @@
                 let { [word]: _, ...rest } = $Language.Lexicon;
                 $Language.Lexicon = rest;
                 $hideDropdowns = false;
-            }, 50);
+            }, 100);
         }
     }
 
@@ -228,11 +229,22 @@
                 // check definitions
                 if ( !!definitions_search ) {
                     if ( definitions_search[0] === '!' ) { // requires exact match
-                        if (!entry.Senses.some(sense => sense.definition === definitions_search.split('!')[1])) {
+                        if (!entry.Senses.some(sense => {
+                            return sense.definition === definitions_search.split('!')[1]
+                        })) {
                             match = false;
                             continue;
                         }
-                    } else if (!entry.Senses.some(sense => sense.definition.replaceAll(/\s+/g, '^').toLowerCase().includes(definitions_search.replaceAll(/\s+/g, '^')))) {
+                    } else if (!entry.Senses.some(sense =>
+                        ["^", sense.definition, "^"]
+                        .join()
+                        .replaceAll(/\s+/g, '^')
+                        .toLowerCase()
+                        .includes(
+                            definitions_search
+                            .replaceAll(/\s+/g, '^')
+                        )
+                    )) {
                         // searches for inexact match
                         match = false;
                         continue;

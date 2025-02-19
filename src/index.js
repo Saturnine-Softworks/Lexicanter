@@ -7,6 +7,8 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
+// const ffi = require('koffi');
+
 // Auto-updater flags
 autoUpdater.autoDownload = true;
 autoUpdater.allowPrerelease = false;
@@ -64,6 +66,7 @@ const createWindow = () => {
 
     const WC = mainWindow.webContents;
     WC.on('will-navigate', function (e, url) {
+        console.log('will-navigate', url); // DEBUG
         if (url.includes('lex::')) {
             e.preventDefault();
             WC.send('lexicon link', decodeURI(url).replace('lex::', ''));
@@ -118,6 +121,15 @@ const createWindow = () => {
         mainWindow = null;
         app.quit();
     });
+
+    // // Interop signature definitions
+    // const lib = ffi.load('src/app/utils/interop/library/target/release/liblibrary.dylib');
+    // const fns = {
+    //     greet: lib.func('greet', 'str', ['str']),
+    // };
+    // ipcMain.handle('ffi', (_, name, ...args) => {
+    //     return fns[name](...args);
+    // });
 };
 
 // This method will be called when Electron has finished

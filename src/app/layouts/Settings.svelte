@@ -1,6 +1,6 @@
 <script lang="ts">
     import { theme, autosave, pronunciations, wordInput, dbid, dbkey, fileLoadIncrement, docsEditor } from '../stores';
-    import { userData, saveFile, showOpenDialog, retrieveFromDatabase } from '../utils/files';
+    import * as Files from '../utils/files';
     import { Language } from '../stores';
     import type * as Lexc from '../types';
     const fs = require('fs');
@@ -17,7 +17,7 @@
     let localFileVersion: string = $Language.FileVersion;
     async function getOnlineFileVersion() {
         if (verifyHash($dbid, $dbkey)) {
-            let file = await retrieveFromDatabase();
+            let file = await Files.retrieveFromDatabase();
             if (file) {
                 return file.FileVersion;
             } else return null;
@@ -29,7 +29,7 @@
     }
     $: $fileLoadIncrement, setFileVersions();
 
-    userData(user_path => {
+    Files.userData(user_path => {
         let settings = {
             autosave: true,
             theme: 'styles/dark.css',
@@ -84,7 +84,7 @@
         if (verifyHash(inputID, inputKey)) {
             $dbid = inputID;
             $dbkey = inputKey;
-            userData(user_path => {
+            Files.userData(user_path => {
                 let settings = {
                     autosave: $autosave,
                     theme: $theme,
@@ -105,7 +105,7 @@
             return;
         }
         if (verifyHash($dbid, $dbkey)) {
-            const queryResult = await retrieveFromDatabase();
+            const queryResult = await Files.retrieveFromDatabase();
             if (queryResult !== false) {
                 $Language = queryResult;
                 $docsEditor.destroy();
@@ -124,7 +124,7 @@
      * this function updates the preferred theme setting stored in user app data.
      */
     function change_theme() {
-        userData(user_path => {
+        Files.userData(user_path => {
             let settings = {
                 autosave: $autosave,
                 theme: $theme,
@@ -151,7 +151,7 @@
         }
         let contents = await file.text();
         let theme_path;
-        await userData(user_path => {
+        await Files.userData(user_path => {
             let themes_dir = user_path + path.sep + 'user_themes' + path.sep;
             if (!fs.existsSync(themes_dir)) {
                 fs.mkdirSync(themes_dir);
@@ -178,12 +178,12 @@
             dbid: $dbid,
             dbkey: $dbkey,
         }
-        userData(user_path => {
+        Files.userData(user_path => {
             fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
         });
         if ($autosave) {
             var autosave_tracker = window.setInterval(
-                saveFile,
+                Files.saveFile,
                 600000 /* 10 minutes */,
                 false
             );
@@ -329,7 +329,7 @@
     function importRelative() {
         let contents: Lexc.Language;
         const dialog = (user_path: string) => {
-            showOpenDialog(
+            Files.showOpenDialog(
                 {
                     title: 'Import Related Lexicon',
                     defaultPath: `${user_path}${path.sep}Lexicons${path.sep}`,
@@ -388,13 +388,40 @@
                 }
             );
         };
-        userData(user_path => {
+        Files.userData(user_path => {
             if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
                 fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => {
                     logAction(`Created the 'Lexicons' folder in the user data folder at '${user_path}'.`);
                     dialog(user_path);
                 });
             } else { dialog(user_path); }
+        });
+    }
+
+    async function deleteFromDatabase() {
+        if ($dbid === '' || $dbkey === '') {
+            vex.dialog.alert('Please enter both your User ID and Key.');
+            return;
+        }
+        if (verifyHash($dbid, $dbkey)) {
+            const queryResult = await Files.deleteFromDatabase();
+            if (queryResult === null) {
+                vex.dialog.alert('The file does not exist in the database or is not registered to you.');
+            }
+            else {
+                vex.dialog.alert('The file has been deleted from the database.');
+            }
+        }
+    }
+
+    function confirmDeleteFromDatabase() {
+        vex.dialog.confirm({
+            message: 'Are you sure you want to delete this file from the database? This action cannot be undone. (This will NOT delete the file locally.)',
+            callback: (response: boolean) => {
+                if (response) {
+                    deleteFromDatabase();
+                }
+            }
         });
     }
 </script>
@@ -450,10 +477,10 @@
             </label>
 
             <div class=narrow>
-                <label>Database Uploading
+                <label>Cloud Storage
                     <p class=info>If you wish, your files can be saved to an online database so that you can sync your files across multiple 
-                        devices and the discord bot. To get your User ID and Key, please go to the Saturn's Sojourn discord server and use 
-                        the command <code>/account</code>.
+                        devices and the discord bot and online file viewer. To get your User ID and Key, please go to the Saturn's Sojourn discord 
+                        server and use the command <code>/account</code>.
                     </p>
                     <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'} for this file.
                         <input type=checkbox bind:checked={$Language.UploadToDatabase}/>
@@ -469,8 +496,11 @@
                     <button on:click={setDatabaseAccount}>Authenticate</button>
                     <p class=info>Your ID and Key are saved to the app's internal settings, not to your file, but turning on uploading is saved per-file.</p>
                     <br>
-                    <button class='hover-highlight hover-shadow' on:click={syncFromDatabase}>Sync From Database</button>
-                    <p class=info>This will overwrite the current file with the latest version of the file with the same name and User ID in the database.</p>
+                    <button class='hover-highlight hover-shadow' on:click={syncFromDatabase}>Sync From Cloud</button>
+                    <p class=info>This will overwrite the current file with the latest version of the file available in the cloud.</p>
+
+                    <button class='hover-highlight hover-shadow' on:click={confirmDeleteFromDatabase}>Delete From Cloud</button>
+                    <p class=info>This will delete the current file from the cloud, and it will no longer be accessible to the discord bot or online file viewer.</p>
                 </label>
             </div>
 

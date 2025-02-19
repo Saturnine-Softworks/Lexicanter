@@ -4,7 +4,6 @@
     import Table from '@editorjs/table';
     import Header from '@editorjs/header';
     import Underline from '@editorjs/underline';
-    import { Monospace } from '../utils/docs';
     import * as diagnostics from '../utils/diagnostics';
     const vex = require('vex-js');
     enum LogLevels { // REVIEW - monkeypatch gets around type check error, can't import this from @editorjs/editorjs/types for ...reasons.
@@ -29,7 +28,6 @@
                 data: inflection.tables,
                 tools: {
                     underline: Underline,
-                    monospace: Monospace,
                     table: {
                         class: Table,
                         inlineToolbar: true,
@@ -91,7 +89,6 @@
             },
             tools: {
                 underline: Underline,
-                monospace: Monospace,
                 table: {
                     class: Table,
                     inlineToolbar: true,
