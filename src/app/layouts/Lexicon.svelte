@@ -113,7 +113,9 @@
      * @param {bool} append
      */
     function commitWord(word: string, append: boolean): void {
-        const emptySensesFilter = (sense: senseInput) => <boolean> (senses[0] !== sense) && (!!sense.definition);
+        // TODO: why the fuck am I indexing `senses` with an empty string, and why the fuck does it work?
+        // @ts-ignore
+        const emptySensesFilter = (sense: senseInput) => <boolean> (senses[''] !== sense) && (!!sense.definition);
         const senseRemapper = (sense: senseInput) => <Lexc.Sense> {
             definition: sense.definition,
             tags: sense.tags.split(/\s+/g),

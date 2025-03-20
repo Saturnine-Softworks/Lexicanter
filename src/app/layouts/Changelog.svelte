@@ -1,6 +1,30 @@
 <script lang='ts'>
     const [MAJOR, MINOR, PATCH] = [0, 1, 2];
-    const changelog = {
+    
+    interface ChangelogEntry {
+        type: number;
+        notes: string[];
+    }
+    
+    const changelog: Record<string, ChangelogEntry> = {
+        '2.1.22': {
+            type: PATCH,
+            notes: [
+                'Fixed a bug introduced in the last patch which made it impossible to add entries to the lexicon with more than one sense.',
+                'Fixed a bug introduced in the last patch specific to macOS which caused the app to use the wrong dock icon.'
+            ]
+        },
+        '2.1.21': {
+            type: PATCH,
+            notes: [
+                'Security and accessibility improvements.',
+                'Back-end improvements for development cycle: Upgraded from Svelte 4 to Svelte 5, and migrated from Rollup to Vite',
+                'New markdown export option!',
+                'Updated/fixed plain text export; removed plain text import (outdated, impractical).',
+                'Updated/fixed CSV import/export.',
+                'Removed tooltips since they caused several issues and were generally not useful to users.'
+            ]
+        },
         '2.1.20': {
             type: PATCH,
             notes: [
