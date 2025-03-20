@@ -9,14 +9,12 @@ import type * as Lexc from '../types';
 import { Language, autosave, docsEditor, defaultLanguage, dbid, dbkey } from '../stores';
 import { writeRomans, get_pronunciation } from './phonetics';
 import { initializeDocs } from './docs';
-import * as diagnostics from './diagnostics';
 import { alphabetize } from './alphabetize';
 import { markdownToHtml } from './markdown';
+import { verify, downloadFile, uploadFile, deleteFile } from '../../db/database';
+
 const Lang = () => get(Language);
 const Default = get(defaultLanguage);
-import { xata } from '../../db/database';
-import type { SelectedPick } from '@xata.io/client';
-import type { LanguagesRecord } from '../../db/xata';
 
 /**
 * This function is used to get the user's data path.
@@ -24,10 +22,10 @@ import type { LanguagesRecord } from '../../db/xata';
 */
 export async function userData (callback: (user_path: string) => void) {
     let path: string;
-    await ipcRenderer.invoke('getUserDataPath').then(result => {
+    await ipcRenderer.invoke('getUserDataPath').then((result: string) => {
         path = result;
+        callback(path);
     });
-    callback(path);
 }
 
 /**
@@ -37,12 +35,12 @@ export async function userData (callback: (user_path: string) => void) {
 * @param {any} params
 * @param {function} callback
 */
-export async function showOpenDialog (params, callback: (path: string) => void) {
+export async function showOpenDialog (params: any, callback: (path: string) => void) {
     let path: string;
     await ipcRenderer.invoke('showOpenDialog', params).then((result: string) => {
         path = result;
+        callback(path);
     });
-    callback(path);
 }
 
 /**
@@ -51,7 +49,7 @@ export async function showOpenDialog (params, callback: (path: string) => void) 
 */
 async function collectExportData (): Promise<string> {
     if (typeof get(docsEditor).save === 'function') {
-        console.log('Save function found for docs editor.', get(docsEditor));
+        // console.log('Save function found for docs editor.', get(docsEditor));
         await get(docsEditor).save().then(data => {
             Lang().Docs = data;
         });
@@ -73,36 +71,65 @@ async function collectExportData (): Promise<string> {
 function editorjsToHTML(data: OutputData, container: HTMLElement): HTMLElement {
     for (const element of data.blocks) {
         switch (element.type) {
-        case 'header': {
-            const header = document.createElement(
-                `h${element.data.level}`
-            );
-            header.innerHTML = element.data.text;
-            container.appendChild(header);
-            break; 
-        }
-        case 'paragraph': {
-            const paragraph = document.createElement('p');
-            paragraph.innerHTML = element.data.text;
-            container.appendChild(paragraph);
-            break;
-        }
-        case 'table': {
-            const table = document.createElement('table');
-            const tbody = document.createElement('tbody');
-            element.data.content.forEach((row: string[]) => {
-                const tr = document.createElement('tr');
-                row.forEach(cell => {
-                    const td = document.createElement('td');
-                    td.innerHTML = cell;
-                    tr.appendChild(td);
+            case 'header': {
+                const header = document.createElement(`h${element.data.level}`);
+                header.style.textAlign = element.tunes?.alignment?.alignment || 'left';
+                header.innerHTML = element.data.text;
+                container.appendChild(header);
+                break;
+            }
+            case 'paragraph': {
+                const paragraph = document.createElement('p');
+                paragraph.style.textAlign = element.tunes?.alignment?.alignment || 'left';
+                paragraph.innerHTML = element.data.text;
+                container.appendChild(paragraph);
+                break;
+            }
+            case 'table': {
+                const table = document.createElement('table');
+                table.style.textAlign = element.tunes?.alignment?.alignment || 'left';
+                const tbody = document.createElement('tbody');
+                element.data.content.forEach((row: string[]) => {
+                    const tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.innerHTML = cell;
+                        tr.appendChild(td);
+                    });
+                    tbody.appendChild(tr);
                 });
-                tbody.appendChild(tr);
-            });
-            table.appendChild(tbody);
-            container.appendChild(table);
-            break;
-        }}
+                table.appendChild(tbody);
+                container.appendChild(table);
+                container.appendChild(document.createElement('br'));
+                break;
+            }
+            case 'list': {
+                // nested lists of form {items: [], content: ""} where items is an array of the same type
+                const list = element.data.style === 'ordered' ? document.createElement('ol') : document.createElement('ul');
+                list.style.textAlign = element.tunes?.alignment?.alignment || 'left';
+                function createNestedList(items: {items: [], content: string}[], parentList: HTMLElement) {
+                    items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = item.content;
+                        
+                        if (item.items && item.items.length > 0) {
+                            const sublist = document.createElement('ul');
+                            createNestedList(item.items, sublist);
+                            li.appendChild(sublist);
+                        }
+                        
+                        parentList.appendChild(li);
+                    });
+                }
+
+                createNestedList(element.data.items, list);
+                container.appendChild(list);
+                break;
+            }
+            default: {
+                console.warn('Unhandled element type:', element);
+            }
+        }
     }
     return container;
 }
@@ -157,12 +184,7 @@ export async function saveFile () {
 
         // Save to database
         if ( Lang().UploadToDatabase && get(dbid) !== '' && get(dbkey) !== '' ) {
-            const hits = await xata.db.Languages.filter({Name: Lang().Name, Owner: get(dbid)}).getAll();
-            if (hits.length > 0) { 
-                await xata.db.Languages.update({id: hits[0].id, File: JSON.parse(exports)});
-            } else {
-                await xata.db.Languages.create({Name: Lang().Name, Owner: get(dbid), File: JSON.parse(exports)});
-            }
+            await uploadFile(get(dbid), get(dbkey), exports);
         }
     };
                         
@@ -193,8 +215,7 @@ export async function saveFile () {
 */ 
 export const saveAs = {
     lexc: async () => {
-        let exports: Blob;
-        collectExportData().then(jsonString => {exports = new Blob([jsonString]);});
+        let exports: Blob = new Blob([await collectExportData()]);
         const file_handle = await window.showSaveFilePicker({
             suggestedName: `${Lang().Name}.lexc`,
         });
@@ -212,8 +233,18 @@ export const saveAs = {
     txt: async () => {
         let export_data = '';
         const $lexicon = Lang().Lexicon;
-        for (const word in $lexicon) {
-            export_data += `${word}\n${$lexicon[word][0]}\n${$lexicon[word][1]}\n\n`;
+        for (const word of alphabetize($lexicon)) {
+            export_data
+            += `${word}\n` 
+            + (
+                Lang().UseLects
+                ? Lang().Lects.map(lect => `${lect}: ${$lexicon[word].pronunciations[lect].ipa}`).join('\n')
+                : `${$lexicon[word].pronunciations.General.ipa}\n`
+            )
+            + $lexicon[word].Senses.map(
+                (sense, i) => `${i + 1}. ${sense.tags.join(', ')}\n${sense.definition}`
+            ).join('\n\n')
+            + '\n\n';
         }
         const exports = new Blob([export_data]);
                             
@@ -230,9 +261,47 @@ export const saveAs = {
         await file.close();
         window.alert('The file exported successfully.');
     },
+    md: async () => {
+        let export_data = `# ${Lang().Name} Lexicon\n\n`;
+        const $lexicon = Lang().Lexicon;
+        for (const word of alphabetize($lexicon)) {
+            // Add word as a third level heading
+            export_data += `### ${word}\n`;
+            
+            // Add pronunciations in a blockquote
+            if (Lang().UseLects) {
+                export_data += Lang().Lects.map(lect => 
+                    `> *${lect}:* \`${$lexicon[word].pronunciations[lect].ipa}\``
+                ).join('\n') + '\n';
+            } else {
+                export_data += `> /${$lexicon[word].pronunciations.General.ipa}/\n`;
+            }
+            
+            // Add senses with proper markdown formatting
+            export_data += $lexicon[word].Senses.map((sense, i) => {
+                const tagsList = sense.tags.length ? `\`${sense.tags.join('\`  \`').toUpperCase()}\`` : '';
+                return `${i + 1}. ${tagsList}\n${sense.definition}`;
+            }).join('\n') + '\n\n---\n\n';
+        }
+        
+        const exports = new Blob([export_data]);
+                            
+        const file_handle = await window.showSaveFilePicker({
+            suggestedName: `${Lang().Name}.md`,
+        });
+        await file_handle.requestPermission({ mode: 'readwrite' });
+        const file = await file_handle.createWritable();
+        try {
+            await file.write(exports);
+        } catch (err) {
+            window.alert('The file failed to export.');
+        }
+        await file.close();
+        window.alert('The file exported successfully.');
+    },
     csv: async () => {
         const $lexicon = Lang().Lexicon;
-        const array_to_csv = (data) => {
+        const array_to_csv = (data: string[][]) => {
             return data.map(row => row
                 .map(String) // convert every value to String
                 .map((v: string) => v.replaceAll('"', '""')) // escape double colons
@@ -266,8 +335,7 @@ export const saveAs = {
         window.alert('The file exported successfully.');
     },
     json: async () => {
-        let export_data: Blob;
-        collectExportData().then(jsonString => {export_data = new Blob([jsonString]);});
+        let export_data: Blob = new Blob([await collectExportData()]);
                                 
         const file_handle = await window.showSaveFilePicker({
             suggestedName: `${Lang().Name}.json`,
@@ -446,6 +514,7 @@ export const saveAs = {
         },
     },
 };
+
 function lexiconToHTML(alphabetical: string[]) {
     const row = document.createElement('div');
     row.classList.add('row');
@@ -481,13 +550,14 @@ function lexiconToHTML(alphabetical: string[]) {
 }
                         
 /**
-                        * Methods for opening files saved by previous versions of the app.
-                        * @param {Object} contents
-                        */
+* Methods for opening files saved by previous versions of the app.
+* @param {Object} contents
+*/
 export const openLegacy = {
     /**
-                            * This function can open 1.9 - 1.11 files.
-                            */
+    * This function can open 1.9 - 1.11 files.
+    */
+    // @ts-ignore: It is not worth my time to define the structure of the legacy files. 
     1.9: (contents) => {
         Language.set(Default);
         try {
@@ -508,18 +578,15 @@ export const openLegacy = {
             }
         } catch (err) {
             window.alert('There was a problem loading the contents of the lexicon. Please contact the developer.');
-            diagnostics.logError('Attempted to load a version 1.9 lexicon.', err);
         }
         try { Lang().Alphabet = contents.Alphabet; } catch (err) {
             window.alert('There was a problem loading the alphabetical order. Please contact the developer for assistance.');
-            diagnostics.logError('Attempted to load a version 1.9 alphabet.', err);
         }
         try {
             Lang().Pronunciations.General = contents.Romanization;
             writeRomans('General');
         } catch (err) {
             window.alert('There was a problem loading the romanizations. Please contact the developer for assistance.');
-            diagnostics.logError('Attempted to load version 1.9 romanizations.', err);
         }
         try { 
             for (const key in contents.Phrasebook) {
@@ -558,7 +625,6 @@ export const openLegacy = {
             }
         } catch (err) {
             window.alert('There was a problem loading the phrasebook. Please contact the developer for assistance.');
-            diagnostics.logError('Attempted to load a version 1.9 phrasebook.', err);
         }
         try {
             Lang().Phonotactics.General.Onsets = contents.Phonotactics.Initial.join(' ');
@@ -568,18 +634,15 @@ export const openLegacy = {
             Lang().Phonotactics.General.Illegals = contents.Phonotactics.Illegal.join(' ');
         } catch (err) {
             window.alert('There was a problem loading the phonotactics data. Please contact the developer for assistance.');
-            diagnostics.logError('Attempted to load version 1.9 phonotactics.', err);
         }
         try { 
             get(docsEditor).destroy();
             initializeDocs(contents.Docs); 
         } catch (err) {
             window.alert('There was a problem loading the documentation data. Please contact the developer for assistance.');
-            diagnostics.logError('Attempted to load version 1.9 documentation.', err);
         }
         try { Lang().HeaderTags = contents.HeaderTags; } catch (err) {
             window.alert('There was a problem loading the header tags.');
-            diagnostics.logError('Attempted to load version 1.9 header tags.', err);
         }
         Lang().IgnoreDiacritics = contents.IgnoreDiacritics;
         Lang().CaseSensitive = contents.CaseSensitive;
@@ -589,13 +652,13 @@ export const openLegacy = {
 const csv = require('csv-parser');
                         
 /**
-                        * Imports a CSV file to the lexicon.
-                        * @param {boolean} headers Whether or not the CSV file has headers.
-                        * @param {number} words The column number of the words.
-                        * @param {number} definitions The column number of the definitions.
-                        */
+* Imports a CSV file to the lexicon.
+* @param {boolean} headers Whether or not the CSV file has headers.
+* @param {number} words The column number of the words.
+* @param {number} definitions The column number of the definitions.
+*/
 export async function importCSV(headers: boolean, words: number, definitions: number, pronunciations: number|false, tags: number|false) {
-    const data = [];
+    const data: string[][] = [];
     let file_path: string;
     words -= 1;
     definitions -= 1;
@@ -618,11 +681,10 @@ export async function importCSV(headers: boolean, words: number, definitions: nu
                     headers: false,
                     skipLines: headers? 1 : 0,
                 }))
-                .on('data', (row) => {
+                .on('data', (row: string[]) => {
                     data.push(row);
                 })
                 .on('end', () => {
-                    console.log(data);
                     const lexicon: Lexc.Lexicon = { };
                     data.forEach(row => {
                         lexicon[row[words]] = <Lexc.Word> {
@@ -650,20 +712,20 @@ export async function importCSV(headers: boolean, words: number, definitions: nu
 }
     
 export async function retrieveFromDatabase(name = Lang().Name): Promise<Lexc.Language|false> {
-    const hits = await xata.db.Languages.filter({Name: name, Owner: get(dbid)}).getAll();
-    if (hits.length > 0) {
-        return hits[0].File;
+    const file = await downloadFile(get(dbid), get(dbkey), name);
+    if (file) {
+        return file;
     } else {
         return false;
     }
 }
 
-export async function deleteFromDatabase(name = Lang().Name): Promise<Readonly<SelectedPick<LanguagesRecord, ["*"]>>|null> {
-    const hits = await xata.db.Languages.filter({Name: name, Owner: get(dbid)}).getAll();
-    if (hits.length > 0) {
-        return await xata.db.Languages.delete(hits[0].id);
-    } else {
-        return null;
+export async function deleteFromDatabase(name = Lang().Name): Promise<{success: boolean, error?: string}> {
+    try {
+        await deleteFile(get(dbid), get(dbkey), name);
+        return {success: true};
+    } catch (error) {
+        return {success: false, error: (error as Error).message};
     }
 }
 

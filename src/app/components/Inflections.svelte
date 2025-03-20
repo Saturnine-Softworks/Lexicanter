@@ -1,6 +1,5 @@
 <script lang='ts'>
     import { Language, hideDropdowns, referenceLanguage } from "../stores";
-    import * as diagnostics from "../utils/diagnostics";
     import { blur } from 'svelte/transition';
     import * as sca from "../utils/sca";
     import type { OutputBlockData } from "@editorjs/editorjs";
@@ -9,10 +8,10 @@
     export let readFromReference: boolean = false;
     let show = false;
 
-    function htmlToText(html: string) {
+    function htmlToText(html: string): string {
         const temp = document.createElement('div');
         temp.innerHTML = html;
-        return temp.textContent;
+        return temp.textContent ?? '';
     }
 
     let data: OutputBlockData[][];
@@ -26,7 +25,6 @@
                 try {
                     filter = new RegExp(inflection.filter);
                 } catch (e) {
-                    diagnostics.debug.error(`Invalid regular expression: /${inflection.filter}/`);
                     filter = /.+/;
                 }
                 return (inflection.tags[0]? inflection.tags.some(tag => tags.includes(tag)) : true) && word.match(filter)
@@ -62,13 +60,15 @@
                 {/if}
                 {#if block.type === 'table'}
                     <table style='margin: auto'>
-                        {#each block.data.content as row}
+                        <tbody>
+                            {#each block.data.content as row}
                             <tr>
                                 {#each row as cell}
-                                    <td>{@html cell}</td>
+                                <td>{@html cell}</td>
                                 {/each}
                             </tr>
-                        {/each}
+                            {/each}
+                        </tbody>
                     </table>
                 {/if}
                 {#if block.type === 'paragraph'}

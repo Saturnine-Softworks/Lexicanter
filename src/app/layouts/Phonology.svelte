@@ -1,9 +1,7 @@
 <script lang="ts">
     import { Language, fileLoadIncrement } from "../stores";
     import { get_pronunciation, writeRomans, complete_word, generate_word } from '../utils/phonetics';
-    import { tooltip } from '@svelte-plugins/tooltips';
     import type { AdvancedPhonotactics } from "../types";
-    import { TransformStreamDefaultController } from "node:stream/web";
     let trial = ''; let ortho_test = '';
     function setInStone (event: Event) {
         const target = event.target as HTMLInputElement;
@@ -66,7 +64,7 @@
         })
     }
 
-    function generate_word_AP(recursion = 1) {
+    function generate_word_AP(recursion = 1): string {
         let word = '';
 
         // SECTION: Helper function
@@ -171,7 +169,7 @@
     <div class="row" style="height: 92vh">
         <!-- Phonotactics -->
         <div class="container column scrolled" style="height: 100%">
-            <label use:tooltip={{position:'right'}} title="Turn this on to show a type of word generator better suited for complex structures.">
+            <label>
                 <input type="checkbox" bind:checked={$Language.UseAdvancedPhonotactics} />
                 Use Advanced Phonotactics
             </label>
@@ -179,19 +177,19 @@
             {#if $Language.UseAdvancedPhonotactics}
                 <div class="row">
                     <div class="column">
-                        <label use:tooltip={{position:'right'}} title="This field is for defining categories of phonemes. See the Help tab for more information.">Categories
-                            <textarea class="phonology text-left" rows=8 bind:value={APCategories} on:blur={setAPCategories}/>
+                        <label>Categories
+                            <textarea class="phonology text-left" rows=8 bind:value={APCategories} on:blur={setAPCategories}></textarea>
                         </label>
                     </div>
                     <div class="column">
-                        <label use:tooltip={{position:'left'}} title="This field is for defining syllable structures. See the Help tab for more information.">Syllables
-                            <textarea class="phonology text-left" rows=8 bind:value={APSyllables} on:blur={setAPSyllables}/>
+                        <label>Syllables
+                            <textarea class="phonology text-left" rows=8 bind:value={APSyllables} on:blur={setAPSyllables}></textarea>
                         </label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="column">
-                        <label use:tooltip={{position:'right'}} title="This field is for defining word structures. See the Help tab for more information.">Structures
+                        <label>Structures
                             {#each APConstructs as set, i}
                                 <div class="row">
                                     <div class="column narrow">
@@ -209,7 +207,7 @@
                                         </div>
                                     </div>
                                     <div class="column">
-                                        <textarea class="phonology text-left" rows=3 bind:value={set.structures} on:blur={setAPConstructs}/>
+                                        <textarea class="phonology text-left" rows=3 bind:value={set.structures} on:blur={setAPConstructs}></textarea>
                                     </div>
                                 </div>
                             {/each}
@@ -224,8 +222,8 @@
                         </label>
                     </div>
                     <div class="column">
-                        <label use:tooltip={{position:'left'}} title='This field is for defining illegal combinations in words. See the Help tab for more information.'>Illegals
-                            <textarea class="phonology text-left" rows=4 bind:value={APIllegals} on:blur={setAPIllegals}/>
+                        <label>Illegals
+                            <textarea class="phonology text-left" rows=4 bind:value={APIllegals} on:blur={setAPIllegals}></textarea>
                         </label>
                     </div>
                 </div>
@@ -234,28 +232,22 @@
                     () => generated_words = Array(24).fill(null).map(_ => generate_word_AP())
                 }>Generate Words</button>
             {:else}
-                <label for="onsets" use:tooltip={{position:'right'}} title="This field is for defining consonants and cluster that can occur word-initially.">
-                    Onset Consonants</label>
+                <label for="onsets">Onset Consonants</label>
                 <textarea id="onsets" class="phonology" bind:value={$Language.Phonotactics.General.Onsets}></textarea>
                 <br>
-                <label for="medials" use:tooltip={{position:'right'}} title="This field is for defining consonants and clusters that can occur word-medially.">
-                    Medial Consonants</label>
+                <label for="medials">Medial Consonants</label>
                 <textarea id="medials" class="phonology" bind:value={$Language.Phonotactics.General.Medials}></textarea>
                 <br>
-                <label for="codas" use:tooltip={{position:'right'}} title="This field is for defining consonants and clusters that can occur word-finally.">
-                    Coda Consonants</label>
+                <label for="codas">Coda Consonants</label>
                 <textarea id="codas" class="phonology" bind:value={$Language.Phonotactics.General.Codas}></textarea>
                 <br>
-                <label for="vowels" use:tooltip={{position:'right'}} title="This field is for defining vowels or sounds which can occur as a syllable’s nucleus.">
-                    Vowels</label>
+                <label for="vowels">Vowels</label>
                 <textarea id="vowels" class="phonology" bind:value={$Language.Phonotactics.General.Vowels}></textarea>
                 <br>
-                <label for="illegals" use:tooltip={{position:'right'}} title="This field is for defining combinations of characters that should never occur.">
-                    Illegal Combinations</label>
+                <label for="illegals">Illegal Combinations</label>
                 <textarea id="illegals" class="phonology" bind:value={$Language.Phonotactics.General.Illegals}></textarea>
                 <br><br>
-                <label for="trial" use:tooltip={{position:'right'}} title="This field allows you to begin typing a word while being shown possible completions for it.">
-                    Trial Words</label>
+                <label for="trial">Trial Words</label>
                 <input type="text" id="trial" bind:value={trial}/>
                 <p style="font-family: Gentium">{trial_completion}</p>
                 <br>
@@ -275,8 +267,8 @@
         </div>
         <!-- Romanization -->
         <div class="container column scrolled" style="height: 100%">
-            <label use:tooltip={{position:'bottom'}} title="This field is for writing pronunciation rules to convert your romanization to phonetic notation. See the Help tab for more information."
-                > Pronunciations
+            <label>
+                Pronunciations
                 {#if $Language.UseLects}    
                     <select bind:value={selectedLect} on:change={updatePhonologyInput}>
                         {#each $Language.Lects as lect}
@@ -290,21 +282,21 @@
                         setInStone(e); // binding directly to the store is very slow when the language is large
                         writeRomans(selectedLect);
                     }}
-                />
+                ></textarea>
             </label>
             <br><br>
-            <label use:tooltip={{position:'top'}} title="This field allows you to test that your rules are working as expected.">
+            <label>
                 Rule Testing
                 <textarea 
                     class="prelined" rows="2" 
                     bind:value={ortho_test}
-                />
+                ></textarea>
             </label>
             <textarea
                 class="pronunciation" rows="2"
                 bind:value={test_pronunciation}
                 readonly
-            />
+            ></textarea>
         </div>
     </div>
 </div>

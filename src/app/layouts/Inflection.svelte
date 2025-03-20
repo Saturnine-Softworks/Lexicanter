@@ -4,7 +4,6 @@
     import Table from '@editorjs/table';
     import Header from '@editorjs/header';
     import Underline from '@editorjs/underline';
-    import * as diagnostics from '../utils/diagnostics';
     const vex = require('vex-js');
     enum LogLevels { // REVIEW - monkeypatch gets around type check error, can't import this from @editorjs/editorjs/types for ...reasons.
         VERBOSE = 'VERBOSE',

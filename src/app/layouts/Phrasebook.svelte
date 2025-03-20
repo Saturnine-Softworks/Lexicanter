@@ -1,12 +1,10 @@
 <script lang="ts">
     import { Language, phraseInput, phrasePronunciations, selectedCategory, categoryInput } from "../stores";
-    import { debug } from '../utils/diagnostics';
     import type * as Lexc from '../types';
     import { get_pronunciation } from '../utils/phonetics';
     import PhraseEntry from '../components/PhraseEntry.svelte';
     import VariantInput from '../components/VariantInput.svelte';
     import SenseInput from '../components/SenseInput.svelte';
-    import { tooltip } from '@svelte-plugins/tooltips';
     const vex = require('vex-js');
     $categoryInput = $selectedCategory;
     let searchPhrase = '';
@@ -16,7 +14,11 @@
     let phraseKeys: string[] = [];
     let collapsedPanel = false;
     let phraseDescription = ''
-    let variantInputs = [];
+    let variantInputs: {
+        phrase: string;
+        pronunciations: Record<string, {ipa: string, irregular: boolean}>;
+        description: string;
+    }[] = [];
     let lects = [...$Language.Lects];
     let tags = '';
 
@@ -81,7 +83,7 @@
         $phraseInput = phrase;
         $categoryInput = $selectedCategory;
         $phrasePronunciations = (() => {
-            let pronunciations = {};
+            let pronunciations: Record<string, string> = {};
             Object.keys($Language.Phrasebook[$selectedCategory][phrase].pronunciations).forEach(lect => {
                 pronunciations[lect] = $Language.Phrasebook[$selectedCategory][phrase].pronunciations[lect].ipa;
             });
@@ -112,6 +114,7 @@
             phrase: '',
             pronunciations: (()=>{
                 let pronunciations = {};
+                // @ts-ignore : the situation here is complicated...
                 lects.forEach(lect => pronunciations[lect] = '');
                 return pronunciations;
             })(),
@@ -130,7 +133,7 @@
         if (!description) return;
         let category = $categoryInput.trim();
         if (!category) return
-        let pronunciations = {};
+        let pronunciations: Record<string, {ipa: string, irregular: boolean}> = {};
         console.log($phrasePronunciations, lects);
         Object.keys($phrasePronunciations).filter(lect => lects.includes(lect)).forEach(lect => {
             console.log(lect)
@@ -148,7 +151,7 @@
                 tags: tags.split(/\s+/g),
                 description: description,
                 variants: (()=>{
-                    let variants = {};
+                    let variants: Record<string, Lexc.Variant> = {};
                     for (const variant of variantInputs) {
                         const phrase = variant.phrase.trim();
                         if (!phrase) continue;
@@ -157,8 +160,8 @@
                         let pronunciations: Lexc.EntryPronunciations = {};
                         Object.keys(variant.pronunciations).forEach(lect => {
                             pronunciations[lect] = {
-                                ipa: variant.pronunciations[lect].trim(),
-                                irregular: variant.pronunciations[lect].trim() !== get_pronunciation(phrase, lect),
+                                ipa: variant.pronunciations[lect].ipa.trim(),
+                                irregular: variant.pronunciations[lect].ipa.trim() !== get_pronunciation(phrase, lect),
                             };
                         });
                         variants[phrase] = <Lexc.Variant> {
@@ -174,7 +177,7 @@
             $Language = {...$Language};
             $phraseInput = '';
             $phrasePronunciations = (()=>{
-                let pronunciations = {};
+                let pronunciations: Record<string, string> = {};
                 Object.keys($Language.Pronunciations).forEach(lect => {
                     pronunciations[lect] = '';
                 });
@@ -202,14 +205,19 @@
     <div class="row" style="height: 58vh;">
         <!-- Categories -->
         <div class="container column" style="max-width: 18%;">
-            <p use:tooltip={{position:'bottom'}} title="This panel will fill with category names as you assign phrases to new ones.">
-                Categories</p>
+            <p>Categories</p>
             <hr />
             <div class="column scrolled" style="max-height: 90%;" id="category-body">
                 {#each Object.keys($Language.Phrasebook) as category}
-                    <div class="lex-entry capitalize" class:selected={category === $selectedCategory} on:mousedown={() => select(category)}>
-                            {category}
-                    </div>
+                    <div 
+                        class="lex-entry capitalize" 
+                        class:selected={category === $selectedCategory} 
+                        on:mousedown={() => select(category)}
+                        role="option" 
+                        aria-selected={category === $selectedCategory} 
+                        aria-roledescription="Select category" 
+                        tabindex="0"
+                    >{category}</div>
                 {:else}
                     <p class="info">Categories will appear here.</p>
                 {/each}
@@ -266,13 +274,12 @@
     <!-- Phrase Editor -->
     <div class="container collapsible-row" style="height: 34vh;">
         <div class="row" style="width: 100vh">
-            <button class="collapser-h" on:click={() => collapsedPanel = !collapsedPanel}></button>
+            <button class="collapser-h" on:click={() => collapsedPanel = !collapsedPanel} aria-label="Collapse/Expand"></button>
         </div>
         <div class="row" class:collapsed={collapsedPanel} style="height: 92%">
             <div class="column scrolled" style="max-height: 100%">
                 
-                <label for="phrase" use:tooltip={{position:'right'}} title="Write a new phrase in your language here. The pronunciation is updated the same as in the Lexicon tab.">
-                    Phrase</label>
+                <label for="phrase">Phrase</label>
                 <input type="text" bind:value={$phraseInput} on:input={() => {
                     lects.forEach(lect => {
                         $phrasePronunciations[lect] = get_pronunciation($phraseInput, lect);
@@ -301,7 +308,7 @@
                     bind:lects={lects}
                 />
 
-                <label><p use:tooltip={{position:'right'}} title="Use this field to assign this phrase to a category, or to create a new one with this phrase as its first member.">Category</p>
+                <label>Category
                     <input type="text" bind:value={$categoryInput} />
                 </label>
 
@@ -316,16 +323,17 @@
                         bind:description={variantInputs[i].description}
                         on:update={() => {
                             lects.forEach(lect => {
-                                variantInputs[i].pronunciations[lect] = get_pronunciation(variantInputs[i].phrase, lect);
+                                variantInputs[i].pronunciations[lect] = {
+                                    ipa: get_pronunciation(variantInputs[i].phrase, lect),
+                                    irregular: false,
+                                };
                             });
                         }}
                     />
                 {:else}
                     <p class="info">Click the button below to add a variation for this phrase</p>
                 {/each}
-                <button on:click={addVariant} class="hover-shadow hover-highlight"
-                    use:tooltip={{position:'bottom', autoPosition: true}} title="If there are multiple ways to say your phrase, you can add variant entries for it along with descriptions."
-                >+ Variant</button>
+                <button on:click={addVariant} class="hover-shadow hover-highlight">+ Variant</button>
             </div>
         </div>
     </div>

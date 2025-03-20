@@ -3,8 +3,6 @@ import {
     Language, wordInput, pronunciations, phraseInput, phrasePronunciations
 } from '../stores.js';
 import { applyRules, parseRules } from './sca';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as diagnostics from './diagnostics.js';
 import type * as Lexc from '../types.js';
 const Lang = () => get(Language);
 
@@ -63,9 +61,9 @@ export function writeRomans (lect: string) {
  * @param {string} trial
  * @returns {string} The completed word, or an empty string if no word could be generated
  */
-export function complete_word(trial) {
+export function complete_word(trial: string) {
     const random_boolean = () => Math.floor(Math.random() * 2) === 0;
-    const choice = arr => arr[Math.floor(Math.random() * arr.length)];
+    const choice = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
     const inventory = {
         Onsets: Lang().Phonotactics.General.Onsets.split(/\s+/g),
         Medials: Lang().Phonotactics.General.Medials.split(/\s+/g), 
@@ -139,7 +137,7 @@ export function generate_word() {
             Illegals: Lang().Phonotactics.General.Illegals.split(/\s+/g)
         };
         const random_boolean = () => Math.floor(Math.random() * 2) === 0;
-        const choice = arr => arr[Math.floor(Math.random() * arr.length)];
+        const choice = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
         let word = '^';
     
         if (random_boolean()) {

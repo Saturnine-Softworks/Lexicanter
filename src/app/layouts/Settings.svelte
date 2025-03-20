@@ -1,3 +1,5 @@
+
+<svelte:options runes />
 <script lang="ts">
     import { theme, autosave, pronunciations, wordInput, dbid, dbkey, fileLoadIncrement, docsEditor } from '../stores';
     import * as Files from '../utils/files';
@@ -6,28 +8,38 @@
     const fs = require('fs');
     const path = require('path');
     const vex = require('vex-js');
-    import { debug, logAction } from '../utils/diagnostics';
     import { get_pronunciation } from '../utils/phonetics';
     import TagSelector from '../components/TagSelector.svelte';
-    import { verifyHash } from '../utils/verification';
+    import { verify } from '../../db/database';
     import { initializeDocs } from '../utils/docs';
 
-    let tag: string = '';
-    let onlineFileVersion: string = '';
-    let localFileVersion: string = $Language.FileVersion;
+    let tag: string = $state('');
+    let onlineFileVersion: string = $state('');
+    let localFileVersion: string = $state($Language.FileVersion);
     async function getOnlineFileVersion() {
-        if (verifyHash($dbid, $dbkey)) {
+        if ($dbid === '' || $dbkey === '') return null;
+        if (await verify($dbid, $dbkey)) {
             let file = await Files.retrieveFromDatabase();
             if (file) {
                 return file.FileVersion;
             } else return null;
+        } else {
+            vex.dialog.alert('One or both of your User ID and Key is invalid.');
+            return null;
         }
     }
     async function setFileVersions() {
-        onlineFileVersion = await getOnlineFileVersion();
+        let version: string | null = null;
+        if ($dbid !== '' && $dbkey !== '' && $Language.UploadToDatabase && $Language.Name !== 'Unnamed Language') {
+            version = await getOnlineFileVersion();
+        }
+        onlineFileVersion = version ?? 'n/a';
         localFileVersion = $Language.FileVersion;
     }
-    $: $fileLoadIncrement, setFileVersions();
+    $effect(() => {
+        fileLoadIncrement;
+        setFileVersions();
+    });
 
     Files.userData(user_path => {
         let settings = {
@@ -54,7 +66,6 @@
 
             if (fs.existsSync(user_path + path.sep + 'theme.txt')) {
                 settings.theme = fs.readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
-                    .readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
                     .toString();
                 $theme = settings.theme;
                 fs.unlinkSync(user_path + path.sep + 'theme.txt');
@@ -73,15 +84,15 @@
 
     });
 
-    let inputID: string = '';
-    let inputKey: string = '';
-    $: disabledDatabase = !$Language.UploadToDatabase;
-    function setDatabaseAccount () {
+    let inputID: string = $state('');
+    let inputKey: string = $state('');
+    let disabledDatabase = $derived(!$Language.UploadToDatabase);
+    async function setDatabaseAccount () {
         if (inputID === '' || inputKey === '') {
             vex.dialog.alert('Please enter both your User ID and Key.');
             return;
         }
-        if (verifyHash(inputID, inputKey)) {
+        if (await verify(inputID, inputKey)) {
             $dbid = inputID;
             $dbkey = inputKey;
             Files.userData(user_path => {
@@ -104,7 +115,7 @@
             vex.dialog.alert('Please enter both your User ID and Key.');
             return;
         }
-        if (verifyHash($dbid, $dbkey)) {
+        if (await verify($dbid, $dbkey)) {
             const queryResult = await Files.retrieveFromDatabase();
             if (queryResult !== false) {
                 $Language = queryResult;
@@ -150,18 +161,18 @@
             return;
         }
         let contents = await file.text();
-        let theme_path;
+        let theme_path: string;
         await Files.userData(user_path => {
             let themes_dir = user_path + path.sep + 'user_themes' + path.sep;
             if (!fs.existsSync(themes_dir)) {
                 fs.mkdirSync(themes_dir);
             }
             theme_path = user_path + path.sep + 'user_themes' + path.sep + file.name;
-            fs.writeFile(theme_path, contents, 'utf8', err => {
+            fs.writeFile(theme_path, contents, 'utf8', (err: NodeJS.ErrnoException) => {
                 if (err) throw err;
                 $theme = theme_path;
             });
-            fs.writeFile(user_path + path.sep + 'theme.txt', theme_path, err => {
+            fs.writeFile(user_path + path.sep + 'theme.txt', theme_path, (err: NodeJS.ErrnoException) => {
                 if (err) throw err;
             });
         });
@@ -182,14 +193,12 @@
             fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
         });
         if ($autosave) {
-            var autosave_tracker = window.setInterval(
+            window.setInterval(
                 Files.saveFile,
                 600000 /* 10 minutes */,
                 false
             );
-        } else {
-            window.clearInterval(autosave_tracker);
-        };
+        }
     };
 
     /**
@@ -337,7 +346,7 @@
                 },
                 file_path => {
                     if (!file_path) return;
-                    fs.readFile(file_path[0], 'utf8', (err, data: string) => {
+                    fs.readFile(file_path[0], 'utf8', (err: NodeJS.ErrnoException, data: string) => {
                         if (err) {
                             console.log(err);
                             vex.dialog.alert('There was an issue loading your file. Please contact the developer.');
@@ -391,7 +400,6 @@
         Files.userData(user_path => {
             if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
                 fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => {
-                    logAction(`Created the 'Lexicons' folder in the user data folder at '${user_path}'.`);
                     dialog(user_path);
                 });
             } else { dialog(user_path); }
@@ -403,9 +411,9 @@
             vex.dialog.alert('Please enter both your User ID and Key.');
             return;
         }
-        if (verifyHash($dbid, $dbkey)) {
+        if (await verify($dbid, $dbkey)) {
             const queryResult = await Files.deleteFromDatabase();
-            if (queryResult === null) {
+            if (queryResult.error) {
                 vex.dialog.alert('The file does not exist in the database or is not registered to you.');
             }
             else {
@@ -435,7 +443,7 @@
                 <select 
                     name="theme-select" id="theme-select" 
                     bind:value={$theme} 
-                    on:change={change_theme}
+                    onchange={change_theme}
                 >
                     <optgroup label="Simple Themes">
                         <option value="styles/dark.css">☾ Dark</option>
@@ -464,16 +472,16 @@
                 </select>
             </label>
             <br>
-            <button class="hover-highlight hover-shadow" on:click={()=>{$Language.FileTheme = $theme}}> Set Current Theme as Default for This File </button>
-            <button class="hover-highlight hover-shadow" on:click={()=>{$Language.FileTheme = 'default'}}> Clear File Theme </button>
+            <button class="hover-highlight hover-shadow" onclick={()=>{$Language.FileTheme = $theme}}> Set Current Theme as Default for This File </button>
+            <button class="hover-highlight hover-shadow" onclick={()=>{$Language.FileTheme = 'default'}}> Clear File Theme </button>
             <br>
-            <button class="hover-highlight hover-shadow" on:click={custom_theme}> Load Custom Theme… </button>
+            <button class="hover-highlight hover-shadow" onclick={custom_theme}> Load Custom Theme… </button>
 
             <br><hr/><br>
 
             <p>Save Settings</p> <br>
             <label>Auto-Save
-                <input type="checkbox" bind:checked={$autosave} on:change={change_autosave_pref}/>
+                <input type="checkbox" bind:checked={$autosave} onchange={change_autosave_pref}/>
             </label>
 
             <div class=narrow>
@@ -485,21 +493,21 @@
                     <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'} for this file.
                         <input type=checkbox bind:checked={$Language.UploadToDatabase}/>
                     </span>
-                    {#if $Language.UploadToDatabase && verifyHash($dbid, $dbkey)}
+                    {#if $dbid !== '' && $dbkey !== '' && $Language.UploadToDatabase}
                         Local File Version: {localFileVersion} <br>
                         Online File Version: {onlineFileVersion} <br>
-                        <button class='hover-highlight hover-shadow' on:click={setFileVersions}>Refresh</button>
+                        <button class='hover-highlight hover-shadow' onclick={setFileVersions}>Refresh</button>
                     {/if}
                     <span>User ID: <input class:pronunciation={disabledDatabase} type=text bind:value={inputID} disabled={disabledDatabase}/></span>
                     <br>
                     <span>Key: <input class:pronunciation={disabledDatabase} type=text bind:value={inputKey} disabled={disabledDatabase}/></span>
-                    <button on:click={setDatabaseAccount}>Authenticate</button>
+                    <button onclick={setDatabaseAccount}>Authenticate</button>
                     <p class=info>Your ID and Key are saved to the app's internal settings, not to your file, but turning on uploading is saved per-file.</p>
                     <br>
-                    <button class='hover-highlight hover-shadow' on:click={syncFromDatabase}>Sync From Cloud</button>
+                    <button class='hover-highlight hover-shadow' onclick={syncFromDatabase}>Sync From Cloud</button>
                     <p class=info>This will overwrite the current file with the latest version of the file available in the cloud.</p>
 
-                    <button class='hover-highlight hover-shadow' on:click={confirmDeleteFromDatabase}>Delete From Cloud</button>
+                    <button class='hover-highlight hover-shadow' onclick={confirmDeleteFromDatabase}>Delete From Cloud</button>
                     <p class=info>This will delete the current file from the cloud, and it will no longer be accessible to the discord bot or online file viewer.</p>
                 </label>
             </div>
@@ -511,7 +519,7 @@
                 <TagSelector on:select={e => tag = e.detail? e.detail.trim() : ''}/>
                 <p>Selected: {tag}</p>
                 {#if !!tag}
-                    <button class="hover-highlight hover-shadow" on:click={()=>{
+                    <button class="hover-highlight hover-shadow" onclick={()=>{
                         Object.keys($Language.Lexicon).forEach(word => {
                             $Language.Lexicon[word].Senses.forEach((sense, i) => {
                                 if (sense.tags.includes(tag)) {
@@ -521,20 +529,22 @@
                         });
                         tag = '';
                     }}>Delete Tag</button>
-                    <button class="hover-highlight hover-shadow" on:click={()=>{
+                    <button class="hover-highlight hover-shadow" onclick={()=>{
                         vex.dialog.prompt({
                             message: 'New tag name:',
-                            callback: (newName) => {
-                                if (newName) {
+                            placeholder: tag,
+                            // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
+                            callback: function(response) {
+                                if (response) {
                                     Object.keys($Language.Lexicon).forEach(word => {
                                         $Language.Lexicon[word].Senses.forEach((sense, i) => {
                                             if (sense.tags.includes(tag)) {
                                                 $Language.Lexicon[word].Senses[i].tags.splice(sense.tags.indexOf(tag), 1);
-                                                $Language.Lexicon[word].Senses[i].tags.push(newName);
+                                                $Language.Lexicon[word].Senses[i].tags.push(response);
                                             }
                                         });
                                     });
-                                    tag = newName;
+                                    tag = response;
                                 }
                             }
                         });
@@ -546,42 +556,41 @@
 
             <p>Advanced Settings</p> <br>
             <label>Show Multi-Lect Features
-                <input type="checkbox" bind:checked={$Language.UseLects} on:change={confirmUseLectsChange}/>
+                <input type="checkbox" bind:checked={$Language.UseLects} onchange={confirmUseLectsChange}/>
                 {#if $Language.UseLects}
                     {#each $Language.Lects as lect, lectIndex}
                         <div class="narrow">
                             <p style="display: inline-block" id={`${lectIndex}`}>{lect}</p>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={() => {
+                            <button class="hover-highlight hover-shadow" style="display: inline-block" onclick={() => {
                                 if ($Language.Lects.length === 1) {
                                     vex.dialog.alert('You cannot delete the last lect.');
                                     return;
                                 };
                                 vex.dialog.confirm({
                                     message: `Are you sure you want to delete the lect "${lect}"? This action cannot be undone.`,
+                                    // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
                                     callback: function (response) {
                                         if (response) {
                                             deleteLect(lect, lectIndex);
-                                            debug.log(`Deleted lect: ${lect}`);
                                         }
                                     }
                                 });
                             }}> ⌫ </button>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block" on:click={() => {
+                            <button class="hover-highlight hover-shadow" style="display: inline-block" onclick={() => {
                                 vex.dialog.prompt({
                                     message: 'Edit Lect Name',
                                     placeholder: `${lect}`,
+                                    // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
                                     callback: function (response) {
-                                        if (response === false) {
-                                            return debug.log('User cancelled the Edit Lect Name dialog.');
-                                        }
+                                        if (response === false) return
                                         changeLectName(lect, response, lectIndex);
-                                        debug.log(`Edited lect name: ${lect} to ${response}`);
                                     }
                                 })
                             }}> ✎ </button>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block;" on:click={() => {
+                            <button class="hover-highlight hover-shadow" style="display: inline-block;" onclick={() => {
                                 vex.dialog.confirm({
                                     message: `Add all words in the lexicon to the lect ‘${lect}’?`,
+                                    // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
                                     callback: function (response) {
                                         if (response) {
                                             for (let word in $Language.Lexicon) {
@@ -591,7 +600,6 @@
                                                     }
                                                 });
                                             };
-                                            debug.log(`Added all words to lect: ${lect}`);
                                             vex.dialog.alert(`Added all senses of all words to the lect ‘${lect}’.`);
                                         }
                                     }
@@ -599,19 +607,16 @@
                             }}> ◎ </button>
                         </div>
                     {/each}
-                    <button class="hover-highlight hover-shadow" on:click={() => { 
+                    <button class="hover-highlight hover-shadow" onclick={() => { 
                         vex.dialog.prompt({
                             message: 'Add a New Lect',
                             placeholder: `New ${$Language.Name} Lect`,
+                            // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
                             callback: function (response) {
-                                if (response === false) {
-                                    return debug.log('User cancelled the Add Lect dialog.');
-                                }
+                                if (response === false) return;
                                 $Language.Lects = [...$Language.Lects, response];
                                 $Language.Pronunciations[response] = 'place > holder';
                                 $pronunciations[response] = get_pronunciation($wordInput, response);
-                                logAction(`Added a new lect: ${response}`);
-                                // debug.log(`Added a new lect: ${response}`)
                             }
                         })
                     }}> + Lect </button>
@@ -625,21 +630,21 @@
                 <input type="checkbox" bind:checked={$Language.ShowEtymology}/>
                 {#if $Language.ShowEtymology}
                     <button class="hover-highlight hover-shadow" 
-                        on:click={() => {
+                        onclick={() => {
                             importRelative();
                         }}
                     > Import Related Lexicon </button>
                     {#each Object.keys($Language.Relatives) as relative}
                         <div class="narrow">
                             <p style="display: inline-block;">{relative}</p>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block;" on:click={() => {
+                            <button class="hover-highlight hover-shadow" style="display: inline-block;" onclick={() => {
                                 vex.dialog.confirm({
                                     message: `Are you sure you want to delete "${relative}"? This will remove any etymology connections its entries may have.`,
+                                    // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
                                     callback: function (response) {
                                         if (response) {
                                             $Language.Etymologies = Object.fromEntries(Object.entries($Language.Etymologies).filter(([_, value]) => value.source !== relative));
                                             delete $Language.Relatives[relative];
-                                            logAction(`Deleted relative: ${relative}`);
                                         }
                                     }
                                 });

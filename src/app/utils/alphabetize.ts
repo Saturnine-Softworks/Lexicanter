@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as diagnostics from './diagnostics';
 import { get } from 'svelte/store';
 import { Language } from '../stores';
 import type * as Lexc from '../types';

@@ -1,107 +1,130 @@
 {
-  "name": "lexicanter",
-  "productName": "Lexicanter",
-  "version": "2.1.20",
-  "description": "A lexicon management tool for constructed languages.",
-  "main": "src/index.js",
-  "scripts": {
-    "compile-rust": "cargo build --manifest-path=src/app/utils/interop/library/Cargo.toml --release",
-    "precompile": "npm run compile-rust && sass src/sass/:src/styles && rollup -c",
-    "start": "npm run precompile && electron .",
-    "build-mac": "npm run precompile && electron-builder --mac --publish never",
-    "build-win": "npm run precompile && electron-builder --win --x64 --ia32 --publish never",
-    "build-linux": "npm run precompile && electron-builder --linux --publish never",
-    "publish": "npm run precompile && bash bash/publish.bash",
-    "publish-only": "bash bash/publish.bash",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
-  },
-  "repository": "https://github.com/Saturnine-Softworks/Lexicanter",
-  "build": {
-    "publish": {
-      "provider": "github",
-      "releaseType": "release",
-      "vPrefixedTagName": false
-    },
-    "appId": "com.lexicanter.app",
+    "name": "lexicanter",
     "productName": "Lexicanter",
-    "win": {
-      "target": "nsis",
-      "icon": "src/res/alembic.ico"
+    "version": "2.1.21",
+    "description": "A lexicon management tool for constructed languages.",
+    "main": "src/index.js",
+    "scripts": {
+        "compile-rust": "cargo build --manifest-path=src/app/utils/interop/library/Cargo.toml --release",
+        "precompile": "npm run compile-rust && sass -q src/sass/:src/styles && vite build",
+        "dev": "NODE_ENV=development concurrently \"npm run web:watch\" \"sleep 1 && npm run electron:start\"",
+        "start": "npm run precompile && npm run electron:start",
+        "web:watch": "vite --port 3000",
+        "electron:start": "electron .",
+        "build-mac": "npm run precompile && electron-builder --mac --publish never",
+        "build-win": "npm run precompile && electron-builder --win --x64 --ia32 --publish never",
+        "build-linux": "npm run precompile && electron-builder --linux --publish never",
+        "publish": "npm run precompile && bash bash/publish.bash",
+        "publish-only": "bash bash/publish.bash",
+        "check": "svelte-check --tsconfig ./tsconfig.json",
+        "format": "prettier --write ."
     },
-    "mac": {
-      "icon": "src/res/alembic.icns"
+    "repository": "https://github.com/Saturnine-Softworks/Lexicanter",
+    "build": {
+        "publish": {
+            "provider": "github",
+            "releaseType": "release",
+            "vPrefixedTagName": false
+        },
+        "appId": "com.lexicanter.app",
+        "productName": "Lexicanter",
+        "win": {
+            "target": "nsis",
+            "icon": "src/res/alembic.ico"
+        },
+        "mac": {
+            "icon": "src/res/alembic.icns"
+        },
+        "linux": {
+            "target": "AppImage",
+            "icon": "src/res/alembic.png",
+            "category": "Office"
+        },
+        "nsis": {
+            "installerIcon": "src/res/alembic.ico",
+            "installerHeaderIcon": "src/res/alembic.ico"
+        },
+        "files": [
+            "./src/**/*",
+            "./LICENSE",
+            "./README.md"
+        ],
+        "extraResources": [
+            {
+                "from": "./src/app/utils/interop/library/target/release/liblibrary.dylib",
+                "to": "liblibrary.dylib",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./src/app/utils/interop/library/src/graphemy",
+                "to": "graphemy",
+                "filter": [
+                    "**/*"
+                ]
+            }
+        ],
+        "directories": {
+            "output": "dist"
+        }
     },
-    "linux": {
-      "target": "AppImage",
-      "icon": "src/res/alembic.png",
-      "category": "Office"
+    "keywords": [],
+    "author": {
+        "name": "Ethan Ray"
     },
-    "nsis": {
-      "installerIcon": "src/res/alembic.ico",
-      "installerHeaderIcon": "src/res/alembic.ico"
+    "license": "GNU General Public License Version 3",
+    "engine": {
+        "node": ">=22.6.0"
     },
-    "files": [
-      "src/**/*",
-      "node_modules/**/*"
-    ],
-    "directories": {
-      "output": "dist"
+    "dependencies": {
+        "@editorjs/editorjs": "^2.30.8",
+        "@editorjs/header": "^2.8.8",
+        "@editorjs/list": "^2.0.6",
+        "@editorjs/paragraph": "^2.11.7",
+        "@editorjs/table": "^2.4.4",
+        "@editorjs/text-variant-tune": "^1.0.3",
+        "@editorjs/underline": "^1.2.1",
+        "@electron/remote": "2.1.2",
+        "@types/marked": "6.0.0",
+        "@types/node": "22.13.10",
+        "@types/wicg-file-system-access": "2023.10.5",
+        "csv-parser": "3.2.0",
+        "editorjs-text-alignment-blocktune": "^1.0.3",
+        "editorjs-toggle-block": "^0.3.16",
+        "electron-build": "0.0.3",
+        "electron-updater": "6.3.9",
+        "koffi": "2.10.1",
+        "marked": "15.0.7",
+        "moo": "0.5.2",
+        "nearley": "2.20.1",
+        "node-fetch": "3.3.2",
+        "sass": "1.86.0",
+        "semver": "7.7.1",
+        "vex-js": "4.1.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.22.0",
+        "@sveltejs/vite-plugin-svelte": "5.0.3",
+        "@tsconfig/svelte": "5.0.4",
+        "@types/moo": "0.5.10",
+        "@types/nearley": "2.11.5",
+        "@typescript-eslint/eslint-plugin": "8.26.1",
+        "@typescript-eslint/parser": "8.26.1",
+        "@vitest/coverage-v8": "^3.0.9",
+        "electron": "35.0.2",
+        "electron-builder": "25.1.8",
+        "eslint": "^9.22.0",
+        "globals": "^16.0.0",
+        "svelte": "5.23.2",
+        "svelte-check": "4.1.5",
+        "svelte-preprocess": "6.0.3",
+        "tslab": "^1.0.22",
+        "tslib": "2.8.1",
+        "typescript": "5.8.2",
+        "typescript-eslint": "^8.26.1",
+        "vite": "6.2.2",
+        "vite-plugin-electron-renderer": "0.14.6",
+        "vitest": "3.0.9"
     }
-  },
-  "keywords": [],
-  "author": {
-    "name": "Ethan Ray"
-  },
-  "license": "GNU General Public License Version 3",
-  "engine": {
-    "node": ">=21.1.0"
-  },
-  "dependencies": {
-    "@editorjs/editorjs": "^2.30.8",
-    "@editorjs/header": "^2.8.8",
-    "@editorjs/list": "^2.0.4",
-    "@editorjs/paragraph": "^2.11.7",
-    "@editorjs/table": "^2.4.3",
-    "@editorjs/text-variant-tune": "^1.0.3",
-    "@editorjs/underline": "^1.2.1",
-    "@electron/remote": "^2.1.1",
-    "@types/marked": "^4.0.8",
-    "@xata.io/client": "^0.26.9",
-    "csv-parser": "^3.0.0",
-    "editorjs-text-alignment-blocktune": "^1.0.3",
-    "editorjs-toggle-block": "^0.3.16",
-    "electron-build": "^0.0.3",
-    "electron-updater": "^5.3.0",
-    "koffi": "^2.8.11",
-    "marked": "^4.3.0",
-    "node-fetch": "^3.3.2",
-    "sass": "^1.60.0",
-    "semver": "^7.6.0",
-    "vex-js": "^4.1.0"
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-terser": "^0.4.0",
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@svelte-plugins/tooltips": "^0.1.6",
-    "@tsconfig/svelte": "^3.0.0",
-    "@types/node": "^18.13.0",
-    "@types/wicg-file-system-access": "^2020.9.5",
-    "@typescript-eslint/eslint-plugin": "^5.54.0",
-    "@typescript-eslint/parser": "^5.54.0",
-    "electron": "=22.2.1",
-    "electron-builder": "^24.13.3",
-    "eslint": "^8.35.0",
-    "rollup": "~2.79.1",
-    "rollup-plugin-css-only": "^4.3.0",
-    "rollup-plugin-livereload": "^2.0.5",
-    "rollup-plugin-polyfill-node": "^0.12.0",
-    "rollup-plugin-svelte": "^7.1.2",
-    "svelte": "^3.55.1",
-    "svelte-check": "^3.0.3",
-    "svelte-preprocess": "^5.0.1",
-    "tslib": "^2.5.0",
-    "typescript": "^4.9.5"
-  }
 }

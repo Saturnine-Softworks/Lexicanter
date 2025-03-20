@@ -5,8 +5,11 @@ import Paragraph from '@editorjs/paragraph';
 import Table from '@editorjs/table';
 import Underline from '@editorjs/underline';
 import EditorjsList from '@editorjs/list';
+// @ts-ignore: no types included with this package, not bothering to write them myself
 import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
+// @ts-ignore: no types included with this package, not bothering to write them myself
 import TextVariantTune from '@editorjs/text-variant-tune';
+// @ts-ignore: no types included with this package, not bothering to write them myself
 import ToggleBlock from 'editorjs-toggle-block';
 // const MermaidTool = require('editorjs-mermaid');
 import type { EditorConfig } from '@editorjs/editorjs';
@@ -28,7 +31,7 @@ enum LogLevels { // REVIEW - monkeypatch gets around type check error, can't imp
 export function initializeDocs(data: OutputData | false, holder='docs-tab'): void {
     const config = {
         holder: holder,
-        data: null,
+        data: data || null,
         tools: {
             underline: Underline,
             header: {
@@ -77,8 +80,7 @@ export function initializeDocs(data: OutputData | false, holder='docs-tab'): voi
         readOnly: holder === 'ref-docs'
     };
     
-    if (data) config.data = data;
-    const editor = new EditorJS(config as EditorConfig);
+    const editor = new EditorJS(config as any as EditorConfig); // type gymnastics
     if (holder === 'docs-tab') {
         docsEditor.set(editor);
     }

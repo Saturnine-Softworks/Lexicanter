@@ -5,21 +5,13 @@
     import type { OutputData } from '@editorjs/editorjs';
     import type * as Lexc from '../types';
     import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV, retrieveFromDatabase } from '../utils/files';
-    import { get_pronunciation, writeRomans } from '../utils/phonetics';
+    import { writeRomans } from '../utils/phonetics';
     import { initializeDocs } from '../utils/docs';
-    import * as diagnostics from '../utils/diagnostics';
     import Evolver from '../components/Evolver.svelte';
-    import type { Sense } from '../types';
-    import {tooltip} from '@svelte-plugins/tooltips';
-    import { onMount } from 'svelte';
-    import { verifyHash } from '../utils/verification';
-    import { vectorSearchTable } from '@xata.io/client';
+    import { verify } from '../../db/database';
+
     const vex = require('vex-js');
 
-    let locationSelector: HTMLInputElement;
-    onMount(() => {
-        locationSelector.webkitdirectory = true;
-    });
     function selectSaveLocation () {
         showOpenDialog({
             properties: ['openDirectory'],
@@ -42,16 +34,22 @@
         tags: 4,
     }
     $: csv;
-    let plainTextImport = '';
-    $: plainTextImport;
 
     /**
      * Parses the contents of an opened .lexc file and loads the data into the app.
      * If the file is a legacy version, it is passed to the appropriate function.
      * @param {Object} contents - The contents of the opened file.
      */
-    async function read_contents (contents) {
+    async function read_contents (contents: Lexc.Language) {
         if (typeof contents.Version === 'number' || contents.Version === '1.8.x') {
+            vex.dialog.alert(` 
+                The file you attempted to open was saved by an old version of Lexicanter (Version ~${contents.Version}), 
+                which is no longer supported. Please contact the developer for assistance; the file is likely recoverable.
+            `);
+            return;
+        }
+
+        if (contents.Version === '1.9') {
             try { openLegacy[contents.Version](contents); }
             catch (err) {
                 vex.dialog.alert(` 
@@ -123,7 +121,8 @@
 
             errorMessage = 'There was a problem loading the inflection rules from the file.'
             let inflections = contents.Inflections;
-            if (!contents.Inflections.categories) inflections.categories = '';
+            if (!contents.Inflections.some(inflection => inflection.categories)) 
+                inflections.forEach(inflection => inflection.categories = '');
             $Language.Inflections = contents.Inflections;
 
             errorMessage = 'There was a problem loading the etymology data from the file.'
@@ -155,52 +154,55 @@
                         vex.dialog.alert('The file you opened has database syncing turned on, but your user ID or account key are blank.');
                         return;
                     }
-                    if (verifyHash($dbid, $dbkey)) {
-                        const queryResult = await retrieveFromDatabase(contents.Name);
-                        if (queryResult !== false) {
-                            if (queryResult.FileVersion === undefined) {
-                                vex.dialog.confirm({
-                                    message: `The file in the database has no FileVersion number. Would you like to overwrite it with your local version?`,
-                                    yesText: 'Upload Local Version',
-                                    callback: (proceed) => {
-                                        if (proceed) {
-                                            saveFile();
-                                            vex.dialog.alert('Saved and uploaded local file.')
-                                        }
+                    verify($dbid, $dbkey).then(verified => {
+                        if (verified) {
+                            retrieveFromDatabase(contents.Name).then(queryResult => {
+                                if (queryResult !== false) {
+                                    if (queryResult.FileVersion === undefined) {
+                                        vex.dialog.confirm({
+                                            message: `The file in the database has no FileVersion number. Would you like to overwrite it with your local version?`,
+                                            yesText: 'Upload Local Version',
+                                            callback: (proceed: boolean) => {
+                                                if (proceed) {
+                                                    saveFile();
+                                                    vex.dialog.alert('Saved and uploaded local file.')
+                                                }
+                                            }
+                                        })
+                                    } else if ( parseInt($Language.FileVersion, 36) < parseInt(queryResult.FileVersion, 36) ) {
+                                        vex.dialog.confirm({
+                                            message: `Detected a newer version of the file in the database (local: ${$Language.FileVersion} | online: ${queryResult.FileVersion}). Would you like to download the changes?`,
+                                            yesText: 'Download Changes',
+                                            callback: (proceed: boolean, download = queryResult) => {
+                                                if (proceed) {
+                                                    $Language = download;
+                                                    initializeDocs(download.Docs);
+                                                    saveFile();
+                                                    vex.dialog.alert('Downloaded changes and saved.')
+                                                } else {
+                                                    vex.dialog.alert('Did not download changes. If you change your mind, click the Sync From Database button in the Settings tab. This will overwrite local changes.')
+                                                }
+                                            }
+                                        })
                                     }
-                                })
-                            } else if ( parseInt($Language.FileVersion, 36) < parseInt(queryResult.FileVersion, 36) ) {
-                                vex.dialog.confirm({
-                                    message: `Detected a newer version of the file in the database (local: ${$Language.FileVersion} | online: ${queryResult.FileVersion}). Would you like to download the changes?`,
-                                    yesText: 'Download Changes',
-                                    callback: (proceed, download = queryResult) => {
-                                        if (proceed) {
-                                            $Language = download;
-                                            initializeDocs(download.Docs);
-                                            saveFile();
-                                            vex.dialog.alert('Downloaded changes and saved.')
-                                        } else {
-                                            vex.dialog.alert('Did not download changes. If you change your mind, click the Sync From Database button in the Settings tab. This will overwrite local changes.')
-                                        }
-                                    }
-                                })
-                            }
+                                } else {
+                                    vex.dialog.alert('No file of this name was found in your ownership in the database.');
+                                }
+                            });
                         } else {
-                            vex.dialog.alert('No file of this name was found in your ownership in the database.');
+                            vex.dialog.alert('One or both of your User ID and Key is invalid.');
                         }
-                    } else {
-                        vex.dialog.alert('One or both of your User ID and Key is invalid.');
-                    }
+                    });
                 }
             }
 
         } catch (err) {
-            vex.dialog.alert(errorMessage + ' Please contact the developer for assistance.');
-            diagnostics.logError(errorMessage, err);
-            diagnostics.debug.logObj(contents, 'File Contents');
+
+            vex.dialog.alert('An error has occurred and has been logged to the console. Please contact the developer for assistance.');
+            console.error(err);
+            console.log(contents);
         } finally {
             $fileLoadIncrement++;
-            diagnostics.logAction(`Opened and read the contents of '${$Language.Name}'.'`);
         }
     }
     
@@ -219,8 +221,8 @@
                 file_path => {
                     if (file_path === undefined) {
                         // stop orbit animation
-                        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
-                            planet.style.animationPlayState = 'paused';
+                        document.querySelectorAll('.planet').forEach((planet: Element) => {
+                            (planet as HTMLElement).style.animationPlayState = 'paused';
                         });
                         loading_message = 'No file selected.';
                         window.setTimeout(() => {
@@ -228,16 +230,16 @@
                         }, 5000);
                         return;
                     }
-                    fs.readFile(file_path[0], 'utf8', (err, data: string) => {
+                    fs.readFile(file_path[0], 'utf8', (err: NodeJS.ErrnoException, data: string) => {
                         if (err) {
                             console.log(err);
                             window.alert(
                                 'There was an issue loading your file. Please contact the developer.'
                                 );
-                            diagnostics.logError('Attempted to open a file.', err);
-                            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                            console.error(err);
+                            document.querySelectorAll('.planet').forEach((planet: Element) => {
                                 // loading anim stop
-                                planet.style.animationPlayState = 'paused';
+                                (planet as HTMLElement).style.animationPlayState = 'paused';
                             });
                             loading_message = 'Couldn’t open file.';
                             window.setTimeout(() => { loading_message = ''; }, 5000);
@@ -246,9 +248,9 @@
                         contents = JSON.parse(data);
                         read_contents(contents);
                         $Language.Name = path.basename(file_path[0], '.lexc');
-                        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                        document.querySelectorAll('.planet').forEach((planet: Element) => {
                             // loading anim stop
-                            planet.style.animationPlayState = 'paused';
+                            (planet as HTMLElement).style.animationPlayState = 'paused';
                         });
                         loading_message = 'Done!';
                         window.setTimeout(() => { loading_message = ''; }, 5000);
@@ -256,15 +258,15 @@
                 }
             );
         };
-        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+        document.querySelectorAll('.planet').forEach((planet: Element) => {
             // loading anim start
-            planet.style.animationPlayState = 'running';
+            (planet as HTMLElement).style.animationPlayState = 'running';
         });
         loading_message = 'Loading...';
         await userData(user_path => {
             if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
                 fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => {
-                    diagnostics.logAction(`Created the 'Lexicons' folder in the user data folder at '${user_path}'.`);
+                    console.log(`Created the 'Lexicons' folder in the user data folder at '${user_path}'.`);
                     dialog(user_path);
                 });
             } else { dialog(user_path); }
@@ -275,8 +277,8 @@
      * Allows the user to import a .lexc file from their computer.
      */
     async function importFile() {
-        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
-            planet.style.animationPlayState = 'running';
+        document.querySelectorAll('.planet').forEach((planet: Element) => {
+            (planet as HTMLElement).style.animationPlayState = 'running';
         });
         loading_message = 'Loading...';
 
@@ -285,8 +287,8 @@
         let file = await file_handle.getFile();
         if (!file.name.includes('.lexc')) {
             window.alert('The selected file was not a .lexc file.');
-            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
-                planet.style.animationPlayState = 'paused';
+            document.querySelectorAll('.planet').forEach((planet: Element) => {
+                (planet as HTMLElement).style.animationPlayState = 'paused';
             });
             loading_message = 'Incorrect file type.';
             window.setTimeout(() => { loading_message = ''; }, 5000);
@@ -297,80 +299,15 @@
         read_contents(contents);
         $Language.Name = file.name.split('.')[0];
 
-        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
-            planet.style.animationPlayState = 'paused';
+        document.querySelectorAll('.planet').forEach((planet: Element) => {
+            (planet as HTMLElement).style.animationPlayState = 'paused';
         });
         loading_message = 'Done!';
         window.setTimeout(() => { loading_message = ''; }, 5000);
     }
 
-    function importPlainText(plainText: string) {
-        /**
-         * Format:
-         * word
-         * optional pronunciation
-         * 1. numbered definitions
-         * Tags: optional, space separated tags
-         * 2. numbered definitions
-         * Tags: optional, space separated tags
-         * 
-         * etc.
-         */
-        let plainTextEntries = plainTextImport.split('\n\n');
-        for (let entry of plainTextEntries) {
-            let lines = entry.split('\n');
-            let senses = []; let tags = [];
-            let word = lines[0].trim(); lines.shift();
-            let pronunciation = '';
-            if (!lines[0].match(/^[0-9]+\./g)) {
-                pronunciation = lines[0].trim(); lines.shift();
-                if (pronunciation.match(/^[\/\[].+[\/\]]$/)) {
-                    pronunciation = pronunciation.slice(1, pronunciation.length - 1);
-                }
-            }
-            for (let line of lines) {
-                if (line.match(/^[0-9]+\./g)) {
-                    senses.push(line);
-                    if (lines[lines.indexOf(line) + 1].startsWith('Tags: ')) {
-                        tags.push(lines[lines.indexOf(line) + 1].slice(6).split(/\s+/g));
-                    } else {
-                        tags.push([]);
-                    }
-                }
-            }
-            let sensesEntry: Sense[] = [];
-            for (let sense of senses) {
-                sensesEntry.push({
-                    'definition': sense.slice(sense.indexOf('.') + 1).trim(),
-                    'tags': tags[senses.indexOf(sense)],
-                    'lects': $Language.Lects,
-                })
-            }
-            let pronunciations = {}
-            pronunciations[$Language.Lects[0]] = pronunciation? {
-                'ipa': pronunciation,
-                'irregular': true,
-            } : {
-                'ipa': get_pronunciation(word, $Language.Lects[0]),
-                'irregular': false,
-            }
-            let wordEntry = {
-                'pronunciations': pronunciations,
-                'Senses': sensesEntry,
-                'Timestamp': Date.now(),
-            }
-            
-            if (word in $Language.Lexicon) {
-                vex.dialog.alert(`The word ${word} is already in the lexicon.`);
-            } else {
-                $Language.Lexicon[word] = wordEntry;
-            }
-        }
-        plainTextImport = '';
-    }
-
     async function openReferenceFile() {
-        let contents;
+        let contents: Lexc.Language;
         let dialog = (userPath: string) => {
             showOpenDialog(
                 {
@@ -381,8 +318,8 @@
                 file_path => {
                     if (file_path === undefined) {
                         // stop orbit animation
-                        document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
-                            planet.style.animationPlayState = 'paused';
+                        document.querySelectorAll('.planet').forEach((planet: Element) => {
+                            (planet as HTMLElement).style.animationPlayState = 'paused';
                         });
                         loading_message = 'No file selected.';
                         window.setTimeout(() => {
@@ -390,16 +327,16 @@
                         }, 5000);
                         return;
                     }
-                    fs.readFile(file_path[0], 'utf8', (err, data: string) => {
+                    fs.readFile(file_path[0], 'utf8', (err: NodeJS.ErrnoException, data: string) => {
                         if (err) {
                             console.log(err);
                             vex.dialog.alert(
                                 'There was an issue loading your file. Please contact the developer.'
                                 );
-                            diagnostics.logError('Attempted to open a file.', err);
-                            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                            console.error(err);
+                            document.querySelectorAll('.planet').forEach((planet: Element) => {
                                 // loading anim stop
-                                planet.style.animationPlayState = 'paused';
+                                (planet as HTMLElement).style.animationPlayState = 'paused';
                             });
                             loading_message = 'Couldn’t open file.';
                             window.setTimeout(() => { loading_message = ''; }, 5000);
@@ -411,9 +348,9 @@
                                 `The file you are attempting to open as a reference was last saved in v${contents.Version} \
                                 and is not compatible with the current version. Contact the developer for assistance.`
                             );
-                            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                            document.querySelectorAll('.planet').forEach((planet: Element) => {
                                 // loading anim stop
-                                planet.style.animationPlayState = 'paused';
+                                (planet as HTMLElement).style.animationPlayState = 'paused';
                             });
                             loading_message = 'Incompatible file.';
                             window.setTimeout(() => { loading_message = ''; }, 5000);
@@ -421,9 +358,9 @@
                         }
                         if (contents.Name === $Language.Name){
                             vex.dialog.alert('You cannot open a reference to the same language.');
-                            document.querySelectorAll('.planet').forEach((planet: HTMLElement) => {
+                            document.querySelectorAll('.planet').forEach((planet: Element) => {
                                 // loading anim stop
-                                planet.style.animationPlayState = 'paused';
+                                (planet as HTMLElement).style.animationPlayState = 'paused';
                             });
                             loading_message = 'Same language.';
                             window.setTimeout(() => { loading_message = ''; }, 5000);
@@ -443,15 +380,15 @@
     }
 
 </script>
+
 <!-- File Tab -->
 <div class=tab-pane>
     <div class=row style=height:95vh>
         <div class="column container" style=overflow-y:auto>
-            <p>Document</p>
-            <label for=file-name use:tooltip={{position:'right'}} title={`Your file will be saved as: ${$Language.Name}.lexc`}>Name</label>
+            <label for=file-name>Language Name</label>
             <input type=text id=file-name bind:value={$Language.Name}/>
             <br>
-            <div class='narrow row'>
+            <div class='narrow row' style='max-width: 600px;'>
                 <div class=column>
                     <button on:click={saveFile} class="hover-highlight hover-shadow">Save…</button>
                     <button on:click={openFile} class="hover-highlight hover-shadow">Open…</button>
@@ -468,37 +405,59 @@
                     <p>{loading_message}</p>
                 </div>
                 <div class=column>
-                    <button on:click={saveAs.lexc} class='hover-highlight hover-shadow'
-                        use:tooltip={{position:'left'}} title='Allows you to save your file to a custom location.'>Export…</button>
-                    <button on:click={importFile} class='hover-highlight hover-shadow'
-                        use:tooltip={{position:'left'}} title='Makes it easier to import files from a custom location.'>Import…</button>
-                    <p class=info>Export and import your own copies of the lexicon file.</p>
+                    <button on:click={saveAs.lexc} class='hover-highlight hover-shadow'>Export…</button>
+                    <button on:click={importFile} class='hover-highlight hover-shadow'>Import…</button>
+                    <p class=info>Export and import your own copies of the .lexc file.</p>
                 </div>
             </div>
             <div class=narrow>
                 <label for=save-locations>Secondary Save Locations</label>
                 <button id=save-locations class='hover-highlight hover-shadow' on:click={selectSaveLocation}>Choose Location…</button> 
-                <p>Selected location: <u>{$Language.SaveLocation}<u></p>
+                <p>Selected location: <u>{$Language.SaveLocation || 'None'}<u></p>
             </div>
             <br>
-            <p use:tooltip={{position:'top'}} title='Here you can define Header Tags. Words in the lexicon with these tags will be sorted above the rest.'>
-                Lexicon Header Tags</p>
+            <hr>
+            <br>
+            <p>Export to Other Formats</p>
+            <div class="row narrow" style='max-width: 500px;'>
+                <div class="column">
+                    <button on:click={saveAs.txt} class="hover-highlight hover-shadow">Plain Text<br>Lexicon Only</button>
+                    <button on:click={saveAs.md} class="hover-highlight hover-shadow">Markdown<br>Lexicon Only</button>
+                </div>
+                <div class="column">
+                    <button on:click={saveAs.html.lexicon} class="hover-highlight hover-shadow">HTML<br>Lexicon Only</button>
+                    <button on:click={saveAs.html.all} class="hover-highlight hover-shadow">HTML<br>Lexicon + Docs</button>
+                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">HTML<br>Documentation</button>
+                </div>
+                <div class="column">
+                    <button on:click={saveAs.csv} class="hover-highlight hover-shadow">CSV<br>Lexicon Only</button>
+                    <button on:click={saveAs.json} class="hover-highlight hover-shadow">JSON<br>Entire File</button>
+                </div>
+            </div>
+            <br>
+            <hr>
+            <br>
+            <p>Lexicon Header Tags</p>
+            <p class='info'>
+                Entries with these tags will be sorted separately at the top of the lexicon.
+            </p>
             <div class=narrow>
                 <textarea bind:value={$Language.HeaderTags}></textarea>
-                <p class=info>
-                    Entries with these tags will be sorted separately at the top of the lexicon.
-                </p>
             </div>
+            
+            <br>
+            <hr>
             <br>
             <button class="hover-highlight hover-shadow" 
-                use:tooltip={{position:'top'}} title="This allows you to open a second language file in read-only mode for referencing."
                 on:click={openReferenceFile}>Open Reference File</button>
+            <p class='info narrow'>
+                Open a another Lexicaner file in a side panel for easier comparison with the current file.
+            </p>
             {#if typeof $referenceLanguage === 'object'}
                 <p>Reference Language: {$referenceLanguage.Name}</p>
                 <button on:click={()=>$referenceLanguage = false} class="hover-highlight hover-shadow">Close Reference File</button>
                 {#if $Language.ShowEtymology}
                     <button 
-                        use:tooltip={{position:'top'}} title="If you are using Etymology features, this allows you to import a lexicon from another language file as a relative you can which link words to and from."
                         on:click={() => {
                             if (typeof $referenceLanguage === 'object') { // redundant check is necessary for linter
                                 if ($referenceLanguage.Name in $Language.Relatives) {
@@ -512,57 +471,55 @@
                 {/if}
             {/if}
             <br>
-            <p use:tooltip={{position:'top'}} title="This feature allows you to apply sound change rules across your lexicon, and then save the result as a new language file.">
-                Evolve Language</p>
+            <hr>
+            <br>
+            <p>Evolve Language</p>
+            <p class='info narrow'>
+                Evolve the current lexicon by applying a series of sound changes, and save as a new file.
+            </p><br>
             <Evolver/>
             <br>
-            <p>Export Lexicon</p>
-            <p>HTML</p>
-            <div class="row narrow">
-                <div class="column">
-                    <button on:click={saveAs.html.lexicon} class="hover-highlight hover-shadow">Lexicon Only</button>
-                </div>
-                <div class="column">
-                    <button on:click={saveAs.html.all} class="hover-highlight hover-shadow">Lexicon & Docs</button>
-                </div>
-                <div class="column">
-                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">Documentation Only</button>
-                </div>
-            </div>
-            <button on:click={saveAs.txt} class="hover-highlight hover-shadow">Text File</button>
-            <button on:click={saveAs.csv} class="hover-highlight hover-shadow">CSV</button>
-            <button on:click={saveAs.json} class="hover-highlight hover-shadow">JSON</button>
+            <hr>
             <br>
             <p>Import Lexicon from CSV</p>
-            <div class="narrow">
+            <div class="narrow" style='max-width: 500px;'>
                 <div class="row">
                     <div class="column">
                         <label>Words Column
                             <input type="number" bind:value={csv.words}/>
                         </label>
                     </div>
+                    {#if csv.pronunciations_bool}
                     <div class="column">
                         <label>Pronunciations Column
-                            <input type="checkbox" bind:value={csv.pronunciations_bool}/>
-                            {#if csv.pronunciations_bool}
-                                <input type="number" bind:value={csv.pronunciations}/>
-                            {/if}
+                            <input type="number" bind:value={csv.pronunciations}/>
                         </label>
                     </div>
+                    {/if}
                     <div class="column">
                         <label>Definitions Column
                             <input type="number" bind:value={csv.definitions}/>
                         </label>
                     </div>
+                    {#if csv.tags_bool}
                     <div class="column">
                         <label>Tags Column
-                            <input type="checkbox" bind:value={csv.tags_bool}/>
-                            {#if csv.tags_bool}
-                                <input type="number" bind:value={csv.tags}/>
-                            {/if}
+                            <input type="number" bind:value={csv.tags}/>
                         </label>
                     </div>
-
+                    {/if}
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <label>Include Pronunciations
+                            <input type="checkbox" bind:checked={csv.pronunciations_bool}/>
+                        </label>
+                    </div>
+                    <div class="column">
+                        <label>Include Tags
+                            <input type="checkbox" bind:checked={csv.tags_bool}/>
+                        </label>
+                    </div>
                 </div>
             </div>
             <label for="row-one-is-labels">First Row Is Column Labels</label>
@@ -576,16 +533,6 @@
                     csv.tags_bool? csv.tags : false
                 )
             } class="hover-highlight hover-shadow">Import</button>
-            <br>
-            <p>Import Lexicon from Plain Text</p>
-            <p class="info">Check the Help tab to read about the plain text format Lexicanter can convert into lexicon entries.</p>
-            <div class="narrow">
-                <textarea bind:value={plainTextImport} class='text-left' rows=6></textarea>
-                <button class="hover-highlight hover-shadow" on:click={()=>{
-                    importPlainText(plainTextImport);
-                    plainTextImport = '';
-                }}>Import</button>
-            </div>
             <br><br>
         </div>
     </div>

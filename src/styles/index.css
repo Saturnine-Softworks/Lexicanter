@@ -688,7 +688,8 @@ hr {
   max-width: 90% !important;
 }
 .ce-block__content {
-  max-width: 80% !important;
+  margin: auto;
+  width: 80% !important;
 }
 .ce-block--selected .ce-block__content {
   background-color: rgba(255, 255, 255, 0.3333333333) !important;

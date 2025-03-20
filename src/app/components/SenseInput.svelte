@@ -1,7 +1,6 @@
 <script lang="ts">
     import { Language, pronunciations, wordInput } from '../stores';
     import { get_pronunciation } from '../utils/phonetics';
-    import { debug } from '../utils/diagnostics';
     import { createEventDispatcher } from 'svelte';
     import TagSelector from './TagSelector.svelte';
     export let definition = '';

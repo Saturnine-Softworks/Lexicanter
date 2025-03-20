@@ -3,17 +3,17 @@
     const vex = require('vex-js');
     vex.registerPlugin(require('vex-dialog'));
     vex.defaultOptions.className = 'vex-theme-os';
+    // @ts-ignore
+	import File from './layouts/File.svelte';
 	import Lexicon from './layouts/Lexicon.svelte';
     import Etymology from './layouts/Etymology.svelte';
 	import Phrasebook from './layouts/Phrasebook.svelte';
 	import Phonology from './layouts/Phonology.svelte';
     import Documentation from './layouts/Documentation.svelte';
-	import File from './layouts/File.svelte';
 	import Settings from './layouts/Settings.svelte';
     import Changelog from './layouts/Changelog.svelte';
     import { theme, autosave, selectedTab, Language, referenceLanguage } from './stores';
     import { saveFile } from './utils/files'
-    import * as diagnostics from './utils/diagnostics'
     import Inflection from './layouts/Inflection.svelte';
     import Orthography from './layouts/Orthography.svelte';
     import Wiki from './layouts/Wiki.svelte';
@@ -34,9 +34,8 @@
      * the user to confirm that they want to exit. The 'close' event is sent
      * to the main process when app exit is confirmed.
      */
-    ipcRenderer.on('app-close', _ => {
+    ipcRenderer.on('app-close', () => {
         if ($autosave) {
-                diagnostics.logAction('Autosaving before exit.');
             saveFile().then(_ => {
                 window.setTimeout(() => ipcRenderer.send('close'), 1000); // Give time for the notification to show
             });
@@ -48,14 +47,14 @@
     let version: string;
     ipcRenderer.invoke('getVersion').then((v: string) => version = v);
 
-    let platform: string;
+    let platform: string = 'darwin';
     ipcRenderer.invoke('platform').then((p: string) => platform = p);
 </script>
 
 <link rel="stylesheet" href="{$Language.FileTheme === 'default'? $theme : $Language.FileTheme}" />
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<body id="body" spellcheck="false">
+<main id="main" spellcheck="false">
     <div class='tab-container'>
         <div class="row">
             <div class="column" style={$referenceLanguage? 'width: 66%' : 'width: 100%'}>
@@ -102,4 +101,4 @@
 
         </div>
     </div>
-</body>
+</main>

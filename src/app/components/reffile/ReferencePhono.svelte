@@ -15,9 +15,9 @@
             {/each}
         </select>
     </label>
-    <textarea rows='12' class='pronunciation text-left' value={Language.Pronunciations[selectedLect]} readonly/>
-    <textarea rows='2' bind:value={testString} />
-    <textarea rows='3' class='pronunciation' value={get_pronunciation(testString, selectedLect, Language)} readonly/>
+    <textarea rows='12' class='pronunciation text-left' value={Language.Pronunciations[selectedLect]} readonly></textarea>
+    <textarea rows='2' bind:value={testString}></textarea>
+    <textarea rows='3' class='pronunciation' value={get_pronunciation(testString, selectedLect, Language)} readonly></textarea>
 
     <br><hr/><br>
     <!-- svelte-ignore a11y-label-has-associated-control -->

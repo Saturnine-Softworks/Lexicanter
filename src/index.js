@@ -1,4 +1,4 @@
-/** 
+/**
  * Lexicanter, a constructed language organization app.
  * Copyright (C) 2023 Ethan Ray.
  * See GNU General Public License Version 3.
@@ -7,7 +7,7 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
-// const ffi = require('koffi');
+const ffi = require('koffi');
 
 // Auto-updater flags
 autoUpdater.autoDownload = true;
@@ -31,9 +31,9 @@ const createWindow = () => {
         },
     });
 
-    if (process.platform === 'darwin') {
+    if (process.platform === 'darwin')
         loadingWindow.setWindowButtonVisibility(false);
-    }
+
     loadingWindow.loadFile(path.join(__dirname, 'loading.html'));
 
     // Create the browser window.
@@ -50,27 +50,35 @@ const createWindow = () => {
             contextIsolation: false, // modules such as path and fs in renderer processes.
         },
     });
-    // Load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, 'index.html'));
+
+    if (process.env.NODE_ENV !== 'development') {
+        // Load production build
+        mainWindow.loadFile(`${__dirname}/entry.html`);
+    } else {
+        // Load vite dev server page
+        console.log('Development mode');
+        mainWindow.loadURL('http://localhost:3000/');
+    }
+
     mainWindow.once('ready-to-show', () => {
         setTimeout(() => {
             loadingWindow.close();
             mainWindow.show();
-        }, 1000); // give the app a second to load the theme correctly.
+        }, 1000); // give the app a second to load the theme correctly; strobes otherwise.
     });
+
     // Set macOS dock icon
     if (process.platform === 'darwin') {
-        app.dock.setIcon(path.join(__dirname, 'res/alembic.png'));
+        app.dock.setIcon(path.join(__dirname, 'res/alembic-beta.png'));
         mainWindow.setWindowButtonVisibility(false);
     }
 
     const WC = mainWindow.webContents;
     WC.on('will-navigate', function (e, url) {
-        console.log('will-navigate', url); // DEBUG
         if (url.includes('lex::')) {
             e.preventDefault();
             WC.send('lexicon link', decodeURI(url).replace('lex::', ''));
-            console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
+            // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
         } else if (path.basename(url) === 'index.html') {
             e.preventDefault();
         } else if (url != WC.getURL()) {
@@ -81,55 +89,45 @@ const createWindow = () => {
 
     // Even with contextIsolation set to false, there are some things which still require interprocess communication.
     // IPC handlers below.
-    ipcMain.handle('getUserDataPath', () => {
-        let data_path = app.getPath('userData');
-        return data_path;
-    });
-    ipcMain.handle('showOpenDialog', (_, params) => {
-        let file_path = dialog.showOpenDialogSync(params);
-        return file_path;
-    });
-    ipcMain.handle('getVersion', () => {
-        return version;
-    });
-    ipcMain.handle('debug', (_, message) => {
-        console.log(message);
-    });
-    ipcMain.handle('platform', () => {
-        return process.platform;
-    });
-    ipcMain.on('buttonclose', () => {
-        mainWindow.webContents.send('app-close');
-    });
-    ipcMain.on('minimize', () => {
-        mainWindow.minimize();
-    });
-    ipcMain.on('maximize', () => {
-        if (mainWindow.isMaximized()) {
-            mainWindow.unmaximize();
-        } else {
-            mainWindow.maximize();
-        }
-    });
+    ipcMain.handle('getUserDataPath', () => app.getPath('userData'));
+    ipcMain.handle('showOpenDialog', (_, params) =>
+        dialog.showOpenDialogSync(params),
+    );
+    ipcMain.handle('getVersion', () => version);
+    ipcMain.handle('debug', (_, message) => console.log(message));
+    ipcMain.handle('platform', () => process.platform);
+    ipcMain.handle('isDev', () => isDev);
+    ipcMain.on('buttonclose', () => mainWindow.webContents.send('app-close'));
+    ipcMain.on('minimize', () => mainWindow.minimize());
+    ipcMain.on('maximize', () =>
+        mainWindow.isMaximized() ?
+            mainWindow.unmaximize()
+        :   mainWindow.maximize(),
+    );
 
-    mainWindow.on('close', e => {
-        mainWindow.webContents.send('app-close');
-        e.preventDefault(); // ! DON'T PUT THIS LINE FIRST. IT BREAKS EVERYTHING. WHY? BEYOND MORTAL COMPREHENSION.
-    });
     ipcMain.on('close', () => {
         // Renderer will send back this event when it's done confirming save and/or quit.
         mainWindow = null;
         app.quit();
     });
 
-    // // Interop signature definitions
-    // const lib = ffi.load('src/app/utils/interop/library/target/release/liblibrary.dylib');
+    // Interop signature definitions
+    // const dylibPath =
+    //     isDev ?
+    //         path.resolve(
+    //             path.join(
+    //                 __dirname,
+    //                 'app/utils/interop/library/target/release/liblibrary.dylib',
+    //             ),
+    //         )
+    //     :   path.resolve(process.resourcesPath, 'liblibrary.dylib');
+    // const lib = ffi.load(dylibPath);
     // const fns = {
-    //     greet: lib.func('greet', 'str', ['str']),
+    //     // fn name = lib.func(rust fn name, return type, [parameter types])
+    //     echo: lib.func('echo', 'str', ['str']),
+    //     graphemify: lib.func('graphemify', 'str', ['str', 'str', 'str', 'str']),
     // };
-    // ipcMain.handle('ffi', (_, name, ...args) => {
-    //     return fns[name](...args);
-    // });
+    // ipcMain.handle('ffi', (_, name, ...args) => fns[name](...args));
 };
 
 // This method will be called when Electron has finished

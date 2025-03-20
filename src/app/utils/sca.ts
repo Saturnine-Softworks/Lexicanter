@@ -1,4 +1,3 @@
-import * as diagnostics from './diagnostics';
 import { Language } from '../stores';
 import { get } from 'svelte/store';
 const vex = require('vex-js');

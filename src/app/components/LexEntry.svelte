@@ -6,8 +6,6 @@
     import Pronunciations from './Pronunciations.svelte';
     import Inflections from './Inflections.svelte';
     import { markdownToHtml } from '../utils/markdown';
-    import { debug } from '../utils/diagnostics';
-    import { applyRules, parseRules } from '../utils/sca';
     import EntryLabel from './EntryLabel.svelte';
     const dispatch = createEventDispatcher();
     const edit = () => dispatch('edit')

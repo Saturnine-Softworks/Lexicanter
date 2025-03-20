@@ -6,10 +6,7 @@
     import { get_pronunciation } from '../utils/phonetics';
     import LexEntry from '../components/LexEntry.svelte';
     import SenseInput from '../components/SenseInput.svelte';
-    import { debug } from '../utils/diagnostics';
     const vex = require('vex-js');
-    import { tooltip } from '@svelte-plugins/tooltips';
-    import { join } from 'path';
 
     ipcRenderer.on('update-lexicon-for-gods-sake-please', () => {
         $Language.Lexicon = {...$Language.Lexicon};
@@ -17,13 +14,13 @@
     let defInputs = [''];
     let searchWords = ''; let searchDefinitions = ''; let searchTags = ''; let lectFilter = '';
     $: searchWords, searchDefinitions, searchTags, lectFilter; // Update the search when these values change
-    let keys: string[] = [];
+    let keys: (string | null)[] = [];
 
     let filtered_lex: Lexc.Lexicon;
     $: filtered_lex = keys.reduce((acc, key) => {
-        if (key in $Language.Lexicon) acc[key] = $Language.Lexicon[key];
+        if (key !== null && key in $Language.Lexicon) acc[key] = $Language.Lexicon[key];
         return acc;
-    }, {});
+    }, {} as Lexc.Lexicon);
 
     let alphabetized: string[];
     $: { // Update the alphabetized lexicon when conditions change
@@ -68,7 +65,7 @@
             })
         };
     }
-    ipcRenderer.on('lexicon link', (_, word) => {
+    ipcRenderer.on('lexicon link', (_:any, word: string) => {
         console.log('link:', word);
         scrollIntoView(word);
     });
@@ -116,7 +113,7 @@
      * @param {bool} append
      */
     function commitWord(word: string, append: boolean): void {
-        const emptySensesFilter = (sense: senseInput) => <boolean> (senses[''] !== sense) && (!!sense.definition);
+        const emptySensesFilter = (sense: senseInput) => <boolean> (senses[0] !== sense) && (!!sense.definition);
         const senseRemapper = (sense: senseInput) => <Lexc.Sense> {
             definition: sense.definition,
             tags: sense.tags.split(/\s+/g),
@@ -147,7 +144,8 @@
         $pronunciations = (()=>{
             const obj = {};
             $Language.Lects.forEach(lect => {
-                obj[lect] = ''
+                // @ts-ignore: complex type situation; needs to be refactored
+                obj[lect] = '';
             });
             return obj;
         })();
@@ -281,15 +279,11 @@
     <!-- Header -->
     <div class='container row text-center header'>
         <div class="narrow-col">
-            <label for="case-sensitive" style="margin: auto;"
-                use:tooltip={{position: 'bottom'}} title="This setting determines whether or not alphabetization is case sensitive."
-            > Case Sensitivity </label>
+            <label for="case-sensitive" style="margin: auto;"> Case Sensitivity </label>
             <input type="checkbox" style="width: 15px; margin: auto;" id="case-sensitive" bind:checked={$Language.CaseSensitive} />
         </div>
         <div class="narrow-col">
-            <label for="ignore-diacritic" style="margin: auto; text-align: right;"
-                use:tooltip={{position: 'bottom'}} title="This setting determines whether or not diacritics are taken into account during alphabetization."
-            >Ignore Diacritics</label>
+            <label for="ignore-diacritic" style="margin: auto; text-align: right;">Ignore Diacritics</label>
             <input type="checkbox" style="width: 15px; margin: auto;" id="ignore-diacritic" bind:checked={$Language.IgnoreDiacritics}/>
         </div>
         <input id="alph-input" type="text" bind:value={$Language.Alphabet}>
@@ -298,11 +292,9 @@
     <div class='row' style="height: 84vh">
         <!-- Word Entry Side -->
         <div class='container collapsible-column' style='height: 100%'>
-            <button class="collapser" on:click={ () => collapsedPanel = !collapsedPanel }></button>
+            <button class="collapser" on:click={ () => collapsedPanel = !collapsedPanel } aria-label="Collapse/Expand"></button>
             <div class:collapsed={collapsedPanel} class='text-center scrolled' style="height: 100%; overflow-x: hidden">
-                <label for="wrd-input"
-                use:tooltip={{position: 'bottom'}} title="Write your new word here in its romanized form."
-                >New Word</label>
+                <label for="wrd-input">New Word</label>
                 <input id="wrd-input" type="text"
                     bind:value={$wordInput}
                     on:input={() => {
@@ -318,16 +310,12 @@
                                 <p class="lect">{lect}</p>
                             </div>
                             <div class="column text-left">
-                                <span use:tooltip={{position: 'bottom'}} title={`This field is for the pronunciation of your word in your ${lect} lect. It will auto-populate based on rules you set in the Phonology tab for this lect.`}>
-                                    <input type="text" class="pronunciation text-left" bind:value={$pronunciations[lect]}/>
-                                </span>
+                                <input type="text" class="pronunciation text-left" bind:value={$pronunciations[lect]}/>
                             </div>
                         </div>
                     {/each}
                 {:else}
-                    <span use:tooltip={{position: 'bottom'}} title="This field is for the pronunciation of your word. It will auto-populate based on rules you set in the Phonology tab.">
-                        <input type="text" class="pronunciation" bind:value={$pronunciations.General}/>
-                    </span>
+                    <input type="text" class="pronunciation" bind:value={$pronunciations.General}/>
                 {/if}
                 
                 {#each senses as sense, i}
@@ -343,7 +331,6 @@
                     />
                 {/each}
                 <button class="hover-highlight hover-shadow" id="add-sense-button" 
-                    use:tooltip={{position: 'right'}} title="If this word has unrelated definitions, adding multiple senses is a good way to separate them visually and give them separate sets of tags."
                     on:click={() => {
                         senses = [...senses, {definition: '', tags: '', lects: [...$Language.Lects]}];
                 }}>Add Sense</button>
@@ -352,10 +339,8 @@
                 {:else}
                     <div class="row" id="definition-exists">
                         <button id="overwrite" class="hover-shadow" 
-                            use:tooltip={{position: 'bottom'}} title="If you want to replace an existing entry with a new one, you can use this button to overwrite it."
                             on:click={() => addWord(false)}>Overwrite Entry</button>
                         <button id="append" class="hover-shadow hover-highlight" 
-                            use:tooltip={{position: 'bottom'}} title="If you want to add new sense(s) to an existing word, you can use this button to append your work to the existing entry."
                             on:click={() => addWord(true)}>Append Definition</button>
                     </div>
                 {/if}

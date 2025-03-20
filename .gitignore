@@ -5,11 +5,6 @@ publish.bash
 # Development
 /bash
 
-# Database
-src/db/database.ts
-.env
-src/app/utils/verification.ts
-
 # Rust/Cargo
 # will have compiled files and executables
 target/

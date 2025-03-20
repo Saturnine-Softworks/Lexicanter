@@ -1,7 +1,6 @@
 <script lang='ts'>
     import { Language, referenceLanguage } from '../stores';
     import { alphabetize } from '../utils/alphabetize';
-    import { debug } from '../utils/diagnostics';
     import type * as Lexc from '../types';
     import Tree from '../components/Tree.svelte';
     import LexEntry from '../components/LexEntry.svelte';
@@ -14,7 +13,7 @@
     $: filtered_lex = keys.reduce((acc, key) => {
         if (key in $Language.Lexicon) acc[key] = $Language.Lexicon[key];
         return acc;
-    }, {});
+    }, {} as Lexc.Lexicon);
     let alphabetized: string[];
     $: { // Update the alphabetized lexicon when the alphabet or `keys` array changes
         $Language.Alphabet;
@@ -40,7 +39,7 @@
             filteredExternal = keys.reduce((acc, key) => {
                 if (key in lexicon) acc[key] = lexicon[key];
                 return acc;
-            }, {})
+            }, {} as Lexc.Lexicon);
             externalAlphabetized = alphabetize(!!keys.length? filteredExternal : lexicon);
         })();
     }
