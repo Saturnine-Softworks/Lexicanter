@@ -1,9 +1,12 @@
+<svelte:options runes></svelte:options>
 <script lang="ts">
     const { ipcRenderer } = require('electron');
+
     const vex = require('vex-js');
     vex.registerPlugin(require('vex-dialog'));
     vex.defaultOptions.className = 'vex-theme-os';
-    // @ts-ignore
+    
+    // @ts-ignore // the tab name "File" really irks typescript
 	import File from './layouts/File.svelte';
 	import Lexicon from './layouts/Lexicon.svelte';
     import Etymology from './layouts/Etymology.svelte';
@@ -12,17 +15,13 @@
     import Documentation from './layouts/Documentation.svelte';
 	import Settings from './layouts/Settings.svelte';
     import Changelog from './layouts/Changelog.svelte';
-    import { theme, autosave, selectedTab, Language, referenceLanguage } from './stores';
-    import { saveFile } from './utils/files'
     import Inflection from './layouts/Inflection.svelte';
     import Orthography from './layouts/Orthography.svelte';
     import Wiki from './layouts/Wiki.svelte';
     import Reference from './layouts/Reference.svelte';
 
-    // Debug block
-    $: {
-        // diagnostics.debug.logObj($Language, 'An update was made to the Language store', false);
-    }
+    import { theme, autosave, selectedTab, Language, referenceLanguage } from './stores';
+    import { saveFile } from './utils/files'
 
     const tabs     = [ Lexicon,   Etymology,   Phrasebook,   Inflection,   Phonology,   Orthography,   Documentation,   File,   Settings,   Changelog, Wiki]
     const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Inflection', 'Phonology', 'Orthography', 'Documentation', 'File', 'settings', 'history', 'help'];
@@ -44,10 +43,10 @@
                 ipcRenderer.send('close');
         }
     });
-    let version: string;
+    let version: string = $state('');
     ipcRenderer.invoke('getVersion').then((v: string) => version = v);
 
-    let platform: string = 'darwin';
+    let platform: string = $state('');
     ipcRenderer.invoke('platform').then((p: string) => platform = p);
 </script>
 
@@ -59,9 +58,9 @@
         <div class="row">
             <div class="column" style={$referenceLanguage? 'width: 66%' : 'width: 100%'}>
                 <p class="window-control">
-                    <button class="hover-highlight close material-icons" on:click={() => ipcRenderer.send('buttonclose')}>close</button>
-                    <button class="hover-highlight minimize material-icons" on:click={() => ipcRenderer.send('minimize')}>remove</button>
-                    <button class="hover-highlight maximize material-icons" on:click={() => ipcRenderer.send('maximize')}>fullscreen</button>
+                    <button class="hover-highlight close material-icons" onclick={() => ipcRenderer.send('buttonclose')}>close</button>
+                    <button class="hover-highlight minimize material-icons" onclick={() => ipcRenderer.send('minimize')}>remove</button>
+                    <button class="hover-highlight maximize material-icons" onclick={() => ipcRenderer.send('maximize')}>fullscreen</button>
                 </p>
                 <div class="button-container">
                     {#if !$referenceLanguage}
@@ -81,14 +80,14 @@
                                         ? 'font-family: "Material Icons"; font-size: 1em; vertical-align: bottom; height: 1.8em;'
                                         : ''
                                 }
-                                on:click={() => $selectedTab = i}
+                                onclick={() => $selectedTab = i}
                             > {tab} </button>
                         {/if}
                     {/each}
                 </div>
-                {#each tabs as tab, i}
+                    {#each tabs as Tab, i}
                     <div class:collapsed={$selectedTab !== i}>
-                        <svelte:component this={tab}/>
+                            <Tab/>
                     </div>
                 {/each}
             </div>

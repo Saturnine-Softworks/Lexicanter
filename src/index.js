@@ -4,7 +4,7 @@
  * See GNU General Public License Version 3.
  */
 
-const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, ipcRenderer } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
 const ffi = require('koffi');
@@ -16,7 +16,7 @@ autoUpdater.allowPrerelease = false;
 const isDev = !app.isPackaged;
 const version = app.getVersion();
 
-const createWindow = () => {
+function createWindow () {
     var loadingWindow = new BrowserWindow({
         width: 300,
         height: 300,
@@ -78,6 +78,11 @@ const createWindow = () => {
         if (url.includes('lex::')) {
             e.preventDefault();
             WC.send('lexicon link', decodeURI(url).replace('lex::', ''));
+            // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
+        } else if (decodedURI(url).match(/\[\[.+?\]\]/)) {
+            e.preventDefault();
+            let link = decodedURI(url).matchAll(/\[\[(.+?)\]\]/)[1]
+            WC.send('lexicon link', link)
             // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
         } else if (path.basename(url) === 'index.html') {
             e.preventDefault();

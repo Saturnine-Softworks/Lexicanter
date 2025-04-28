@@ -5,11 +5,11 @@ import Paragraph from '@editorjs/paragraph';
 import Table from '@editorjs/table';
 import Underline from '@editorjs/underline';
 import EditorjsList from '@editorjs/list';
-// @ts-ignore: no types included with this package, not bothering to write them myself
+// @ts-expect-error: no types included with this package, not bothering to write them myself
 import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
-// @ts-ignore: no types included with this package, not bothering to write them myself
+// @ts-expect-error: no types included with this package, not bothering to write them myself
 import TextVariantTune from '@editorjs/text-variant-tune';
-// @ts-ignore: no types included with this package, not bothering to write them myself
+// @ts-expect-error: no types included with this package, not bothering to write them myself
 import ToggleBlock from 'editorjs-toggle-block';
 // const MermaidTool = require('editorjs-mermaid');
 import type { EditorConfig } from '@editorjs/editorjs';
