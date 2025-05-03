@@ -1,11 +1,13 @@
 <script lang="ts">
-    import { Language, phraseInput, phrasePronunciations, selectedCategory, categoryInput } from "../stores";
+    import { Language, phraseInput, phrasePronunciations, selectedCategory, categoryInput, selectedTab } from "../stores";
     import type * as Lexc from '../types';
     import { get_pronunciation } from '../utils/phonetics';
     import PhraseEntry from '../components/PhraseEntry.svelte';
     import VariantInput from '../components/VariantInput.svelte';
     import SenseInput from '../components/SenseInput.svelte';
+    import Draggable from "../components/Draggable.svelte";
     const vex = require('vex-js');
+
     $categoryInput = $selectedCategory;
     let searchPhrase = '';
     let searchDescription = '';
@@ -202,7 +204,7 @@
 </script>
 <!-- Phrasebook Tab -->
 <div class="tab-pane">
-    <div class="row" style="height: 58vh;">
+    <div class="row" style="height: 98vh;">
         <!-- Categories -->
         <div class="container column" style="max-width: 18%;">
             <p>Categories</p>
@@ -272,69 +274,68 @@
         </div>
     </div>
     <!-- Phrase Editor -->
-    <div class="container collapsible-row" style="height: 34vh;">
-        <div class="row" style="width: 100vh">
-            <button class="collapser-h" on:click={() => collapsedPanel = !collapsedPanel} aria-label="Collapse/Expand"></button>
-        </div>
-        <div class="row" class:collapsed={collapsedPanel} style="height: 92%">
-            <div class="column scrolled" style="max-height: 100%">
-                
-                <label for="phrase">Phrase</label>
-                <input type="text" bind:value={$phraseInput} on:input={() => {
-                    lects.forEach(lect => {
-                        $phrasePronunciations[lect] = get_pronunciation($phraseInput, lect);
-                    });
-                }}/>
-                
-                {#if $Language.UseLects}
-                    {#each lects as lect}
-                        <div class="row narrow">
-                            <div class="column text-right">
-                                <p class="lect">{lect}</p>
-                            </div>
-                            <div class="column text-left">
-                                <input type="text" class="pronunciation text-left" bind:value={$phrasePronunciations[lect]}/>
-                            </div>
-                        </div>
-                    {/each}
-                {:else}
-                    <input type="text" class="pronunciation" bind:value={$phrasePronunciations.General}/>
-                {/if}
-    
-                <SenseInput
-                    index={'hide'}
-                    bind:definition={phraseDescription}
-                    bind:tags={tags}
-                    bind:lects={lects}
-                />
-
-                <label>Category
-                    <input type="text" bind:value={$categoryInput} />
-                </label>
-
-                <button on:click={addPhrase} class="hover-shadow hover-highlight">Add Phrase</button>
-            </div>
-            <div class="column scrolled" style="max-height: 100%" id="variants-body">
-                {#each variantInputs as _, i}
-                    <VariantInput
-                        lects={lects}
-                        bind:phrase={variantInputs[i].phrase} 
-                        bind:pronunciations={variantInputs[i].pronunciations}
-                        bind:description={variantInputs[i].description}
-                        on:update={() => {
+    {#if $selectedTab === 2}
+        <Draggable panel=phrasebook>
+            <div class="container glasspane" style="height: 100%; margin:0">
+                <div class="row">
+                    <div class="column scrolled">
+            
+                        <label for="phrase">Phrase</label>
+                        <input type="text" bind:value={$phraseInput} on:input={() => {
                             lects.forEach(lect => {
-                                variantInputs[i].pronunciations[lect] = {
-                                    ipa: get_pronunciation(variantInputs[i].phrase, lect),
-                                    irregular: false,
-                                };
+                                $phrasePronunciations[lect] = get_pronunciation($phraseInput, lect);
                             });
-                        }}
-                    />
-                {:else}
-                    <p class="info">Click the button below to add a variation for this phrase</p>
-                {/each}
-                <button on:click={addVariant} class="hover-shadow hover-highlight">+ Variant</button>
+                        }}/>
+            
+                        {#if $Language.UseLects}
+                            {#each lects as lect}
+                                <div class="row narrow">
+                                    <div class="column text-right">
+                                        <p class="lect">{lect}</p>
+                                    </div>
+                                    <div class="column text-left">
+                                        <input type="text" class="pronunciation text-left" bind:value={$phrasePronunciations[lect]}/>
+                                    </div>
+                                </div>
+                            {/each}
+                        {:else}
+                            <input type="text" class="pronunciation" bind:value={$phrasePronunciations.General}/>
+                        {/if}
+            
+                        <SenseInput
+                            index={'hide'}
+                            bind:definition={phraseDescription}
+                            bind:tags={tags}
+                            bind:lects={lects}
+                        />
+                        <label>Category
+                            <input type="text" bind:value={$categoryInput} />
+                        </label>
+                        <button on:click={addPhrase} class="hover-shadow hover-highlight">Add Phrase</button>
+                    </div>
+                    <div class="column scrolled" id="variants-body">
+                        {#each variantInputs as _, i}
+                            <VariantInput
+                                lects={lects}
+                                bind:phrase={variantInputs[i].phrase}
+                                bind:pronunciations={variantInputs[i].pronunciations}
+                                bind:description={variantInputs[i].description}
+                                on:update={() => {
+                                    lects.forEach(lect => {
+                                        variantInputs[i].pronunciations[lect] = {
+                                            ipa: get_pronunciation(variantInputs[i].phrase, lect),
+                                            irregular: false,
+                                        };
+                                    });
+                                }}
+                            />
+                        {:else}
+                            <p class="info">Click the button below to add a variation for this phrase</p>
+                        {/each}
+                        <button on:click={addVariant} class="hover-shadow hover-highlight">+ Variant</button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
+        </Draggable>
+    {/if}
 </div>

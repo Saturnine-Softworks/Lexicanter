@@ -14,6 +14,7 @@ const Default: Lexc.Language = {
     UseLects: false,
     HeaderTags: '',
     Alphabet: 'a b c d e f g h i j k l m n o p q r s t u v w x y z',
+    ShowAlphabet: true,
     Lexicon: <Lexc.Lexicon> { },
     Etymologies: <Lexc.Etymologies> { },
     Relatives: { },
@@ -59,6 +60,7 @@ const Default: Lexc.Language = {
     },
     Lects: ['General'],
     Phrasebook: <Lexc.Phrasebook> { },
+    ShowPhrasebook: false,
     Docs: <OutputData> {
         blocks: [ ]
     },
@@ -112,3 +114,18 @@ export const referenceLanguage: Writable<Lexc.Language>|Writable<boolean> = writ
 
 export const dbid = writable(''); 
 export const dbkey = writable('');
+
+export const panelAdjustments = writable({
+    lexicon: {
+        top: 200,
+        left: 20,
+        height: "auto",
+        width: "auto",
+    },
+    phrasebook: {
+        top: 200,
+        left: 20,
+        height: "auto",
+        width: "auto",
+    }
+});

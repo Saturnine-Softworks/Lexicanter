@@ -79,9 +79,9 @@ function createWindow () {
             e.preventDefault();
             WC.send('lexicon link', decodeURI(url).replace('lex::', ''));
             // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
-        } else if (decodedURI(url).match(/\[\[.+?\]\]/)) {
+        } else if (decodeURI(url).match(/\[\[.+?\]\]/)) {
             e.preventDefault();
-            let link = decodedURI(url).matchAll(/\[\[(.+?)\]\]/)[1]
+            let link = decodeURI(url).matchAll(/\[\[(.+?)\]\]/)[1]
             WC.send('lexicon link', link)
             // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
         } else if (path.basename(url) === 'index.html') {

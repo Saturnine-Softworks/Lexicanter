@@ -69,9 +69,21 @@ button, select
     background-color: $body-bg !important
 
 // Colors and border style used for all of the panes within each tab.
-.container 
+.container
     background-color: $container-bg
     border: 1px solid $container-border
+
+.draggable
+    border: .5px solid $container-border
+    backdrop-filter: blur(5px)
+    box-shadow: 0 .66rem 1.33rem #0008
+
+    & .container
+        border: none
+        border-top: 1px solid $container-border
+    & .dragbar
+        background-color: #0006
+
 
 // This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab.
 .info 

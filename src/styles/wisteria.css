@@ -1,3 +1,6 @@
+/* Lexicanter, a constructed language organization app.
+   Copyright (C) 2023 Ethan Ray.
+   See GNU General Public License Version 3.  */
 body {
   color: rgb(92, 31, 94);
   background-color: rgb(114, 60, 116);
@@ -40,6 +43,19 @@ button.inflection, select.inflection {
 .container {
   background-color: rgb(225, 211, 230);
   border: 1px solid rgb(212, 184, 223);
+}
+
+.draggable {
+  border: 0.5px solid rgb(212, 184, 223);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.5333333333);
+}
+.draggable .container {
+  border: none;
+  border-top: 1px solid rgb(212, 184, 223);
+}
+.draggable .dragbar {
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .info {
@@ -133,7 +149,7 @@ tr:nth-child(odd) {
   background-color: rgb(210, 181, 217);
 }
 tr:nth-child(even) {
-  background-color: #e6d7ea;
+  background-color: rgb(230.4910714286, 214.6964285714, 234.3035714286);
 }
 
 ::-webkit-resizer {
@@ -432,8 +448,5 @@ table {
     transform: rotate(180deg);
   }
 }
-/* Lexicanter, a constructed language organization app.
-   Copyright (C) 2023 Ethan Ray.
-   See GNU General Public License Version 3.  */
 
 /*# sourceMappingURL=wisteria.css.map */

@@ -42,6 +42,19 @@ button.inflection, select.inflection {
   border: 1px solid #000;
 }
 
+.draggable {
+  border: 0.5px solid #000;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.5333333333);
+}
+.draggable .container {
+  border: none;
+  border-top: 1px solid #000;
+}
+.draggable .dragbar {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
 .info {
   color: #000;
 }
@@ -133,7 +146,7 @@ tr:nth-child(odd) {
   background-color: #000;
 }
 tr:nth-child(even) {
-  background-color: #1a1a1a;
+  background-color: rgb(25.5, 25.5, 25.5);
 }
 
 ::-webkit-resizer {

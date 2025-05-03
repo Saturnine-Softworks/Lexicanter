@@ -1,6 +1,7 @@
 <script lang='ts'>
     import { Language } from "../stores";
     import { parseRules, applyRules } from "../utils/sca";
+    import type { Orthography } from "../types";
     let selectedOrtho = '';
     let testInput = '';
     const vex = require('vex-js');
@@ -18,9 +19,9 @@
      * @param attribute
      * @param index
      */
-    function setAttribute(event: Event, attribute: string, index: number) {
+    function setAttribute(event: Event, attribute: keyof Orthography, index: number) {
         const target = event.target as HTMLInputElement;
-        const value = target.value.trim();
+        let value: string = target.value.trim();
 
         if (attribute === 'name') {
             if ([value, ...$Language.Orthographies.filter(o => o.name === value)].length-1 > 1) {
@@ -35,12 +36,16 @@
             }
         }
 
-        $Language.Orthographies[index][attribute] = value;
+        $Language.Orthographies[index] = {
+            ...$Language.Orthographies[index],
+            [attribute]: value
+        }
+
     }
 </script>
 <div class=tab-pane>
     <div class=row style:height=100%>
-        <div class="column container scrolled" style:height=92vh>
+        <div class="column container scrolled" style:height=96vh>
 
             {#each $Language.Orthographies as orthography, i}
                 <label>Name
@@ -85,6 +90,7 @@
                 {/if}
                 <br>
                 <label>Conversion Rules
+                    <!-- svelte-ignore element_invalid_self_closing_tag -->
                     <textarea
                         rows=3
                         class={orthography.name === 'Romanization'? 'text-center' : 'text-left'}
@@ -94,7 +100,7 @@
                         style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
                         value={orthography.rules}
                         readonly={orthography.name === 'Romanization'}
-                    />
+                    ></textarea>
                 </label>
                 {#if orthography.name !== 'Romanization'}
                     <button
@@ -126,14 +132,15 @@
                 }}
             >New Orthography</button>
         </div>
-        <div class="column container scrolled" style:height=92vh>
+        <div class="column container scrolled" style:height=96vh>
             <select bind:value={selectedOrtho}>
                 {#each $Language.Orthographies as orthography}
                     <option value={orthography.name}>{orthography.name}</option>
                 {/each}
             </select>
             <label>Test Input
-                <textarea bind:value={testInput} rows=6/>
+                <textarea bind:value={testInput} rows=6></textarea>
+                <!-- svelte-ignore element_invalid_self_closing_tag -->
                 <textarea
                     rows=6
                     style:background-color=transparent

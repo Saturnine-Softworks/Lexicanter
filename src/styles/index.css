@@ -312,6 +312,12 @@ h1, h2, h3, h4, h5, h6 {
   padding: 6px;
 }
 
+.glasspane {
+  height: 100%;
+  margin: 0;
+  opacity: 66%;
+}
+
 .row button {
   padding: 2px 10px 2px 10px;
   margin: 4px auto 4px auto;
@@ -447,6 +453,9 @@ td {
   font-size: 0.8em;
 }
 
+::-webkit-resizer {
+  border-radius: 6px 0px 0px 0px;
+}
 ::-webkit-scrollbar {
   width: 9px;
 }
@@ -458,9 +467,6 @@ td {
   display: none;
 }
 ::-webkit-scrollbar-corner {
-  border-radius: 6px 0px 0px 0px;
-}
-::-webkit-resizer {
   border-radius: 6px 0px 0px 0px;
 }
 
@@ -479,6 +485,10 @@ hr {
   position: relative;
   border-radius: 50%;
 }
+.milkyWay > div {
+  position: absolute;
+  border-radius: 50%;
+}
 .milkyWay .planet {
   border: 1px solid white;
   animation-name: orbit;
@@ -490,10 +500,6 @@ hr {
   position: absolute;
   content: "";
   display: block;
-  border-radius: 50%;
-}
-.milkyWay > div {
-  position: absolute;
   border-radius: 50%;
 }
 

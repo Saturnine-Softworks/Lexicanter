@@ -67,7 +67,8 @@
                         <p class="version-info">v{version}-{platform} —</p>
                     {/if}
                     {#each tab_btns as tab, i}
-                        {#if (tab !== 'Etymology' && tab !== 'Inflection' && tab !== 'Orthography')
+                        {#if (tab !== 'Etymology' && tab !== 'Inflection' && tab !== 'Orthography' && tab !== 'Phrasebook')
+                            || (tab === 'Phrasebook' && $Language.ShowPhrasebook)
                             || (tab === 'Etymology' && $Language.ShowEtymology)
                             || (tab === 'Inflection' && $Language.ShowInflection)
                             || (tab === 'Orthography' && $Language.ShowOrthography)

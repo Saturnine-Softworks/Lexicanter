@@ -1,13 +1,13 @@
 {
     "name": "lexicanter",
     "productName": "Lexicanter",
-    "version": "2.1.22",
+    "version": "2.2.0",
     "description": "A lexicon management tool for constructed languages.",
     "main": "src/index.js",
     "scripts": {
         "compile-rust": "cargo build --manifest-path=src/app/utils/interop/library/Cargo.toml --release",
         "precompile": "sass -q src/sass/:src/styles && vite build",
-        "dev": "NODE_ENV=development concurrently \"npm run web:watch\" \"sleep 1 && npm run electron:start\"",
+        "dev": "NODE_ENV=development concurrently \"sass -w -q src/sass/:src/styles\" \"npm run web:watch\" \"sleep 1 && npm run electron:start\"",
         "start": "npm run precompile && npm run electron:start",
         "web:watch": "vite --port 3000",
         "electron:start": "electron .",
@@ -116,6 +116,7 @@
         "electron-builder": "25.1.8",
         "eslint": "^9.22.0",
         "globals": "^16.0.0",
+        "mdsvex": "^0.12.5",
         "svelte": "5.23.2",
         "svelte-check": "4.1.5",
         "svelte-preprocess": "6.0.3",

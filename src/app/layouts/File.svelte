@@ -91,6 +91,8 @@
 
             errorMessage = 'There was a problem loading the alphabet from the file.'
             $Language.Alphabet = contents.Alphabet;
+            if (contents.hasOwnProperty('ShowAlphabet'))
+                $Language.ShowAlphabet = contents.ShowAlphabet;
 
             errorMessage = 'There was a problem loading the file’s lexicon data.'
             $Language.Lexicon = contents.Lexicon;
@@ -98,7 +100,13 @@
             
             errorMessage = 'There was a problem loading the file’s phrasebook data.'
             $Language.Phrasebook = contents.Phrasebook;
-            $selectedCategory = Object.keys($Language.Phrasebook)[0]; 
+            $selectedCategory = Object.keys($Language.Phrasebook)[0];
+            if (contents.hasOwnProperty('ShowPronunciation')) {
+                $Language.ShowPhrasebook = contents.ShowPhrasebook;
+            } else {
+                // default to true if the setting is not present, because older versions always showed the phrasebook tab
+                $Language.ShowPhrasebook = true;
+            }
 
             errorMessage = 'There was a problem loading the file’s documentation data.'
             let docs_data: OutputData = contents.Docs;
@@ -383,7 +391,7 @@
 
 <!-- File Tab -->
 <div class=tab-pane>
-    <div class=row style=height:95vh>
+    <div class=row style=height:98vh>
         <div class="column container" style=overflow-y:auto>
             <label for=file-name>Language Name</label>
             <input type=text id=file-name bind:value={$Language.Name}/>

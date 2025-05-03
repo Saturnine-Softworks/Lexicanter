@@ -435,8 +435,8 @@
 </script>
 <!-- App Settings -->
 <div class="tab-pane">
-    <div class="row" style="height: 95vh">
-        <div class="container column scrolled" style="height: 90vh;">
+    <div class="row">
+        <div class="container column scrolled" style="height: 96vh;">
             <br><br>
             <p>Appearance Settings</p> <br>
             <label>Color Theme
@@ -622,10 +622,19 @@
                     }}> + Lect </button>
                 {/if}
             </label>
+            <br>
             <label>Show Pronunciations
                 <input type="checkbox" bind:checked={$Language.ShowPronunciation}/>
             </label>
-            <br><br>
+            <br>
+            <label>Show Alphabetizer Settings in Lexicon
+                <input type="checkbox" bind:checked={$Language.ShowAlphabet}/>
+            </label>
+            <br>
+            <label>Show Phrasebook Tab
+                <input type="checkbox" bind:checked={$Language.ShowPhrasebook}/>
+            </label>
+            <br>
             <label>Show Etymology Features
                 <input type="checkbox" bind:checked={$Language.ShowEtymology}/>
                 {#if $Language.ShowEtymology}
@@ -653,11 +662,11 @@
                     {/each}
                 {/if}
             </label>
-            <br><br>
+            <br>
             <label>Show Automatic Inflection Features
                 <input type="checkbox" bind:checked={$Language.ShowInflection}/>
             </label>
-            <br><br>
+            <br>
             <label>Show Alternate Orthography Features
                 <input type=checkbox bind:checked={$Language.ShowOrthography}/>
                 {#if $Language.ShowOrthography}

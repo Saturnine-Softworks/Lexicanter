@@ -203,7 +203,9 @@ export type Language = {
     Inflections: { tags: string[], filter: string, tables: OutputData, categories: string }[];
     ShowInflection: boolean;
     Phrasebook: Phrasebook;
+    ShowPhrasebook: boolean;
     Alphabet: string;
+    ShowAlphabet: boolean;
     Pronunciations: Pronunciations;
     Orthographies: Orthography[];
     ShowPronunciation: boolean;

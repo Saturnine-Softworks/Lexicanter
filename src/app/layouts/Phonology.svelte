@@ -166,7 +166,7 @@
 </script>
 <!-- Phonology Tab -->
 <div class="tab-pane">
-    <div class="row" style="height: 92vh">
+    <div class="row" style="height: 96vh">
         <!-- Phonotactics -->
         <div class="container column scrolled" style="height: 100%">
             <label>

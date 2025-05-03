@@ -42,6 +42,19 @@ button.inflection, select.inflection {
   border: 1px solid #0F151B;
 }
 
+.draggable {
+  border: 0.5px solid #0F151B;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.5333333333);
+}
+.draggable .container {
+  border: none;
+  border-top: 1px solid #0F151B;
+}
+.draggable .dragbar {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
 .info {
   color: #66350a;
 }
@@ -133,7 +146,7 @@ tr:nth-child(odd) {
   background-color: #4a2606;
 }
 tr:nth-child(even) {
-  background-color: #793e0a;
+  background-color: rgb(121.175, 62.225, 9.825);
 }
 
 ::-webkit-resizer {

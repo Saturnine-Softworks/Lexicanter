@@ -109,7 +109,7 @@
 </script>
 
 <div class='tab-pane'>
-    <div class='row' style='height: 94vh'>
+    <div class='row' style='height: 98vh'>
 
         <!-- Entry Selection -->
         <div class='container column' style='max-width: 18%'>
@@ -126,7 +126,7 @@
             </div>
             <p>⦓ <i>Internal</i> ⦔</p>
             <div class='column scrolled' style='max-height: 40%'>
-                {#each alphabetized as entry}
+                {#each alphabetized as entry, i}
                     <div class='lex-entry' class:selected={entry === selectedEntry}
                         on:mousedown={() => {
                             selectedEntry = entry;
@@ -136,6 +136,8 @@
                                     source: '<< THIS LANGUAGE >>'
                                 }
                         }}
+                        role=button
+                        tabindex={i}
                     > {entry}
                     </div>
                 {:else}
@@ -145,9 +147,11 @@
             <br>
             <p>⦔ <i>External</i> ⦓</p>
             <div class='column scrolled' style='max-height: 40%'>
-                {#each externalAlphabetized as entry}
+                {#each externalAlphabetized as entry, i}
                     <div class='lex-entry' class:selected={entry === selectedEntry} 
                         on:mousedown={() => { selectedEntry = entry; }}
+                        role=button
+                        tabindex={i}
                     > {entry} </div>
                 {:else}
                     <p class='info'>External-source etymology entries will appear here.</p>
@@ -156,7 +160,7 @@
         </div>
 
         <!-- Etymology Editor -->
-        <div class='container column' style='height: 94vh'>
+        <div class='container column' style='height: 96vh'>
             <div class='scrolled' style='max-height:100%'>
                 {#if !!selectedEntry}
                      <Tree
@@ -170,7 +174,7 @@
                     {:else if Object.entries($Language.Relatives).some(([_, lex]) => Object.keys(lex).includes(selectedEntry))}
                         <LexEntry 
                             word={selectedEntry} 
-                            source={$Language.Relatives[ Object.entries($Language.Relatives).find(([_, lex]) => Object.keys(lex).includes(selectedEntry))[0] ][selectedEntry]}
+                            source={$Language.Relatives[ Object.entries($Language.Relatives).find(([_, lex]) => Object.keys(lex).includes(selectedEntry))![0] ][selectedEntry]}
                             showEtymology={false}
                         />
                     {/if}
