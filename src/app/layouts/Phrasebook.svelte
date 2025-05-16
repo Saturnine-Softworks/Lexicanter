@@ -204,63 +204,69 @@
 </script>
 <!-- Phrasebook Tab -->
 <div class="tab-pane">
-    <div class="row" style="height: 98vh;">
+    {#if $selectedTab === 2}
+
         <!-- Categories -->
-        <div class="container column" style="max-width: 18%;">
-            <p>Categories</p>
-            <hr />
-            <div class="column scrolled" style="max-height: 90%;" id="category-body">
-                {#each Object.keys($Language.Phrasebook) as category}
-                    <div 
-                        class="lex-entry capitalize" 
-                        class:selected={category === $selectedCategory} 
-                        on:mousedown={() => select(category)}
-                        role="option" 
-                        aria-selected={category === $selectedCategory} 
-                        aria-roledescription="Select category" 
-                        tabindex="0"
-                    >{category}</div>
-                {:else}
-                    <p class="info">Categories will appear here.</p>
-                {/each}
-            </div>
-        </div>
-        <div class="container column" style='overflow: hidden'>
-            <!-- Search Fields -->
-            <div class="row">
-                <div class="column search-container">
-                    {#if !searchPhrase}
-                         <label for="search-phrase" style="position: absolute; top: .5em; left: 1em">Search by phrase…</label>
-                    {/if}
-                    <input id="search-phrase" type="text" class="search" bind:value={searchPhrase}/>
-                </div>
-                <div class="column search-container">
-                    {#if !searchTags}
-                         <label for="search-tags" style="position: absolute; top: .5em; left: 1em">Search by tags…</label>
-                    {/if}
-                    <input id="search-tags" type="text" class="search" bind:value={searchTags}/>
+        <Draggable panel=phrasecategories>
+            <div class="container glasspane">
+                <p>Categories</p>
+                <hr />
+                <div class="column scrolled" style="max-height:90%" id="category-body">
+                    {#each Object.keys($Language.Phrasebook) as category}
+                        <div
+                            class="lex-entry capitalize"
+                            class:selected={category === $selectedCategory}
+                            on:mousedown={() => select(category)}
+                            role="option"
+                            aria-selected={category === $selectedCategory}
+                            aria-roledescription="Select category"
+                            tabindex="0"
+                        >{category}</div>
+                    {:else}
+                        <p class="info">Categories will appear here.</p>
+                    {/each}
                 </div>
             </div>
-            <div class="row">
-                <div class="column search-container">
-                    {#if !searchDescription}
-                        <label for="search-description" style="position: absolute; top: .5em; left: 1em">Search descriptions…</label>
-                    {/if}
-                    <input id="search-description" type="text" class="search" bind:value={searchDescription}/>
+        </Draggable>
+
+        <!-- Phrasebook -->
+        <Draggable panel=phrasebook>
+            <div class="container glasspane" style='overflow: hidden'>
+                <!-- Search Fields -->
+                <div class="row">
+                    <div class="column search-container">
+                        {#if !searchPhrase}
+                                <label for="search-phrase" style="position: absolute; top: .5em; left: 1em">Search by phrase…</label>
+                        {/if}
+                        <input id="search-phrase" type="text" class="search" bind:value={searchPhrase}/>
+                    </div>
+                    <div class="column search-container">
+                        {#if !searchTags}
+                                <label for="search-tags" style="position: absolute; top: .5em; left: 1em">Search by tags…</label>
+                        {/if}
+                        <input id="search-tags" type="text" class="search" bind:value={searchTags}/>
+                    </div>
                 </div>
-                {#if $Language.UseLects}
-                     <div class="column">
-                         <label>Filter by lect:
-                             <select bind:value={lectFilter}>
-                                 <option value=''>All</option>
-                                 {#each $Language.Lects as lect}
-                                     <option value={lect}>{lect}</option>
-                                 {/each}
-                             </select>
-                         </label>
-                     </div>
-                {/if}
-            </div>
+                <div class="row">
+                    <div class="column search-container">
+                        {#if !searchDescription}
+                            <label for="search-description" style="position: absolute; top: .5em; left: 1em">Search descriptions…</label>
+                        {/if}
+                        <input id="search-description" type="text" class="search" bind:value={searchDescription}/>
+                    </div>
+                    {#if $Language.UseLects}
+                            <div class="column">
+                                <label>Filter by lect:
+                                    <select bind:value={lectFilter}>
+                                        <option value=''>All</option>
+                                        {#each $Language.Lects as lect}
+                                            <option value={lect}>{lect}</option>
+                                        {/each}
+                                    </select>
+                                </label>
+                            </div>
+                    {/if}
+                </div>
             <!-- Book -->
             <div class="column scrolled" id="phrasebook-body" style="max-height: 88%;">
                 {#if !!Object.keys($Language.Phrasebook).length}
@@ -272,13 +278,13 @@
                 {/if}
             </div>
         </div>
-    </div>
-    <!-- Phrase Editor -->
-    {#if $selectedTab === 2}
-        <Draggable panel=phrasebook>
-            <div class="container glasspane" style="height: 100%; margin:0">
+        </Draggable>
+
+        <!-- Phrase Editor -->
+        <Draggable panel=newphrase>
+            <div class="container glasspane scrolled" style=height:94%>
                 <div class="row">
-                    <div class="column scrolled">
+                    <div class='column scrolled'>
             
                         <label for="phrase">Phrase</label>
                         <input type="text" bind:value={$phraseInput} on:input={() => {
@@ -337,5 +343,6 @@
                 </div>
             </div>
         </Draggable>
+
     {/if}
 </div>

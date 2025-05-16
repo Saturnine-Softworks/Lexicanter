@@ -151,7 +151,7 @@ button.collapser-h::after {
 }
 
 .tab-pane {
-  height: 80%;
+  height: 100vh;
   box-sizing: border-box;
   -webkit-app-region: no-drag;
   -webkit-user-select: text;
@@ -315,7 +315,7 @@ h1, h2, h3, h4, h5, h6 {
 .glasspane {
   height: 100%;
   margin: 0;
-  opacity: 66%;
+  opacity: 90%;
 }
 
 .row button {

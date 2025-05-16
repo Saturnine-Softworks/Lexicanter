@@ -1,10 +1,11 @@
 <script lang="ts">
     const fs = require('fs');
     const path = require('path');
-    import { docsEditor, Language, selectedCategory, fileLoadIncrement, referenceLanguage, defaultLanguage, dbid, dbkey } from '../stores';
+    import { docsEditor, Language, selectedCategory, selectedTab, fileLoadIncrement, referenceLanguage, defaultLanguage, dbid, dbkey } from '../stores';
     import type { OutputData } from '@editorjs/editorjs';
     import type * as Lexc from '../types';
     import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV, retrieveFromDatabase } from '../utils/files';
+    import Draggable from '../components/Draggable.svelte';
     import { writeRomans } from '../utils/phonetics';
     import { initializeDocs } from '../utils/docs';
     import Evolver from '../components/Evolver.svelte';
@@ -391,157 +392,159 @@
 
 <!-- File Tab -->
 <div class=tab-pane>
-    <div class=row style=height:98vh>
-        <div class="column container" style=overflow-y:auto>
-            <label for=file-name>Language Name</label>
-            <input type=text id=file-name bind:value={$Language.Name}/>
-            <br>
-            <div class='narrow row' style='max-width: 600px;'>
-                <div class=column>
-                    <button on:click={saveFile} class="hover-highlight hover-shadow">Save…</button>
-                    <button on:click={openFile} class="hover-highlight hover-shadow">Open…</button>
-                    <p class="info">Save your lexicon or open a previously saved one.</p>
-                </div>
-                <div class=column> 
-                    <div class=milkyWay>
-                        <!-- Loader -->
-                        <div class=sun></div>
-                        {#each ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'] as planet}
-                             <div class="planet {planet}"></div>
-                        {/each}
+    {#if $selectedTab===7}
+        <Draggable panel=files>
+            <div class="glasspane container" style=overflow-y:auto>
+                <label for=file-name>Language Name</label>
+                <input type=text id=file-name bind:value={$Language.Name}/>
+                <br>
+                <div class='narrow row' style='max-width: 600px;'>
+                    <div class=column>
+                        <button on:click={saveFile} class="hover-highlight hover-shadow">Save…</button>
+                        <button on:click={openFile} class="hover-highlight hover-shadow">Open…</button>
+                        <p class="info">Save your lexicon or open a previously saved one.</p>
                     </div>
-                    <p>{loading_message}</p>
+                    <div class=column>
+                        <div class=milkyWay>
+                            <!-- Loader -->
+                            <div class=sun></div>
+                            {#each ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'] as planet}
+                                    <div class="planet {planet}"></div>
+                            {/each}
+                        </div>
+                        <p>{loading_message}</p>
+                    </div>
+                    <div class=column>
+                        <button on:click={saveAs.lexc} class='hover-highlight hover-shadow'>Export…</button>
+                        <button on:click={importFile} class='hover-highlight hover-shadow'>Import…</button>
+                        <p class=info>Export and import your own copies of the .lexc file.</p>
+                    </div>
                 </div>
-                <div class=column>
-                    <button on:click={saveAs.lexc} class='hover-highlight hover-shadow'>Export…</button>
-                    <button on:click={importFile} class='hover-highlight hover-shadow'>Import…</button>
-                    <p class=info>Export and import your own copies of the .lexc file.</p>
+                <div class=narrow>
+                    <label for=save-locations>Secondary Save Locations</label>
+                    <button id=save-locations class='hover-highlight hover-shadow' on:click={selectSaveLocation}>Choose Location…</button>
+                    <p>Selected location: <u>{$Language.SaveLocation || 'None'}<u></p>
                 </div>
-            </div>
-            <div class=narrow>
-                <label for=save-locations>Secondary Save Locations</label>
-                <button id=save-locations class='hover-highlight hover-shadow' on:click={selectSaveLocation}>Choose Location…</button> 
-                <p>Selected location: <u>{$Language.SaveLocation || 'None'}<u></p>
-            </div>
-            <br>
-            <hr>
-            <br>
-            <p>Export to Other Formats</p>
-            <div class="row narrow" style='max-width: 500px;'>
-                <div class="column">
-                    <button on:click={saveAs.txt} class="hover-highlight hover-shadow">Plain Text<br>Lexicon Only</button>
-                    <button on:click={saveAs.md} class="hover-highlight hover-shadow">Markdown<br>Lexicon Only</button>
+                <br>
+                <hr>
+                <br>
+                <p>Export to Other Formats</p>
+                <div class="row narrow" style='max-width: 500px;'>
+                    <div class="column">
+                        <button on:click={saveAs.txt} class="hover-highlight hover-shadow">Plain Text<br>Lexicon Only</button>
+                        <button on:click={saveAs.md} class="hover-highlight hover-shadow">Markdown<br>Lexicon Only</button>
+                    </div>
+                    <div class="column">
+                        <button on:click={saveAs.html.lexicon} class="hover-highlight hover-shadow">HTML<br>Lexicon Only</button>
+                        <button on:click={saveAs.html.all} class="hover-highlight hover-shadow">HTML<br>Lexicon + Docs</button>
+                        <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">HTML<br>Documentation</button>
+                    </div>
+                    <div class="column">
+                        <button on:click={saveAs.csv} class="hover-highlight hover-shadow">CSV<br>Lexicon Only</button>
+                        <button on:click={saveAs.json} class="hover-highlight hover-shadow">JSON<br>Entire File</button>
+                    </div>
                 </div>
-                <div class="column">
-                    <button on:click={saveAs.html.lexicon} class="hover-highlight hover-shadow">HTML<br>Lexicon Only</button>
-                    <button on:click={saveAs.html.all} class="hover-highlight hover-shadow">HTML<br>Lexicon + Docs</button>
-                    <button on:click={saveAs.html.docs} class="hover-highlight hover-shadow">HTML<br>Documentation</button>
+                <br>
+                <hr>
+                <br>
+                <p>Lexicon Header Tags</p>
+                <p class='info'>
+                    Entries with these tags will be sorted separately at the top of the lexicon.
+                </p>
+                <div class=narrow>
+                    <textarea bind:value={$Language.HeaderTags}></textarea>
                 </div>
-                <div class="column">
-                    <button on:click={saveAs.csv} class="hover-highlight hover-shadow">CSV<br>Lexicon Only</button>
-                    <button on:click={saveAs.json} class="hover-highlight hover-shadow">JSON<br>Entire File</button>
-                </div>
-            </div>
-            <br>
-            <hr>
-            <br>
-            <p>Lexicon Header Tags</p>
-            <p class='info'>
-                Entries with these tags will be sorted separately at the top of the lexicon.
-            </p>
-            <div class=narrow>
-                <textarea bind:value={$Language.HeaderTags}></textarea>
-            </div>
             
-            <br>
-            <hr>
-            <br>
-            <button class="hover-highlight hover-shadow" 
-                on:click={openReferenceFile}>Open Reference File</button>
-            <p class='info narrow'>
-                Open a another Lexicaner file in a side panel for easier comparison with the current file.
-            </p>
-            {#if typeof $referenceLanguage === 'object'}
-                <p>Reference Language: {$referenceLanguage.Name}</p>
-                <button on:click={()=>$referenceLanguage = false} class="hover-highlight hover-shadow">Close Reference File</button>
-                {#if $Language.ShowEtymology}
-                    <button 
-                        on:click={() => {
-                            if (typeof $referenceLanguage === 'object') { // redundant check is necessary for linter
-                                if ($referenceLanguage.Name in $Language.Relatives) {
-                                    vex.dialog.alert(`There is already a relative lexicon with the name ${$referenceLanguage.Name}.`);
-                                    return;
+                <br>
+                <hr>
+                <br>
+                <button class="hover-highlight hover-shadow"
+                    on:click={openReferenceFile}>Open Reference File</button>
+                <p class='info narrow'>
+                    Open a another Lexicaner file in a side panel for easier comparison with the current file.
+                </p>
+                {#if typeof $referenceLanguage === 'object'}
+                    <p>Reference Language: {$referenceLanguage.Name}</p>
+                    <button on:click={()=>$referenceLanguage = false} class="hover-highlight hover-shadow">Close Reference File</button>
+                    {#if $Language.ShowEtymology}
+                        <button
+                            on:click={() => {
+                                if (typeof $referenceLanguage === 'object') { // redundant check is necessary for linter
+                                    if ($referenceLanguage.Name in $Language.Relatives) {
+                                        vex.dialog.alert(`There is already a relative lexicon with the name ${$referenceLanguage.Name}.`);
+                                        return;
+                                    }
+                                    $Language.Relatives[$referenceLanguage.Name] = $referenceLanguage.Lexicon;
+                                    vex.dialog.alert(`Successfully imported ${$referenceLanguage.Name} as a relative lexicon.`);
                                 }
-                                $Language.Relatives[$referenceLanguage.Name] = $referenceLanguage.Lexicon;
-                                vex.dialog.alert(`Successfully imported ${$referenceLanguage.Name} as a relative lexicon.`);
-                            }
-                    }}>Import Reference Lexicon as Related Lexicon</button>
+                        }}>Import Reference Lexicon as Related Lexicon</button>
+                    {/if}
                 {/if}
-            {/if}
-            <br>
-            <hr>
-            <br>
-            <p>Evolve Language</p>
-            <p class='info narrow'>
-                Evolve the current lexicon by applying a series of sound changes, and save as a new file.
-            </p><br>
-            <Evolver/>
-            <br>
-            <hr>
-            <br>
-            <p>Import Lexicon from CSV</p>
-            <div class="narrow" style='max-width: 500px;'>
-                <div class="row">
-                    <div class="column">
-                        <label>Words Column
-                            <input type="number" bind:value={csv.words}/>
-                        </label>
+                <br>
+                <hr>
+                <br>
+                <p>Evolve Language</p>
+                <p class='info narrow'>
+                    Evolve the current lexicon by applying a series of sound changes, and save as a new file.
+                </p><br>
+                <Evolver/>
+                <br>
+                <hr>
+                <br>
+                <p>Import Lexicon from CSV</p>
+                <div class="narrow" style='max-width: 500px;'>
+                    <div class="row">
+                        <div class="column">
+                            <label>Words Column
+                                <input type="number" bind:value={csv.words}/>
+                            </label>
+                        </div>
+                        {#if csv.pronunciations_bool}
+                        <div class="column">
+                            <label>Pronunciations Column
+                                <input type="number" bind:value={csv.pronunciations}/>
+                            </label>
+                        </div>
+                        {/if}
+                        <div class="column">
+                            <label>Definitions Column
+                                <input type="number" bind:value={csv.definitions}/>
+                            </label>
+                        </div>
+                        {#if csv.tags_bool}
+                        <div class="column">
+                            <label>Tags Column
+                                <input type="number" bind:value={csv.tags}/>
+                            </label>
+                        </div>
+                        {/if}
                     </div>
-                    {#if csv.pronunciations_bool}
-                    <div class="column">
-                        <label>Pronunciations Column
-                            <input type="number" bind:value={csv.pronunciations}/>
-                        </label>
+                    <div class="row">
+                        <div class="column">
+                            <label>Include Pronunciations
+                                <input type="checkbox" bind:checked={csv.pronunciations_bool}/>
+                            </label>
+                        </div>
+                        <div class="column">
+                            <label>Include Tags
+                                <input type="checkbox" bind:checked={csv.tags_bool}/>
+                            </label>
+                        </div>
                     </div>
-                    {/if}
-                    <div class="column">
-                        <label>Definitions Column
-                            <input type="number" bind:value={csv.definitions}/>
-                        </label>
-                    </div>
-                    {#if csv.tags_bool}
-                    <div class="column">
-                        <label>Tags Column
-                            <input type="number" bind:value={csv.tags}/>
-                        </label>
-                    </div>
-                    {/if}
                 </div>
-                <div class="row">
-                    <div class="column">
-                        <label>Include Pronunciations
-                            <input type="checkbox" bind:checked={csv.pronunciations_bool}/>
-                        </label>
-                    </div>
-                    <div class="column">
-                        <label>Include Tags
-                            <input type="checkbox" bind:checked={csv.tags_bool}/>
-                        </label>
-                    </div>
-                </div>
+                <label for="row-one-is-labels">First Row Is Column Labels</label>
+                <input type="checkbox" id="row-one-is-labels" bind:checked={csv.headers}/>
+                <button on:click={() =>
+                    importCSV(
+                        csv.headers,
+                        csv.words,
+                        csv.definitions,
+                        csv.pronunciations_bool? csv.pronunciations : false,
+                        csv.tags_bool? csv.tags : false
+                    )
+                } class="hover-highlight hover-shadow">Import</button>
+                <br><br>
             </div>
-            <label for="row-one-is-labels">First Row Is Column Labels</label>
-            <input type="checkbox" id="row-one-is-labels" bind:checked={csv.headers}/>
-            <button on:click={() => 
-                importCSV(
-                    csv.headers, 
-                    csv.words, 
-                    csv.definitions, 
-                    csv.pronunciations_bool? csv.pronunciations : false,
-                    csv.tags_bool? csv.tags : false
-                )
-            } class="hover-highlight hover-shadow">Import</button>
-            <br><br>
-        </div>
-    </div>
+        </Draggable>
+    {/if}
 </div>

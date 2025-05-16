@@ -1,7 +1,8 @@
-<script lang='ts'>
-    import { Language } from "../stores";
+<script lang=ts>
+    import { Language, selectedTab } from "../stores";
     import { parseRules, applyRules } from "../utils/sca";
     import type { Orthography } from "../types";
+    import Draggable from "../components/Draggable.svelte";
     let selectedOrtho = '';
     let testInput = '';
     const vex = require('vex-js');
@@ -46,7 +47,6 @@
 <div class=tab-pane>
     <div class=row style:height=100%>
         <div class="column container scrolled" style:height=96vh>
-
             {#each $Language.Orthographies as orthography, i}
                 <label>Name
                     <input type=text 
@@ -126,60 +126,68 @@
                             root: 'ipa',
                             lect: $Language.Lects[0],
                             rules: '',
-                            display: true
+                            display: true,
+                            displayInPhrasebook: true,
                         }
                     ];
                 }}
             >New Orthography</button>
         </div>
-        <div class="column container scrolled" style:height=96vh>
-            <select bind:value={selectedOrtho}>
-                {#each $Language.Orthographies as orthography}
-                    <option value={orthography.name}>{orthography.name}</option>
-                {/each}
-            </select>
-            <label>Test Input
-                <textarea bind:value={testInput} rows=6></textarea>
-                <!-- svelte-ignore element_invalid_self_closing_tag -->
-                <textarea
-                    rows=6
-                    style:background-color=transparent
-                    style:font-family={$Language.Orthographies.find(o => o.name === selectedOrtho)?.font || 'Gentium'}
-                    value={(() => {
-                        const settings = parseRules($Language.Orthographies.find(o => o.name === selectedOrtho)?.rules || '');
-                        return applyRules(settings.rules, testInput, settings.categories);
-                    })()}
-                    readonly
-                />
-            </label>
-            <br>
-            <label>Change Orthography
-                <div class="narrow">
-                    Pattern: <input type='text' bind:value={orthographyReplacement.pattern}/>
-                    Replacement: <input type='text' bind:value={orthographyReplacement.replacement}/>
-                    <button on:click={
-                        () => {
-                            for (let word in $Language.Lexicon) {
-                                if (word.includes(orthographyReplacement.pattern)) {
-                                    try {
-                                        let newWord = '#' + word + '#'
-                                        let pattern = orthographyReplacement.pattern.replaceAll('^', '#')
-                                        newWord = newWord.replaceAll(pattern, orthographyReplacement.replacement)
-                                        $Language.Lexicon[newWord] = $Language.Lexicon[word];
-                                        delete $Language.Lexicon[word];
-                                        orthographyChangeEndMessage = 'Change applied successfully.';
-                                    } catch (e) {
-                                        console.log(e);
-                                        orthographyChangeEndMessage = 'An error occurred while applying the change. Please contact the developer for assistance and check the console.';
+        {#if $selectedTab === 5}
+            <Draggable panel=orthography>
+                <div class="glasspane container scrolled">
+                    <select bind:value={selectedOrtho}>
+                        {#each $Language.Orthographies as orthography}
+                            <option value={orthography.name}>{orthography.name}</option>
+                        {/each}
+                    </select>
+                    <label>Test Input
+                        <textarea bind:value={testInput} rows=6></textarea>
+                        <!-- svelte-ignore element_invalid_self_closing_tag -->
+                        <textarea
+                            rows=6
+                            style:background-color=transparent
+                            style:font-family={$Language.Orthographies.find(o => o.name === selectedOrtho)?.font || 'Gentium'}
+                            value={(() => {
+                                const settings = parseRules($Language.Orthographies.find(o => o.name === selectedOrtho)?.rules || '');
+                                return applyRules(settings.rules, testInput, settings.categories);
+                            })()}
+                            readonly
+                        />
+                    </label>
+                </div>
+            </Draggable>
+            <Draggable panel=romchangewizard>
+                <div class="container glasspane scrolled">
+                    <label>Change Romanization (Destructive)
+                        <div class="narrow">
+                            Pattern: <input type='text' bind:value={orthographyReplacement.pattern}/>
+                            Replacement: <input type='text' bind:value={orthographyReplacement.replacement}/>
+                            <button on:click={
+                                () => {
+                                    for (let word in $Language.Lexicon) {
+                                        if (word.includes(orthographyReplacement.pattern)) {
+                                            try {
+                                                let newWord = '#' + word + '#'
+                                                let pattern = orthographyReplacement.pattern.replaceAll('^', '#')
+                                                newWord = newWord.replaceAll(pattern, orthographyReplacement.replacement)
+                                                $Language.Lexicon[newWord] = $Language.Lexicon[word];
+                                                delete $Language.Lexicon[word];
+                                                orthographyChangeEndMessage = 'Change applied successfully.';
+                                            } catch (e) {
+                                                console.log(e);
+                                                orthographyChangeEndMessage = 'An error occurred while applying the change. Please contact the developer for assistance and check the console.';
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    }>Apply</button>
-                    <span style:color=red>{orthographyChangeEndMessage}</span>
+                            }>Apply</button>
+                            <span style:color=red>{orthographyChangeEndMessage}</span>
+                        </div>
+                    </label>
                 </div>
-            </label>
-
-        </div>
+            </Draggable>
+        {/if}
+        
     </div>
 </div>

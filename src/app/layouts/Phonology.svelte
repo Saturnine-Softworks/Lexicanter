@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { Language, fileLoadIncrement } from "../stores";
+    import { Language, fileLoadIncrement, selectedTab } from "../stores";
     import { get_pronunciation, writeRomans, complete_word, generate_word } from '../utils/phonetics';
-    import type { AdvancedPhonotactics } from "../types";
+    import Draggable from "../components/Draggable.svelte";
     let trial = ''; let ortho_test = '';
     function setInStone (event: Event) {
         const target = event.target as HTMLInputElement;
@@ -166,137 +166,143 @@
 </script>
 <!-- Phonology Tab -->
 <div class="tab-pane">
-    <div class="row" style="height: 96vh">
+
         <!-- Phonotactics -->
-        <div class="container column scrolled" style="height: 100%">
-            <label>
-                <input type="checkbox" bind:checked={$Language.UseAdvancedPhonotactics} />
-                Use Advanced Phonotactics
-            </label>
-            <br><br>
-            {#if $Language.UseAdvancedPhonotactics}
-                <div class="row">
-                    <div class="column">
-                        <label>Categories
-                            <textarea class="phonology text-left" rows=8 bind:value={APCategories} on:blur={setAPCategories}></textarea>
-                        </label>
-                    </div>
-                    <div class="column">
-                        <label>Syllables
-                            <textarea class="phonology text-left" rows=8 bind:value={APSyllables} on:blur={setAPSyllables}></textarea>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="column">
-                        <label>Structures
-                            {#each APConstructs as set, i}
-                                <div class="row">
-                                    <div class="column narrow">
+        {#if $selectedTab===4}
+            <Draggable panel=wordgenerator>
+                <div class="container glasspane scrolled">
+                    <label>
+                        <input type="checkbox" bind:checked={$Language.UseAdvancedPhonotactics} />
+                        Use Advanced Phonotactics
+                    </label>
+                    <br><br>
+                    {#if $Language.UseAdvancedPhonotactics}
+                        <div class="row">
+                            <div class="column">
+                                <label>Categories
+                                    <textarea class="phonology text-left" rows=8 bind:value={APCategories} on:blur={setAPCategories}></textarea>
+                                </label>
+                            </div>
+                            <div class="column">
+                                <label>Syllables
+                                    <textarea class="phonology text-left" rows=8 bind:value={APSyllables} on:blur={setAPSyllables}></textarea>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column">
+                                <label>Structures
+                                    {#each APConstructs as set, i}
                                         <div class="row">
-                                            <input type='checkbox' bind:checked={set.enabled} on:change={setAPConstructs}/>
+                                            <div class="column narrow">
+                                                <div class="row">
+                                                    <input type='checkbox' bind:checked={set.enabled} on:change={setAPConstructs}/>
+                                                </div>
+                                                <div class="row">
+                                                    <button class="hover-highlight hover-shadow" on:click={() => {
+                                                        if (APConstructs.length > 1) {
+                                                            APConstructs.splice(i, 1);
+                                                            APConstructs[0].structures + ' '; // this is (a dumb, but working way) to force a re-render
+                                                            APConstructs[0].structures = APConstructs[0].structures.trim();
+                                                        }
+                                                    }}>-</button>
+                                                </div>
+                                            </div>
+                                            <div class="column">
+                                                <textarea class="phonology text-left" rows=3 bind:value={set.structures} on:blur={setAPConstructs}></textarea>
+                                            </div>
                                         </div>
-                                        <div class="row">
-                                            <button class="hover-highlight hover-shadow" on:click={() => {
-                                                if (APConstructs.length > 1) {
-                                                    APConstructs.splice(i, 1);
-                                                    APConstructs[0].structures + ' '; // this is (a dumb, but working way) to force a re-render
-                                                    APConstructs[0].structures = APConstructs[0].structures.trim();
-                                                }
-                                            }}>-</button>
-                                        </div>
-                                    </div>
-                                    <div class="column">
-                                        <textarea class="phonology text-left" rows=3 bind:value={set.structures} on:blur={setAPConstructs}></textarea>
-                                    </div>
+                                    {/each}
+                                    <button class="hover-highlight hover-shadow" on:click={() =>{
+                                        APConstructs.push({
+                                            enabled: true,
+                                            structures: ' ',
+                                        });
+                                        APConstructs[0].structures + ' '; // this is (a dumb, but working way) to force a re-render
+                                        APConstructs[0].structures = APConstructs[0].structures.trim();
+                                    }}>Add Set</button>
+                                </label>
+                            </div>
+                            <div class="column">
+                                <label>Illegals
+                                    <textarea class="phonology text-left" rows=4 bind:value={APIllegals} on:blur={setAPIllegals}></textarea>
+                                </label>
+                            </div>
+                        </div>
+                        <br>
+                        <button class="hover-highlight hover-shadow" on:click={
+                            () => generated_words = Array(24).fill(null).map(_ => generate_word_AP())
+                        }>Generate Words</button>
+                    {:else}
+                        <label for="onsets">Onset Consonants</label>
+                        <textarea id="onsets" class="phonology" bind:value={$Language.Phonotactics.General.Onsets}></textarea>
+                        <br>
+                        <label for="medials">Medial Consonants</label>
+                        <textarea id="medials" class="phonology" bind:value={$Language.Phonotactics.General.Medials}></textarea>
+                        <br>
+                        <label for="codas">Coda Consonants</label>
+                        <textarea id="codas" class="phonology" bind:value={$Language.Phonotactics.General.Codas}></textarea>
+                        <br>
+                        <label for="vowels">Vowels</label>
+                        <textarea id="vowels" class="phonology" bind:value={$Language.Phonotactics.General.Vowels}></textarea>
+                        <br>
+                        <label for="illegals">Illegal Combinations</label>
+                        <textarea id="illegals" class="phonology" bind:value={$Language.Phonotactics.General.Illegals}></textarea>
+                        <br><br>
+                        <label for="trial">Trial Words</label>
+                        <input type="text" id="trial" bind:value={trial}/>
+                        <p style="font-family: Gentium">{trial_completion}</p>
+                        <br>
+                        <button class="hover-highlight hover-shadow" on:click={
+                            () => generated_words = Array(24).fill(null).map(_ => generate_word())
+                        }>Generate Words</button>
+                    {/if}
+                    {#each Array(generated_words.length/3).fill(null) as _, i}
+                        <div class="row">
+                            {#each generated_words.slice(i * 3, i * 3 + 3) as word}
+                                <div class="column">
+                                    <p class="prelined" style="font-family: Gentium">{word}</p>
                                 </div>
                             {/each}
-                            <button class="hover-highlight hover-shadow" on:click={() =>{
-                                APConstructs.push({
-                                    enabled: true,
-                                    structures: ' ',
-                                });
-                                APConstructs[0].structures + ' '; // this is (a dumb, but working way) to force a re-render
-                                APConstructs[0].structures = APConstructs[0].structures.trim();
-                            }}>Add Set</button>
-                        </label>
-                    </div>
-                    <div class="column">
-                        <label>Illegals
-                            <textarea class="phonology text-left" rows=4 bind:value={APIllegals} on:blur={setAPIllegals}></textarea>
-                        </label>
-                    </div>
-                </div>
-                <br>
-                <button class="hover-highlight hover-shadow" on:click={
-                    () => generated_words = Array(24).fill(null).map(_ => generate_word_AP())
-                }>Generate Words</button>
-            {:else}
-                <label for="onsets">Onset Consonants</label>
-                <textarea id="onsets" class="phonology" bind:value={$Language.Phonotactics.General.Onsets}></textarea>
-                <br>
-                <label for="medials">Medial Consonants</label>
-                <textarea id="medials" class="phonology" bind:value={$Language.Phonotactics.General.Medials}></textarea>
-                <br>
-                <label for="codas">Coda Consonants</label>
-                <textarea id="codas" class="phonology" bind:value={$Language.Phonotactics.General.Codas}></textarea>
-                <br>
-                <label for="vowels">Vowels</label>
-                <textarea id="vowels" class="phonology" bind:value={$Language.Phonotactics.General.Vowels}></textarea>
-                <br>
-                <label for="illegals">Illegal Combinations</label>
-                <textarea id="illegals" class="phonology" bind:value={$Language.Phonotactics.General.Illegals}></textarea>
-                <br><br>
-                <label for="trial">Trial Words</label>
-                <input type="text" id="trial" bind:value={trial}/>
-                <p style="font-family: Gentium">{trial_completion}</p>
-                <br>
-                <button class="hover-highlight hover-shadow" on:click={
-                    () => generated_words = Array(24).fill(null).map(_ => generate_word())
-                }>Generate Words</button>
-            {/if}
-            {#each Array(generated_words.length/3).fill(null) as _, i}
-                <div class="row">
-                    {#each generated_words.slice(i * 3, i * 3 + 3) as word}
-                        <div class="column">
-                            <p class="prelined" style="font-family: Gentium">{word}</p>
                         </div>
                     {/each}
                 </div>
-            {/each}
-        </div>
-        <!-- Romanization -->
-        <div class="container column scrolled" style="height: 100%">
-            <label>
-                Pronunciations
-                {#if $Language.UseLects}    
-                    <select bind:value={selectedLect} on:change={updatePhonologyInput}>
-                        {#each $Language.Lects as lect}
-                            <option value={lect}>{lect}</option>
-                        {/each}
-                    </select>
-                {/if}
-                <textarea class="prelined" rows="24" style="text-align: left" id="pronunciations-input"
-                    value={$Language.Pronunciations[selectedLect]}
-                    on:blur={e => {
-                        setInStone(e); // binding directly to the store is very slow when the language is large
-                        writeRomans(selectedLect);
-                    }}
-                ></textarea>
-            </label>
-            <br><br>
-            <label>
-                Rule Testing
-                <textarea 
-                    class="prelined" rows="2" 
-                    bind:value={ortho_test}
-                ></textarea>
-            </label>
-            <textarea
-                class="pronunciation" rows="2"
-                bind:value={test_pronunciation}
-                readonly
-            ></textarea>
-        </div>
-    </div>
+            </Draggable>
+
+            <!-- Pronunciation Rules -->
+            <Draggable panel=pronunciation>
+                <div class="container glasspane scrolled">
+                    <label>
+                        Pronunciations
+                        {#if $Language.UseLects}
+                            <select bind:value={selectedLect} on:change={updatePhonologyInput}>
+                                {#each $Language.Lects as lect}
+                                    <option value={lect}>{lect}</option>
+                                {/each}
+                            </select>
+                        {/if}
+                        <textarea class="prelined" rows="24" style="text-align: left" id="pronunciations-input"
+                            value={$Language.Pronunciations[selectedLect]}
+                            on:blur={e => {
+                                setInStone(e); // binding directly to the store is very slow when the language is large
+                                writeRomans(selectedLect);
+                            }}
+                        ></textarea>
+                    </label>
+                    <br><br>
+                    <label>
+                        Rule Testing
+                        <textarea
+                            class="prelined" rows="2"
+                            bind:value={ortho_test}
+                        ></textarea>
+                    </label>
+                    <textarea
+                        class="pronunciation" rows="2"
+                        bind:value={test_pronunciation}
+                        readonly
+                    ></textarea>
+                </div>
+            </Draggable>
+        {/if}
 </div>

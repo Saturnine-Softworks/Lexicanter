@@ -16,6 +16,7 @@
     const category = () => reference? refCat : $selectedCategory;
 
 </script>
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="lex-entry" id={phrase} on:contextmenu={edit}>
     <EntryLabel word={phrase} source={language().Phrasebook[category()][phrase]}/>
     <Pronunciations pronunciations={language().Phrasebook[category()][phrase].pronunciations} />

@@ -20,7 +20,7 @@
     import Wiki from './layouts/Wiki.svelte';
     import Reference from './layouts/Reference.svelte';
 
-    import { theme, autosave, selectedTab, Language, referenceLanguage } from './stores';
+    import { theme, autosave, selectedTab, Language, referenceLanguage, panelSnap } from './stores';
     import { saveFile } from './utils/files'
 
     const tabs     = [ Lexicon,   Etymology,   Phrasebook,   Inflection,   Phonology,   Orthography,   Documentation,   File,   Settings,   Changelog, Wiki]
@@ -43,6 +43,15 @@
                 ipcRenderer.send('close');
         }
     });
+
+    ipcRenderer.on('adjustGrid', adjustSnapGrid);
+
+    function adjustSnapGrid() {
+        if (!$panelSnap.proportional) return;
+        $panelSnap.x = Math.round(window.outerWidth / $panelSnap.columns)
+        $panelSnap.y = Math.round((window.outerHeight-25) / $panelSnap.rows)
+    }
+
     let version: string = $state('');
     ipcRenderer.invoke('getVersion').then((v: string) => version = v);
 
@@ -102,3 +111,6 @@
         </div>
     </div>
 </main>
+<svelte:window 
+    on:resize={adjustSnapGrid}
+></svelte:window>

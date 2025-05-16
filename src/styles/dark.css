@@ -45,7 +45,7 @@ button.inflection, select.inflection {
 .draggable {
   border: 0.5px solid black;
   backdrop-filter: blur(5px);
-  box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.5333333333);
+  box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.2666666667);
 }
 .draggable .container {
   border: none;

@@ -163,6 +163,7 @@ export type Orthography = {
     lect: string;
     rules: string;
     display: boolean;
+    displayInPhrasebook: boolean // requested by Maarz
 }
 
 /**

@@ -1,9 +1,11 @@
 
 <svelte:options runes />
 <script lang="ts">
-    import { theme, autosave, pronunciations, wordInput, dbid, dbkey, fileLoadIncrement, docsEditor } from '../stores';
+    const { ipcRenderer } = require('electron');
+    import { theme, autosave, pronunciations, wordInput, dbid, dbkey, fileLoadIncrement, docsEditor, panelSnap, selectedTab } from '../stores';
     import * as Files from '../utils/files';
     import { Language } from '../stores';
+    import Draggable from '../components/Draggable.svelte';
     import type * as Lexc from '../types';
     const fs = require('fs');
     const path = require('path');
@@ -435,255 +437,304 @@
 </script>
 <!-- App Settings -->
 <div class="tab-pane">
-    <div class="row">
-        <div class="container column scrolled" style="height: 96vh;">
-            <br><br>
-            <p>Appearance Settings</p> <br>
-            <label>Color Theme
-                <select 
-                    name="theme-select" id="theme-select" 
-                    bind:value={$theme} 
-                    onchange={change_theme}
-                >
-                    <optgroup label="Simple Themes">
-                        <option value="styles/dark.css">☾ Dark</option>
-                        <option value="styles/light.css">☀ Light</option>
-                    </optgroup>
-                    <optgroup label="The Saturnine Collection">
-                        <option value="styles/marine.css">☾ Marine</option>
-                        <option value="styles/glade.css">☾ Glade</option>
-                        <option value="styles/pomegranate.css">☾ Pomegranate</option>
-                        <option value="styles/magnolia.css">☾ Magnolia</option>
-                        <option value="styles/juniper.css">☀ Juniper</option>
-                        <option value="styles/leatherbound.css">☀ Leatherbound</option>
-                        <option value="styles/wisteria.css">☀ Wisteria</option>
-                    </optgroup>
-                    <optgroup label="The Maarz Collection">
-                        <option value="styles/purple_maar.css">☾ Purple Maar</option>
-                        <option value="styles/terminal_green.css">☾ Terminal</option>
-                        <option value="styles/midnight.css">☾ Midnight</option>
-                        <option value="styles/crabapple.css">☾ Crabapple</option>
-                        <option value="styles/bone.css">☀ Bone</option>
-                    </optgroup>
-                    <optgroup label="The Holiday Collection">
-                        <option value="styles/eostre2023.css">☀ Ēostre 2023</option>
-                        <option value="styles/hallowseve2023.css">☾ All Hallow's Eve 2023</option>
-                    </optgroup>
-                </select>
-            </label>
-            <br>
-            <button class="hover-highlight hover-shadow" onclick={()=>{$Language.FileTheme = $theme}}> Set Current Theme as Default for This File </button>
-            <button class="hover-highlight hover-shadow" onclick={()=>{$Language.FileTheme = 'default'}}> Clear File Theme </button>
-            <br>
-            <button class="hover-highlight hover-shadow" onclick={custom_theme}> Load Custom Theme… </button>
-
-            <br><hr/><br>
-
-            <p>Save Settings</p> <br>
-            <label>Auto-Save
-                <input type="checkbox" bind:checked={$autosave} onchange={change_autosave_pref}/>
-            </label>
-
-            <div class=narrow>
-                <label>Cloud Storage
-                    <p class=info>If you wish, your files can be saved to an online database so that you can sync your files across multiple 
-                        devices and the discord bot and online file viewer. To get your User ID and Key, please go to the Saturn's Sojourn discord 
-                        server and use the command <code>/account</code>.
-                    </p>
-                    <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'} for this file.
-                        <input type=checkbox bind:checked={$Language.UploadToDatabase}/>
-                    </span>
-                    {#if $dbid !== '' && $dbkey !== '' && $Language.UploadToDatabase}
-                        Local File Version: {localFileVersion} <br>
-                        Online File Version: {onlineFileVersion} <br>
-                        <button class='hover-highlight hover-shadow' onclick={setFileVersions}>Refresh</button>
-                    {/if}
-                    <span>User ID: <input class:pronunciation={disabledDatabase} type=text bind:value={inputID} disabled={disabledDatabase}/></span>
-                    <br>
-                    <span>Key: <input class:pronunciation={disabledDatabase} type=text bind:value={inputKey} disabled={disabledDatabase}/></span>
-                    <button onclick={setDatabaseAccount}>Authenticate</button>
-                    <p class=info>Your ID and Key are saved to the app's internal settings, not to your file, but turning on uploading is saved per-file.</p>
-                    <br>
-                    <button class='hover-highlight hover-shadow' onclick={syncFromDatabase}>Sync From Cloud</button>
-                    <p class=info>This will overwrite the current file with the latest version of the file available in the cloud.</p>
-
-                    <button class='hover-highlight hover-shadow' onclick={confirmDeleteFromDatabase}>Delete From Cloud</button>
-                    <p class=info>This will delete the current file from the cloud, and it will no longer be accessible to the discord bot or online file viewer.</p>
+    {#if $selectedTab === 8}
+        <Draggable panel=settings>
+            <div class="container glasspane" style=overflow-y:auto>
+                <p>Appearance Settings</p> <br>
+                <label>Color Theme
+                    <select
+                        name="theme-select" id="theme-select"
+                        bind:value={$theme}
+                        onchange={change_theme}
+                    >
+                        <optgroup label="Simple Themes">
+                            <option value="styles/dark.css">☾ Dark</option>
+                            <option value="styles/light.css">☀ Light</option>
+                        </optgroup>
+                        <optgroup label="The Saturnine Collection">
+                            <option value="styles/marine.css">☾ Marine</option>
+                            <option value="styles/glade.css">☾ Glade</option>
+                            <option value="styles/pomegranate.css">☾ Pomegranate</option>
+                            <option value="styles/magnolia.css">☾ Magnolia</option>
+                            <option value="styles/juniper.css">☀ Juniper</option>
+                            <option value="styles/leatherbound.css">☀ Leatherbound</option>
+                            <option value="styles/wisteria.css">☀ Wisteria</option>
+                        </optgroup>
+                        <optgroup label="The Maarz Collection">
+                            <option value="styles/purple_maar.css">☾ Purple Maar</option>
+                            <option value="styles/terminal_green.css">☾ Terminal</option>
+                            <option value="styles/midnight.css">☾ Midnight</option>
+                            <option value="styles/crabapple.css">☾ Crabapple</option>
+                            <option value="styles/bone.css">☀ Bone</option>
+                        </optgroup>
+                        <optgroup label="The Holiday Collection">
+                            <option value="styles/eostre2023.css">☀ Ēostre 2023</option>
+                            <option value="styles/hallowseve2023.css">☾ All Hallow's Eve 2023</option>
+                        </optgroup>
+                    </select>
                 </label>
-            </div>
-
-            <br><hr/><br>
-
-            <p>Lexicon Settings</p> <br>
-            <label>Manage Tags<br>
-                <TagSelector on:select={e => tag = e.detail? e.detail.trim() : ''}/>
-                <p>Selected: {tag}</p>
-                {#if !!tag}
-                    <button class="hover-highlight hover-shadow" onclick={()=>{
-                        Object.keys($Language.Lexicon).forEach(word => {
-                            $Language.Lexicon[word].Senses.forEach((sense, i) => {
-                                if (sense.tags.includes(tag)) {
-                                    $Language.Lexicon[word].Senses[i].tags.splice(sense.tags.indexOf(tag), 1);
+                <br>
+                <button class="hover-highlight hover-shadow" onclick={()=>{$Language.FileTheme = $theme}}> Set Current Theme as Default for This File </button>
+                <button class="hover-highlight hover-shadow" onclick={()=>{$Language.FileTheme = 'default'}}> Clear File Theme </button>
+                <br>
+                <button class="hover-highlight hover-shadow" onclick={custom_theme}> Load Custom Theme… </button>
+                <br>
+                <div class=narrow>
+                    <label>Floating Pane Position Grid Snap
+                        <br><br>
+                        <input type=checkbox bind:checked={$panelSnap.proportional}/>
+                        <p>Keep proportional to window size</p>
+                        {#if $panelSnap.proportional}
+                            <div class='row narrow'>
+                                <div class=column>
+                                    <input
+                                        type=number
+                                        disabled={!$panelSnap.proportional}
+                                        bind:value={$panelSnap.rows}
+                                        onchange={()=>{ipcRenderer.emit('adjustGrid')}}
+                                    > Rows
+                                </div>
+                                <div class=column>
+                                    <input
+                                        type=number
+                                        disabled={!$panelSnap.proportional}
+                                        bind:value={$panelSnap.columns}
+                                        onchange={()=>{ipcRenderer.emit('adjustGrid')}}
+                                    > Columns
+                                </div>
+                            </div>
+                        {/if}
+                        <br>
+                        <div style="display:flex">
+                            x-axis:
+                            <input type=range bind:value={$panelSnap.x} min=1 max=500 disabled={$panelSnap.proportional}/>
+                            {Math.round($panelSnap.x)}
+                        </div>
+                        <div style="display:flex">
+                            y-axis:
+                            <input type=range bind:value={$panelSnap.y} min=1 max=500 disabled={$panelSnap.proportional}/>
+                            {Math.round($panelSnap.y)}
+                        </div>
+                    </label>
+                </div>
+                <br><hr/><br>
+                <p>Save Settings</p> <br>
+                <label>Auto-Save
+                    <input type="checkbox" bind:checked={$autosave} onchange={change_autosave_pref}/>
+                </label>
+                <div class=narrow>
+                    <label>Cloud Storage
+                        <p class=info>If you wish, your files can be saved to an online database so that you can sync your files across multiple
+                            devices and the discord bot and online file viewer. To get your User ID and Key, please go to the Saturn's Sojourn discord
+                            server and use the command <code>/account</code>.
+                        </p>
+                        <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'} for this file.
+                            <input type=checkbox bind:checked={$Language.UploadToDatabase}/>
+                        </span>
+                        {#if $dbid !== '' && $dbkey !== '' && $Language.UploadToDatabase}
+                            Local File Version: {localFileVersion} <br>
+                            Online File Version: {onlineFileVersion} <br>
+                            <button class='hover-highlight hover-shadow' onclick={setFileVersions}>Refresh</button>
+                        {/if}
+                        <span>User ID: <input class:pronunciation={disabledDatabase} type=text bind:value={inputID} disabled={disabledDatabase}/></span>
+                        <br>
+                        <span>Key: <input class:pronunciation={disabledDatabase} type=text bind:value={inputKey} disabled={disabledDatabase}/></span>
+                        <button onclick={setDatabaseAccount}>Authenticate</button>
+                        <p class=info>Your ID and Key are saved to the app's internal settings, not to your file, but turning on uploading is saved per-file.</p>
+                        <br>
+                        <button class='hover-highlight hover-shadow' onclick={syncFromDatabase}>Sync From Cloud</button>
+                        <p class=info>This will overwrite the current file with the latest version of the file available in the cloud.</p>
+                        <button class='hover-highlight hover-shadow' onclick={confirmDeleteFromDatabase}>Delete From Cloud</button>
+                        <p class=info>This will delete the current file from the cloud, and it will no longer be accessible to the discord bot or online file viewer.</p>
+                    </label>
+                </div>
+                <br><hr/><br>
+                <p>Lexicon Settings</p> <br>
+                <label>Manage Tags<br>
+                    <TagSelector on:select={e => tag = e.detail? e.detail.trim() : ''}/>
+                    <p>Selected: {tag}</p>
+                    {#if !!tag}
+                        <button class="hover-highlight hover-shadow" onclick={()=>{
+                            Object.keys($Language.Lexicon).forEach(word => {
+                                $Language.Lexicon[word].Senses.forEach((sense, i) => {
+                                    if (sense.tags.includes(tag)) {
+                                        $Language.Lexicon[word].Senses[i].tags.splice(sense.tags.indexOf(tag), 1);
+                                    }
+                                });
+                            });
+                            tag = '';
+                        }}>Delete Tag</button>
+                        <button class="hover-highlight hover-shadow" onclick={()=>{
+                            vex.dialog.prompt({
+                                message: 'New tag name:',
+                                placeholder: tag,
+                                // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
+                                callback: function(response) {
+                                    if (response) {
+                                        Object.keys($Language.Lexicon).forEach(word => {
+                                            $Language.Lexicon[word].Senses.forEach((sense, i) => {
+                                                if (sense.tags.includes(tag)) {
+                                                    $Language.Lexicon[word].Senses[i].tags.splice(sense.tags.indexOf(tag), 1);
+                                                    $Language.Lexicon[word].Senses[i].tags.push(response);
+                                                }
+                                            });
+                                        });
+                                        tag = response;
+                                    }
                                 }
                             });
-                        });
-                        tag = '';
-                    }}>Delete Tag</button>
-                    <button class="hover-highlight hover-shadow" onclick={()=>{
-                        vex.dialog.prompt({
-                            message: 'New tag name:',
-                            placeholder: tag,
-                            // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                            callback: function(response) {
-                                if (response) {
-                                    Object.keys($Language.Lexicon).forEach(word => {
-                                        $Language.Lexicon[word].Senses.forEach((sense, i) => {
-                                            if (sense.tags.includes(tag)) {
-                                                $Language.Lexicon[word].Senses[i].tags.splice(sense.tags.indexOf(tag), 1);
-                                                $Language.Lexicon[word].Senses[i].tags.push(response);
+                        }}>Edit Tag</button>
+                    {/if}
+                </label>
+                <br><hr/><br>
+                <p>Advanced Settings</p> <br>
+                <label>Show Multi-Lect Features
+                    <input type="checkbox" bind:checked={$Language.UseLects} onchange={confirmUseLectsChange}/>
+                    {#if $Language.UseLects}
+                        {#each $Language.Lects as lect, lectIndex}
+                            <div class="narrow">
+                                <p style="display: inline-block" id={`${lectIndex}`}>{lect}</p>
+                                <button class="hover-highlight hover-shadow" style="display: inline-block" onclick={() => {
+                                    if ($Language.Lects.length === 1) {
+                                        vex.dialog.alert('You cannot delete the last lect.');
+                                        return;
+                                    };
+                                    vex.dialog.confirm({
+                                        message: `Are you sure you want to delete the lect "${lect}"? This action cannot be undone.`,
+                                        // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
+                                        callback: function (response) {
+                                            if (response) {
+                                                deleteLect(lect, lectIndex);
                                             }
-                                        });
+                                        }
                                     });
-                                    tag = response;
+                                }}> ⌫ </button>
+                                <button class="hover-highlight hover-shadow" style="display: inline-block" onclick={() => {
+                                    vex.dialog.prompt({
+                                        message: 'Edit Lect Name',
+                                        placeholder: `${lect}`,
+                                        // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
+                                        callback: function (response) {
+                                            if (response === false) return
+                                            changeLectName(lect, response, lectIndex);
+                                        }
+                                    })
+                                }}> ✎ </button>
+                                <button class="hover-highlight hover-shadow" style="display: inline-block;" onclick={() => {
+                                    vex.dialog.confirm({
+                                        message: `Add all words in the lexicon to the lect ‘${lect}’?`,
+                                        // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
+                                        callback: function (response) {
+                                            if (response) {
+                                                for (let word in $Language.Lexicon) {
+                                                    $Language.Lexicon[word].Senses.forEach(sense => {
+                                                        if (!sense.lects.includes(lect)) {
+                                                            sense.lects.push(lect);
+                                                        }
+                                                    });
+                                                };
+                                                vex.dialog.alert(`Added all senses of all words to the lect ‘${lect}’.`);
+                                            }
+                                        }
+                                    });
+                                }}> ◎ </button>
+                            </div>
+                        {/each}
+                        <button class="hover-highlight hover-shadow" onclick={() => {
+                            vex.dialog.prompt({
+                                message: 'Add a New Lect',
+                                placeholder: `New ${$Language.Name} Lect`,
+                                // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
+                                callback: function (response) {
+                                    if (response === false) return;
+                                    $Language.Lects = [...$Language.Lects, response];
+                                    $Language.Pronunciations[response] = 'place > holder';
+                                    $pronunciations[response] = get_pronunciation($wordInput, response);
                                 }
-                            }
-                        });
-                    }}>Edit Tag</button>
-                {/if}
-            </label>
-
-            <br><hr/><br>
-
-            <p>Advanced Settings</p> <br>
-            <label>Show Multi-Lect Features
-                <input type="checkbox" bind:checked={$Language.UseLects} onchange={confirmUseLectsChange}/>
-                {#if $Language.UseLects}
-                    {#each $Language.Lects as lect, lectIndex}
-                        <div class="narrow">
-                            <p style="display: inline-block" id={`${lectIndex}`}>{lect}</p>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block" onclick={() => {
-                                if ($Language.Lects.length === 1) {
-                                    vex.dialog.alert('You cannot delete the last lect.');
-                                    return;
-                                };
-                                vex.dialog.confirm({
-                                    message: `Are you sure you want to delete the lect "${lect}"? This action cannot be undone.`,
-                                    // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                                    callback: function (response) {
-                                        if (response) {
-                                            deleteLect(lect, lectIndex);
+                            })
+                        }}> + Lect </button>
+                    {/if}
+                </label>
+                <br>
+                <label>Show Pronunciations
+                    <input type="checkbox" bind:checked={$Language.ShowPronunciation}/>
+                </label>
+                <br>
+                <label>Show Alphabetizer Settings in Lexicon
+                    <input type="checkbox" bind:checked={$Language.ShowAlphabet}/>
+                </label>
+                <br>
+                <label>Show Phrasebook Tab
+                    <input type="checkbox" bind:checked={$Language.ShowPhrasebook}/>
+                </label>
+                <br>
+                <label>Show Etymology Features
+                    <input type="checkbox" bind:checked={$Language.ShowEtymology}/>
+                    {#if $Language.ShowEtymology}
+                        <button class="hover-highlight hover-shadow"
+                            onclick={() => {
+                                importRelative();
+                            }}
+                        > Import Related Lexicon </button>
+                        {#each Object.keys($Language.Relatives) as relative}
+                            <div class="narrow">
+                                <p style="display: inline-block;">{relative}</p>
+                                <button class="hover-highlight hover-shadow" style="display: inline-block;" onclick={() => {
+                                    vex.dialog.confirm({
+                                        message: `Are you sure you want to delete "${relative}"? This will remove any etymology connections its entries may have.`,
+                                        // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
+                                        callback: function (response) {
+                                            if (response) {
+                                                $Language.Etymologies = Object.fromEntries(Object.entries($Language.Etymologies).filter(([_, value]) => value.source !== relative));
+                                                delete $Language.Relatives[relative];
+                                            }
                                         }
-                                    }
-                                });
-                            }}> ⌫ </button>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block" onclick={() => {
-                                vex.dialog.prompt({
-                                    message: 'Edit Lect Name',
-                                    placeholder: `${lect}`,
-                                    // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                                    callback: function (response) {
-                                        if (response === false) return
-                                        changeLectName(lect, response, lectIndex);
-                                    }
-                                })
-                            }}> ✎ </button>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block;" onclick={() => {
-                                vex.dialog.confirm({
-                                    message: `Add all words in the lexicon to the lect ‘${lect}’?`,
-                                    // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                                    callback: function (response) {
-                                        if (response) {
-                                            for (let word in $Language.Lexicon) {
-                                                $Language.Lexicon[word].Senses.forEach(sense => {
-                                                    if (!sense.lects.includes(lect)) {
-                                                        sense.lects.push(lect);
-                                                    }
-                                                });
-                                            };
-                                            vex.dialog.alert(`Added all senses of all words to the lect ‘${lect}’.`);
-                                        }
-                                    }
-                                });
-                            }}> ◎ </button>
+                                    });
+                                }}> ⌫ </button>
+                            </div>
+                        {/each}
+                    {/if}
+                </label>
+                <br>
+                <label>Show Automatic Inflection Features
+                    <input type="checkbox" bind:checked={$Language.ShowInflection}/>
+                </label>
+                <br>
+                <label>Show Alternate Orthography Features
+                    <input type=checkbox bind:checked={$Language.ShowOrthography}/>
+                    {#if $Language.ShowOrthography}
+                        <div class='row narrow'>
+                            <div class=column>Show in Lexicon</div>
+                            <div class=column>Show in Phrasebook</div>
                         </div>
-                    {/each}
-                    <button class="hover-highlight hover-shadow" onclick={() => { 
-                        vex.dialog.prompt({
-                            message: 'Add a New Lect',
-                            placeholder: `New ${$Language.Name} Lect`,
-                            // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                            callback: function (response) {
-                                if (response === false) return;
-                                $Language.Lects = [...$Language.Lects, response];
-                                $Language.Pronunciations[response] = 'place > holder';
-                                $pronunciations[response] = get_pronunciation($wordInput, response);
-                            }
-                        })
-                    }}> + Lect </button>
-                {/if}
-            </label>
-            <br>
-            <label>Show Pronunciations
-                <input type="checkbox" bind:checked={$Language.ShowPronunciation}/>
-            </label>
-            <br>
-            <label>Show Alphabetizer Settings in Lexicon
-                <input type="checkbox" bind:checked={$Language.ShowAlphabet}/>
-            </label>
-            <br>
-            <label>Show Phrasebook Tab
-                <input type="checkbox" bind:checked={$Language.ShowPhrasebook}/>
-            </label>
-            <br>
-            <label>Show Etymology Features
-                <input type="checkbox" bind:checked={$Language.ShowEtymology}/>
-                {#if $Language.ShowEtymology}
-                    <button class="hover-highlight hover-shadow" 
-                        onclick={() => {
-                            importRelative();
-                        }}
-                    > Import Related Lexicon </button>
-                    {#each Object.keys($Language.Relatives) as relative}
-                        <div class="narrow">
-                            <p style="display: inline-block;">{relative}</p>
-                            <button class="hover-highlight hover-shadow" style="display: inline-block;" onclick={() => {
-                                vex.dialog.confirm({
-                                    message: `Are you sure you want to delete "${relative}"? This will remove any etymology connections its entries may have.`,
-                                    // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                                    callback: function (response) {
-                                        if (response) {
-                                            $Language.Etymologies = Object.fromEntries(Object.entries($Language.Etymologies).filter(([_, value]) => value.source !== relative));
-                                            delete $Language.Relatives[relative];
-                                        }
-                                    }
-                                });
-                            }}> ⌫ </button>
-                        </div>
-                    {/each}
-                {/if}
-            </label>
-            <br>
-            <label>Show Automatic Inflection Features
-                <input type="checkbox" bind:checked={$Language.ShowInflection}/>
-            </label>
-            <br>
-            <label>Show Alternate Orthography Features
-                <input type=checkbox bind:checked={$Language.ShowOrthography}/>
-                {#if $Language.ShowOrthography}
-                    <label>Display Orthographies
                         {#each $Language.Orthographies as orthography}
                             <div class="row narrow">
-                                <div class=column style:align=right>
-                                    <input type=checkbox bind:checked={orthography.display}/>
+                                <div class="column">
+                                    <div class="row">
+                                        <div class=column style:align=right>
+                                            <input type=checkbox bind:checked={orthography.display}/>
+                                        </div>
+                                        <div class="column text-left">
+                                            <p>{orthography.name}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="column text-left">
-                                    <p>{orthography.name}</p>
+                                <div class="column">
+                                    <div class="row">
+                                        <div class=column style:align=right>
+                                            <input type=checkbox bind:checked={orthography.displayInPhrasebook}/>
+                                        </div>
+                                        <div class="column text-left">
+                                            <p>{orthography.name}</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         {/each}
-                    </label>
-                {/if}
-            </label>
-        </div>
-    </div>
+                    {/if}
+                </label>
+                <br><br><br>
+            </div>
+        </Draggable>
+    {/if}
 </div>

@@ -295,120 +295,102 @@
 <!-- Lexicon Tab -->
 
 <div class='tab-pane'>
-    <!-- Header -->
-    {#if $Language.ShowAlphabet}
-        <div class='container row text-center header'>
-            <div class="narrow-col">
-                <label for="case-sensitive" style="margin: auto;"> Case Sensitivity </label>
-                <input type="checkbox" style="width: 15px; margin: auto;" id="case-sensitive" bind:checked={$Language.CaseSensitive} />
-            </div>
-            <div class="narrow-col">
-                <label for="ignore-diacritic" style="margin: auto; text-align: right;">Ignore Diacritics</label>
-                <input type="checkbox" style="width: 15px; margin: auto;" id="ignore-diacritic" bind:checked={$Language.IgnoreDiacritics}/>
-            </div>
-            <input id="alph-input" type="text" bind:value={$Language.Alphabet}>
-        </div>
-    {/if}
-
-    <!-- Body -->
     <div class=row style={$Language.ShowAlphabet? 'height: 91vh' : 'height: 96vh'}>
 
-        <!-- Lexicon -->
-
-        <div class='container column text-center' style="height: 100%">
-            
-            <section id=search-filters>
-                <div class='row'>
-                    <div class="column search-container">
-                        {#if !searchWords}
-                                <label for="search-wrd" style="position: absolute; top: 0.5em; left: 1em">Search by word…</label>
-                        {/if}
-                        <input id="search-wrd" type="text" class="search" bind:value={searchWords} on:input={search_lex}/>
-                    </div>
-                    <div class="column search-container">
-                        {#if !searchTags}
-                                <label for="search-tag" style="position: absolute; top: 0.5em; left: 1em">Search by tags…</label>
-                        {/if}
-                        <input id="search-tag" type="text" class="search" bind:value={searchTags} on:input={search_lex}/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="search-container column">
-                        {#if !searchDefinitions}
-                            <label for="search-def" style="position: absolute; top: 0.33em; left: 1em">Search definitions…</label>
-                        {/if}
-                        <input id="search-def" type="text" class="search" bind:value={searchDefinitions} on:input={search_lex}/>
-                    </div>
-                    {#if $Language.UseLects}
-                        <div class="column">
-                            <label>Filter by lect:
-                                <select bind:value={lectFilter}>
-                                    <option value=''>All</option>
-                                    {#each $Language.Lects as lect}
-                                        <option value={lect}>{lect}</option>
-                                    {/each}
-                                </select>
-                            </label>
-                        </div>
-                    {/if}
-                </div>
-            </section>
-
-            <div class='scrolled' style="height: 93%" bind:clientWidth={displayWidth}>
-                {#if displayWidth > 1600}
-                    {#each multicolumn(alphabetized, 3) as columns}
-                        <div class='row' style='width: 72%'>
-                            {#each columns as word}
-                                <div class='column' style='width:33%; margin: auto'>
-                                    <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
-                                </div>
-                            {/each}
-                        </div>
-                        <br/>
-                    {:else}
-                        <p class="info" id="lex-body">Add new words on the left</p>
-                    {/each}
-                {:else if displayWidth > 800}
-                    {#each multicolumn(alphabetized, 2) as columns}
-                        <div class='row' style='width: 72%'>
-                            {#each columns as word}
-                                <div class='column' style='width:50%; margin: auto'>
-                                    <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
-                                </div>
-                            {/each}
-                        </div>
-                        <br/>
-                    {:else}
-                        <p class="info" id="lex-body">Add new words on the left</p>
-                    {/each}
-                {:else}
-                    {#each alphabetized as word}
-                        <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
-                    {:else}
-                        <p class="info" id="lex-body">Add new words on the left</p>
-                    {/each}
-                {/if}
-                
-                <!-- {#each alphabetized as word}
-                    <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
-                {:else}
-                    <p class="info" id="lex-body">Add new words on the left</p>
-                {/each} -->
-            </div>
-
-            <p id="entry-counter">
-                {#if !!keys[0]} <!-- if there is a search being attempted -->
-                    {!!keys[0]? keys.length : '0'} {(keys.length === 1 && !!keys[0])? 'Match' : 'Matches'}
-                {:else} <!-- if there is no search being attempted -->
-                    {Object.keys($Language.Lexicon).length} {Object.keys($Language.Lexicon).length === 1? 'Entry' : 'Entries'}
-                {/if}
-            </p>
-
-        </div>
-
-        <!-- Word Entry Pane -->
         {#if $selectedTab === 0}
-            <Draggable panel="lexicon">
+            <!-- Lexicon -->
+            <Draggable panel=lexicon>
+                <div class='container glasspane'>
+                
+                    <section id=search-filters>
+                        <div class='row'>
+                            <div class="column search-container">
+                                {#if !searchWords}
+                                        <label for="search-wrd" style="position: absolute; top: 0.5em; left: 1em">Search by word…</label>
+                                {/if}
+                                <input id="search-wrd" type="text" class="search" bind:value={searchWords} on:input={search_lex}/>
+                            </div>
+                            <div class="column search-container">
+                                {#if !searchTags}
+                                        <label for="search-tag" style="position: absolute; top: 0.5em; left: 1em">Search by tags…</label>
+                                {/if}
+                                <input id="search-tag" type="text" class="search" bind:value={searchTags} on:input={search_lex}/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="search-container column">
+                                {#if !searchDefinitions}
+                                    <label for="search-def" style="position: absolute; top: 0.33em; left: 1em">Search definitions…</label>
+                                {/if}
+                                <input id="search-def" type="text" class="search" bind:value={searchDefinitions} on:input={search_lex}/>
+                            </div>
+                            {#if $Language.UseLects}
+                                <div class="column">
+                                    <label>Filter by lect:
+                                        <select bind:value={lectFilter}>
+                                            <option value=''>All</option>
+                                            {#each $Language.Lects as lect}
+                                                <option value={lect}>{lect}</option>
+                                            {/each}
+                                        </select>
+                                    </label>
+                                </div>
+                            {/if}
+                        </div>
+                    </section>
+                    <div class='scrolled' style="height: 93%" bind:clientWidth={displayWidth}>
+                        {#if displayWidth > 1600}
+                            {#each multicolumn(alphabetized, 3) as columns}
+                                <div class='row' style='width: 72%'>
+                                    {#each columns as word}
+                                        <div class='column' style='width:33%; margin: auto'>
+                                            <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
+                                        </div>
+                                    {/each}
+                                </div>
+                                <br/>
+                            {:else}
+                                <p class="info" id="lex-body">Add new words on the left</p>
+                            {/each}
+                        {:else if displayWidth > 800}
+                            {#each multicolumn(alphabetized, 2) as columns}
+                                <div class='row' style='width: 72%'>
+                                    {#each columns as word}
+                                        <div class='column' style='width:50%; margin: auto'>
+                                            <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
+                                        </div>
+                                    {/each}
+                                </div>
+                                <br/>
+                            {:else}
+                                <p class="info" id="lex-body">Add new words on the left</p>
+                            {/each}
+                        {:else}
+                            {#each alphabetized as word}
+                                <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
+                            {:else}
+                                <p class="info" id="lex-body">Add new words on the left</p>
+                            {/each}
+                        {/if}
+                
+                        <!-- {#each alphabetized as word}
+                            <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
+                        {:else}
+                            <p class="info" id="lex-body">Add new words on the left</p>
+                        {/each} -->
+                    </div>
+                    <p id="entry-counter">
+                        {#if !!keys[0]} <!-- if there is a search being attempted -->
+                            {!!keys[0]? keys.length : '0'} {(keys.length === 1 && !!keys[0])? 'Match' : 'Matches'}
+                        {:else} <!-- if there is no search being attempted -->
+                            {Object.keys($Language.Lexicon).length} {Object.keys($Language.Lexicon).length === 1? 'Entry' : 'Entries'}
+                        {/if}
+                    </p>
+                </div>
+            </Draggable>
+
+            <!-- Word Entry Pane -->
+            <Draggable panel=newword>
                 <div class='container scrolled glasspane'>
                     <label for="wrd-input">New Word</label>
                     <input id="wrd-input" type="text"
@@ -462,6 +444,25 @@
                     {/if}
                 </div>
             </Draggable>
+
+            <!-- Alphabetization Settings -->
+            {#if $Language.ShowAlphabet}
+                <Draggable panel=alphabet>
+                    <div class='container glasspane row'>
+                        <div class="narrow-col">
+                            <label for="case-sensitive" style="margin: auto;"> Case Sensitivity </label>
+                            <input type="checkbox" style="width: 15px; margin: auto;" id="case-sensitive" bind:checked={$Language.CaseSensitive} />
+                        </div>
+                        <div class="narrow-col">
+                            <label for="ignore-diacritic" style="margin: auto; text-align: right;">Ignore Diacritics</label>
+                            <input type="checkbox" style="width: 15px; margin: auto;" id="ignore-diacritic" bind:checked={$Language.IgnoreDiacritics}/>
+                        </div>
+                        <input id="alph-input" type="text" bind:value={$Language.Alphabet} style="rows:1; height: fit-content">
+                    </div>
+                </Draggable>
+            {/if}
+
         {/if}
+
     </div>
 </div>

@@ -38,7 +38,8 @@ const Default: Lexc.Language = {
         root: 'rom',
         lect: 'General',
         rules: 'Your romanized orthography is the base form of input.',
-        display: true
+        display: true,
+        displayInPhrasebook: true, // requested by Maarz
     }],
     ShowOrthography: false,
     ShowPronunciation: true,
@@ -115,17 +116,97 @@ export const referenceLanguage: Writable<Lexc.Language>|Writable<boolean> = writ
 export const dbid = writable(''); 
 export const dbkey = writable('');
 
-export const panelAdjustments = writable({
+const defaultPanel = {
+    top: 25,
+    left: 0,
+    height: 90,
+    width: 140,
+}
+export const panelAdjustments: Writable<{
+    [index: string]: {
+        top: number,
+        left: number,
+        height: number,
+        width: number,
+    }
+}> = writable({
+    newword: {
+        ...defaultPanel,
+        top: 115,
+        height: 810,
+        width: 280,
+    },
     lexicon: {
-        top: 200,
-        left: 20,
-        height: "auto",
-        width: "auto",
+        top: 115,
+        left: 280,
+        width: 1120,
+        height: 810,
+    },
+    alphabet: {
+        ...defaultPanel,
+        width: 1400,
+        height: 90,
+    },
+    pronunciation: {
+        ...defaultPanel,
+        left: 700,
+        width: 700,
+        height: 900,
+    },
+    wordgenerator: {
+        ...defaultPanel,
+        width: 700,
+        height: 900,
+    },
+    settings: {
+        ...defaultPanel,
+        width: 1400,
+        height: 900,
+    },
+    files: {
+        ...defaultPanel,
+        width: 1400,
+        height: 900,
     },
     phrasebook: {
-        top: 200,
-        left: 20,
-        height: "auto",
-        width: "auto",
+        ...defaultPanel,
+        left: 420,
+        width: 980,
+        height: 900,
+    },
+    phrasecategories: {
+        ...defaultPanel,
+        height: 450,
+        width: 420,
+    },
+    newphrase: {
+        ...defaultPanel,
+        top: 475,
+        height: 450,
+        width: 420,
+    },
+    orthography: {
+        ...defaultPanel,
+        top: 70,
+    },
+    romchangewizard: {
+        top: 40,
+        left: 10,
+        height: 20,
+        width: 60,
     }
+});
+
+export const panelSnap: Writable<{
+    x: number,
+    y: number,
+    rows: number,
+    columns: number,
+    proportional: boolean
+}> = writable({
+    x: 140,
+    y: 90,
+    rows: 10,
+    columns: 10,
+    proportional: true,
 });
