@@ -1,0 +1,13 @@
+[package]
+name = "graphemy_ffi"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "_graphemy_ffi"
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+graphemy = { git = "https://codeberg.org/zhuriel/graphemy.git" }
+libc = "0.2.172"
+svg = "0.18.0"

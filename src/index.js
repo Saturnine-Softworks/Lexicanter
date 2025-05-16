@@ -105,7 +105,7 @@ function createWindow () {
     ipcMain.on('buttonclose', () => mainWindow.webContents.send('app-close'));
     ipcMain.on('minimize', () => mainWindow.minimize());
     ipcMain.on('maximize', () =>
-        mainWindow.isMaximized() ?
+        mainWindow.isMaximized()?
             mainWindow.unmaximize()
         :   mainWindow.maximize(),
     );
@@ -117,22 +117,31 @@ function createWindow () {
     });
 
     // Interop signature definitions
-    // const dylibPath =
-    //     isDev ?
-    //         path.resolve(
-    //             path.join(
-    //                 __dirname,
-    //                 'app/utils/interop/library/target/release/liblibrary.dylib',
-    //             ),
-    //         )
-    //     :   path.resolve(process.resourcesPath, 'liblibrary.dylib');
-    // const lib = ffi.load(dylibPath);
-    // const fns = {
-    //     // fn name = lib.func(rust fn name, return type, [parameter types])
-    //     echo: lib.func('echo', 'str', ['str']),
-    //     graphemify: lib.func('graphemify', 'str', ['str', 'str', 'str', 'str']),
-    // };
-    // ipcMain.handle('ffi', (_, name, ...args) => fns[name](...args));
+    const dylibPath =
+        isDev? 
+            path.resolve(
+                path.join(
+                    __dirname,
+                    'interop/library/target/release/lib_graphemy_ffi.dylib',
+                ),
+            )
+        :   path.resolve(process.resourcesPath, 'lib_graphemy_ffi.dylib');
+
+    const lib = ffi.load(dylibPath);
+    const fns = {
+        // fn name = lib.func(rust fn name, return type, [parameter types])
+        echo: lib.func('echo', 'str', ['str']),
+        graphemify: lib.func('graphemify', 'str', ['str', 'str']),
+    };
+    ipcMain.handle('ffi', (_, name, ...args) => {
+        console.log(
+            name,
+            ...args, 
+            // '\n', fns[name]
+        );
+        console.log(fns[name](...args));
+        return fns[name](...args);
+    });
 };
 
 // This method will be called when Electron has finished

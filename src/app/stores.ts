@@ -37,6 +37,7 @@ const Default: Lexc.Language = {
         font: 'Gentium',
         root: 'rom',
         lect: 'General',
+        graphemy: false,
         rules: 'Your romanized orthography is the base form of input.',
         display: true,
         displayInPhrasebook: true, // requested by Maarz

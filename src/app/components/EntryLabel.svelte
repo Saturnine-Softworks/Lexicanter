@@ -2,6 +2,7 @@
 <script lang=ts>
     import { Language } from '../stores';
     import { parseRules, applyRules } from '../utils/sca';
+    import { graphemify } from '../../interop/interop.svelte';
     import type { Word, Phrase, Variant } from '../types';
     let {
         word, 
@@ -21,10 +22,19 @@
         // check if source is a phrase/variant entry, use appropriate setting
         && ('description' in source? ortho.displayInPhrasebook : ortho.display) 
     }
-        <p style:font-family={$Language.Orthographies.find(o => o.name === ortho.name)?.font}
-        >{(()=>{
-            const settings = parseRules($Language.Orthographies.find(o => o.name === ortho.name)!.rules);
-            return applyRules(settings.rules, ortho.root === 'rom'? word : source.pronunciations[ortho.lect].ipa, settings.categories);
-        })()}</p>
+        {#if ortho.graphemy}
+            {#await graphemify(ortho.font, word)}
+                generating…
+            {:then svg} 
+                {@html svg}
+            {/await}
+        {:else}
+            <p style:font-family={$Language.Orthographies.find(o => o.name === ortho.name)?.font}>
+                {(()=>{
+                    const settings = parseRules($Language.Orthographies.find(o => o.name === ortho.name)!.rules);
+                    return applyRules(settings.rules, ortho.root === 'rom'? word : source.pronunciations[ortho.lect].ipa, settings.categories);
+                })()}
+            </p>
+        {/if}
     {/if}
 {/each}

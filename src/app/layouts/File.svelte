@@ -123,6 +123,15 @@
             if (contents.hasOwnProperty('Orthographies')) {
                 $Language.Orthographies = contents.Orthographies;
                 $Language.ShowOrthography = contents.ShowOrthography;
+
+                if (!$Language.Orthographies[0].hasOwnProperty('graphemy')) {
+                    $Language.Orthographies.forEach((_, i) => {
+                        $Language.Orthographies[i] = {
+                            ...$Language.Orthographies[i],
+                            graphemy: false,
+                        }
+                    });
+                }
             }
             
             errorMessage = 'There was a problem loading the phonotactics rules from the file.'

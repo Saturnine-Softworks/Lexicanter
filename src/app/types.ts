@@ -159,6 +159,7 @@ export type Etymologies = {
 export type Orthography = {
     name: string;
     font: string;
+    graphemy: boolean;
     root: 'rom' | 'ipa';
     lect: string;
     rules: string;

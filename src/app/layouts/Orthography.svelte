@@ -2,6 +2,7 @@
     import { Language, selectedTab } from "../stores";
     import { parseRules, applyRules } from "../utils/sca";
     import type { Orthography } from "../types";
+    import { showOpenDialog } from "../utils/files";
     import Draggable from "../components/Draggable.svelte";
     let selectedOrtho = '';
     let testInput = '';
@@ -43,6 +44,21 @@
         }
 
     }
+
+    // async function choose_graphemy_file(index: number) {
+    //     let [file_handle] = await window.showOpenFilePicker();
+    //     await file_handle.requestPermission({ mode: 'read' });
+    //     let file = await file_handle.getFile();
+    //     if (!file.name.includes('.gmy')) {
+    //         vex.dialog.alert('The selected file was not a .gmy file. Please make sure you only select a file saved with Graphemy 0.3.0 or newer.');
+    //         return
+    //     }
+    //     $Language.Orthographies[index] = {
+    //         ...$Language.Orthographies[index],
+    //         font: 
+    //     }
+
+    // }
 </script>
 <div class=tab-pane>
     <div class=row style:height=100%>
@@ -58,20 +74,35 @@
                         readonly={orthography.name==='Romanization'}
                     />
                 </label>
-                <label>Font
-                    <input type=text 
-                        on:blur={(e) => {
-                            setAttribute(e, 'font', i);
-                        }}
-                        style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
-                        value={orthography.font}
-                        readonly={orthography.name==='Romanization'}
-                    />
-                </label>
+                {#if !orthography.graphemy}
+                    <label>Font
+                        <input type=text 
+                            on:blur={(e) => {
+                                setAttribute(e, 'font', i);
+                            }}
+                            style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
+                            value={orthography.font}
+                            readonly={orthography.name==='Romanization'}
+                        />
+                    </label>
+                {:else}
+                    <br>
+                    <i>File</i>: <u>{ orthography.font||"No file selected." }</u>
+                    <button on:click={() => {
+                        showOpenDialog({
+                            title: 'Select Graphemy File',
+                            properties: ['openFile'],
+                        },
+                        file_path => {
+                            $Language.Orthographies[i].font  = file_path[0]
+                        });
+                    }}>Locate Graphemy (.gmy) File</button>
+                    <br>
+                {/if}
                 <!-- svelte-ignore a11y-label-has-associated-control -->
-                <label>Root
+                <label>Root:
                     {#if orthography.name === 'Romanization'}
-                        <span>: Base input</span>
+                        <span>Base input</span>
                     {:else}
                         <select bind:value={orthography.root}>
                             <option value=ipa>Base from pronunciation</option>
@@ -79,6 +110,22 @@
                         </select>
                     {/if}
                 </label>
+                <br>
+                <label>Typesetter:
+                    {#if orthography.name === 'Romanization'}
+                        <span>Standard typeface</span>
+                    {:else}
+                        <select bind:value={orthography.graphemy} 
+                            on:change={() => {
+                                $Language.Orthographies[i].font = ""
+                            }}
+                        >
+                            <option value={false}>Standard typeface</option>
+                            <option value={true}>Graphemy</option>
+                        </select>
+                    {/if}
+                </label>
+                <br>
                 {#if $Language.UseLects && orthography.root === 'ipa'}
                     <label>Lect
                         <select bind:value={orthography.lect}>
@@ -124,6 +171,7 @@
                             name: `New Orthography ${$Language.Orthographies.length}`,
                             font: 'Gentium',
                             root: 'ipa',
+                            graphemy: false,
                             lect: $Language.Lects[0],
                             rules: '',
                             display: true,
