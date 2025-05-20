@@ -101,11 +101,14 @@
             $hideDropdowns = true;
             // timeout is necessary to let the dropdowns close before the lexicon is updated
             // hiding the inflections dropdowns is necessary to prevent a persistency bug that can lead to a soft crash
-            window.setTimeout(() => {
-                let { [word]: _, ...rest } = $Language.Lexicon;
-                $Language.Lexicon = rest;
-                $hideDropdowns = false;
-            }, 100);
+            let { [word]: _, ...rest } = $Language.Lexicon;
+            $Language.Lexicon = rest;
+            $hideDropdowns = false;
+            // window.setTimeout(() => {
+            //     let { [word]: _, ...rest } = $Language.Lexicon;
+            //     $Language.Lexicon = rest;
+            //     $hideDropdowns = false;
+            // }, 100);
         }
     }
 
@@ -295,8 +298,8 @@
 </script>
 <!-- Lexicon Tab -->
 
-<div class='tab-pane'>
-    <div class=row style={$Language.ShowAlphabet? 'height: 91vh' : 'height: 96vh'}>
+<div class='tab-pane' style=overflow:hidden>
+    <div class=row style='height: 91vh'>
 
         {#if $selectedTab === 0}
             <!-- Lexicon -->
@@ -339,13 +342,13 @@
                             {/if}
                         </div>
                     </section>
-                    <div class='scrolled' style="height: 93%" bind:clientWidth={displayWidth}>
+                    <div class='scrolled' style="height: 85%" bind:clientWidth={displayWidth}>
                         {#if displayWidth > 1600}
                             {#each multicolumn(alphabetized, 3) as columns}
                                 <div class='row' style='width: 72%'>
                                     {#each columns as word}
                                         <div class='column' style='width:33%; margin: auto'>
-                                            <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
+                                            <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} edit={() => editEntry(word)}/>
                                         </div>
                                     {/each}
                                 </div>
@@ -358,7 +361,7 @@
                                 <div class='row' style='width: 72%'>
                                     {#each columns as word}
                                         <div class='column' style='width:50%; margin: auto'>
-                                            <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
+                                            <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} edit={() => editEntry(word)}/>
                                         </div>
                                     {/each}
                                 </div>
@@ -368,7 +371,7 @@
                             {/each}
                         {:else}
                             {#each alphabetized as word}
-                                <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
+                                <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} edit={() => editEntry(word)}/>
                             {:else}
                                 <p class="info" id="lex-body">Add new words on the left</p>
                             {/each}

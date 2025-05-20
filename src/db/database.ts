@@ -21,7 +21,7 @@ export async function verify(userID: string, key: string): Promise<boolean> {
             })
         });
         const data = await response.json();
-        console.debug(data)
+        // console.debug(data)
         return data.success;
     } catch (error) {
         console.error('Error verifying:', error);

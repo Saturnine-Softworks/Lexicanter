@@ -1,18 +1,25 @@
-<svelte:options immutable/>
+<svelte:options runes/>
 <script lang="ts">
     import { Language } from '../stores';
     import type { Word } from '../types';
-    import { createEventDispatcher } from 'svelte';
     import Pronunciations from './Pronunciations.svelte';
     import Inflections from './Inflections.svelte';
     import { markdownToHtml } from '../utils/markdown';
     import EntryLabel from './EntryLabel.svelte';
-    const dispatch = createEventDispatcher();
-    const edit = () => dispatch('edit')
-    export let word: string;
-    export let source: Word;
-    export let showEtymology: boolean;
-    export let showInflections: boolean = false;
+
+    let {
+        word,
+        source,
+        showEtymology,
+        showInflections = false,
+        edit = ()=>{},
+    } : {
+        word: string,
+        source: Word,
+        showEtymology: boolean,
+        showInflections?: boolean,
+        edit?: Function,
+    } = $props();
 
     function getAncestors(): string {
         const ancestors: string[][] = [];
@@ -55,14 +62,14 @@
         return ancestorString;
     }
 
-    let entryAncestors: string = '';
-    $: { 
+    let entryAncestors: string = $state('');
+    $effect(() => {
         $Language.Etymologies; $Language.Lexicon; word; source;
         entryAncestors = getAncestors();
-    }
+    });
 </script>
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div id='{word}' class="lex-entry prelined" on:contextmenu={edit}>
+<div id='{word}' class="lex-entry prelined" oncontextmenu={() => edit()}>
     <EntryLabel {word} {source} />
     <Pronunciations pronunciations={ source.pronunciations }/>
     {#each source.Senses as Sense, i}

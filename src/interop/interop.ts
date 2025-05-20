@@ -1,6 +1,4 @@
 const { ipcRenderer } = require('electron');
-import { Language } from '../app/stores';
-import path from 'path';
 
 /**
  * Wrapper for asynchronous IPC invocation of FFI.

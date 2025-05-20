@@ -36,6 +36,7 @@
 <svg {width} {height}>
     <g>
         {#each tree.parents as parent, i}
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
             <g on:mousedown={() => {
                 select(parent.name)
             }}>
@@ -76,6 +77,7 @@
             > { tree.name } </text>
         </g>
         {#each tree.children as child, i}
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
             <g on:mousedown={() => {
                 select(child.name)
             }}>

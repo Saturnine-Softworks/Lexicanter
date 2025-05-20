@@ -1,18 +1,19 @@
+<svelte:options runes/>
 <script lang=ts>
     import { Language, selectedTab } from "../stores";
     import { parseRules, applyRules } from "../utils/sca";
     import type { Orthography } from "../types";
     import { showOpenDialog } from "../utils/files";
     import Draggable from "../components/Draggable.svelte";
-    let selectedOrtho = '';
-    let testInput = '';
+    let selectedOrtho = $state('');
+    let testInput = $state('');
     const vex = require('vex-js');
 
-    let orthographyReplacement = {
+    let orthographyReplacement = $state({
         pattern: '',
         replacement: ''
-    };
-    let orthographyChangeEndMessage = '';
+    });
+    let orthographyChangeEndMessage = $state('');
 
     /**
      * Binding directly to the Language store seems to be very slow, so this function is used to
@@ -66,7 +67,7 @@
             {#each $Language.Orthographies as orthography, i}
                 <label>Name
                     <input type=text 
-                        on:blur={(e) => {
+                        onblur={(e) => {
                             setAttribute(e, 'name', i);
                         }}
                         style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
@@ -77,7 +78,7 @@
                 {#if !orthography.graphemy}
                     <label>Font
                         <input type=text 
-                            on:blur={(e) => {
+                            onblur={(e) => {
                                 setAttribute(e, 'font', i);
                             }}
                             style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
@@ -88,7 +89,7 @@
                 {:else}
                     <br>
                     <i>File</i>: <u>{ orthography.font||"No file selected." }</u>
-                    <button on:click={() => {
+                    <button onclick={() => {
                         showOpenDialog({
                             title: 'Select Graphemy File',
                             properties: ['openFile'],
@@ -99,7 +100,7 @@
                     }}>Locate Graphemy (.gmy) File</button>
                     <br>
                 {/if}
-                <!-- svelte-ignore a11y-label-has-associated-control -->
+                <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Root:
                     {#if orthography.name === 'Romanization'}
                         <span>Base input</span>
@@ -116,7 +117,7 @@
                         <span>Standard typeface</span>
                     {:else}
                         <select bind:value={orthography.graphemy} 
-                            on:change={() => {
+                            onchange={() => {
                                 $Language.Orthographies[i].font = ""
                             }}
                         >
@@ -141,7 +142,7 @@
                     <textarea
                         rows=3
                         class={orthography.name === 'Romanization'? 'text-center' : 'text-left'}
-                        on:blur={(e) => {
+                        onblur={(e) => {
                             setAttribute(e, 'rules', i);
                         }}
                         style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
@@ -152,7 +153,7 @@
                 {#if orthography.name !== 'Romanization'}
                     <button
                         class="hover-highlight hover-shadow"
-                        on:click={() => {
+                        onclick={() => {
                             $Language.Orthographies = [
                                 ...$Language.Orthographies.slice(0, i),
                                 ...$Language.Orthographies.slice(i + 1)
@@ -164,7 +165,7 @@
 
             <button
                 class="hover-highlight hover-shadow"
-                on:click={() => {
+                onclick={() => {
                     $Language.Orthographies = [
                         ...$Language.Orthographies,
                         {
@@ -211,7 +212,7 @@
                         <div class="narrow">
                             Pattern: <input type='text' bind:value={orthographyReplacement.pattern}/>
                             Replacement: <input type='text' bind:value={orthographyReplacement.replacement}/>
-                            <button on:click={
+                            <button onclick={
                                 () => {
                                     for (let word in $Language.Lexicon) {
                                         if (word.includes(orthographyReplacement.pattern)) {
