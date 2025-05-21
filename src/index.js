@@ -1,10 +1,12 @@
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Lexicanter, a constructed language organization app.
  * Copyright (C) 2023 Ethan Ray.
  * See GNU General Public License Version 3.
  */
 
-const { app, BrowserWindow, ipcMain, dialog, shell, ipcRenderer } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
 const ffi = require('koffi');
@@ -131,7 +133,7 @@ function createWindow () {
     const fns = {
         // fn name = lib.func(rust fn name, return type, [parameter types])
         echo: lib.func('echo', 'str', ['str']),
-        graphemify: lib.func('graphemify', 'str', ['str', 'str']),
+        graphemify: lib.func('graphemify', 'str', ['str', 'str', 'float32', 'float32']),
     };
     ipcMain.handle('ffi', (_, name, ...args) => {
         console.log(

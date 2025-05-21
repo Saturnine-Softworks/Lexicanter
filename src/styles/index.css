@@ -43,11 +43,11 @@
   font-style: italic;
   font-weight: bold;
 }
-html, body {
+html, body, main {
   align-items: center;
 }
 
-body {
+body, main {
   font-family: Noto;
   font-size: 11pt;
   min-width: 600px;

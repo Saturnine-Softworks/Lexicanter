@@ -73,6 +73,10 @@ button.inflection, select.inflection {
   background: rgb(114, 60, 116);
   color: rgb(225, 211, 230);
 }
+.lex-entry:hover svg path {
+  stroke: rgb(225, 211, 230);
+  fill: rgb(225, 211, 230);
+}
 
 svg .lex-entry, svg .lex-body {
   fill: rgb(141, 84, 173);
@@ -97,6 +101,7 @@ svg rect.lex:hover, svg rect.lex:has(~ :hover) {
 }
 svg path {
   stroke: rgb(141, 84, 173);
+  fill: rgb(141, 84, 173);
 }
 
 .tag-item, [id=entry-counter] {

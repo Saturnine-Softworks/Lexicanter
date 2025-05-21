@@ -156,15 +156,42 @@ export type Etymologies = {
     };
 }
 
+export type GraphemyOptions = {
+    engine: string;
+    bounds: {
+        width: number;
+        height: number;
+    };
+}
+
 export type Orthography = {
     name: string;
     font: string;
-    graphemy: boolean;
+    graphemy: false | GraphemyOptions;
+    typesetter: 'graphemy'|'standard';
     root: 'rom' | 'ipa';
     lect: string;
     rules: string;
     display: boolean;
     displayInPhrasebook: boolean // requested by Maarz
+}
+
+export type Layouts = {
+    positions: {
+        [index: string]: {
+            top: number,
+            left: number,
+            height: number,
+            width: number,
+        }
+    },
+    snapping: {
+        x: number,
+        y: number,
+        rows: number,
+        columns: number,
+        proportional: boolean
+    }
 }
 
 /**
@@ -224,6 +251,7 @@ export type Language = {
     UseLects: boolean;
     Diagnostics: Diagnostic[];
     FileTheme: string;
+    Layouts: Layouts;
     OrderByDate: boolean;
     SaveLocation: string;
     UploadToDatabase: boolean;

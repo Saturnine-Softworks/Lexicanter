@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
 const path = require('path');
@@ -11,7 +12,7 @@ import { writeRomans, get_pronunciation } from './phonetics';
 import { initializeDocs } from './docs';
 import { alphabetize } from './alphabetize';
 import { markdownToHtml } from './markdown';
-import { verify, downloadFile, uploadFile, deleteFile } from '../../db/database';
+import { downloadFile, uploadFile, deleteFile } from '../../db/database';
 
 const Lang = () => get(Language);
 const Default = get(defaultLanguage);
@@ -175,6 +176,7 @@ export async function saveFile () {
             } else {
                 new Notification(`The ${Lang().Name} file has been saved.`);
             }
+            console.log('Saved file:'); console.dir(JSON.parse(exports));
         } catch (err) {
             console.log(err);
             vex.dialog.alert(
@@ -215,7 +217,7 @@ export async function saveFile () {
 */ 
 export const saveAs = {
     lexc: async () => {
-        let exports: Blob = new Blob([await collectExportData()]);
+        const exports: Blob = new Blob([await collectExportData()]);
         const file_handle = await window.showSaveFilePicker({
             suggestedName: `${Lang().Name}.lexc`,
         });
@@ -256,6 +258,7 @@ export const saveAs = {
         try {
             await file.write(exports);
         } catch (err) {
+            console.error(err);
             window.alert('The file failed to export.');
         }
         await file.close();
@@ -279,7 +282,7 @@ export const saveAs = {
             
             // Add senses with proper markdown formatting
             export_data += $lexicon[word].Senses.map((sense, i) => {
-                const tagsList = sense.tags.length ? `\`${sense.tags.join('\`  \`').toUpperCase()}\`` : '';
+                const tagsList = sense.tags.length ? `\`${sense.tags.join('`  `').toUpperCase()}\`` : '';
                 return `${i + 1}. ${tagsList}\n${sense.definition}`;
             }).join('\n') + '\n\n---\n\n';
         }
@@ -294,6 +297,7 @@ export const saveAs = {
         try {
             await file.write(exports);
         } catch (err) {
+            console.error(err);
             window.alert('The file failed to export.');
         }
         await file.close();
@@ -335,7 +339,7 @@ export const saveAs = {
         window.alert('The file exported successfully.');
     },
     json: async () => {
-        let export_data: Blob = new Blob([await collectExportData()]);
+        const export_data: Blob = new Blob([await collectExportData()]);
                                 
         const file_handle = await window.showSaveFilePicker({
             suggestedName: `${Lang().Name}.json`,
@@ -345,6 +349,7 @@ export const saveAs = {
         try {
             await file.write(export_data);
         } catch (err) {
+            console.error(err);
             window.alert('The file failed to export.');
         }
         await file.close();
@@ -557,7 +562,7 @@ export const openLegacy = {
     /**
     * This function can open 1.9 - 1.11 files.
     */
-    // @ts-ignore: It is not worth my time to define the structure of the legacy files. 
+    // @ts-expect-error: It is not worth my time to define the structure of the legacy files. 
     1.9: (contents) => {
         Language.set(Default);
         try {
@@ -577,15 +582,18 @@ export const openLegacy = {
                 };
             }
         } catch (err) {
+            console.error(err);
             window.alert('There was a problem loading the contents of the lexicon. Please contact the developer.');
         }
         try { Lang().Alphabet = contents.Alphabet; } catch (err) {
+            console.error(err);
             window.alert('There was a problem loading the alphabetical order. Please contact the developer for assistance.');
         }
         try {
             Lang().Pronunciations.General = contents.Romanization;
             writeRomans('General');
         } catch (err) {
+            console.error(err);
             window.alert('There was a problem loading the romanizations. Please contact the developer for assistance.');
         }
         try { 
@@ -624,6 +632,7 @@ export const openLegacy = {
                 })();
             }
         } catch (err) {
+            console.error(err);
             window.alert('There was a problem loading the phrasebook. Please contact the developer for assistance.');
         }
         try {
@@ -633,15 +642,18 @@ export const openLegacy = {
             Lang().Phonotactics.General.Vowels = contents.Phonotactics.Vowel.join(' ');
             Lang().Phonotactics.General.Illegals = contents.Phonotactics.Illegal.join(' ');
         } catch (err) {
+            console.error(err);
             window.alert('There was a problem loading the phonotactics data. Please contact the developer for assistance.');
         }
         try { 
             get(docsEditor).destroy();
             initializeDocs(contents.Docs); 
         } catch (err) {
+            console.error(err);
             window.alert('There was a problem loading the documentation data. Please contact the developer for assistance.');
         }
         try { Lang().HeaderTags = contents.HeaderTags; } catch (err) {
+            console.error(err);
             window.alert('There was a problem loading the header tags.');
         }
         Lang().IgnoreDiacritics = contents.IgnoreDiacritics;

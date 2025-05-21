@@ -2,9 +2,11 @@
 <script lang=ts>
     import { Language, selectedTab } from "../stores";
     import { parseRules, applyRules } from "../utils/sca";
-    import type { Orthography } from "../types";
+    import type { GraphemyOptions, Orthography } from "../types";
     import { showOpenDialog } from "../utils/files";
     import Draggable from "../components/Draggable.svelte";
+    import { readFile } from "fs";
+    import path from "path";
     let selectedOrtho = $state('');
     let testInput = $state('');
     const vex = require('vex-js');
@@ -46,20 +48,6 @@
 
     }
 
-    // async function choose_graphemy_file(index: number) {
-    //     let [file_handle] = await window.showOpenFilePicker();
-    //     await file_handle.requestPermission({ mode: 'read' });
-    //     let file = await file_handle.getFile();
-    //     if (!file.name.includes('.gmy')) {
-    //         vex.dialog.alert('The selected file was not a .gmy file. Please make sure you only select a file saved with Graphemy 0.3.0 or newer.');
-    //         return
-    //     }
-    //     $Language.Orthographies[index] = {
-    //         ...$Language.Orthographies[index],
-    //         font: 
-    //     }
-
-    // }
 </script>
 <div class=tab-pane>
     <div class=row style:height=100%>
@@ -86,7 +74,7 @@
                             readonly={orthography.name==='Romanization'}
                         />
                     </label>
-                {:else}
+                {:else} <!-- Graphemy Typesetter Options -->
                     <br>
                     <i>File</i>: <u>{ orthography.font||"No file selected." }</u>
                     <button onclick={() => {
@@ -95,10 +83,45 @@
                             properties: ['openFile'],
                         },
                         file_path => {
-                            $Language.Orthographies[i].font  = file_path[0]
+                            // Intellisense thinks that `file_path` is a string here, but at runtime it is actually an array of one string.
+                            readFile(file_path[0], async (err, data) => {
+                                if (err) {
+                                    console.error(err);
+                                    vex.dialog.alert("There was a problem reading the file.");
+                                    return;
+                                }
+                                // let compressed = await compress(data.toString());
+                                console.log(data.toString())
+                                $Language.Orthographies[i].font = path.basename(file_path[0]);
+                                ($Language.Orthographies[i].graphemy as GraphemyOptions).engine = data.toString();
+                            });
                         });
                     }}>Locate Graphemy (.gmy) File</button>
                     <br>
+                    <div class='narrow'>
+                        <div style=display:flex>
+                            Maximum Width
+                            <input type=range min=0 max=500 
+                                bind:value={orthography.graphemy.bounds.width}
+                                onchange={(e)=>{
+                                    if (!$Language.Orthographies[i].graphemy.hasOwnProperty('bounds')) return;
+                                    ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.width = Number((e.target as HTMLInputElement).value);
+                                }}
+                            />
+                            <span class=info style='margin: auto 1em'>{($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.width}</span>
+                        </div>
+                        <div style=display:flex>
+                            Maximum Height
+                            <input type=range min=0 max=500
+                                bind:value={orthography.graphemy.bounds.height}
+                                onchange={(e)=>{
+                                    if (!$Language.Orthographies[i].graphemy.hasOwnProperty('bounds')) return;
+                                    ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.height = Number((e.target as HTMLInputElement).value);
+                                }}
+                            />
+                            <span class=info style='margin: auto 1em'>{($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.height}</span>
+                        </div>
+                    </div>
                 {/if}
                 <!-- svelte-ignore a11y_label_has_associated_control -->
                 <label>Root:
@@ -112,17 +135,27 @@
                     {/if}
                 </label>
                 <br>
+                <p></p>
                 <label>Typesetter:
                     {#if orthography.name === 'Romanization'}
                         <span>Standard typeface</span>
                     {:else}
-                        <select bind:value={orthography.graphemy} 
-                            onchange={() => {
+                        <select bind:value={orthography.typesetter} 
+                            onchange={(e) => {
+                                let val = (e.target as HTMLInputElement).value as 'standard'|'graphemy';
+                                $Language.Orthographies[i].typesetter = val;
                                 $Language.Orthographies[i].font = ""
+                                $Language.Orthographies[i].graphemy = val === 'standard'? false : {
+                                    engine: "", 
+                                    bounds: {
+                                        width: 100,
+                                        height: 100,
+                                    }
+                                } satisfies GraphemyOptions;
                             }}
                         >
-                            <option value={false}>Standard typeface</option>
-                            <option value={true}>Graphemy</option>
+                            <option value=standard> Standard typeface </option>
+                            <option value=graphemy> Graphemy </option>
                         </select>
                     {/if}
                 </label>
@@ -172,6 +205,7 @@
                             name: `New Orthography ${$Language.Orthographies.length}`,
                             font: 'Gentium',
                             root: 'ipa',
+                            typesetter: 'standard',
                             graphemy: false,
                             lect: $Language.Lects[0],
                             rules: '',

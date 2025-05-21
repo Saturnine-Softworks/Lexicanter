@@ -1,5 +1,4 @@
-use std::ffi::{c_char, CStr, CString};
-use std::{str};
+use std::{ffi::{c_char, CStr, CString}, str::FromStr};
 
 /// Function to test that interop is working. 
 #[no_mangle]
@@ -26,21 +25,24 @@ fn c_char_to_string(c_str: *const c_char) -> String {
 
 #[no_mangle]
 pub unsafe extern "C" fn graphemify(
-    engine_path: *const c_char, 
-    input: *const c_char
+    engine: *const c_char, 
+    input: *const c_char,
+    max_width: f32,
+    max_height: f32,
 ) -> *const c_char {
     use graphemy::*;
-    use std::path::PathBuf;
 
-    let engine_path_str = c_char_to_string(engine_path);
+    let engine_str = c_char_to_string(engine);
     let input_str = c_char_to_string(input);
 
-    let engine = Engine::try_from(&PathBuf::from(engine_path_str)).unwrap();
+    let save_file = SaveFile::from_str(&engine_str).unwrap();
+
+    let engine = Engine::try_from(save_file).unwrap();
     let settings = RenderSettings {
-        size: OutputSize::MaxRect(100.0, 100.0),
+        size: OutputSize::MaxRect(max_width, max_height),
         margin: 5.0,
         comment: None,
-        css_mode: false,
+        css_mode: true,
     };
     let svg = engine.render(&input_str, 100.0, settings).unwrap();
 

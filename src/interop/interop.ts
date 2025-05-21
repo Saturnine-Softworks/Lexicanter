@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { ipcRenderer } = require('electron');
 
 /**
@@ -6,21 +7,30 @@ const { ipcRenderer } = require('electron');
  * @param  {...any} args The arguments that the function takes.
  * @returns {Promise<any>}
  */
-export async function ffi(name: string, ...args: any[]): Promise<any> {
+export async function ffi(
+    name: string, 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...args: any[]): Promise<any> {
     return await ipcRenderer.invoke('ffi', name, ...args);
 }
 /**
  * Wrapper for the Rust-side `graphemify` function via FFI/IPC.
- * @param {string} engine_path The path to the .gmy file for the typesetter to use
+ * @param {string} engine The Graphemy engine file as a string
  * @param {string} input The string to be rendered via the typesetter
+ * @param {number} max_width The maximum width of the bounding box for the rendered text
+ * @param {number} max_height The maximum height of the bounding box for the rendered text
  * @returns {Promise<string>} The rendered SVG as a string
  */
 export async function graphemify(
-    engine_path: string, 
+    engine: string, 
     input: string,
+    max_width: number = 100.0,
+    max_height: number = 100.0,
 ): Promise<string> {
     return await ffi('graphemify', 
-        engine_path, 
+        engine, 
         input,
+        max_width,
+        max_height,
     );
 }
