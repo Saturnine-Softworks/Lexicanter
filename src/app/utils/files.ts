@@ -7,7 +7,7 @@ const vex = require('vex-js');
 import { get } from 'svelte/store';
 import type { OutputData } from '@editorjs/editorjs';
 import type * as Lexc from '../types';
-import { Language, autosave, docsEditor, defaultLanguage, dbid, dbkey, CurrentLayouts } from '../stores';
+import { Language, autosave, docsEditor, defaultLanguage, dbid, dbkey, CurrentLayouts, selectedTab } from '../stores';
 import { writeRomans, get_pronunciation } from './phonetics';
 import { initializeDocs } from './docs';
 import { alphabetize } from './alphabetize';
@@ -60,6 +60,7 @@ async function collectExportData (): Promise<string> {
     Lang().Version = await ipcRenderer.invoke('getVersion');
     Lang().FileVersion = (parseInt(Lang().FileVersion, 36) + 1).toString(36);
     Lang().Layouts = get(CurrentLayouts);
+    Lang().Layouts.opentabs = get(selectedTab);
     return JSON.stringify(Lang());
 }
 

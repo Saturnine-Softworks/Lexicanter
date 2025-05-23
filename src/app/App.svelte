@@ -96,7 +96,7 @@
                                         : $selectedTab.includes(i)
                                             ? $selectedTab = [
                                                 $selectedTab.slice(0, $selectedTab.indexOf(i)),
-                                                $selectedTab.slice($selectedTab.indexOf(i) + 1, -1)
+                                                $selectedTab.slice($selectedTab.indexOf(i) + 1)
                                             ].flat()
                                             : $selectedTab = [...$selectedTab, i]
                                 }}

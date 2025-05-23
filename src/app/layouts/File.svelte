@@ -169,6 +169,7 @@
                 window.resizeTo(contents.Layouts.window.width, contents.Layouts.window.height);
                 $Language.Layouts = contents.Layouts;
                 $CurrentLayouts = contents.Layouts;
+                $selectedTab = $CurrentLayouts.opentabs;
             }
 
             errorMessage = 'There was a problem syncing with the database.'

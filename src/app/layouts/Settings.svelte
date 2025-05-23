@@ -465,8 +465,9 @@
             positions: defaultPanelPositions(),
             snapping: defaultPanelSnap(),
             tabmode: 'switch',
+            opentabs: [8],
         }
-        $selectedTab = [8]
+        $selectedTab = [8];
         window.resizeTo(1400, 900); // default window size
         console.log( defaultLayouts );
         $CurrentLayouts = defaultLayouts;
