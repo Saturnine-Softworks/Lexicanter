@@ -180,7 +180,9 @@
                         return;
                     }
                     verify($dbid, $dbkey).then(verified => {
-                        if (verified) {
+                        if (verified==='no connection') {
+                            vex.dialog.alert('This file has cloud sync enabled, but you are not connected to the internet.');
+                        } else if (verified) {
                             retrieveFromDatabase(contents.Name).then(queryResult => {
                                 if (queryResult !== false) {
                                     if (queryResult.FileVersion === undefined) {

@@ -1,3 +1,4 @@
+import type { FetchError } from 'node-fetch';
 import type * as Lexc from '../app/types';
 
 const API_URL = 'https://saturnine.xyz/api/lexicanter';
@@ -8,7 +9,7 @@ const requestOptions = {
     },
 }
 
-export async function verify(userID: string, key: string): Promise<boolean> {
+export async function verify(userID: string, key: string): Promise<boolean|'no connection'> {
     try {
         const response = await fetch(API_URL, {
             ...requestOptions,
@@ -24,7 +25,11 @@ export async function verify(userID: string, key: string): Promise<boolean> {
         // console.debug(data)
         return data.success;
     } catch (error) {
-        console.error('Error verifying:', error);
+        if (error?.hasOwnProperty('message')) {
+            if ((error as FetchError).message === "Failed to fetch")
+                return 'no connection';
+        }
+        console.error('Failed to verify:', error);
         return false;
     }
 }

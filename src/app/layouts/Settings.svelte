@@ -30,7 +30,11 @@
     let localFileVersion: string = $state($Language.FileVersion);
     async function getOnlineFileVersion() {
         if ($dbid === '' || $dbkey === '') return null;
-        if (await verify($dbid, $dbkey)) {
+        const verified = await verify($dbid, $dbkey)
+        if (verified==='no connection') {
+            // vex.dialog.alert('This file has cloud sync enabled, but you are not connected to the internet.');
+            return null;
+        } else if (verified) {
             let file = await Files.retrieveFromDatabase();
             if (file) {
                 return file.FileVersion;
@@ -104,7 +108,10 @@
             vex.dialog.alert('Please enter both your User ID and Key.');
             return;
         }
-        if (await verify(inputID, inputKey)) {
+        const verified = await verify(inputID, inputKey);
+        if (verified==='no connection') {
+            vex.dialog.alert('This file has cloud sync enabled, but you are not connected to the internet.');
+        } else if (verified) {
             $dbid = inputID;
             $dbkey = inputKey;
             Files.userData(user_path => {
@@ -127,7 +134,10 @@
             vex.dialog.alert('Please enter both your User ID and Key.');
             return;
         }
-        if (await verify($dbid, $dbkey)) {
+        const verified = await verify($dbid, $dbkey)
+        if (verified==='no connection') {
+            vex.dialog.alert('This file has cloud sync enabled, but you are not connected to the internet.');
+        } else if (verified) {
             const queryResult = await Files.retrieveFromDatabase();
             if (queryResult !== false) {
                 $Language = queryResult;
@@ -423,7 +433,10 @@
             vex.dialog.alert('Please enter both your User ID and Key.');
             return;
         }
-        if (await verify($dbid, $dbkey)) {
+        const verified = await verify($dbid, $dbkey)
+        if (verified==='no connection') {
+            vex.dialog.alert('This file has cloud sync enabled, but you are not connected to the internet.');
+        } else if (verified) {
             const queryResult = await Files.deleteFromDatabase();
             if (queryResult.error) {
                 vex.dialog.alert('The file does not exist in the database or is not registered to you.');
