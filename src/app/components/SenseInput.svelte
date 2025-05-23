@@ -1,31 +1,35 @@
+<svelte:options runes/>
 <script lang="ts">
     import { Language, pronunciations, wordInput } from '../stores';
     import { get_pronunciation } from '../utils/phonetics';
-    import { createEventDispatcher } from 'svelte';
     import TagSelector from './TagSelector.svelte';
-    export let definition = '';
-    export let tags: string;
-    export let index: number | 'hide';
-    const dispatch = createEventDispatcher();
-    const remove = () => dispatch('remove');
-    const commit = () => dispatch('commit');
-    let tagSelector = 'existing tags';
+    let {
+        definition = $bindable(''),
+        tags = $bindable(),
+        index,
+        lects = $bindable(),
+        remove = ()=>{},
+        commit = ()=>{},
+    } : {
+        definition?: string,
+        tags: string,
+        index: number|'hide',
+        lects: string[]
+        remove?: Function,
+        commit?: Function,
+    } = $props();
 
-    $: tags;
-    export let lects: string[];
-    $: {
-        // debug.logObj(lects, `(SenseInput ${index}) lects`);
-
-        // When the $Language.Lects array changes, remove lects that no longer exist. 
-        // New lects that are added are handled be the #each loop in the component.
+    function refilter_lects() {
         if (lects.filter(name => !$Language.Lects.includes(name)).length > 0) {
             lects.filter(name => !$Language.Lects.includes(name)).forEach(name => {
-                // debug.log(`(SenseInput ${index}) Removing ${name} from lects`);
                 lects = lects.filter((l) => l !== name);
             });
         }
     }
-    function change (lect: string) {
+
+    $effect(()=>{$Language.Lects; refilter_lects()});
+
+    function change(lect: string) {
         if (lects.includes(lect)) {
             lects = lects.filter((l) => l !== lect);
         } else {
@@ -40,7 +44,7 @@
         <i>Sense {index + 1}</i> <br>
     {/if}
     <label>Definition
-        <textarea rows='4' bind:value={definition} on:keydown={e => {
+        <textarea rows='4' bind:value={definition} onkeydown={e => {
             if (e.key === 'Enter' && e.altKey) commit();
         }}></textarea>
     </label>
@@ -50,7 +54,7 @@
             <textarea 
                 rows="1"
                 bind:value={tags}
-            />  
+            ></textarea>  
             <TagSelector on:select = {
                 e => tags += e.detail
                     ? tags
@@ -66,7 +70,7 @@
             {#each $Language.Lects as lect}
                 <label>
                     <div style="display: inline-block">
-                        <input id={lect} type="checkbox" on:change={
+                        <input id={lect} type="checkbox" onchange={
                             () => change(lect)
                         } checked={lects.includes(lect)}/>
                     </div>
@@ -77,7 +81,7 @@
         <br>
     {/if}
     {#if !!index && index !== 'hide'}
-        <button class="hover-highlight hover-shadow" on:click={remove}>Remove Sense {index+1}</button>
+        <button class="hover-highlight hover-shadow" onclick={() => remove()}>Remove Sense {index+1}</button>
     {/if}
     <br>
 </label>

@@ -14,7 +14,6 @@
     let searchTags = '';
     let lectFilter = '';
     let phraseKeys: string[] = [];
-    let collapsedPanel = false;
     let phraseDescription = ''
     let variantInputs: {
         phrase: string;
@@ -271,7 +270,7 @@
             <div class="column scrolled" id="phrasebook-body" style="max-height: 88%;">
                 {#if !!Object.keys($Language.Phrasebook).length}
                     {#each phraseKeys as phrase}
-                        <PhraseEntry phrase={phrase} on:edit={() => editPhrase(phrase)} />
+                        <PhraseEntry phrase={phrase} edit={() => editPhrase(phrase)} />
                     {/each}
                 {:else}
                     <p class="info">Select a category from the left or add your first phrase entry.</p>
@@ -322,11 +321,11 @@
                     <div class="column scrolled" id="variants-body">
                         {#each variantInputs as _, i}
                             <VariantInput
-                                lects={lects}
+                                {lects}
                                 bind:phrase={variantInputs[i].phrase}
                                 bind:pronunciations={variantInputs[i].pronunciations}
                                 bind:description={variantInputs[i].description}
-                                on:update={() => {
+                                update={() => {
                                     lects.forEach(lect => {
                                         variantInputs[i].pronunciations[lect] = {
                                             ipa: get_pronunciation(variantInputs[i].phrase, lect),

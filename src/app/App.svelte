@@ -18,11 +18,10 @@
     import Inflection from './layouts/Inflection.svelte';
     import Orthography from './layouts/Orthography.svelte';
     import Wiki from './layouts/Wiki.svelte';
-    import Reference from './layouts/Reference.svelte';
 
-    import { theme, autosave, selectedTab, Language, referenceLanguage, panelSnap } from './stores';
+    import { theme, autosave, selectedTab, Language, CurrentLayouts } from './stores';
     import { saveFile } from './utils/files'
-
+    //$selectedTab =   0          1            2             3             4            5              6                7       8           9          10
     const tabs     = [ Lexicon,   Etymology,   Phrasebook,   Inflection,   Phonology,   Orthography,   Documentation,   File,   Settings,   Changelog, Wiki]
     const tab_btns = ['Lexicon', 'Etymology', 'Phrasebook', 'Inflection', 'Phonology', 'Orthography', 'Documentation', 'File', 'settings', 'history', 'help'];
 
@@ -47,9 +46,13 @@
     ipcRenderer.on('adjustGrid', adjustSnapGrid);
 
     function adjustSnapGrid() {
-        if (!$panelSnap.proportional) return;
-        $panelSnap.x = Math.round(window.outerWidth / $panelSnap.columns)
-        $panelSnap.y = Math.round((window.outerHeight-25) / $panelSnap.rows)
+        $CurrentLayouts.window = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        }
+        if (!$CurrentLayouts.snapping.proportional) return;
+        $CurrentLayouts.snapping.x = Math.round(window.innerWidth / $CurrentLayouts.snapping.columns)
+        $CurrentLayouts.snapping.y = Math.round((window.innerHeight-25) / $CurrentLayouts.snapping.rows)
     }
 
     let version: string = $state('');
@@ -62,19 +65,16 @@
 <link rel="stylesheet" href="{$Language.FileTheme === 'default'? $theme : $Language.FileTheme}" />
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-<main id="main" spellcheck="false">
-    <div class='tab-container'>
-        <div class="row">
-            <div class="column" style={$referenceLanguage? 'width: 66%' : 'width: 100%'}>
-                <p class="window-control">
+<main id=main spellcheck={false}>
+    <div class=tab-container>
+        <div class=row>
+            <div class=column style=width:100%>
+                <p class=window-control>
                     <button class="hover-highlight close material-icons" onclick={() => ipcRenderer.send('buttonclose')}>close</button>
                     <button class="hover-highlight minimize material-icons" onclick={() => ipcRenderer.send('minimize')}>remove</button>
                     <button class="hover-highlight maximize material-icons" onclick={() => ipcRenderer.send('maximize')}>fullscreen</button>
                 </p>
                 <div class="button-container">
-                    {#if !$referenceLanguage}
-                        <p class="version-info">v{version}-{platform} —</p>
-                    {/if}
                     {#each tab_btns as tab, i}
                         {#if (tab !== 'Etymology' && tab !== 'Inflection' && tab !== 'Orthography' && tab !== 'Phrasebook')
                             || (tab === 'Phrasebook' && $Language.ShowPhrasebook)
@@ -101,13 +101,6 @@
                     </div>
                 {/each}
             </div>
-
-            {#if $referenceLanguage}
-                <div class="column tab-pane reference" style="width: 33%">
-                    <Reference/>
-                </div>
-            {/if}
-
         </div>
     </div>
 </main>

@@ -6,7 +6,7 @@
  * See GNU General Public License Version 3.
  */
 
-const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, session } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
 const ffi = require('koffi');
@@ -75,6 +75,28 @@ function createWindow () {
         mainWindow.setWindowButtonVisibility(false);
     }
 
+    session.defaultSession.on('file-system-access-restricted', async (e, details, callback) => {
+        const { path } = details
+        const { response } = await dialog.showMessageBox({
+            message: `Your operating system has blocked Lexicanter from opening a restricted path: \n\n ${path} \n\n Please grant access or choose a different location.`,
+            title: 'File System Access Restricted',
+            buttons: [
+                'Allow', 
+                'Choose a different folder', 
+                'Cancel'
+            ],
+            cancelId: 2
+        })
+
+        if (response === 0) {
+            callback('allow')
+        } else if (response === 1) {
+            callback('tryAgain')
+        } else {
+            callback('deny')
+        }
+    })
+
     const WC = mainWindow.webContents;
     WC.on('will-navigate', function (e, url) {
         if (url.includes('lex::')) {
@@ -136,12 +158,12 @@ function createWindow () {
         graphemify: lib.func('graphemify', 'str', ['str', 'str', 'float32', 'float32']),
     };
     ipcMain.handle('ffi', (_, name, ...args) => {
-        console.log(
-            name,
-            ...args, 
-            // '\n', fns[name]
-        );
-        console.log(fns[name](...args));
+        // console.log(
+        //     name,
+        //     ...args, 
+        //     // '\n', fns[name]
+        // );
+        // console.log(fns[name](...args));
         return fns[name](...args);
     });
 };

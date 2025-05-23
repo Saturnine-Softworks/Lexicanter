@@ -12,11 +12,9 @@ const Lang = () => get(Language);
  * @param {string} word
  * @returns {string}
  */
-export function get_pronunciation(word: string, lect: string, reference: false | Lexc.Language = false): string {
+export function get_pronunciation(word: string, lect: string): string {
     // console.log('Requested pronunciation for ' + word + ' in ' + lect + '.');
-    let rules: string;
-    if (!reference) rules = Lang().Pronunciations[lect];
-    else rules = reference.Pronunciations[lect];
+    const rules: string = Lang().Pronunciations[lect];
     const settings = parseRules(rules);
     return applyRules(settings.rules, word, settings.categories);
 }
@@ -121,6 +119,20 @@ export function complete_word(trial: string) {
     return finalize(word);
 }
 
+import type { Orthography, Word, Phrase, Variant } from '../types';
+export function preprocess_ortho(word: string, ortho: Orthography, source: Word|Phrase|Variant|null = null): string {
+    const settings = parseRules(ortho.rules);
+    return applyRules(
+        settings.rules, 
+        source?
+            ortho.root === 'rom'
+            ? word 
+            : source.pronunciations[ortho.lect].ipa
+        : word,
+        settings.categories
+    );
+}
+
 /**
  * Generates a random word based on the given phonotactics. Will attempt
  * up to 50 times to generate a word that does not contain any illegal
@@ -166,7 +178,7 @@ export function generate_word() {
     };
     for (let i = 0; i < 50; i++) {
         const word = attempt();
-        if (!!word) {
+        if (word) {
             return word;
         }
     }

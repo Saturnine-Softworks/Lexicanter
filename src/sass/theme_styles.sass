@@ -72,7 +72,9 @@ button, select
 .container
     background-color: $container-bg
     border: 1px solid $container-border
+    border-radius: 0
 
+// Universal styles for the draggable panel container.
 .draggable
     border: .5px solid $container-border
     backdrop-filter: blur(5px)
@@ -82,7 +84,7 @@ button, select
         border: none
         border-top: 1px solid $container-border
     & .dragbar
-        background-color: #0006
+        background-color: $body-bg
 
 
 // This style is used for placeholder information/tooltips, such as the instructions below the Create Table button in the Tables tab.
@@ -132,7 +134,9 @@ svg
     
     path
         stroke: $lex-text
-        fill: $lex-text
+
+.grapheme-svg svg path
+    fill: $lex-text
 
 // These are the colors used for tags as they appear in the lexicon.
 .tag-item, [id=entry-counter]

@@ -191,6 +191,10 @@ export type Layouts = {
         rows: number,
         columns: number,
         proportional: boolean
+    },
+    window: {
+        height: number,
+        width: number,
     }
 }
 

@@ -88,7 +88,7 @@
         {/if}
         <p style='margin-bottom: -1em'>{@html markdownToHtml(Sense.definition)}</p>
         {#if $Language.ShowInflection || showInflections}
-            <Inflections {word} tags={Sense.tags} readFromReference={showInflections}/>
+            <Inflections {word} tags={Sense.tags} />
         {/if}
         {#if $Language.ShowEtymology && !!entryAncestors && showEtymology}
             <div class='tag-item'>etymology</div>

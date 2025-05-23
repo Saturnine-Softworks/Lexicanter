@@ -43,6 +43,7 @@ button.inflection, select.inflection {
 .container {
   background-color: rgb(225, 211, 230);
   border: 1px solid rgb(212, 184, 223);
+  border-radius: 0;
 }
 
 .draggable {
@@ -55,7 +56,7 @@ button.inflection, select.inflection {
   border-top: 1px solid rgb(212, 184, 223);
 }
 .draggable .dragbar {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgb(114, 60, 116);
 }
 
 .info {
@@ -101,6 +102,9 @@ svg rect.lex:hover, svg rect.lex:has(~ :hover) {
 }
 svg path {
   stroke: rgb(141, 84, 173);
+}
+
+.grapheme-svg svg path {
   fill: rgb(141, 84, 173);
 }
 

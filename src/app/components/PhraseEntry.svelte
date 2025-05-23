@@ -1,23 +1,24 @@
-<script lang="ts">
-    import { Language, selectedCategory, referenceLanguage } from '../stores';
-    import { createEventDispatcher } from 'svelte';
+<svelte:options runes/>
+<script lang=ts>
+    import { Language, selectedCategory } from '../stores';
     import Pronunciations from './Pronunciations.svelte';
     import EntryLabel from './EntryLabel.svelte';
     import { markdownToHtml } from '../utils/markdown';
-    import type * as Lexc from '../types';
-    const dispatch = createEventDispatcher();
-    const edit = () => dispatch('edit')
-    export let phrase = '';
-    let refLanguage = $referenceLanguage as Lexc.Language;
-    $: refLanguage = $referenceLanguage as Lexc.Language;
-    export let reference = false;
-    export let refCat = '';
-    const language = () => reference? refLanguage : $Language;
-    const category = () => reference? refCat : $selectedCategory;
+
+    let { 
+        edit = () => {},
+        phrase,
+    } : { 
+        edit?: Function,
+        phrase: string,
+    } = $props();
+
+    const language = () => $Language;
+    const category = () => $selectedCategory;
 
 </script>
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="lex-entry" id={phrase} on:contextmenu={edit}>
+<div class="lex-entry" id={phrase} oncontextmenu={()=>edit()}>
     <EntryLabel word={phrase} source={language().Phrasebook[category()][phrase]}/>
     <Pronunciations pronunciations={language().Phrasebook[category()][phrase].pronunciations} />
     {#if !!language().Phrasebook[category()][phrase].tags[0]}

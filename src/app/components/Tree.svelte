@@ -1,19 +1,19 @@
-<svelte:options immutable/>
+<svelte:options runes/>
 <script lang='ts'>
-    import { createEventDispatcher } from "svelte";
     import { draw, blur } from 'svelte/transition';
-    const dispatch = createEventDispatcher();
-    const select = (entry: string) => {
-        dispatch('select', entry);
-    }
-
-    interface Node {
+    type Node = {
         name: string;
         children: { name: string, source: string }[];
         parents: { name: string, source: string }[];
     }
-    export let width: number; export let height: number;
-    export let tree: Node;
+
+    let {
+        width, height, tree,
+        select = (s: string)=>{},
+    } : {
+        width: number, height: number, tree: Node,
+        select?: Function,
+    } = $props()
 
     function parabolicCurve(arr: any[]): number[] {
         const n = arr.length; if (n === 0) return [];
@@ -25,19 +25,15 @@
         }
         return result;
     }
-    let dYparents: number[];
-    let dYchildren: number[];
-    $: {
-        tree;
-        dYparents = parabolicCurve(tree.parents);
-        dYchildren = parabolicCurve(tree.children);
-    }
+    let dYparents: number[] = $derived(parabolicCurve(tree.parents));
+    let dYchildren: number[] = $derived(parabolicCurve(tree.children));
+
 </script>
 <svg {width} {height}>
     <g>
         {#each tree.parents as parent, i}
             <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <g on:mousedown={() => {
+            <g onmousedown={() => {
                 select(parent.name)
             }}>
                 <rect class="lex"
@@ -78,7 +74,7 @@
         </g>
         {#each tree.children as child, i}
             <!-- svelte-ignore a11y_no_static_element_interactions -->
-            <g on:mousedown={() => {
+            <g onmousedown={() => {
                 select(child.name)
             }}>
                 <rect class="lex"

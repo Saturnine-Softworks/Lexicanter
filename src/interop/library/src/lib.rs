@@ -1,6 +1,9 @@
-use std::{ffi::{c_char, CStr, CString}, str::FromStr};
+use std::{
+    ffi::{c_char, CStr, CString},
+    str::FromStr,
+};
 
-/// Function to test that interop is working. 
+/// Function to test that interop is working.
 #[no_mangle]
 pub unsafe extern "C" fn echo(text: *const c_char) -> *const c_char {
     let text_str = c_char_to_string(text);
@@ -9,7 +12,9 @@ pub unsafe extern "C" fn echo(text: *const c_char) -> *const c_char {
 }
 
 fn string_to_c_char(string: String) -> *const c_char {
-    CString::new(string).expect("CString::new failed").into_raw()
+    CString::new(string)
+        .expect("CString::new failed")
+        .into_raw()
 }
 
 /// Converts C-like strings into Rust-like strings
@@ -20,31 +25,43 @@ fn c_char_to_string(c_str: *const c_char) -> String {
     };
 
     let bytes = c_str.to_bytes();
-    str::from_utf8(bytes).expect("`c_char_to_string()` should be passed a valid C-like string").to_owned()
+    str::from_utf8(bytes)
+        .expect("`c_char_to_string()` should be passed a valid C-like string")
+        .to_owned()
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn graphemify(
-    engine: *const c_char, 
-    input: *const c_char,
+use graphemy::*;
+fn try_grapheming(
+    engine: &str,
+    input: &str,
     max_width: f32,
     max_height: f32,
-) -> *const c_char {
-    use graphemy::*;
+) -> Result<String, graphemy::EngineError> {
+    let save_file = SaveFile::from_str(&engine)?;
 
-    let engine_str = c_char_to_string(engine);
-    let input_str = c_char_to_string(input);
-
-    let save_file = SaveFile::from_str(&engine_str).unwrap();
-
-    let engine = Engine::try_from(save_file).unwrap();
+    let typesetter = Engine::try_from(save_file)?;
     let settings = RenderSettings {
         size: OutputSize::MaxRect(max_width, max_height),
         margin: 5.0,
         comment: None,
         css_mode: true,
     };
-    let svg = engine.render(&input_str, 100.0, settings).unwrap();
 
-    string_to_c_char( svg.to_string() )
+    let svg = typesetter.render(&input, 100.0, settings)?;
+    Ok(svg.to_string())
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn graphemify(
+    engine: *const c_char,
+    input: *const c_char,
+    max_width: f32,
+    max_height: f32,
+) -> *const c_char {
+    let engine_str = c_char_to_string(engine);
+    let input_str = c_char_to_string(input);
+
+    let result = try_grapheming(&engine_str, &input_str, max_width, max_height)
+        .unwrap_or("[ Typesetter Error ]".to_string());
+    string_to_c_char(result)
 }

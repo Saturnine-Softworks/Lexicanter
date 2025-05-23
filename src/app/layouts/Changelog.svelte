@@ -1,4 +1,7 @@
 <script lang='ts'>
+    import Draggable from "../components/Draggable.svelte";
+    import { selectedTab } from "../stores";
+
     const [MAJOR, MINOR, PATCH] = [0, 1, 2];
     
     interface ChangelogEntry {
@@ -311,41 +314,40 @@
     }
 </script>
 <div class='tab-pane'>
-    <div class='row' style='height: 95vh'>
-        <div class='container column scrolled' style='height: 90vh;'>
-            <p class='info'>
-                Interested in testing the beta versions, talking about languages, or worldbuilding? <br>
-                Join <a rel='noreferrer' target='_blank' href='https://discord.gg/uDk2XDhh8K'>Saturn's Sojourn</a>, 
-                the home of Lexicanter on <a rel='noreferrer' target='_blank' href='https://discord.gg/uDk2XDhh8K'>Discord</a>!
-            </p>
-            <br>
-            <p class='info'>
-                Support the continued developement of the app as a <a rel='noreferrer' target='_blank' href='https://patreon.com/saturnine_softworks'>patron</a>,
-            </p>
-            <p class='info'>
-                or by buying me a <a rel='noreferrer' target='_blank' href='https://ko-fi.com/saturnine_softworks'>coffee</a>!
-            </p>
-
-            <br><br>
-
-            Below is a list of all changes made to the app since version 1.8, which is when the changelog was first added.<br>
-            If you're looking for more information about how to use the app, check the Help tab or visit the 
-            <a rel='noreferrer' target='_blank' href='https://github.com/Saturnine-Softworks/Lexicanter/wiki'>Wiki</a>.<br> There is also
-            an overview <a rel='noreferrer' target='_blank' href='https://www.youtube.com/watch?v=6_AwCC4XlvU&t=151s'>tutorial video</a> for release 2.0.
-            <br> If you're still having trouble, or need to contact the developer, visit us in the 
-            <a rel='noreferrer' target='_blank' href='https://discord.gg/uDk2XDhh8K'>Discord server</a>. 
-            
-            <br><hr/><br>
-            {#each Object.keys(changelog) as version}
-                <p><u>{['Overhaul', 'Update', 'Patch'][changelog[version].type]} {version}</u></p>
-                <p style='width: 70%; margin: auto; text-align: left; line-height: 1.6'>
-                    {#each changelog[version].notes as note}
-                        • {@html note} <br>
-                    {/each}
+    {#if $selectedTab===9}
+        <Draggable panel=changelog>
+            <div class='container glasspane scrolled'>
+                <p class='info'>
+                    Interested in testing the beta versions, talking about languages, or worldbuilding? <br>
+                    Join <a rel='noreferrer' target='_blank' href='https://discord.gg/uDk2XDhh8K'>Saturn's Sojourn</a>,
+                    the home of Lexicanter on <a rel='noreferrer' target='_blank' href='https://discord.gg/uDk2XDhh8K'>Discord</a>!
                 </p>
                 <br>
-            {/each}
-
-        </div>
-    </div>
+                <p class='info'>
+                    Support the continued developement of the app as a <a rel='noreferrer' target='_blank' href='https://patreon.com/saturnine_softworks'>patron</a>,
+                </p>
+                <p class='info'>
+                    or by buying me a <a rel='noreferrer' target='_blank' href='https://ko-fi.com/saturnine_softworks'>coffee</a>!
+                </p>
+                <br><br>
+                Below is a list of all changes made to the app since version 1.8, which is when the changelog was first added.<br>
+                If you're looking for more information about how to use the app, check the Help tab or visit the
+                <a rel='noreferrer' target='_blank' href='https://github.com/Saturnine-Softworks/Lexicanter/wiki'>Wiki</a>.<br> There is also
+                an overview <a rel='noreferrer' target='_blank' href='https://www.youtube.com/watch?v=6_AwCC4XlvU&t=151s'>tutorial video</a> for release 2.0.
+                <br> If you're still having trouble, or need to contact the developer, visit us in the
+                <a rel='noreferrer' target='_blank' href='https://discord.gg/uDk2XDhh8K'>Discord server</a>.
+            
+                <br><hr/><br>
+                {#each Object.keys(changelog) as version}
+                    <p><u>{['Overhaul', 'Update', 'Patch'][changelog[version].type]} {version}</u></p>
+                    <p style='width: 70%; margin: auto; text-align: left; line-height: 1.6'>
+                        {#each changelog[version].notes as note}
+                            • {@html note} <br>
+                        {/each}
+                    </p>
+                    <br>
+                {/each}
+            </div>
+        </Draggable>
+    {/if}
 </div>

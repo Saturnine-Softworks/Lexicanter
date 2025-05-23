@@ -11,9 +11,7 @@ import AlignmentTuneTool from 'editorjs-text-alignment-blocktune';
 import TextVariantTune from '@editorjs/text-variant-tune';
 // @ts-expect-error: no types included with this package, not bothering to write them myself
 import ToggleBlock from 'editorjs-toggle-block';
-// const MermaidTool = require('editorjs-mermaid');
 import type { EditorConfig } from '@editorjs/editorjs';
-/* eslint-disable @typescript-eslint/no-explicit-any */
 enum LogLevels { // REVIEW - monkeypatch gets around type check error, can't import this from @editorjs/editorjs/types for ...reasons.
     VERBOSE = 'VERBOSE',
     INFO = 'INFO',
@@ -80,7 +78,7 @@ export function initializeDocs(data: OutputData | false, holder='docs-tab'): voi
         readOnly: holder === 'ref-docs'
     };
     
-    const editor = new EditorJS(config as any as EditorConfig); // type gymnastics
+    const editor = new EditorJS(config as unknown as EditorConfig); // type gymnastics
     if (holder === 'docs-tab') {
         docsEditor.set(editor);
     }

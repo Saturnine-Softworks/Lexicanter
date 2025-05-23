@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { Language, defaultLanguage, referenceLanguage, docsEditor } from '../stores';
+    import { Language, defaultLanguage, docsEditor } from '../stores';
     import { parseRules, applyRules } from '../utils/sca';
     import { saveFile } from '../utils/files';
     import Etymology from '../layouts/Etymology.svelte';
@@ -60,9 +60,6 @@
         }
         saveFile();
         window.setTimeout(() =>{
-            // Open the old language in the reference panel
-            if ($referenceLanguage) $referenceLanguage = false;
-            $referenceLanguage = structuredClone($Language);
 
             const newLanguage = structuredClone($defaultLanguage);
             newLanguage.Name = newName;

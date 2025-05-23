@@ -1,6 +1,6 @@
 <script lang="ts">
     const { ipcRenderer } = require('electron');
-    import { Language, wordInput, pronunciations, selectedTab, hideDropdowns } from '../stores';
+    import { Language, wordInput, pronunciations, selectedTab, hideDropdowns, CurrentLayouts } from '../stores';
     import type * as Lexc from '../types';
     import { alphabetize, alphabetPrecheck } from '../utils/alphabetize';
     import { get_pronunciation } from '../utils/phonetics';
@@ -304,8 +304,7 @@
         {#if $selectedTab === 0}
             <!-- Lexicon -->
             <Draggable panel=lexicon>
-                <div class='container glasspane'>
-                
+                <div class='container glasspane' style=overflow:hidden>
                     <section id=search-filters>
                         <div class='row'>
                             <div class="column search-container">
@@ -342,8 +341,9 @@
                             {/if}
                         </div>
                     </section>
-                    <div class='scrolled' style="height: 85%" bind:clientWidth={displayWidth}>
+                    <div class='scrolled' style=height:86% bind:clientWidth={displayWidth}>
                         {#if displayWidth > 1600}
+
                             {#each multicolumn(alphabetized, 3) as columns}
                                 <div class='row' style='width: 72%'>
                                     {#each columns as word}
@@ -354,9 +354,11 @@
                                 </div>
                                 <br/>
                             {:else}
-                                <p class="info" id="lex-body">Add new words on the left</p>
+                                <p class="info" id="lex-body">Add new words from the word editor panel</p>
                             {/each}
+
                         {:else if displayWidth > 800}
+
                             {#each multicolumn(alphabetized, 2) as columns}
                                 <div class='row' style='width: 72%'>
                                     {#each columns as word}
@@ -367,21 +369,19 @@
                                 </div>
                                 <br/>
                             {:else}
-                                <p class="info" id="lex-body">Add new words on the left</p>
+                                <p class="info" id="lex-body">Add new words from the word editor panel</p>
                             {/each}
+
                         {:else}
+
                             {#each alphabetized as word}
                                 <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} edit={() => editEntry(word)}/>
                             {:else}
-                                <p class="info" id="lex-body">Add new words on the left</p>
+                                <p class="info" id="lex-body">Add new words from the word editor panel</p>
                             {/each}
+
                         {/if}
-                
-                        <!-- {#each alphabetized as word}
-                            <LexEntry word={word} source={$Language.Lexicon[word]} showEtymology={true} on:edit={() => editEntry(word)}/>
-                        {:else}
-                            <p class="info" id="lex-body">Add new words on the left</p>
-                        {/each} -->
+
                     </div>
                     <p id="entry-counter">
                         {#if !!keys[0]} <!-- if there is a search being attempted -->
@@ -426,10 +426,10 @@
                             bind:definition={sense.definition}
                             bind:tags={sense.tags}
                             bind:lects={sense.lects}
-                            on:remove={() => {
+                            remove={() => {
                                 senses = senses.filter((_, j) => j !== i);
                             }}
-                            on:commit={() => { addWord(false); }}
+                            commit={() => { addWord(false); }}
                         />
                     {/each}
                     <button class="hover-highlight hover-shadow" id="add-sense-button" 
@@ -446,6 +446,7 @@
                                 on:click={() => addWord(true)}>Append Definition</button>
                         </div>
                     {/if}
+                    <br><br>
                 </div>
             </Draggable>
 

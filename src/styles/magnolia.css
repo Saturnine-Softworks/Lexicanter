@@ -1,11 +1,11 @@
 body {
-  color: #ffffff;
-  background-color: #032f0a;
+  color: #f6eff2;
+  background-color: #182219;
 }
 
 button, select {
   color: #a8254a;
-  background-color: #ffffff;
+  background-color: #f6eff2;
 }
 button[id=overwrite], select[id=overwrite] {
   color: darkred;
@@ -27,19 +27,20 @@ button.inflection, select.inflection {
 
 .tab-container .button-container, .tab-container .button-container button {
   color: #485e4c;
-  background-color: #011a05;
+  background-color: #0c1a0e;
 }
 .tab-container .button-container:hover, .tab-container .button-container button:hover {
   color: #c8325c;
 }
 
 .selected {
-  background-color: #032f0a !important;
+  background-color: #182219 !important;
 }
 
 .container {
-  background-color: #420514;
+  background-color: #401521;
   border: 1px solid #0F151B;
+  border-radius: 0;
 }
 
 .draggable {
@@ -52,7 +53,7 @@ button.inflection, select.inflection {
   border-top: 1px solid #0F151B;
 }
 .draggable .dragbar {
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: #182219;
 }
 
 .info {
@@ -60,14 +61,14 @@ button.inflection, select.inflection {
 }
 
 .version-info {
-  color: #ffffff;
+  color: #f6eff2;
 }
 
 .lex-entry, .lex-body {
-  color: #ffffff;
+  color: #f6eff2;
 }
 .lex-entry:hover {
-  background: #ffffff;
+  background: #f6eff2;
   color: #a8254a;
 }
 .lex-entry:hover svg path {
@@ -76,14 +77,14 @@ button.inflection, select.inflection {
 }
 
 svg .lex-entry, svg .lex-body {
-  fill: #ffffff;
+  fill: #f6eff2;
 }
 svg .lex-entry:hover {
-  background-color: #ffffff;
+  background-color: #f6eff2;
   fill: #a8254a;
 }
 svg .tag-item {
-  fill: #ffffff;
+  fill: #f6eff2;
   font-weight: bold;
 }
 svg rect.lex {
@@ -94,15 +95,18 @@ svg rect.lex {
   padding: 5px;
 }
 svg rect.lex:hover, svg rect.lex:has(~ :hover) {
-  fill: #ffffff;
+  fill: #f6eff2;
 }
 svg path {
-  stroke: #ffffff;
-  fill: #ffffff;
+  stroke: #f6eff2;
+}
+
+.grapheme-svg svg path {
+  fill: #f6eff2;
 }
 
 .tag-item, [id=entry-counter] {
-  color: #ffffff;
+  color: #f6eff2;
   background-color: #a8254a;
 }
 
@@ -115,18 +119,18 @@ svg path {
 }
 
 hr {
-  border: 1px solid #ffffff;
+  border: 1px solid #f6eff2;
   border-left: none;
   border-right: none;
   border-top: none;
 }
 
 label {
-  color: #ffffff;
+  color: #f6eff2;
 }
 
 textarea, input {
-  color: #ffffff !important;
+  color: #f6eff2 !important;
   background-color: #5e1429;
 }
 textarea.pronunciation, input.pronunciation {
@@ -137,7 +141,7 @@ textarea.pronunciation:hover, input.pronunciation:hover {
 }
 textarea[type=checkbox], input[type=checkbox] {
   background-color: transparent;
-  border: 0.15em solid #ffffff;
+  border: 0.15em solid #f6eff2;
 }
 textarea[type=checkbox]::before, input[type=checkbox]::before {
   background-color: #8e1739;
@@ -158,16 +162,16 @@ tr:nth-child(even) {
   background-color: #5a3740;
 }
 ::-webkit-resizer:hover {
-  background-color: #485e4c;
+  background-color: #334a37;
 }
 ::-webkit-scrollbar-track {
-  background-color: #032f0a;
+  background-color: #182219;
 }
 ::-webkit-scrollbar-thumb {
   background-color: #5a3740;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #485e4c;
+  background-color: #334a37;
 }
 
 a {
@@ -179,13 +183,13 @@ a:hover {
 }
 
 .ce-toolbar__settings-btn, .ce-toolbar__plus {
-  color: #ffffff !important;
+  color: #f6eff2 !important;
 }
 .ce-toolbar:hover {
-  background-color: #ffffff !important;
+  background-color: #f6eff2 !important;
 }
 .ce-conversion-tool {
-  background-color: #ffffff !important;
+  background-color: #f6eff2 !important;
 }
 .ce-conversion-toolbar {
   background-color: #a8254a !important;
@@ -194,10 +198,10 @@ a:hover {
   background-color: #c8325c !important;
 }
 .ce-popover, .ce-popover--opened {
-  background-color: #ffffff !important;
+  background-color: #f6eff2 !important;
 }
 .ce-popover__item {
-  background-color: #ffffff !important;
+  background-color: #f6eff2 !important;
 }
 .ce-popover__item:hover {
   background-color: #c8325c !important;
@@ -218,7 +222,7 @@ a:hover {
 .tc-popover {
   --color-border: #8e1739 !important;
   --color-background: #a8254a !important;
-  --color-background-hover: #ffffff !important;
+  --color-background-hover: #f6eff2 !important;
   --color-background-confirm: #812b2b !important;
   --color-background-confirm-hover: #a12929 !important;
   --color-text-confirm: white !important;

@@ -8,7 +8,7 @@ const defaultPanel = {
     height: 90,
     width: 140,
 }
-export const defaultPanelAdjustments = {
+export const defaultPanelPositions = {
     newword: {
         ...defaultPanel,
         top: 115,
@@ -64,15 +64,53 @@ export const defaultPanelAdjustments = {
         height: 450,
         width: 420,
     },
+    orthographytesting: {
+        ...defaultPanel,
+        left: 980,
+        width: 420,
+        height: 650,
+    },
     orthography: {
         ...defaultPanel,
-        top: 70,
+        width: 980,
+        height: 900,
     },
     romchangewizard: {
-        top: 40,
-        left: 10,
-        height: 20,
-        width: 60,
+        top: 650,
+        left: 980,
+        height: 250,
+        width: 420,
+    },
+    etymologyselect: {
+        ...defaultPanel,
+        width: 280,
+        height: 900,
+    },
+    etymologyeditor: {
+        ...defaultPanel,
+        left: 280,
+        width: 1120,
+        height: 900,
+    },
+    documentation: {
+        ...defaultPanel,
+        width: 1400,
+        height: 900,
+    },
+    changelog: {
+        ...defaultPanel,
+        width: 1400,
+        height: 900,
+    },
+    inflections: {
+        ...defaultPanel,
+        width: 1400,
+        height: 900,
+    },
+    help: {
+        ...defaultPanel,
+        width: 1400,
+        height: 900,
     }
 };
 
@@ -83,6 +121,17 @@ export const defaultPanelSnap = {
     columns: 10,
     proportional: true,
 };
+
+export const defaultWindow = {
+    height: 900,
+    width: 1400,
+}
+
+export const CurrentLayouts: Writable<Lexc.Layouts> = writable({
+    positions: defaultPanelPositions,
+    snapping: defaultPanelSnap,
+    window: defaultWindow,
+});
 
 const Default: Lexc.Language = {
     Version: '2.1.15',
@@ -151,8 +200,9 @@ const Default: Lexc.Language = {
     Diagnostics: <Lexc.Diagnostic[]> [ ],
     FileTheme: 'default',
     Layouts: {
-        positions: defaultPanelAdjustments,
-        snapping: defaultPanelSnap
+        positions: defaultPanelPositions,
+        snapping: defaultPanelSnap,
+        window: defaultWindow,
     },
     OrderByDate: false,
     SaveLocation: '',
@@ -197,8 +247,6 @@ export const autosave = writable(true);
 export const fileLoadIncrement = writable(0);
 
 export const hideDropdowns = writable(false);
-
-export const referenceLanguage: Writable<Lexc.Language>|Writable<boolean> = writable(false);
 
 export const dbid = writable(''); 
 export const dbkey = writable('');

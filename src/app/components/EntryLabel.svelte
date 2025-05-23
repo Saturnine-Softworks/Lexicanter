@@ -1,9 +1,9 @@
 <svelte:options runes/>
 <script lang=ts>
     import { Language } from '../stores';
-    import { parseRules, applyRules } from '../utils/sca';
     import { graphemify } from '../../interop/interop';
-    import type { Word, Phrase, Variant } from '../types';
+    import { preprocess_ortho } from '../utils/phonetics';
+    import type { Word, Phrase, Variant, Orthography } from '../types';
     let {
         word, 
         source
@@ -27,32 +27,29 @@
         {#if !!ortho.graphemy}
 
             <svelte:boundary> <!-- I simply don't trust anything not to explode. -->
-
-                {#await graphemify(
-                    ortho.graphemy.engine, 
-                    word, 
-                    ortho.graphemy.bounds.width, 
-                    ortho.graphemy.bounds.height
-                )}
-                    <i>generating...</i>
-                {:then svg} 
-                    <span class=grapheme-svg>{@html svg}</span>
-                {/await}
-                <!-- In the event that the graphemy renderer is in a murderous mood -->
-                {#snippet failed(error, reset)}
-                    {console.dir(error)}
-                    <p>Lexicanter is no match for your graphemes!</p>
-                    <button onclick={reset}>Retry Render</button>
-                {/snippet}
-
+                {#key $Language.Lexicon}
+                    {#await graphemify(
+                        ortho.graphemy.engine, 
+                        preprocess_ortho(word, ortho, source), 
+                        ortho.graphemy.bounds.width, 
+                        ortho.graphemy.bounds.height
+                    )}
+                        <i>generating...</i>
+                    {:then svg} 
+                        <span class=grapheme-svg>{@html svg}</span>
+                    {/await}
+                    <!-- In the event that the graphemy renderer is in a murderous mood -->
+                    {#snippet failed(error, reset)}
+                        {console.dir(error)}
+                        <p>Lexicanter is no match for your graphemes!</p>
+                        <button onclick={reset}>Retry Render</button>
+                    {/snippet}
+                {/key}
             </svelte:boundary>
 
         {:else}
             <p style:font-family={$Language.Orthographies.find(o => o.name === ortho.name)?.font}>
-                {(()=>{
-                    const settings = parseRules($Language.Orthographies.find(o => o.name === ortho.name)!.rules);
-                    return applyRules(settings.rules, ortho.root === 'rom'? word : source.pronunciations[ortho.lect].ipa, settings.categories);
-                })()}
+                {preprocess_ortho(word, ortho, source)}
             </p>
         {/if}
 

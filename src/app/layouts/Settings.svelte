@@ -1,14 +1,24 @@
 
-<svelte:options runes />
+<svelte:options runes/>
 <script lang="ts">
     const { ipcRenderer } = require('electron');
-    import { theme, autosave, pronunciations, wordInput, dbid, dbkey, fileLoadIncrement, docsEditor, panelSnap, selectedTab } from '../stores';
+    import { 
+        theme, autosave, 
+        pronunciations, wordInput, 
+        dbid, dbkey, 
+        fileLoadIncrement, 
+        docsEditor, 
+        selectedTab, 
+        CurrentLayouts, defaultPanelPositions, defaultPanelSnap, defaultWindow,
+    } from '../stores';
     import * as Files from '../utils/files';
     import { Language } from '../stores';
     import Draggable from '../components/Draggable.svelte';
     import type * as Lexc from '../types';
-    const fs = require('fs');
-    const path = require('path');
+    // const fs = require('fs');
+    import * as fs from 'node:fs';
+    import * as PATH from 'node:path';
+    // const path = require('path');
     const vex = require('vex-js');
     import { get_pronunciation } from '../utils/phonetics';
     import TagSelector from '../components/TagSelector.svelte';
@@ -56,28 +66,28 @@
         // It also checks for 'autosave_pref.txt' and 'theme.txt' files to import settings from, if they exist.
         // After setting up, it writes the settings to a 'settings' file in JSON format.
         // If the 'settings' directory does exist, it reads the 'settings' file and imports the settings from there.
-        if (!fs.existsSync(user_path + path.sep + 'settings.json')) {
-            if (fs.existsSync(user_path + path.sep + 'autosave_pref.txt')) {
-                settings.autosave = fs.readFileSync(user_path + path.sep + 'autosave_pref.txt', 'utf8') === 'true';
-                $autosave = fs.readFileSync(user_path + path.sep + 'autosave_pref.txt', 'utf8') === 'true';
-                fs.unlinkSync(user_path + path.sep + 'autosave_pref.txt');
+        if (!fs.existsSync(user_path + PATH.sep + 'settings.json')) {
+            if (fs.existsSync(user_path + PATH.sep + 'autosave_pref.txt')) {
+                settings.autosave = fs.readFileSync(user_path + PATH.sep + 'autosave_pref.txt', 'utf8') === 'true';
+                $autosave = fs.readFileSync(user_path + PATH.sep + 'autosave_pref.txt', 'utf8') === 'true';
+                fs.unlinkSync(user_path + PATH.sep + 'autosave_pref.txt');
             } else {
                 settings.autosave = true;
             }
-            fs.writeFileSync(user_path + path.sep + 'settings.json', 'styles/dark.css');
+            fs.writeFileSync(user_path + PATH.sep + 'settings.json', 'styles/dark.css');
 
-            if (fs.existsSync(user_path + path.sep + 'theme.txt')) {
-                settings.theme = fs.readFileSync(user_path + path.sep + 'theme.txt', 'utf8')
+            if (fs.existsSync(user_path + PATH.sep + 'theme.txt')) {
+                settings.theme = fs.readFileSync(user_path + PATH.sep + 'theme.txt', 'utf8')
                     .toString();
                 $theme = settings.theme;
-                fs.unlinkSync(user_path + path.sep + 'theme.txt');
+                fs.unlinkSync(user_path + PATH.sep + 'theme.txt');
             } else {
                 settings.theme = 'styles/dark.css';
             }
             $dbid = ''; $dbkey = '';
-            fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
+            fs.writeFileSync(user_path + PATH.sep + 'settings.json', JSON.stringify(settings, null, 4));
         } else {
-            settings = JSON.parse(fs.readFileSync(user_path + path.sep + 'settings.json', 'utf8'));
+            settings = JSON.parse(fs.readFileSync(user_path + PATH.sep + 'settings.json', 'utf8'));
             $autosave = settings.autosave;
             $theme = settings.theme;
             $dbid = settings.dbid; inputID = settings.dbid;
@@ -104,7 +114,7 @@
                     dbid: $dbid,
                     dbkey: $dbkey,
                 }
-                fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
+                fs.writeFileSync(user_path + PATH.sep + 'settings.json', JSON.stringify(settings, null, 4));
             });
             vex.dialog.alert('Successfully verified your User ID and Key.');
         } else {
@@ -144,7 +154,7 @@
                 dbid: $dbid,
                 dbkey: $dbkey,
             }
-            fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
+            fs.writeFileSync(user_path + PATH.sep + 'settings.json', JSON.stringify(settings, null, 4));
         });
     }
 
@@ -165,16 +175,16 @@
         let contents = await file.text();
         let theme_path: string;
         await Files.userData(user_path => {
-            let themes_dir = user_path + path.sep + 'user_themes' + path.sep;
+            let themes_dir = user_path + PATH.sep + 'user_themes' + PATH.sep;
             if (!fs.existsSync(themes_dir)) {
                 fs.mkdirSync(themes_dir);
             }
-            theme_path = user_path + path.sep + 'user_themes' + path.sep + file.name;
-            fs.writeFile(theme_path, contents, 'utf8', (err: NodeJS.ErrnoException) => {
+            theme_path = user_path + PATH.sep + 'user_themes' + PATH.sep + file.name;
+            fs.writeFile(theme_path, contents, 'utf8', (err: NodeJS.ErrnoException | null) => {
                 if (err) throw err;
                 $theme = theme_path;
             });
-            fs.writeFile(user_path + path.sep + 'theme.txt', theme_path, (err: NodeJS.ErrnoException) => {
+            fs.writeFile(user_path + PATH.sep + 'theme.txt', theme_path, (err: NodeJS.ErrnoException | null) => {
                 if (err) throw err;
             });
         });
@@ -192,7 +202,7 @@
             dbkey: $dbkey,
         }
         Files.userData(user_path => {
-            fs.writeFileSync(user_path + path.sep + 'settings.json', JSON.stringify(settings, null, 4));
+            fs.writeFileSync(user_path + PATH.sep + 'settings.json', JSON.stringify(settings, null, 4));
         });
         if ($autosave) {
             window.setInterval(
@@ -343,12 +353,12 @@
             Files.showOpenDialog(
                 {
                     title: 'Import Related Lexicon',
-                    defaultPath: `${user_path}${path.sep}Lexicons${path.sep}`,
+                    defaultPath: `${user_path}${PATH.sep}Lexicons${PATH.sep}`,
                     properties: ['openFile'],
                 },
                 file_path => {
                     if (!file_path) return;
-                    fs.readFile(file_path[0], 'utf8', (err: NodeJS.ErrnoException, data: string) => {
+                    fs.readFile(file_path[0], 'utf8', (err: NodeJS.ErrnoException | null, data: string) => {
                         if (err) {
                             console.log(err);
                             vex.dialog.alert('There was an issue loading your file. Please contact the developer.');
@@ -400,8 +410,8 @@
             );
         };
         Files.userData(user_path => {
-            if (!fs.existsSync(`${user_path}${path.sep}Lexicons${path.sep}`)) {
-                fs.mkdir(`${user_path}${path.sep}Lexicons${path.sep}`, () => {
+            if (!fs.existsSync(`${user_path}${PATH.sep}Lexicons${PATH.sep}`)) {
+                fs.mkdir(`${user_path}${PATH.sep}Lexicons${PATH.sep}`, () => {
                     dialog(user_path);
                 });
             } else { dialog(user_path); }
@@ -433,6 +443,49 @@
                 }
             }
         });
+    }
+
+    async function import_layout() {
+        const handle = await window.showOpenFilePicker({
+            multiple: false
+        });
+        const reader = new window.FileReader();
+
+        Files.showOpenDialog({
+            properties: ['openFile']
+        }, path => {
+            if (!path) return;
+            fs.readFile(path[0], (err, data) => {
+                if (err) {
+                    console.error(err);
+                    vex.dialog.alert('An error occurred while trying to read the file.');
+                    return;
+                }
+                try { JSON.parse(data.toString()) } catch (e) {
+                    console.error(e);
+                    vex.dialog.alert('An error occurred while trying to parse the file.');
+                    return;
+                }
+                const parsed = JSON.parse(data.toString());
+                if ( !parsed.positions || !parsed.snapping || !parsed.window ) {
+                    vex.dialog.alert('There was a problem with the data in that file.');
+                    return;
+                }
+                console.log(parsed);
+                window.resizeTo(parsed.window.width, parsed.window.height);
+                $CurrentLayouts = parsed;
+            });
+        })
+    }
+
+    async function export_layout() {
+        const handle = await window.showSaveFilePicker({
+            suggestedName: 'lexc-layouts.json'
+        });
+        await handle.requestPermission({ mode: 'readwrite' });
+        const file = await handle.createWritable();
+        await file.write(JSON.stringify($CurrentLayouts));
+        file.close();
     }
 </script>
 <!-- App Settings -->
@@ -482,23 +535,23 @@
                 <div class=narrow>
                     <label>Floating Pane Position Grid Snap
                         <br><br>
-                        <input type=checkbox bind:checked={$panelSnap.proportional}/>
+                        <input type=checkbox bind:checked={$CurrentLayouts.snapping.proportional}/>
                         <p>Keep proportional to window size</p>
-                        {#if $panelSnap.proportional}
+                        {#if $CurrentLayouts.snapping.proportional}
                             <div class='row narrow'>
                                 <div class=column>
                                     <input
                                         type=number
-                                        disabled={!$panelSnap.proportional}
-                                        bind:value={$panelSnap.rows}
+                                        disabled={!$CurrentLayouts.snapping.proportional}
+                                        bind:value={$CurrentLayouts.snapping.rows}
                                         onchange={()=>{ipcRenderer.emit('adjustGrid')}}
                                     > Rows
                                 </div>
                                 <div class=column>
                                     <input
                                         type=number
-                                        disabled={!$panelSnap.proportional}
-                                        bind:value={$panelSnap.columns}
+                                        disabled={!$CurrentLayouts.snapping.proportional}
+                                        bind:value={$CurrentLayouts.snapping.columns}
                                         onchange={()=>{ipcRenderer.emit('adjustGrid')}}
                                     > Columns
                                 </div>
@@ -507,15 +560,30 @@
                         <br>
                         <div style="display:flex">
                             x-axis:
-                            <input type=range bind:value={$panelSnap.x} min=1 max=500 disabled={$panelSnap.proportional}/>
-                            {Math.round($panelSnap.x)}
+                            <input type=range bind:value={$CurrentLayouts.snapping.x} min=1 max=500 disabled={$CurrentLayouts.snapping.proportional}/>
+                            {Math.round($CurrentLayouts.snapping.x)}
                         </div>
                         <div style="display:flex">
                             y-axis:
-                            <input type=range bind:value={$panelSnap.y} min=1 max=500 disabled={$panelSnap.proportional}/>
-                            {Math.round($panelSnap.y)}
+                            <input type=range bind:value={$CurrentLayouts.snapping.y} min=1 max=500 disabled={$CurrentLayouts.snapping.proportional}/>
+                            {Math.round($CurrentLayouts.snapping.y)}
                         </div>
                     </label>
+                    <button onclick={()=>{
+                        window.resizeTo(defaultWindow.width, defaultWindow.height);
+                        $CurrentLayouts.window = defaultWindow;
+                        $CurrentLayouts.positions = defaultPanelPositions;
+                        $CurrentLayouts.snapping = defaultPanelSnap;
+                    }}>Reset Layout Settings</button>
+                    <p class=info>Layout settings are saved per-file.</p>
+                    <div class='row narrow'>
+                        <div class=column>
+                            <button onclick={async () => await import_layout()}>Import Layout</button>
+                        </div>
+                        <div class=column>
+                            <button onclick={async () => await export_layout()}>Export Layout</button>
+                        </div>
+                    </div>
                 </div>
                 <br><hr/><br>
                 <p>Save Settings</p> <br>
@@ -613,8 +681,7 @@
                                     vex.dialog.prompt({
                                         message: 'Edit Lect Name',
                                         placeholder: `${lect}`,
-                                        // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                                        callback: function (response) {
+                                        callback: function (response: string|false) {
                                             if (response === false) return
                                             changeLectName(lect, response, lectIndex);
                                         }
@@ -623,10 +690,13 @@
                                 <button class="hover-highlight hover-shadow" style="display: inline-block;" onclick={() => {
                                     vex.dialog.confirm({
                                         message: `Add all words in the lexicon to the lect ‘${lect}’?`,
-                                        // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                                        callback: function (response) {
+                                        callback: function (response: boolean) {
                                             if (response) {
                                                 for (let word in $Language.Lexicon) {
+                                                    $Language.Lexicon[word].pronunciations[lect] = {
+                                                        ipa: get_pronunciation(word, lect),
+                                                        irregular: false,
+                                                    }
                                                     $Language.Lexicon[word].Senses.forEach(sense => {
                                                         if (!sense.lects.includes(lect)) {
                                                             sense.lects.push(lect);

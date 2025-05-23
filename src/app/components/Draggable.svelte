@@ -1,7 +1,7 @@
 <svelte:options runes/>
 <script lang=ts>
     import { onMount, type Snippet } from "svelte";
-    import { panelAdjustments, panelSnap } from "../stores";
+    import { CurrentLayouts, Language } from "../stores";
     let { 
         panel, 
         children,
@@ -19,52 +19,51 @@
 	
 	function onMouseMove(e: MouseEvent) {
 		if (moving) {
-			$panelAdjustments[panel].left += e.movementX;
-			$panelAdjustments[panel].top += e.movementY;
+			$CurrentLayouts.positions[panel].left += e.movementX;
+			$CurrentLayouts.positions[panel].top += e.movementY;
 
             // y limiter
-            $panelAdjustments[panel].top =
-                $panelAdjustments[panel].top < 25
+            $CurrentLayouts.positions[panel].top =
+                $CurrentLayouts.positions[panel].top < 25
                 ? 25
-                : $panelAdjustments[panel].top
-            $panelAdjustments[panel].top =
-                $panelAdjustments[panel].top > window.innerHeight - $panelAdjustments[panel].height
-                ? window.innerHeight - $panelAdjustments[panel].height
-                : $panelAdjustments[panel].top
+                : $CurrentLayouts.positions[panel].top
+            $CurrentLayouts.positions[panel].top =
+                $CurrentLayouts.positions[panel].top > window.innerHeight - $CurrentLayouts.positions[panel].height
+                ? window.innerHeight - $CurrentLayouts.positions[panel].height
+                : $CurrentLayouts.positions[panel].top
 
             // x limiter
-            $panelAdjustments[panel].left =
-                $panelAdjustments[panel].left < 0
+            $CurrentLayouts.positions[panel].left =
+                $CurrentLayouts.positions[panel].left < 0
                 ? 0
-                : $panelAdjustments[panel].left
-            $panelAdjustments[panel].left =
-                $panelAdjustments[panel].left > window.innerWidth - $panelAdjustments[panel].width
-                ? window.innerWidth - $panelAdjustments[panel].width
-                : $panelAdjustments[panel].left
+                : $CurrentLayouts.positions[panel].left
+            $CurrentLayouts.positions[panel].left =
+                $CurrentLayouts.positions[panel].left > window.innerWidth - $CurrentLayouts.positions[panel].width
+                ? window.innerWidth - $CurrentLayouts.positions[panel].width
+                : $CurrentLayouts.positions[panel].left
 		}
 	}
 	
 	function onMouseUp() {
 		moving = false; mousedown=false;
-        Object.keys($panelAdjustments).forEach(p => {
-            $panelAdjustments[p].left = snap('left', p);
-            $panelAdjustments[p].top = snap('top', p);
+        Object.keys($CurrentLayouts.positions).forEach(p => {
+            $CurrentLayouts.positions[p].left = snap('left', p);
+            $CurrentLayouts.positions[p].top = snap('top', p);
             resizeSnap(p);
         });
 	}
 
     function snap(axis: 'top'|'left'|'height'|'width', panelOverride: string|false = false) {
         let n = {
-            left: $panelSnap.x,
-            width: $panelSnap.x,
-            top: $panelSnap.y,
-            height: $panelSnap.y,
+            left: $CurrentLayouts.snapping.x,
+            width: $CurrentLayouts.snapping.x,
+            top: $CurrentLayouts.snapping.y,
+            height: $CurrentLayouts.snapping.y,
         }[axis]
         let p = panelOverride? panelOverride : panel;
-        if ($panelAdjustments[p].left >= window.innerWidth) $panelAdjustments[p].left -= $panelAdjustments[p].left - window.innerWidth + $panelAdjustments[p].width
-        if ($panelAdjustments[p].top >= window.innerHeight) $panelAdjustments[p].top -= $panelAdjustments[p].top - window.innerHeight + $panelAdjustments[p].height
+        
         return Math.round(
-            $panelAdjustments[p][axis] / n
+            $CurrentLayouts.positions[p][axis] / n
         ) * n + (axis==='top'? 25:0);
     }
 
@@ -72,21 +71,24 @@
         mousedown = true;
         let p = panelOverride? panelOverride : panel;
 
-        if ($panelAdjustments[p].width === 60 && $panelAdjustments[p].height === 20)
+        if ($CurrentLayouts.positions[p].left >= window.innerWidth) $CurrentLayouts.positions[p].left -= $CurrentLayouts.positions[p].left - window.innerWidth + $CurrentLayouts.positions[p].width;
+        if ($CurrentLayouts.positions[p].top >= window.innerHeight) $CurrentLayouts.positions[p].top -= $CurrentLayouts.positions[p].top - window.innerHeight + $CurrentLayouts.positions[p].height;
+
+        if ($CurrentLayouts.positions[p].width === 60 && $CurrentLayouts.positions[p].height === 20)
             return;
 
-        $panelAdjustments[p].width = Math.max(snap('width', panelOverride), 60);
-        $panelAdjustments[p].height = Math.max(snap('height', panelOverride), 20);
+        $CurrentLayouts.positions[p].width = Math.max(snap('width', panelOverride), 60);
+        $CurrentLayouts.positions[p].height = Math.max(snap('height', panelOverride), 20);
         
-        $panelAdjustments[p].width -= Math.max(($panelAdjustments[p].left + $panelAdjustments[p].width) - window.innerWidth, 0)
-        $panelAdjustments[p].height -= Math.max(($panelAdjustments[p].top + $panelAdjustments[p].height) - window.innerHeight, 0)
+        $CurrentLayouts.positions[p].width -= Math.max(($CurrentLayouts.positions[p].left + $CurrentLayouts.positions[p].width) - window.innerWidth, 0);
+        $CurrentLayouts.positions[p].height -= Math.max(($CurrentLayouts.positions[p].top + $CurrentLayouts.positions[p].height) - window.innerHeight, 0);
     }
 
     function maximize() {
-        $panelAdjustments[panel].left = 0;
-        $panelAdjustments[panel].top = 25;
-        $panelAdjustments[panel].height = window.innerHeight - 25;
-        $panelAdjustments[panel].width = window.innerWidth;
+        $CurrentLayouts.positions[panel].left = 0;
+        $CurrentLayouts.positions[panel].top = 25;
+        $CurrentLayouts.positions[panel].height = window.innerHeight - 25;
+        $CurrentLayouts.positions[panel].width = window.innerWidth;
         onMouseUp();
     }
 
@@ -137,19 +139,19 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <section 
     style="
-        left: {$panelAdjustments[panel].left}px;
-        top: {$panelAdjustments[panel].top}px;
-        height: {$panelAdjustments[panel].height}px;
-        width: {$panelAdjustments[panel].width}px;
+        left: {$CurrentLayouts.positions[panel].left}px;
+        top: {$CurrentLayouts.positions[panel].top}px;
+        height: {$CurrentLayouts.positions[panel].height}px;
+        width: {$CurrentLayouts.positions[panel].width}px;
     " 
     class=draggable
-    bind:clientHeight={$panelAdjustments[panel].height} bind:clientWidth={$panelAdjustments[panel].width}
+    bind:clientHeight={$CurrentLayouts.positions[panel].height} bind:clientWidth={$CurrentLayouts.positions[panel].width}
     onresize={() => resizeSnap()}
 >
     <div class=dragbar onmousedown={move}>
         <button onclick={()=>{
-            $panelAdjustments[panel].height = 20;
-            $panelAdjustments[panel].width = 60;
+            $CurrentLayouts.positions[panel].height = 20;
+            $CurrentLayouts.positions[panel].width = 60;
         }}>{ "𝌼" // tetragram of diminishment
         }</button>
         <button onclick={maximize}> 
@@ -157,8 +159,8 @@
         }</button>
         {
             // debug
-            // JSON.stringify($panelAdjustments[panel])
-            // JSON.stringify($panelSnap)
+            // JSON.stringify($CurrentLayouts.positions[panel])
+            // JSON.stringify($CurrentLayouts.snapping)
             ""
         }
     </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
     const fs = require('fs');
     const path = require('path');
-    import { docsEditor, Language, selectedCategory, selectedTab, fileLoadIncrement, referenceLanguage, defaultLanguage, dbid, dbkey } from '../stores';
+    import { docsEditor, Language, selectedCategory, selectedTab, fileLoadIncrement, defaultLanguage, dbid, dbkey, CurrentLayouts } from '../stores';
     import type { OutputData } from '@editorjs/editorjs';
     import type * as Lexc from '../types';
     import { userData, showOpenDialog, saveFile, openLegacy, saveAs, importCSV, retrieveFromDatabase } from '../utils/files';
@@ -112,7 +112,7 @@
             errorMessage = 'There was a problem loading the file’s documentation data.'
             let docs_data: OutputData = contents.Docs;
             $Language.Docs = docs_data;
-            $docsEditor.destroy();
+            $docsEditor?.destroy();
             initializeDocs(docs_data);
 
             errorMessage = 'There was a problem loading the pronunciations rules from the file.'
@@ -162,6 +162,13 @@
             errorMessage = 'There was a problem loading the file’s theme.'
             if (contents.hasOwnProperty('FileTheme')) {
                 $Language.FileTheme = contents.FileTheme;
+            }
+
+            errorMessage = 'There was a problem loading the layout.'
+            if (contents.hasOwnProperty('Layouts')) {
+                window.resizeTo(contents.Layouts.window.width, contents.Layouts.window.height);
+                $Language.Layouts = contents.Layouts;
+                $CurrentLayouts = contents.Layouts;
             }
 
             errorMessage = 'There was a problem syncing with the database.'
@@ -324,79 +331,6 @@
         window.setTimeout(() => { loading_message = ''; }, 5000);
     }
 
-    async function openReferenceFile() {
-        let contents: Lexc.Language;
-        let dialog = (userPath: string) => {
-            showOpenDialog(
-                {
-                    title: 'Open Lexicon',
-                    defaultPath: `${userPath}${path.sep}Lexicons${path.sep}`,
-                    properties: ['openFile'],
-                },
-                file_path => {
-                    if (file_path === undefined) {
-                        // stop orbit animation
-                        document.querySelectorAll('.planet').forEach((planet: Element) => {
-                            (planet as HTMLElement).style.animationPlayState = 'paused';
-                        });
-                        loading_message = 'No file selected.';
-                        window.setTimeout(() => {
-                            loading_message = '';
-                        }, 5000);
-                        return;
-                    }
-                    fs.readFile(file_path[0], 'utf8', (err: NodeJS.ErrnoException, data: string) => {
-                        if (err) {
-                            console.log(err);
-                            vex.dialog.alert(
-                                'There was an issue loading your file. Please contact the developer.'
-                                );
-                            console.error(err);
-                            document.querySelectorAll('.planet').forEach((planet: Element) => {
-                                // loading anim stop
-                                (planet as HTMLElement).style.animationPlayState = 'paused';
-                            });
-                            loading_message = 'Couldn’t open file.';
-                            window.setTimeout(() => { loading_message = ''; }, 5000);
-                            return;
-                        }
-                        contents = JSON.parse(data) as Lexc.Language;
-                        if (String(contents.Version).split('.')[0] !== '2') {
-                            vex.dialog.alert(
-                                `The file you are attempting to open as a reference was last saved in v${contents.Version} \
-                                and is not compatible with the current version. Contact the developer for assistance.`
-                            );
-                            document.querySelectorAll('.planet').forEach((planet: Element) => {
-                                // loading anim stop
-                                (planet as HTMLElement).style.animationPlayState = 'paused';
-                            });
-                            loading_message = 'Incompatible file.';
-                            window.setTimeout(() => { loading_message = ''; }, 5000);
-                            return;
-                        }
-                        if (contents.Name === $Language.Name){
-                            vex.dialog.alert('You cannot open a reference to the same language.');
-                            document.querySelectorAll('.planet').forEach((planet: Element) => {
-                                // loading anim stop
-                                (planet as HTMLElement).style.animationPlayState = 'paused';
-                            });
-                            loading_message = 'Same language.';
-                            window.setTimeout(() => { loading_message = ''; }, 5000);
-                            return;
-                        }
-                        $referenceLanguage = false;
-                        window.setTimeout(() => {
-                            $referenceLanguage = contents;
-                        }, 100);
-                    });
-                }
-            );
-        }
-        await userData(userPath => {
-            dialog(userPath);
-        });
-    }
-
 </script>
 
 <!-- File Tab -->
@@ -463,32 +397,6 @@
                 <div class=narrow>
                     <textarea bind:value={$Language.HeaderTags}></textarea>
                 </div>
-            
-                <br>
-                <hr>
-                <br>
-                <button class="hover-highlight hover-shadow"
-                    on:click={openReferenceFile}>Open Reference File</button>
-                <p class='info narrow'>
-                    Open a another Lexicaner file in a side panel for easier comparison with the current file.
-                </p>
-                {#if typeof $referenceLanguage === 'object'}
-                    <p>Reference Language: {$referenceLanguage.Name}</p>
-                    <button on:click={()=>$referenceLanguage = false} class="hover-highlight hover-shadow">Close Reference File</button>
-                    {#if $Language.ShowEtymology}
-                        <button
-                            on:click={() => {
-                                if (typeof $referenceLanguage === 'object') { // redundant check is necessary for linter
-                                    if ($referenceLanguage.Name in $Language.Relatives) {
-                                        vex.dialog.alert(`There is already a relative lexicon with the name ${$referenceLanguage.Name}.`);
-                                        return;
-                                    }
-                                    $Language.Relatives[$referenceLanguage.Name] = $referenceLanguage.Lexicon;
-                                    vex.dialog.alert(`Successfully imported ${$referenceLanguage.Name} as a relative lexicon.`);
-                                }
-                        }}>Import Reference Lexicon as Related Lexicon</button>
-                    {/if}
-                {/if}
                 <br>
                 <hr>
                 <br>
