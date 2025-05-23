@@ -17,7 +17,7 @@
     let page = $state(pages[0]);
 </script>
 <div class=tab-pane>
-    {#if $selectedTab===10}
+    {#if $selectedTab.includes(10)}
         <Draggable panel=help>
             <div class='row container glasspane' style:height=100%>
                 <div class=column style:max-width=9vw>
@@ -30,7 +30,9 @@
                     {/each}
                 </div>
                 <div class="column scrolled" style:height=100% style:text-align=left style:margin=3em style:margin-top=0em>
-                    {@html markdownToHtml(wikiInfo[page as keyof typeof wikiInfo])}
+                    <div style='max-width:50rem; margin:auto'>
+                        {@html markdownToHtml(wikiInfo[page as keyof typeof wikiInfo])}
+                    </div>
                 </div>
             </div>
         </Draggable>

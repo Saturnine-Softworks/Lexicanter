@@ -113,7 +113,7 @@
 
 <div class='tab-pane'>
 
-        {#if $selectedTab===1}
+        {#if $selectedTab.includes(1)}
             <!-- Etymology Editor -->
             <Draggable panel=etymologyeditor>
                 <div class='container glasspane scrolled' bind:clientWidth={width} bind:clientHeight={height}>

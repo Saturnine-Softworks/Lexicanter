@@ -59,7 +59,11 @@
     function scrollIntoView(word: string) {
         const entry = document.getElementById(word);
         if (entry) {
-            if (!!$selectedTab) $selectedTab = 0;
+            if (!!$selectedTab) {
+                $Language.Layouts.tabmode === 'switch'
+                    ? $selectedTab = [0]
+                    : $selectedTab.push(0)
+            };
             searchDefinitions = ''; searchTags = ''; searchWords = ''; lectFilter = '';
             entry.scrollIntoView({
                 behavior: 'smooth',
@@ -301,7 +305,7 @@
 <div class='tab-pane' style=overflow:hidden>
     <div class=row style='height: 91vh'>
 
-        {#if $selectedTab === 0}
+        {#if $selectedTab.includes(0)}
             <!-- Lexicon -->
             <Draggable panel=lexicon>
                 <div class='container glasspane' style=overflow:hidden>
@@ -342,7 +346,7 @@
                         </div>
                     </section>
                     <div class='scrolled' style=height:86% bind:clientWidth={displayWidth}>
-                        {#if displayWidth > 1600}
+                        {#if displayWidth > 1200}
 
                             {#each multicolumn(alphabetized, 3) as columns}
                                 <div class='row' style='width: 72%'>
@@ -357,7 +361,7 @@
                                 <p class="info" id="lex-body">Add new words from the word editor panel</p>
                             {/each}
 
-                        {:else if displayWidth > 800}
+                        {:else if displayWidth > 600}
 
                             {#each multicolumn(alphabetized, 2) as columns}
                                 <div class='row' style='width: 72%'>

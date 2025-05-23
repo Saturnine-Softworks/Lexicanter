@@ -314,7 +314,7 @@
     }
 </script>
 <div class='tab-pane'>
-    {#if $selectedTab===9}
+    {#if $selectedTab.includes(9)}
         <Draggable panel=changelog>
             <div class='container glasspane scrolled'>
                 <p class='info'>

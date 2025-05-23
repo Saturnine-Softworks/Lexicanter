@@ -6,11 +6,11 @@
     initializeDocs(false);
 </script>
 <div class=tab-pane spellcheck={false}>
-    <!-- {#if $selectedTab===6}
-        <Draggable panel=documentation> -->
-            <div class="container row scrolled" style=height:95%>
+    <div hidden={!$selectedTab.includes(6)}>
+        <Draggable panel=documentation auto_maximize> 
+            <div class="container glasspane scrolled">
                 <div class=column style="font-family: Gentium" id=docs-tab></div>
             </div>
-        <!-- </Draggable>
-    {/if} -->
+        </Draggable>
+    </div>
 </div>

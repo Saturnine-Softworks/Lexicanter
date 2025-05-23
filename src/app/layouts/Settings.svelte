@@ -464,7 +464,9 @@
             window: defaultWindow(),
             positions: defaultPanelPositions(),
             snapping: defaultPanelSnap(),
+            tabmode: 'switch',
         }
+        $selectedTab = [8]
         window.resizeTo(1400, 900); // default window size
         console.log( defaultLayouts );
         $CurrentLayouts = defaultLayouts;
@@ -509,7 +511,7 @@
 </script>
 <!-- App Settings -->
 <div class="tab-pane">
-    {#if $selectedTab === 8}
+    {#if $selectedTab.includes(8)}
         <Draggable panel=settings>
             <div class="container glasspane" style=overflow-y:auto>
                 <p>Appearance Settings</p> <br>
@@ -588,6 +590,18 @@
                             {Math.round($CurrentLayouts.snapping.y)}
                         </div>
                     </label>
+                    <br>
+                    <label> Tab Mode
+                        <select bind:value={$Language.Layouts.tabmode}>
+                            <option value='switch'>Switch</option>
+                            <option value='toggle'>Toggle</option>
+                        </select>
+                        <p class=info>
+                            The tab mode controls the behavior of clicking on the tab icons across the top of the window. In "Switch" mode,
+                            tabs behave similarly to browser tabs. In "Toggle" mode, clicking on a tab shows or hides its associated panels without hiding already open panels. 
+                        </p>
+                    </label>
+                    <br>
                     <button onclick={resetLayouts}>Reset Layout Settings</button>
                     <p class=info>Layout settings are saved per-file.</p>
                     <div class='row narrow'>

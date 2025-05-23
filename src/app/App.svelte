@@ -83,20 +83,29 @@
                             || (tab === 'Orthography' && $Language.ShowOrthography)
                         }
                             <button 
-                                class:selected={$selectedTab === i} 
+                                class:selected={$selectedTab.includes(i)} 
                                 class='hover-highlight tab-button'
                                 style={
                                     ['settings', 'history', 'help'].includes(tab)
                                         ? 'font-family: "Material Icons"; font-size: 1em; vertical-align: bottom; height: 1.8em;'
                                         : ''
                                 }
-                                onclick={() => $selectedTab = i}
+                                onclick={() => {
+                                    $Language.Layouts.tabmode === 'switch'
+                                        ? $selectedTab = [i]
+                                        : $selectedTab.includes(i)
+                                            ? $selectedTab = [
+                                                $selectedTab.slice(0, $selectedTab.indexOf(i)),
+                                                $selectedTab.slice($selectedTab.indexOf(i) + 1, -1)
+                                            ].flat()
+                                            : $selectedTab = [...$selectedTab, i]
+                                }}
                             > {tab} </button>
                         {/if}
                     {/each}
                 </div>
-                    {#each tabs as Tab, i}
-                    <div class:collapsed={$selectedTab !== i}>
+                {#each tabs as Tab, i}
+                    <div class:collapsed={!$selectedTab.includes(i)}>
                             <Tab/>
                     </div>
                 {/each}

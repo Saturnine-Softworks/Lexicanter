@@ -52,7 +52,7 @@
 
 </script>
 <div class=tab-pane>
-    {#if $selectedTab === 5}
+    {#if $selectedTab.includes(5)}
         <Draggable panel=orthography>
             <div class="glasspane container scrolled">
                 {#each $Language.Orthographies as orthography, i}

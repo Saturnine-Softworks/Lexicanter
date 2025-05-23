@@ -337,7 +337,7 @@
 
 <!-- File Tab -->
 <div class=tab-pane>
-    {#if $selectedTab===7}
+    {#if $selectedTab.includes(7)}
         <Draggable panel=files>
             <div class="glasspane container" style=overflow-y:auto>
                 <label for=file-name>Language Name</label>

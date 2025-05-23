@@ -168,7 +168,7 @@
 <div class="tab-pane">
 
         <!-- Phonotactics -->
-        {#if $selectedTab===4}
+        {#if $selectedTab.includes(4)}
             <Draggable panel=wordgenerator>
                 <div class="container glasspane scrolled">
                     <label>

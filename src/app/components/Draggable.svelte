@@ -4,9 +4,11 @@
     import { CurrentLayouts, Language } from "../stores";
     let { 
         panel, 
+        auto_maximize = false,
         children,
     } : {
         panel: string,
+        auto_maximize?: boolean,
         children: Snippet,
     } = $props()
 
@@ -92,7 +94,10 @@
         onMouseUp();
     }
 
-    onMount(onMouseUp);
+    onMount(() => {
+        if (auto_maximize) maximize();
+        else onMouseUp();
+    });
 
 </script>
 

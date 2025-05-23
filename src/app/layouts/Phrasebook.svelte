@@ -203,7 +203,7 @@
 </script>
 <!-- Phrasebook Tab -->
 <div class="tab-pane">
-    {#if $selectedTab === 2}
+    {#if $selectedTab.includes(2)}
 
         <!-- Categories -->
         <Draggable panel=phrasecategories>

@@ -128,8 +128,8 @@
 
 </script>
 <div class=tab-pane spellcheck={false}>
-    <!-- {#if $selectedTab===3}
-        <Draggable panel=inflections> -->
+    <div hidden={!$selectedTab.includes(3)}>
+        <Draggable panel=inflections auto_maximize>
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div class=row style=height:97%>
                 <div class='container column scrolled' onfocusout={saveEditors}>
@@ -221,6 +221,6 @@
                     }}>Add Inflections Group</button>
                 </div>
             </div>
-        <!-- </Draggable>
-    {/if} -->
+        </Draggable>
+    </div>
 </div>

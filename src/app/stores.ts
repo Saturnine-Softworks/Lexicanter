@@ -7,6 +7,7 @@ export const CurrentLayouts: Writable<Lexc.Layouts> = writable({
     positions: defaultPanelPositions(),
     snapping: defaultPanelSnap(),
     window: defaultWindow(),
+    tabmode: 'switch'
 });
 
 const Default: Lexc.Language = {
@@ -76,6 +77,7 @@ const Default: Lexc.Language = {
     Diagnostics: <Lexc.Diagnostic[]> [ ],
     FileTheme: 'default',
     Layouts: {
+        tabmode: 'switch',
         positions: defaultPanelPositions(),
         snapping: defaultPanelSnap(),
         window: defaultWindow(),
@@ -89,7 +91,7 @@ export const defaultLanguage: Writable<Lexc.Language> = writable(Default);
 // Initial state for the language data
 export const Language: Writable<Lexc.Language> = writable(structuredClone(Default));
 
-export const selectedTab = writable(0);
+export const selectedTab = writable([0]);
 
 // Initial states for all the global variables across the app
 type PronunciationInputs = {

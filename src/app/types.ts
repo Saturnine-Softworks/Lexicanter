@@ -177,6 +177,7 @@ export type Orthography = {
 }
 
 export type Layouts = {
+    tabmode: 'switch'|'toggle',
     positions: {
         [index: string]: {
             top: number,
