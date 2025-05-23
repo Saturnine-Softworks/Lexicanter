@@ -9,7 +9,7 @@
         fileLoadIncrement, 
         docsEditor, 
         selectedTab, 
-        CurrentLayouts, defaultPanelPositions, defaultPanelSnap, defaultWindow,
+        CurrentLayouts
     } from '../stores';
     import * as Files from '../utils/files';
     import { Language } from '../stores';
@@ -24,6 +24,7 @@
     import TagSelector from '../components/TagSelector.svelte';
     import { verify } from '../../db/database';
     import { initializeDocs } from '../utils/docs';
+    import { defaultPanelPositions, defaultPanelSnap, defaultWindow } from '../utils/layouts';
 
     let tag: string = $state('');
     let onlineFileVersion: string = $state('');
@@ -458,13 +459,18 @@
         });
     }
 
+    function resetLayouts() {
+        const defaultLayouts: Lexc.Layouts = {
+            window: defaultWindow(),
+            positions: defaultPanelPositions(),
+            snapping: defaultPanelSnap(),
+        }
+        window.resizeTo(1400, 900); // default window size
+        console.log( defaultLayouts );
+        $CurrentLayouts = defaultLayouts;
+    }
     async function import_layout() {
-        const handle = await window.showOpenFilePicker({
-            multiple: false
-        });
-        const reader = new window.FileReader();
-
-        Files.showOpenDialog({
+        await Files.showOpenDialog({
             properties: ['openFile']
         }, path => {
             if (!path) return;
@@ -484,11 +490,11 @@
                     vex.dialog.alert('There was a problem with the data in that file.');
                     return;
                 }
-                console.log(parsed);
+                // console.log(parsed);
                 window.resizeTo(parsed.window.width, parsed.window.height);
                 $CurrentLayouts = parsed;
             });
-        })
+        });
     }
 
     async function export_layout() {
@@ -582,12 +588,7 @@
                             {Math.round($CurrentLayouts.snapping.y)}
                         </div>
                     </label>
-                    <button onclick={()=>{
-                        window.resizeTo(defaultWindow.width, defaultWindow.height);
-                        $CurrentLayouts.window = defaultWindow;
-                        $CurrentLayouts.positions = defaultPanelPositions;
-                        $CurrentLayouts.snapping = defaultPanelSnap;
-                    }}>Reset Layout Settings</button>
+                    <button onclick={resetLayouts}>Reset Layout Settings</button>
                     <p class=info>Layout settings are saved per-file.</p>
                     <div class='row narrow'>
                         <div class=column>
