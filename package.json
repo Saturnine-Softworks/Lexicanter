@@ -33,18 +33,7 @@
             "icon": "src/res/alembic.ico"
         },
         "mac": {
-            "icon": "src/res/alembic.icns",
-            "mergeASARs": false,
-            "target": [ 
-                { 
-                    "target": "dmg", 
-                    "arch": [ "universal" ]
-                },
-                {
-                    "target": "zip",
-                    "arch": [ "universal" ]   
-                }
-            ]
+            "icon": "src/res/alembic.icns"
         },
         "linux": {
             "target": "AppImage",
