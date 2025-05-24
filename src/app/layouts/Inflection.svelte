@@ -129,7 +129,7 @@
 </script>
 <div class=tab-pane spellcheck={false}>
     <div hidden={!$selectedTab.includes(3)}>
-        <Draggable panel=inflections auto_maximize>
+        <Draggable panel=inflections auto_maximize={$selectedTab.includes(3) && $Language.Layouts.tabmode==='switch'}>
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div class=row style=height:97%>
                 <div class='container column scrolled' onfocusout={saveEditors}>

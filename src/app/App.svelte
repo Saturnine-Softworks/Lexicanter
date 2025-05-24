@@ -73,7 +73,13 @@
                     <button class="hover-highlight close material-icons" onclick={() => ipcRenderer.send('buttonclose')}>close</button>
                     <button class="hover-highlight minimize material-icons" onclick={() => ipcRenderer.send('minimize')}>remove</button>
                     <button class="hover-highlight maximize material-icons" onclick={() => ipcRenderer.send('maximize')}>fullscreen</button>
-                </p>
+                    <p class=version-info style='
+                        text-align: right;
+                        margin-right: .5rem;
+                        margin-top: .25rem;
+                    '>
+                        {version}-{platform}
+                    </p>
                 <div class="button-container">
                     {#each tab_btns as tab, i}
                         {#if (tab !== 'Etymology' && tab !== 'Inflection' && tab !== 'Orthography' && tab !== 'Phrasebook')

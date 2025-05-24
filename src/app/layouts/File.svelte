@@ -10,6 +10,7 @@
     import { initializeDocs } from '../utils/docs';
     import Evolver from '../components/Evolver.svelte';
     import { verify } from '../../db/database';
+    import { defaultPanelPositions, defaultPanelSnap, defaultWindow } from '../utils/layouts';
 
     const vex = require('vex-js');
 
@@ -167,9 +168,20 @@
             errorMessage = 'There was a problem loading the layout.'
             if (contents.hasOwnProperty('Layouts')) {
                 window.resizeTo(contents.Layouts.window.width, contents.Layouts.window.height);
-                $Language.Layouts = contents.Layouts;
                 $CurrentLayouts = contents.Layouts;
+                $Language.Layouts = contents.Layouts;
                 $selectedTab = $CurrentLayouts.opentabs;
+            } else {
+                window.resizeTo(defaultWindow().width, defaultWindow().height);
+                $Language.Layouts = {
+                    tabmode: "switch",
+                    opentabs: [7],
+                    window: defaultWindow(),
+                    positions: defaultPanelPositions(),
+                    snapping: defaultPanelSnap(),
+                };
+                $selectedTab = [7];
+                $CurrentLayouts = $Language.Layouts;
             }
 
             errorMessage = 'There was a problem syncing with the database.'
@@ -463,7 +475,7 @@
                         csv.tags_bool? csv.tags : false
                     )
                 } class="hover-highlight hover-shadow">Import</button>
-                <br><br>
+                <br><br><br>
             </div>
         </Draggable>
     {/if}

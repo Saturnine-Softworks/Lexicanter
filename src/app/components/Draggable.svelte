@@ -18,6 +18,11 @@
     function move() {
         moving = true; mousedown = true;
     }
+
+    let maximized: boolean = $derived(
+        $CurrentLayouts.positions[panel].width >= .98 * window.innerWidth && 
+        $CurrentLayouts.positions[panel].height >= .98 * window.innerHeight - 25
+    )
 	
 	function onMouseMove(e: MouseEvent) {
 		if (moving) {
@@ -44,15 +49,20 @@
                 ? window.innerWidth - $CurrentLayouts.positions[panel].width
                 : $CurrentLayouts.positions[panel].left
 		}
+        if (auto_maximize && !maximized) {
+            // console.log(auto_maximize, panel)
+            maximize()
+        };
 	}
 	
 	function onMouseUp() {
-		moving = false; mousedown=false;
         Object.keys($CurrentLayouts.positions).forEach(p => {
             $CurrentLayouts.positions[p].left = snap('left', p);
             $CurrentLayouts.positions[p].top = snap('top', p);
             resizeSnap(p);
         });
+        moving = false; mousedown=false;
+        if (auto_maximize && !maximized) maximize();
 	}
 
     function snap(axis: 'top'|'left'|'height'|'width', panelOverride: string|false = false) {
@@ -91,13 +101,11 @@
         $CurrentLayouts.positions[panel].top = 25;
         $CurrentLayouts.positions[panel].height = window.innerHeight - 25;
         $CurrentLayouts.positions[panel].width = window.innerWidth;
-        onMouseUp();
+        resizeSnap();
+        mousedown = false;
     }
 
-    onMount(() => {
-        if (auto_maximize) maximize();
-        else onMouseUp();
-    });
+    onMount(onMouseUp);
 
 </script>
 

@@ -20,7 +20,10 @@
     {#if $selectedTab.includes(10)}
         <Draggable panel=help>
             <div class='row container glasspane' style:height=100%>
-                <div class=column style:max-width=9vw>
+                <div class=column style='
+                    width: 10%;
+                    min-width: 120px; 
+                '>
                     {#each pages as p}
                         <!-- svelte-ignore a11y_no_static_element_interactions -->
                         <div class=lex-entry
@@ -29,8 +32,11 @@
                         > {p} </div>
                     {/each}
                 </div>
-                <div class="column scrolled" style:height=100% style:text-align=left style:margin=3em style:margin-top=0em>
-                    <div style='max-width:50rem; margin:auto'>
+                <div class="column scrolled" style='
+                    height: 100%; 
+                    text-align: left;
+                '>
+                    <div style='width: 85%; max-width: 50rem; margin: auto'>
                         {@html markdownToHtml(wikiInfo[page as keyof typeof wikiInfo])}
                     </div>
                 </div>

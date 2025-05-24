@@ -1,3 +1,4 @@
+<svelte:options runes/>
 <script lang='ts'>
     import Draggable from "../components/Draggable.svelte";
     import { selectedTab } from "../stores";
@@ -10,6 +11,25 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
+        '2.2.0': {
+            type: MINOR,
+            notes: [
+                'Integrated the typesetter from <a href=\'https://codeberg.org/zhuriel/graphemy\'>Graphemy</a>, an app by Zhuriel for when fonts aren’t enough. \
+                You can now set up and display new orthographies using your Graphemy files.',
+                'You can now choose which orthographies display in the lexicon and phrasebook separately.',
+                'The Phrasebook tab can now be turned off in settings.',
+                'The Alphabetization settings can be completely hidden from the Lexicon panels in settings.',
+                'The UI has been largely overhauled. By default, you will see all the same familiar panels in the same tabs, but you may notice that they have \
+                their own window bars and can move them around, resize them, and minimize and maximize them now.',
+                'There is a new mode for displaying the tabs: the defeault is now "Switch" mode, and you can change this to "Toggle" mode. This allows you to open\
+                any panels you want all at once.',
+                'You can export/import layouts as JSON files. Your layout settings are now saved per-file.',
+                'Fixed an issue where adding a new lect to all words via the button in the multi-lect settings would not properly update pronunciations.',
+                'Fixed an issue where files set to sync to the cloud would repeatedly falsely alert the user that their ID and Key are invalid when offline.',
+                'Made some adjustments to the Magnolia theme which I find more aesthetically pleasing. There have also been some small adjustments to the app-wide styling.',
+                'Speed and stability improvements. (The majority of the app is now running Svelte 5 in "Runes" mode.)'
+            ]
+        },
         '2.1.22': {
             type: PATCH,
             notes: [

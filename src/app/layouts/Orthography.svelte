@@ -99,9 +99,13 @@
                                     ($Language.Orthographies[i].graphemy as GraphemyOptions).engine = data.toString();
                                 });
                             });
-                        }}>Locate Graphemy (.gmy) File</button>
+                        }}>Import Graphemy (.gmy) File</button>
                         <br>
-                        <div class='narrow'>
+                        <div style='
+                            max-width: 30rem;
+                            width: 90%;
+                            margin: auto;
+                        '>
                             <div style=display:flex>
                                 Maximum Width
                                 <input type=range min=0 max=500
@@ -111,7 +115,13 @@
                                         ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.width = Number((e.target as HTMLInputElement).value);
                                     }}
                                 />
-                                <span class=info style='margin: auto 1em'>{($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.width}</span>
+                                <input type=number min=0
+                                    bind:value={orthography.graphemy.bounds.width}
+                                    onchange={(e)=>{
+                                        if (!$Language.Orthographies[i].graphemy.hasOwnProperty('bounds')) return;
+                                        ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.width = Number((e.target as HTMLInputElement).value);
+                                    }}
+                                />
                             </div>
                             <div style=display:flex>
                                 Maximum Height
@@ -122,7 +132,13 @@
                                         ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.height = Number((e.target as HTMLInputElement).value);
                                     }}
                                 />
-                                <span class=info style='margin: auto 1em'>{($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.height}</span>
+                                <input type=number min=0
+                                    bind:value={orthography.graphemy.bounds.height}
+                                    onchange={(e)=>{
+                                        if (!$Language.Orthographies[i].graphemy.hasOwnProperty('bounds')) return;
+                                        ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.height = Number((e.target as HTMLInputElement).value);
+                                    }}
+                                />
                             </div>
                         </div>
                     {/if}
