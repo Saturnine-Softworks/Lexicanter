@@ -62,7 +62,7 @@
         ],
         "extraResources": [
             {
-                "from": "./src/app/utils/interop/library/target/release/lib_graphemy_ffi.dylib",
+                "from": "./src/interop/library/target/release/lib_graphemy_ffi.dylib",
                 "to": "lib_graphemy_ffi.dylib",
                 "filter": [
                     "**/*"
