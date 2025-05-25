@@ -4,7 +4,7 @@
     import { parseRules, applyRules } from "../utils/sca";
     import type { GraphemyOptions, Orthography } from "../types";
     import { showOpenDialog } from "../utils/files";
-    import { graphemify } from "../../interop/interop";
+    import { graphemify } from "../utils/interop";
     import Draggable from "../components/Draggable.svelte";
     import { readFile } from "fs";
     import path from "path";

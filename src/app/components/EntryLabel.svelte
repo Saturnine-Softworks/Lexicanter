@@ -1,7 +1,7 @@
 <svelte:options runes/>
 <script lang=ts>
     import { Language } from '../stores';
-    import { graphemify } from '../../interop/interop';
+    import { graphemify } from '../utils/interop';
     import { preprocess_ortho } from '../utils/phonetics';
     import type { Word, Phrase, Variant, Orthography } from '../types';
     let {

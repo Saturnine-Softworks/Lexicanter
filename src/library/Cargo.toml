@@ -5,7 +5,7 @@ edition = "2021"
 
 [lib]
 name = "_graphemy_ffi"
-crate-type = ["rlib", "cdylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 graphemy = { git = "https://codeberg.org/zhuriel/graphemy.git" }

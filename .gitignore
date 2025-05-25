@@ -1,9 +1,8 @@
 # Electron-Builder Distribution
 dist/
-publish.bash
 
-# Development
-/bash
+# Private scripts for building and publishing cross-platform releases
+scripts/
 
 # Rust/Cargo
 # will have compiled files and executables

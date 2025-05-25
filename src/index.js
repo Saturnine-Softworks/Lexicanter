@@ -124,7 +124,7 @@ function createWindow () {
     );
     ipcMain.handle('getVersion', () => version);
     ipcMain.handle('debug', (_, message) => console.log(message));
-    ipcMain.handle('platform', () => process.platform);
+    ipcMain.handle('platform', () => process.platform + '-' + process.arch);
     ipcMain.handle('isDev', () => isDev);
     ipcMain.on('buttonclose', () => mainWindow.webContents.send('app-close'));
     ipcMain.on('minimize', () => mainWindow.minimize());
@@ -141,17 +141,32 @@ function createWindow () {
     });
 
     // Interop signature definitions
-    const dylibPath =
+
+    const arch = {
+        ia32: 'i686-',
+        x64: 'x86_64-',
+        arm64: 'aarch64-'
+    }[process.arch];
+
+    const platform = {
+        darwin: 'apple-darwin',
+        linux: 'unknown-linux-gnu',
+        win32: 'pc-windows-gnu'
+    }[process.platform];
+
+    const resourceDir = arch + platform + path.sep;
+
+    const ffiPath =
         isDev? 
             path.resolve(
                 path.join(
                     __dirname,
-                    'interop/library/target/release/lib_graphemy_ffi.dylib',
+                    'library/target/release/lib_graphemy_ffi.dylib',
                 ),
             )
-        :   path.resolve(process.resourcesPath, 'lib_graphemy_ffi.dylib');
+        :   path.resolve(process.resourcesPath, resourceDir + 'graphemy_ffi');
 
-    const lib = ffi.load(dylibPath);
+    const lib = ffi.load(ffiPath);
     const fns = {
         // fn name = lib.func(rust fn name, return type, [parameter types])
         echo: lib.func('echo', 'str', ['str']),

@@ -1,26 +1,36 @@
 {
     "name": "lexicanter",
     "productName": "Lexicanter",
-    "version": "2.2.0",
+    "version": "2.2.1",
     "description": "A lexicon management tool for constructed languages.",
     "main": "src/index.js",
     "scripts": {
-        "compile-rust": "cargo build --manifest-path=src/interop/library/Cargo.toml --release",
-        "precompile": "npm run compile-rust && sass -q src/sass/:src/styles && vite build",
-        "dev": "NODE_ENV=development concurrently \"npm run compile-rust\" \"sass -w -q src/sass/:src/styles\" \"npm run web:watch\" \"sleep 1 && npm run electron:start\"",
+        "rust:build-dev": "cargo build --manifest-path=src/interop/library/Cargo.toml --release",
+        "rust:build-all-targets": "bash scripts/cargobuild.bash",
+        "precompile": "npm run rust:build-dev && sass -q src/sass/:src/styles && vite build",
+
+        "dev": "NODE_ENV=development concurrently \"npm run rust:build-dev\" \"sass -w -q src/sass/:src/styles\" \"npm run web:watch\" \"sleep 1 && npm run electron:start\"",
         "start": "npm run precompile && npm run electron:start",
+
         "web:watch": "vite --port 3000",
         "electron:start": "electron .",
+
+        "build": "npm run rust:build-all-targets && bash scripts/build.bash",
         "build-mac": "npm run precompile && electron-builder --mac --publish never",
         "build-win": "npm run precompile && electron-builder --win --x64 --ia32 --publish never",
         "build-linux": "npm run precompile && electron-builder --linux --publish never",
-        "publish": "npm run precompile && bash bash/publish.bash",
-        "publish-only": "bash bash/publish.bash",
+
+        "publish": "npm run precompile && bash scripts/cargobuild.bash && bash scripts/publish.bash",
+        "publish-only": "bash scripts/publish.bash",
+        
         "check": "svelte-check --tsconfig ./tsconfig.json",
         "format": "prettier --write ."
     },
     "repository": "https://github.com/Saturnine-Softworks/Lexicanter",
     "build": {
+        "buildDependenciesFromSource": true,
+        "nodeGypRebuild": false,
+        "npmRebuild": false,
         "publish": {
             "provider": "github",
             "releaseType": "prerelease",
@@ -51,8 +61,50 @@
         ],
         "extraResources": [
             {
-                "from": "./src/interop/library/target/release/lib_graphemy_ffi.dylib",
-                "to": "lib_graphemy_ffi.dylib",
+                "from": "./src/library/target/aarch64-apple-darwin/release/lib_graphemy_ffi.dylib",
+                "to": "aarch64-apple-darwin/graphemy_ffi",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./src/library/target/aarch64-unknown-linux-gnu/release/graphemy_ffi",
+                "to": "aarch64-unknown-linux-gnu/graphemy_ffi",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./src/library/target/x86_64-apple-darwin/release/lib_graphemy_ffi.dylib",
+                "to": "x86_64-apple-darwin/graphemy_ffi",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./src/library/target/x86_64-unknown-linux-gnu/release/graphemy_ffi",
+                "to": "x86_64-unknown-linux-gnu/graphemy_ffi",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./src/library/target/x86_64-pc-windows-gnu/release/_graphemy_ffi.dll",
+                "to": "x86_64-pc-windows-gnu/graphemy_ffi",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./src/library/target/i686-unknown-linux-gnu/release/graphemy_ffi",
+                "to": "i686-unknown-linux-gnu/graphemy_ffi",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./src/library/target/i686-pc-windows-gnu/release/_graphemy_ffi.dll",
+                "to": "i686-pc-windows-gnu/graphemy_ffi",
                 "filter": [
                     "**/*"
                 ]
