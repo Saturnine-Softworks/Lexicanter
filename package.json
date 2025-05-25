@@ -5,7 +5,7 @@
     "description": "A lexicon management tool for constructed languages.",
     "main": "src/index.js",
     "scripts": {
-        "rust:build-dev": "cargo build --manifest-path=src/interop/library/Cargo.toml --release",
+        "rust:build-dev": "cargo build --manifest-path=src/library/Cargo.toml --release",
         "rust:build-all-targets": "bash scripts/cargobuild.bash",
         "precompile": "npm run rust:build-dev && sass -q src/sass/:src/styles && vite build",
 
@@ -68,7 +68,7 @@
                 ]
             },
             {
-                "from": "./src/library/target/aarch64-unknown-linux-gnu/release/graphemy_ffi",
+                "from": "./src/library/target/aarch64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
                 "to": "aarch64-unknown-linux-gnu/graphemy_ffi",
                 "filter": [
                     "**/*"
@@ -82,7 +82,7 @@
                 ]
             },
             {
-                "from": "./src/library/target/x86_64-unknown-linux-gnu/release/graphemy_ffi",
+                "from": "./src/library/target/x86_64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
                 "to": "x86_64-unknown-linux-gnu/graphemy_ffi",
                 "filter": [
                     "**/*"
@@ -91,13 +91,6 @@
             {
                 "from": "./src/library/target/x86_64-pc-windows-gnu/release/_graphemy_ffi.dll",
                 "to": "x86_64-pc-windows-gnu/graphemy_ffi",
-                "filter": [
-                    "**/*"
-                ]
-            },
-            {
-                "from": "./src/library/target/i686-unknown-linux-gnu/release/graphemy_ffi",
-                "to": "i686-unknown-linux-gnu/graphemy_ffi",
                 "filter": [
                     "**/*"
                 ]
