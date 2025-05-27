@@ -17,7 +17,7 @@
                 'Added a toggle to Settings for whether or not to automatically download experimental updates.',
                 'Fixed a CSS issue with displaying Graphemy-rendered characters.',
                 'Fixed a couple of ways that a soft crash could be achieved via the Graphemy typesetter settings being set to null values.',
-                'Fix a display bug causing some users to be unable to view the number of entries in their lexicons.',
+                'Fixed a display bug causing some users to be unable to view the number of entries in their lexicons.',
             ]
         },
         '2.2.1': {
