@@ -298,7 +298,9 @@
         return final
     }
 
-    let displayWidth: number
+    let displayWidth: number;
+    // let lexiconHeight: number;
+    let entryCounterWidth: number;
 </script>
 <!-- Lexicon Tab -->
 
@@ -308,8 +310,11 @@
         {#if $selectedTab.includes(0)}
             <!-- Lexicon -->
             <Draggable panel=lexicon>
-                <div class='container glasspane' style=overflow:hidden>
-                    <section id=search-filters>
+                <div class='container glasspane' style='overflow: hidden; postion: relative'>
+                    <section id=search-filters style='
+                        position: absolute;
+                        width: {displayWidth}px;
+                    '>
                         <div class='row'>
                             <div class="column search-container">
                                 {#if !searchWords}
@@ -345,7 +350,11 @@
                             {/if}
                         </div>
                     </section>
-                    <div class='scrolled' style=height:86% bind:clientWidth={displayWidth}>
+                    <div class='scrolled' style='
+                        position: absolute;
+                        top: 95px;
+                        max-height: {$CurrentLayouts.positions['lexicon'].height - 95}px;
+                    ' bind:clientWidth={displayWidth}>
                         {#if displayWidth > 1200}
 
                             {#each multicolumn(alphabetized, 3) as columns}
@@ -387,7 +396,11 @@
                         {/if}
 
                     </div>
-                    <p id="entry-counter">
+                    <p id=entry-counter bind:clientWidth={entryCounterWidth} style='
+                        position: absolute;
+                        top: {$CurrentLayouts.positions['lexicon'].height - 30}px;
+                        left: {displayWidth/2 - entryCounterWidth/2}px;
+                    '>
                         {#if !!keys[0]} <!-- if there is a search being attempted -->
                             {!!keys[0]? keys.length : '0'} {(keys.length === 1 && !!keys[0])? 'Match' : 'Matches'}
                         {:else} <!-- if there is no search being attempted -->
