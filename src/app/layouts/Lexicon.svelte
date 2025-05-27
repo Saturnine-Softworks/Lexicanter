@@ -298,8 +298,6 @@
         return final
     }
 
-    let displayWidth: number;
-    // let lexiconHeight: number;
     let entryCounterWidth: number;
 </script>
 <!-- Lexicon Tab -->
@@ -313,7 +311,7 @@
                 <div class='container glasspane' style='overflow: hidden; postion: relative'>
                     <section id=search-filters style='
                         position: absolute;
-                        width: {displayWidth}px;
+                        width: {$CurrentLayouts.positions['lexicon'].width}px;
                     '>
                         <div class='row'>
                             <div class="column search-container">
@@ -354,8 +352,8 @@
                         position: absolute;
                         top: 95px;
                         max-height: {$CurrentLayouts.positions['lexicon'].height - 95}px;
-                    ' bind:clientWidth={displayWidth}>
-                        {#if displayWidth > 1200}
+                    ' bind:clientWidth={$CurrentLayouts.positions['lexicon'].width}>
+                        {#if $CurrentLayouts.positions['lexicon'].width > 1200}
 
                             {#each multicolumn(alphabetized, 3) as columns}
                                 <div class='row' style='width: 72%'>
@@ -370,7 +368,7 @@
                                 <p class="info" id="lex-body">Add new words from the word editor panel</p>
                             {/each}
 
-                        {:else if displayWidth > 600}
+                        {:else if $CurrentLayouts.positions['lexicon'].width > 600}
 
                             {#each multicolumn(alphabetized, 2) as columns}
                                 <div class='row' style='width: 72%'>
@@ -399,7 +397,7 @@
                     <p id=entry-counter bind:clientWidth={entryCounterWidth} style='
                         position: absolute;
                         top: {$CurrentLayouts.positions['lexicon'].height - 30}px;
-                        left: {displayWidth/2 - entryCounterWidth/2}px;
+                        left: {$CurrentLayouts.positions['lexicon'].width/2 - entryCounterWidth/2}px;
                     '>
                         {#if !!keys[0]} <!-- if there is a search being attempted -->
                             {!!keys[0]? keys.length : '0'} {(keys.length === 1 && !!keys[0])? 'Match' : 'Matches'}

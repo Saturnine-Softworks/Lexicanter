@@ -11,6 +11,13 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
+        '2.2.3': {
+            type: PATCH,
+            notes: [
+                'Fixed a display error with the lexicon introduced by a fix for another display error in the previous patch. Listen, \
+                UI is hard and I do this in my spare time.',
+            ]
+        },
         '2.2.2': {
             type: PATCH,
             notes: [
