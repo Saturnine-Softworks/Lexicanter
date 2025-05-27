@@ -154,9 +154,14 @@ function createWindow () {
         win32: 'pc-windows-gnu'
     }[process.platform];
 
-    const resourceDir = arch + platform + path.sep;
+    const extension = {
+        darwin: '.dylib',
+        linux: '.so',
+        win32: '.dll'
+    }[process.platform];
 
-    const ffiPath =
+
+    const lib_path =
         isDev? 
             path.resolve(
                 path.join(
@@ -164,9 +169,11 @@ function createWindow () {
                     'library/target/release/lib_graphemy_ffi.dylib',
                 ),
             )
-        :   path.resolve(process.resourcesPath, resourceDir + 'graphemy_ffi');
+        :   path.resolve(process.resourcesPath, arch + platform + path.sep + 'graphemy_ffi' + extension);
 
-    const lib = ffi.load(ffiPath);
+    console.log('Loading graphemy ffi lib from path:', lib_path);
+    
+    const lib = ffi.load(lib_path);
     const fns = {
         // fn name = lib.func(rust fn name, return type, [parameter types])
         echo: lib.func('echo', 'str', ['str']),
