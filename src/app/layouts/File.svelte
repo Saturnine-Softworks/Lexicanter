@@ -168,9 +168,13 @@
             errorMessage = 'There was a problem loading the layout.'
             if (contents.hasOwnProperty('Layouts')) {
                 window.resizeTo(contents.Layouts.window.width, contents.Layouts.window.height);
-                $CurrentLayouts = contents.Layouts;
-                $Language.Layouts = contents.Layouts;
-                $selectedTab = $CurrentLayouts.opentabs;
+                setTimeout(() => { 
+                    // the window does not resize instantly, so waiting half a beat before 
+                    // setting the panel settings ensures the window can fit everything
+                    $Language.Layouts = contents.Layouts;
+                    $CurrentLayouts = contents.Layouts;
+                    $selectedTab = $CurrentLayouts.opentabs;
+                }, 50);
             } else {
                 window.resizeTo(defaultWindow().width, defaultWindow().height);
                 $Language.Layouts = {

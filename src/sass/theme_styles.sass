@@ -100,43 +100,50 @@ button, select
     &-entry, &-body
         color: $lex-text
 
-        // This is the style used for lexicon entries when the mouse is hovering over them.
+    &-entry
+        --graphemy-color-override: #{$lex-text}
+
+    // This is the style used for lexicon entries when the mouse is hovering over them.
     &-entry:hover
+        --graphemy-color-override: #{$lex-hover-text}
         background: $lex-hover-bg
         color: $lex-hover-text
-        
-        svg path
-            stroke: $lex-hover-text
-            fill: $lex-hover-text
 
-svg 
+svg
     .lex
         &-entry, &-body
             fill: $lex-text
+            color: $lex-text
 
         &-entry:hover
-            background-color: $lex-hover-bg
             fill: $lex-hover-text
+            color: $lex-hover-text
+            background-color: $lex-hover-bg
 
     .tag-item
         fill: $lex-text
         font-weight: bold
-    
+
+    g:hover > text
+        &.tag-item, &.lex-entry
+            stroke: $lex-hover-text
+            fill: $lex-hover-text
+            cursor: pointer
+
     rect
+        stroke: none
         &.lex
             fill: transparent
             transition: 0.3s
             &:hover, &:has(~ :hover)
                 fill: $lex-hover-bg
+                cursor: pointer
             rx: 10
             height: 3em
             padding: 5px
     
-    path
-        stroke: $lex-text
+    stroke: $lex-text
 
-.grapheme-svg svg path
-    fill: $lex-text
 
 // These are the colors used for tags as they appear in the lexicon.
 .tag-item, [id=entry-counter]

@@ -45,6 +45,35 @@
             return null;
         }
     }
+
+    async function getAlchemySetting(): Promise<boolean> {
+        let setting: boolean = false;
+        await Files.userData(path => {
+            setting = JSON
+                .parse(fs.readFileSync(path + PATH.sep + 'alchemy.json').toString())
+                .allowAlchemy
+        });
+        console.log("allowAlchemy: ", setting);
+        return setting;
+
+    }
+
+    let allowExperimental: boolean = $state(false)
+    getAlchemySetting().then(setting => allowExperimental = setting);
+
+    function toggleAlchemy() {
+        Files.userData(path => {
+            try {
+                let alchemy: { allowAlchemy: boolean } = JSON.parse(fs.readFileSync(path + PATH.sep + 'alchemy.json').toString());
+                alchemy.allowAlchemy = !alchemy.allowAlchemy;
+                fs.writeFileSync(path + PATH.sep + 'alchemy.json', JSON.stringify(alchemy));
+            } catch (error) {
+                console.error(error);
+                vex.dialog.alert('Encountered an error while changing experimental setting. It has been logged to the console.')
+            }
+        });
+    }
+    
     async function setFileVersions() {
         let version: string | null = null;
         if ($dbid !== '' && $dbkey !== '' && $Language.UploadToDatabase && $Language.Name !== 'Unnamed Language') {
@@ -684,12 +713,18 @@
                     {/if}
                 </label>
                 <br><hr/><br>
+                <p>Experimental</p>
+                <br>
+                <label> Download Experimental Updates
+                    <input type=checkbox onchange={toggleAlchemy} bind:checked={allowExperimental}>
+                </label>
+                <br><hr/><br>
                 <p>Advanced Settings</p> <br>
                 <label>Show Multi-Lect Features
-                    <input type="checkbox" bind:checked={$Language.UseLects} onchange={confirmUseLectsChange}/>
+                    <input type=checkbox bind:checked={$Language.UseLects} onchange={confirmUseLectsChange}/>
                     {#if $Language.UseLects}
                         {#each $Language.Lects as lect, lectIndex}
-                            <div class="narrow">
+                            <div class=narrow>
                                 <p style="display: inline-block" id={`${lectIndex}`}>{lect}</p>
                                 <button class="hover-highlight hover-shadow" style="display: inline-block" onclick={() => {
                                     if ($Language.Lects.length === 1) {

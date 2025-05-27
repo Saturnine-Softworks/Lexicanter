@@ -13,6 +13,7 @@ export async function ffi(
     ...args: any[]): Promise<any> {
     return await ipcRenderer.invoke('ffi', name, ...args);
 }
+
 /**
  * Wrapper for the Rust-side `graphemify` function via FFI/IPC.
  * @param {string} engine The Graphemy engine file as a string
@@ -27,6 +28,12 @@ export async function graphemify(
     max_width: number = 100.0,
     max_height: number = 100.0,
 ): Promise<string> {
+    // Sanity checks
+    if (!engine) return 'No Graphemy engine loaded.';
+    if (!input) return 'Invalid or empty input.';
+    if (!max_width) max_width = 100;
+    if (!max_height) max_height = 100;
+
     return await ffi('graphemify', 
         engine, 
         input,

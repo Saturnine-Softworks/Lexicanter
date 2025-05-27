@@ -67,25 +67,38 @@ button.inflection, select.inflection {
 .lex-entry, .lex-body {
   color: #8ab4a3;
 }
+.lex-entry {
+  --graphemy-color-override: #8ab4a3;
+}
 .lex-entry:hover {
+  --graphemy-color-override: #b8ad9d;
   background: #44382c;
   color: #b8ad9d;
 }
-.lex-entry:hover svg path {
-  stroke: #b8ad9d;
-  fill: #b8ad9d;
-}
 
+svg {
+  stroke: #8ab4a3;
+}
 svg .lex-entry, svg .lex-body {
   fill: #8ab4a3;
+  color: #8ab4a3;
 }
 svg .lex-entry:hover {
-  background-color: #44382c;
   fill: #b8ad9d;
+  color: #b8ad9d;
+  background-color: #44382c;
 }
 svg .tag-item {
   fill: #8ab4a3;
   font-weight: bold;
+}
+svg g:hover > text.tag-item, svg g:hover > text.lex-entry {
+  stroke: #b8ad9d;
+  fill: #b8ad9d;
+  cursor: pointer;
+}
+svg rect {
+  stroke: none;
 }
 svg rect.lex {
   fill: transparent;
@@ -96,13 +109,7 @@ svg rect.lex {
 }
 svg rect.lex:hover, svg rect.lex:has(~ :hover) {
   fill: #44382c;
-}
-svg path {
-  stroke: #8ab4a3;
-}
-
-.grapheme-svg svg path {
-  fill: #8ab4a3;
+  cursor: pointer;
 }
 
 .tag-item, [id=entry-counter] {

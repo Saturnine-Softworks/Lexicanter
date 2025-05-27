@@ -1,19 +1,35 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * Lexicanter, a constructed language organization app.
  * Copyright (C) 2023 Ethan Ray.
  * See GNU General Public License Version 3.
- */
+*/
 
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { app, BrowserWindow, ipcMain, dialog, shell, session } = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
 const ffi = require('koffi');
+const fs = require('node:fs');
 
 // Auto-updater flags
 autoUpdater.autoDownload = true;
-autoUpdater.allowPrerelease = false;
+
+const alchemyPath = app.getPath('userData') + path.sep + "alchemy.json";
+let allowAlchemy = false;
+if (fs.existsSync(alchemyPath)) {
+    const data = fs.readFileSync(alchemyPath);
+    console.log("\
+        --------------------------------------------\n\
+         Alchemy preference:", data.toString(), "\n\
+        --------------------------------------------\n\
+    ");
+    allowAlchemy = JSON.parse(data).allowAlchemy ?? false;
+} else {
+    fs.writeFileSync(alchemyPath, JSON.stringify({allowAlchemy: false}));
+    console.log("\nWrote alchemy preference file at: ", alchemyPath, "\n");
+}
+autoUpdater.allowPrerelease = allowAlchemy;
 
 const isDev = !app.isPackaged;
 const version = app.getVersion();
@@ -102,12 +118,12 @@ function createWindow () {
         if (url.includes('lex::')) {
             e.preventDefault();
             WC.send('lexicon link', decodeURI(url).replace('lex::', ''));
-            // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
+            // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', ''));
         } else if (decodeURI(url).match(/\[\[.+?\]\]/)) {
             e.preventDefault();
             let link = decodeURI(url).matchAll(/\[\[(.+?)\]\]/)[1]
             WC.send('lexicon link', link)
-            // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', '')); // DEBUG
+            // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', ''));
         } else if (path.basename(url) === 'index.html') {
             e.preventDefault();
         } else if (url != WC.getURL()) {
@@ -122,10 +138,13 @@ function createWindow () {
     ipcMain.handle('showOpenDialog', (_, params) =>
         dialog.showOpenDialogSync(params),
     );
-    ipcMain.handle('getVersion', () => version);
-    ipcMain.handle('debug', (_, message) => console.log(message));
+    
+    ipcMain.handle('getVersion', () => (isDev? 'dev-' : '') + version);
     ipcMain.handle('platform', () => process.platform + '-' + process.arch);
     ipcMain.handle('isDev', () => isDev);
+    
+    ipcMain.handle('debug', (_, message) => console.log(message));
+
     ipcMain.on('buttonclose', () => mainWindow.webContents.send('app-close'));
     ipcMain.on('minimize', () => mainWindow.minimize());
     ipcMain.on('maximize', () =>

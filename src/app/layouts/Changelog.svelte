@@ -11,6 +11,22 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
+        '2.2.2': {
+            type: PATCH,
+            notes: [
+                'Added a toggle to Settings for whether or not to automatically download experimental updates.',
+                'Fixed a CSS issue with displaying Graphemy-rendered characters.',
+                'Fixed a couple of ways that a soft crash could be achieved via the Graphemy typesetter settings being set to null values.',
+                'Fix a display bug causing some users to be unable to view the number of entries in their lexicons.',
+            ]
+        },
+        '2.2.1': {
+            type: PATCH,
+            notes: [
+                'Windows and Linux users can now actually use the Graphemy features added in the previous update. Before, a startup error prevented this \
+                without preventing the app itself from running. This has been resolved. ',
+            ]
+        },
         '2.2.0': {
             type: MINOR,
             notes: [
@@ -338,7 +354,7 @@
         <Draggable panel=changelog>
             <div class='container glasspane scrolled'>
                 <p class='info'>
-                    Interested in testing the beta versions, talking about languages, or worldbuilding? <br>
+                    Interested in testing the experimental versions, talking about languages, or worldbuilding? <br>
                     Join <a rel='noreferrer' target='_blank' href='https://discord.gg/uDk2XDhh8K'>Saturn's Sojourn</a>,
                     the home of Lexicanter on <a rel='noreferrer' target='_blank' href='https://discord.gg/uDk2XDhh8K'>Discord</a>!
                 </p>
