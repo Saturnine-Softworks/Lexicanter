@@ -44,10 +44,10 @@ fn try_grapheming(
         size: OutputSize::MaxRect(max_width, max_height),
         margin: 5.0,
         comment: None,
-        css_mode: true,
+        color_mode: graphemy::layout::render::RenderColor::Css,
     };
 
-    let svg = typesetter.render(&input, 100.0, settings)?;
+    let svg = typesetter.render(&input, TypesetSettings::CONTAINER, settings)?;
     Ok(svg.to_string())
 }
 

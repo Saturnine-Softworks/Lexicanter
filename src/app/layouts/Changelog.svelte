@@ -11,6 +11,13 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
+        '2.2.4': {
+            type: PATCH,
+            notes: [
+                'Fixed the Inflections tab (thank you to @EuphLover for looking into this issue!)',
+                'Updated the Graphemy typesetter to release 0.5.0.'
+            ]
+        },
         '2.2.3': {
             type: PATCH,
             notes: [

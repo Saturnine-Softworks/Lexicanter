@@ -1,11 +1,11 @@
 {
     "name": "lexicanter",
     "productName": "Lexicanter",
-    "version": "2.2.3",
+    "version": "2.2.4",
     "description": "A lexicon management tool for constructed languages.",
     "main": "src/index.js",
     "scripts": {
-        "rust:build-dev": "cargo build --manifest-path=src/library/Cargo.toml --release",
+        "rust:build-dev": "cargo build --manifest-path=library/Cargo.toml --release",
         "rust:build-all-targets": "bash scripts/cargobuild.bash",
         "precompile": "npm run rust:build-dev && sass -q src/sass/:src/styles && vite build",
 
@@ -61,42 +61,42 @@
         ],
         "extraResources": [
             {
-                "from": "./src/library/target/aarch64-apple-darwin/release/lib_graphemy_ffi.dylib",
+                "from": "./library/target/aarch64-apple-darwin/release/lib_graphemy_ffi.dylib",
                 "to": "aarch64-apple-darwin/graphemy_ffi.dylib",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./src/library/target/aarch64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
+                "from": "./library/target/aarch64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
                 "to": "aarch64-unknown-linux-gnu/graphemy_ffi.so",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./src/library/target/x86_64-apple-darwin/release/lib_graphemy_ffi.dylib",
+                "from": "./library/target/x86_64-apple-darwin/release/lib_graphemy_ffi.dylib",
                 "to": "x86_64-apple-darwin/graphemy_ffi.dylib",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./src/library/target/x86_64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
+                "from": "./library/target/x86_64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
                 "to": "x86_64-unknown-linux-gnu/graphemy_ffi.so",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./src/library/target/x86_64-pc-windows-gnu/release/_graphemy_ffi.dll",
+                "from": "./library/target/x86_64-pc-windows-gnu/release/_graphemy_ffi.dll",
                 "to": "x86_64-pc-windows-gnu/graphemy_ffi.dll",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./src/library/target/i686-pc-windows-gnu/release/_graphemy_ffi.dll",
+                "from": "./library/target/i686-pc-windows-gnu/release/_graphemy_ffi.dll",
                 "to": "i686-pc-windows-gnu/graphemy_ffi.dll",
                 "filter": [
                     "**/*"

@@ -185,7 +185,7 @@ function createWindow () {
             path.resolve(
                 path.join(
                     __dirname,
-                    'library/target/release/lib_graphemy_ffi.dylib',
+                    '../library/target/release/lib_graphemy_ffi.dylib',
                 ),
             )
         :   path.resolve(process.resourcesPath, arch + platform + path.sep + 'graphemy_ffi' + extension);

@@ -120,7 +120,7 @@
             });
             await editors[i].isReady;
         }
-        $Language.Inflections = $Language.Inflections; // assignment update trigger
+        // $Language.Inflections = $Language.Inflections; // svelte 3/4 assignment update trigger
         return 'done';
     }
 
