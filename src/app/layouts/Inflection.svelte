@@ -51,10 +51,13 @@
         });
     }
 
-    $effect(()=>{
-        $fileLoadIncrement;
-        remakeEditors(Infinity);
-    });
+    let incrementCheck = 0;
+    $effect(() => {
+        if ($fileLoadIncrement !== incrementCheck) {
+            incrementCheck = $fileLoadIncrement;
+            remakeEditors(-1);
+        }
+    })
 
     function addEditor() {
         const config = {
@@ -133,7 +136,9 @@
             <!-- svelte-ignore a11y_no_static_element_interactions -->
             <div class=row style=height:97%>
                 <div class='container column scrolled' onfocusout={saveEditors}>
+
                     {#each $Language.Inflections as inflection, i}
+                    
                         <div class=row style=width:66%>
                             <div class=column>
                                 <label>Tags
@@ -157,8 +162,12 @@
                                 </label>
                             </div>
                         </div>
+
+                        <!-- Table Editor -->
                         <div class=codex-editor id={`inflection ${i}`} style='font-family: Gentium'></div>
+                        
                         <div class=narrow>
+                            <!-- Delete Inflections Group Button -->
                             <button class='hover-highlight hover-shadow' style='display: inline' onclick={()=>{
                                 vex.dialog.confirm({
                                     message: 'Are you sure you want to delete this inflection group? This action is irreversible.',
@@ -173,9 +182,13 @@
                                     }
                                 })
                             }}>Delete</button>
+                        
                         </div>
+
                         <br><br>
                     {/each}
+
+                    <!-- Add Inflections Group Button -->
                     <button style='hover-highlight hover-shadow' onclick={() => {
                         saveEditors().then(() => {
                             $Language.Inflections = [

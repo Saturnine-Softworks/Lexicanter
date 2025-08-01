@@ -224,7 +224,7 @@ export function applyRules(rules: string[], input: string, categories): string {
             result = applyRule(rule, result, categories);
         } catch (err) {
             const error = err as Error;
-            diagnostics.logError(`Attempted to apply rule '${rule}' to '${input}'`, error);
+            console.error(`Attempted to apply rule '${rule}' to '${input}'`, error);
             if (!indialog) {
                 indialog = true;
                 vex.dialog.alert({

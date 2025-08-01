@@ -11,6 +11,13 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
+        '2.2.5': {
+            type: PATCH,
+            notes: [
+                'Fixed another issue with the Inflections tab which caused issues with some UI elements perpetually losing focus and other elements overzealously updating themselves.',
+                'Fixed a minor issue with the automatic pronunciations parser which would occasionally cause it to freeze and stop working without giving any indication to the user.'
+            ]
+        },
         '2.2.4': {
             type: PATCH,
             notes: [
