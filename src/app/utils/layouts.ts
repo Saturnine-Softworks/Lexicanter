@@ -14,6 +14,7 @@ const defaultPanel = {
     left: 0,
     height: 90,
     width: 140,
+    z: 100,
 }
 export const defaultPanelPositions = () => { return {
     newword: {
@@ -23,6 +24,7 @@ export const defaultPanelPositions = () => { return {
         width: 280,
     },
     lexicon: {
+        ...defaultPanel,
         top: 115,
         left: 280,
         width: 1120,
@@ -83,6 +85,7 @@ export const defaultPanelPositions = () => { return {
         height: 900,
     },
     romchangewizard: {
+        ...defaultPanel,
         top: 650,
         left: 980,
         height: 250,

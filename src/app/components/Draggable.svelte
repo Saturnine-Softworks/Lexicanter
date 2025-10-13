@@ -105,6 +105,21 @@
         mousedown = false;
     }
 
+    /**
+     * @param {number} _default the z-index to set if the sanity check returns false (defaults to 100).
+     *
+     * @description Check to make sure the z-index property exists and is a number above 0. Sets it to _default if not.
+     */
+    function sanity(_default: number = 100) {
+        if (
+            [undefined, NaN, null].includes($CurrentLayouts.positions[panel].z)
+            || $CurrentLayouts.positions[panel].z < 0
+        ) {
+            $CurrentLayouts.positions[panel].z = _default;
+        }   
+    }
+    sanity();
+
     onMount(onMouseUp);
 
 </script>
@@ -156,24 +171,47 @@
         top: {$CurrentLayouts.positions[panel].top}px;
         height: {$CurrentLayouts.positions[panel].height}px;
         width: {$CurrentLayouts.positions[panel].width}px;
+        z-index: {$CurrentLayouts.positions[panel].z};
     " 
     class=draggable
     bind:clientHeight={$CurrentLayouts.positions[panel].height} bind:clientWidth={$CurrentLayouts.positions[panel].width}
     onresize={() => resizeSnap()}
+    onfocusin={() => {
+        sanity();
+        $CurrentLayouts.positions[panel].z += 1000;
+    }}
+    onfocusout={() => {
+        sanity(1100);
+        $CurrentLayouts.positions[panel].z -= 1000;
+    }}
 >
     <div class=dragbar onmousedown={move}>
         <button onclick={()=>{
             $CurrentLayouts.positions[panel].height = 20;
             $CurrentLayouts.positions[panel].width = 60;
-        }}>{ "𝌼" // tetragram of diminishment
+        }}>{ "–"
         }</button>
         <button onclick={maximize}> 
-            {"𝌳" // tetragram of enlargement
+            {"+"
         }</button>
+        <button onclick={()=>{
+            sanity();
+            $CurrentLayouts.positions[panel].z += 1;
+        }}>
+            {"↥"
+        }</button>
+        {#if $CurrentLayouts.positions[panel].z > 0}
+            <button onclick={()=>{
+                $CurrentLayouts.positions[panel].z -= 1;
+            }}>
+                {"↧"
+            }</button>
+        {/if}
         {
             // debug
-            // JSON.stringify($CurrentLayouts.positions[panel])
-            // JSON.stringify($CurrentLayouts.snapping)
+            "z" + $CurrentLayouts.positions[panel].z +
+            // JSON.stringify($CurrentLayouts.positions[panel].z) +
+            // JSON.stringify($CurrentLayouts.snapping) +
             ""
         }
     </div>

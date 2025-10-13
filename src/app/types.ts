@@ -185,6 +185,7 @@ export type Layouts = {
             left: number,
             height: number,
             width: number,
+            z: number,
         }
     },
     snapping: {

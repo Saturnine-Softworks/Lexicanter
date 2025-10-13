@@ -5,7 +5,7 @@
     import type * as Lexc from '../types';
     import Tree from '../components/Tree.svelte';
     import Draggable from '../components/Draggable.svelte';
-    import LexEntry from '../components/LexEntry.svelte';
+    import LexEntry from '../components/Lexicon/LexEntry.svelte';
     let newParent: string[] = $state(['', '']);
     let newChild: string[] = $state(['', '']);
     let manualParentEntry: boolean = $state(false); 

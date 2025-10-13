@@ -1,11 +1,11 @@
 <svelte:options runes/>
 <script lang="ts">
-    import { Language } from '../stores';
-    import type { Word } from '../types';
-    import Pronunciations from './Pronunciations.svelte';
-    import Inflections from './Inflections.svelte';
-    import { markdownToHtml } from '../utils/markdown';
-    import EntryLabel from './EntryLabel.svelte';
+    import { Language } from '../../stores';
+    import type { Word } from '../../types';
+    import Pronunciations from '../Pronunciations.svelte';
+    import Inflections from '../Inflections.svelte';
+    import { markdownToHtml } from '../../utils/markdown';
+    import EntryLabel from '../EntryLabel.svelte';
 
     let {
         word,

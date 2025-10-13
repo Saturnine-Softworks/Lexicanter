@@ -1,12 +1,9 @@
 <script lang="ts">
-    import AlphabetSettings from '../components/Lexicon/AlphabetSettings.svelte';
-    import WordEntry from '../components/Lexicon/WordEntry.svelte';
-    import LexiconView from '../components/Lexicon/LexiconView.svelte';
     const { ipcRenderer } = require('electron');
-    import { Language, wordInput, pronunciations, selectedTab, hideDropdowns } from '../stores';
-    import type * as Lexc from '../types';
-    import { alphabetize, alphabetPrecheck } from '../utils/alphabetize';
-    import { get_pronunciation } from '../utils/phonetics';
+    import { Language, selectedTab } from '../../stores';
+    import type * as Lexc from '../../types';
+    import { alphabetize } from '../../utils/alphabetize';
+    import Draggable from '../Draggable.svelte';
 
     ipcRenderer.on('update-lexicon-for-gods-sake-please', () => {
         $Language.Lexicon = {...$Language.Lexicon};
@@ -33,7 +30,7 @@
         (() => {
             alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
         })();
-    }
+    } 
 
     type senseInput = {
         definition: string;
@@ -73,18 +70,18 @@
     });
 
 </script>
-<!-- Lexicon Tab -->
 
-<div class='tab-pane' style=overflow:hidden>
-    <div class=row style='height: 91vh'>
-
-        {#if $selectedTab.includes(0)}
-            <LexiconView/>
-            <WordEntry/>
-            {#if $Language.ShowAlphabet}
-                <AlphabetSettings/>
-            {/if}
-        {/if}
-
+<Draggable panel=alphabet>
+    <div class='container glasspane row'>
+        <div class="narrow-col">
+            <label for="case-sensitive" style="margin: auto;"> Case Sensitivity </label>
+            <input type="checkbox" style="width: 15px; margin: auto;" id="case-sensitive" bind:checked={$Language.CaseSensitive} />
+        </div>
+        <div class="narrow-col">
+            <label for="ignore-diacritic" style="margin: auto; text-align: right;">Ignore Diacritics</label>
+            <input type="checkbox" style="width: 15px; margin: auto;" id="ignore-diacritic" bind:checked={$Language.IgnoreDiacritics}/>
+        </div>
+        <input id="alph-input" type="text" bind:value={$Language.Alphabet} style="rows:1; height: fit-content">
     </div>
-</div>
+</Draggable>
+
