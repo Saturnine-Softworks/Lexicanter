@@ -167,6 +167,7 @@
 
             errorMessage = 'There was a problem loading the layout.'
             if (contents.hasOwnProperty('Layouts')) {
+                if (!contents.Layouts.hasOwnProperty('showZ')) contents.Layouts.showZ = false // setting added in later patch
                 window.resizeTo(contents.Layouts.window.width, contents.Layouts.window.height);
                 setTimeout(() => { 
                     // the window does not resize instantly, so waiting half a beat before 
@@ -183,6 +184,7 @@
                     window: defaultWindow(),
                     positions: defaultPanelPositions(),
                     snapping: defaultPanelSnap(),
+                    showZ: false,
                 };
                 $selectedTab = [7];
                 $CurrentLayouts = $Language.Layouts;

@@ -179,6 +179,7 @@ export type Orthography = {
 export type Layouts = {
     tabmode: 'switch'|'toggle',
     opentabs: number[],
+    showZ: boolean,
     positions: {
         [index: string]: {
             top: number,

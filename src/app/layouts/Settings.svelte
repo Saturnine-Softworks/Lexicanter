@@ -495,6 +495,7 @@
             snapping: defaultPanelSnap(),
             tabmode: 'switch',
             opentabs: [8],
+            showZ: false,
         }
         $selectedTab = [8];
         window.resizeTo(1400, 900); // default window size
@@ -621,7 +622,7 @@
                         </div>
                     </label>
                     <br>
-                    <label> Tab Mode
+                    <label> Tab Mode <br>
                         <select bind:value={$Language.Layouts.tabmode}>
                             <option value='switch'>Switch</option>
                             <option value='toggle'>Toggle</option>
@@ -629,6 +630,13 @@
                         <p class=info>
                             The tab mode controls the behavior of clicking on the tab icons across the top of the window. In "Switch" mode,
                             tabs behave similarly to browser tabs. In "Toggle" mode, clicking on a tab shows or hides its associated panels without hiding already open panels. 
+                        </p>
+                    </label>
+                    <br>
+                    <label> Show Z-Indices
+                        <input type=checkbox bind:checked={$Language.Layouts.showZ}/>
+                        <p class=info>
+                            This setting can be useful for those who want to finely tailor the display order of panels, or for debugging and figuring out display order issues. 
                         </p>
                     </label>
                     <br>
@@ -648,6 +656,7 @@
                 <label>Auto-Save
                     <input type="checkbox" bind:checked={$autosave} onchange={change_autosave_pref}/>
                 </label>
+                <br>
                 <div class=narrow>
                     <label>Cloud Storage
                         <p class=info>If you wish, your files can be saved to an online database so that you can sync your files across multiple
@@ -662,6 +671,7 @@
                             Online File Version: {onlineFileVersion} <br>
                             <button class='hover-highlight hover-shadow' onclick={setFileVersions}>Refresh</button>
                         {/if}
+                        <br>
                         <span>User ID: <input class:pronunciation={disabledDatabase} type=text bind:value={inputID} disabled={disabledDatabase}/></span>
                         <br>
                         <span>Key: <input class:pronunciation={disabledDatabase} type=text bind:value={inputKey} disabled={disabledDatabase}/></span>

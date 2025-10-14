@@ -181,8 +181,8 @@
         $CurrentLayouts.positions[panel].z += 1000;
     }}
     onfocusout={() => {
-        sanity(1100);
         $CurrentLayouts.positions[panel].z -= 1000;
+        sanity()
     }}
 >
     <div class=dragbar onmousedown={move}>
@@ -207,9 +207,13 @@
                 {"↧"
             }</button>
         {/if}
+        {#if $Language.Layouts.showZ }
+            <p class=info>
+                { "z" + $CurrentLayouts.positions[panel].z }
+            </p>
+        {/if}
         {
             // debug
-            "z" + $CurrentLayouts.positions[panel].z +
             // JSON.stringify($CurrentLayouts.positions[panel].z) +
             // JSON.stringify($CurrentLayouts.snapping) +
             ""

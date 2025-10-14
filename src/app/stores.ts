@@ -9,6 +9,7 @@ export const CurrentLayouts: Writable<Lexc.Layouts> = writable({
     window: defaultWindow(),
     tabmode: 'switch',
     opentabs: [0],
+    showZ: false,
 });
 
 const Default: Lexc.Language = {
@@ -82,7 +83,8 @@ const Default: Lexc.Language = {
         positions: defaultPanelPositions(),
         snapping: defaultPanelSnap(),
         window: defaultWindow(),
-        opentabs: [0]
+        opentabs: [0],
+        showZ: false,
     },
     OrderByDate: false,
     SaveLocation: '',
