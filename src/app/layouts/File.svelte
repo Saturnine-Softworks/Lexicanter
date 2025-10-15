@@ -34,6 +34,7 @@
         definitions: 3,
         tags_bool: false,
         tags: 4,
+        delimiter: ',',
     }
     $: csv;
 
@@ -387,7 +388,7 @@
                 <div class=narrow>
                     <label for=save-locations>Secondary Save Locations</label>
                     <button id=save-locations class='hover-highlight hover-shadow' on:click={selectSaveLocation}>Choose Location…</button>
-                    <p>Selected location: <u>{$Language.SaveLocation || 'None'}<u></p>
+                    <p>Selected location: <u>{$Language.SaveLocation || 'None'}</u></p>
                 </div>
                 <br>
                 <hr>
@@ -470,15 +471,26 @@
                         </div>
                     </div>
                 </div>
-                <label for="row-one-is-labels">First Row Is Column Labels</label>
-                <input type="checkbox" id="row-one-is-labels" bind:checked={csv.headers}/>
+                <label for=row-one-is-labels>First Row Is Column Labels
+                    <input type=checkbox id=row-one-is-labels bind:checked={csv.headers}/>
+                </label>
+                <br>
+                <label>Delimiter:
+                    <select bind:value={csv.delimiter}>
+                        <option value=,>Commas (CSV)</option>
+                        <option value=\t>Tabs (TSV)</option>
+                        <option value=;>Semicolons</option>
+                    </select>
+                </label>
+                <br><br>
                 <button on:click={() =>
                     importCSV(
                         csv.headers,
                         csv.words,
                         csv.definitions,
                         csv.pronunciations_bool? csv.pronunciations : false,
-                        csv.tags_bool? csv.tags : false
+                        csv.tags_bool? csv.tags : false,
+                        csv.delimiter
                     )
                 } class="hover-highlight hover-shadow">Import</button>
                 <br><br><br>

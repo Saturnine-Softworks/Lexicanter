@@ -663,7 +663,7 @@ export const openLegacy = {
     },
 };
                         
-const csv = require('csv-parser');
+import csv from 'csv-parser';
                         
 /**
 * Imports a CSV file to the lexicon.
@@ -671,7 +671,14 @@ const csv = require('csv-parser');
 * @param {number} words The column number of the words.
 * @param {number} definitions The column number of the definitions.
 */
-export async function importCSV(headers: boolean, words: number, definitions: number, pronunciations: number|false, tags: number|false) {
+export async function importCSV(
+    headers: boolean,
+    words: number,
+    definitions: number,
+    pronunciations: number | false,
+    tags: number | false,
+    delimiter: string = ',',
+) {
     const data: string[][] = [];
     let file_path: string;
     words -= 1;
@@ -693,7 +700,8 @@ export async function importCSV(headers: boolean, words: number, definitions: nu
             fs.createReadStream(path[0])
                 .pipe(csv({
                     headers: false,
-                    skipLines: headers? 1 : 0,
+                    skipLines: headers ? 1 : 0,
+                    separator: delimiter,
                 }))
                 .on('data', (row: string[]) => {
                     data.push(row);
