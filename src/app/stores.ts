@@ -110,6 +110,17 @@ export const pronunciations: Writable<PronunciationInputs> = writable((()=>{
     return inputs;
 })());
 
+export type senseInput = {
+    definition: string;
+    tags: string;
+    lects: string[];
+}
+export const senses: Writable<senseInput[]> = writable([{
+    definition: '',
+    tags: '',
+    lects: [...get(Language).Lects],
+}]);
+
 export const phraseInput = writable('');
 export const phrasePronunciations: Writable<PronunciationInputs> = writable((()=>{
     const inputs: PronunciationInputs = {};

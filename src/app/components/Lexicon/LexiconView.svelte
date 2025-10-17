@@ -1,6 +1,6 @@
 <script lang="ts">
     const { ipcRenderer } = require('electron');
-    import { Language, wordInput, pronunciations, selectedTab, hideDropdowns, CurrentLayouts } from '../../stores';
+    import { Language, wordInput, pronunciations, selectedTab, hideDropdowns, CurrentLayouts, senses } from '../../stores';
     import type * as Lexc from '../../types';
     import { alphabetize } from '../../utils/alphabetize';
     import LexEntry from './LexEntry.svelte';
@@ -33,23 +33,6 @@
             alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
         })();
     } 
-
-    type senseInput = {
-        definition: string;
-        tags: string;
-        lects: string[];
-    }
-    let senses: senseInput[] = [{
-        definition: '',
-        tags: '',
-        lects: [...$Language.Lects],
-    }];
-
-    let lectSet: string[]
-    $: { // Update the set of lects when the `senses` array changes
-        senses; $Language.Lects; $Language.UseLects;
-        lectSet = Array.from(new Set(senses.map(sense => [...sense.lects]).flat().filter(lect => $Language.Lects.includes(lect))))
-    }
 
     function scrollIntoView(word: string) {
         const entry = document.getElementById(word);
@@ -91,7 +74,7 @@
             Object.keys($Language.Lexicon[word].pronunciations).forEach(lect => {
                 $pronunciations[lect] = $Language.Lexicon[word].pronunciations[lect].ipa;
             });
-            senses = [...$Language.Lexicon[word].Senses].map(sense => ({
+            $senses = [...$Language.Lexicon[word].Senses].map(sense => ({
                 definition: sense.definition,
                 tags: sense.tags.join(' '),
                 lects: sense.lects,

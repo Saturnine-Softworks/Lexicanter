@@ -1,7 +1,8 @@
 <script lang="ts">
 
     const { ipcRenderer } = require('electron');
-    import { Language, wordInput, pronunciations } from '../../stores';
+    import { Language, wordInput, pronunciations, senses } from '../../stores';
+    import type { senseInput } from '../../stores';
     import type * as Lexc from '../../types';
     import { alphabetize, alphabetPrecheck } from '../../utils/alphabetize';
     import { get_pronunciation } from '../../utils/phonetics';
@@ -34,21 +35,10 @@
         })();
     } 
 
-    type senseInput = {
-        definition: string;
-        tags: string;
-        lects: string[];
-    }
-    let senses: senseInput[] = [{
-        definition: '',
-        tags: '',
-        lects: [...$Language.Lects],
-    }];
-
     let lectSet: string[]
     $: { // Update the set of lects when the `senses` array changes
-        senses; $Language.Lects; $Language.UseLects;
-        lectSet = Array.from(new Set(senses.map(sense => [...sense.lects]).flat().filter(lect => $Language.Lects.includes(lect))))
+        $senses; $Language.Lects; $Language.UseLects;
+        lectSet = Array.from(new Set($senses.map(sense => [...sense.lects]).flat().filter(lect => $Language.Lects.includes(lect))))
     }
 
     /**
@@ -69,7 +59,7 @@
             $Language.Lexicon[word] = <Lexc.Word> {
                 pronunciations: <Lexc.EntryPronunciations> (() => {
                     const obj: Lexc.EntryPronunciations = {};
-                    Object.keys($pronunciations).filter(key => senses.map(sense => sense.lects).flat().includes(key)).forEach(lect => {
+                    Object.keys($pronunciations).filter(key => $senses.map(sense => sense.lects).flat().includes(key)).forEach(lect => {
                         obj[lect] = {
                             ipa: $pronunciations[lect].trim(),
                             irregular: $pronunciations[lect].trim() !== get_pronunciation(word, lect),
@@ -77,11 +67,11 @@
                     });
                     return obj;
                 })(), 
-                Senses: senses.filter(emptySensesFilter).map(senseRemapper),
+                Senses: $senses.filter(emptySensesFilter).map(senseRemapper),
                 Timestamp: Date.now(),
             };
         } else {
-            $Language.Lexicon[word].Senses.push(...senses.filter(emptySensesFilter).map(senseRemapper));
+            $Language.Lexicon[word].Senses.push(...$senses.filter(emptySensesFilter).map(senseRemapper));
         }
         $Language.Lexicon = {...$Language.Lexicon}; // assignment trigger
 
@@ -97,7 +87,7 @@
             });
             return obj;
         })();
-        senses = [{
+        $senses = [{
             definition: '',
             tags: '',
             lects: [...$Language.Lects],
@@ -113,8 +103,8 @@
     function addWord(append: boolean): void {
         let word = $wordInput.trim()
         if (!word) return;
-        if (!senses[0].definition) return;
-        if (!senses.map(sense => sense.lects).flat().length) return;
+        if (!$senses[0].definition) return;
+        if (!$senses.map(sense => sense.lects).flat().length) return;
         if (!alphabetPrecheck(word)) {
             vex.dialog.confirm({
                 message: `The word contains characters not present in the alphabet. Are you sure you want to add it?`,
@@ -156,21 +146,21 @@
             <input type="text" class="pronunciation" bind:value={$pronunciations.General}/>
         {/if}
         
-        {#each senses as sense, i}
+        {#each $senses as sense, i}
             <SenseInput
                 index={i}
                 bind:definition={sense.definition}
                 bind:tags={sense.tags}
                 bind:lects={sense.lects}
                 remove={() => {
-                    senses = senses.filter((_, j) => j !== i);
+                    $senses = $senses.filter((_, j) => j !== i);
                 }}
                 commit={() => { addWord(false); }}
             />
         {/each}
         <button class="hover-highlight hover-shadow" id="add-sense-button" 
             on:click={() => {
-                senses = [...senses, {definition: '', tags: '', lects: [...$Language.Lects]}];
+                $senses = [...$senses, {definition: '', tags: '', lects: [...$Language.Lects]}];
         }}>Add Sense</button>
         {#if !($wordInput in $Language.Lexicon)}
             <button class="hover-highlight hover-shadow" id="add-word-button" on:click={() => addWord(false)}>Add Word</button>
