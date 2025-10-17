@@ -79,9 +79,6 @@ button.inflection, select.inflection {
   color: rgb(225, 211, 230);
 }
 
-svg {
-  stroke: rgb(141, 84, 173);
-}
 svg .lex-entry, svg .lex-body {
   fill: rgb(141, 84, 173);
   color: rgb(141, 84, 173);
@@ -106,13 +103,18 @@ svg rect {
 svg rect.lex {
   fill: transparent;
   transition: 0.3s;
-  rx: 10;
-  height: 3em;
-  padding: 5px;
 }
 svg rect.lex:hover, svg rect.lex:has(~ :hover) {
   fill: rgb(114, 60, 116);
   cursor: pointer;
+}
+svg rect.lex {
+  rx: 10;
+  height: 3em;
+  padding: 5px;
+}
+svg {
+  stroke: rgb(141, 84, 173);
 }
 
 .tag-item, [id=entry-counter] {
@@ -139,15 +141,15 @@ label {
   color: rgb(147, 82, 172);
 }
 
-textarea, input {
-  color: rgb(92, 31, 94) !important;
-  background-color: rgb(210, 181, 217);
-}
 textarea.pronunciation, input.pronunciation {
   background-color: transparent;
 }
 textarea.pronunciation:hover, input.pronunciation:hover {
   background-color: rgb(218, 196, 224);
+}
+textarea, input {
+  color: rgb(92, 31, 94) !important;
+  background-color: rgb(210, 181, 217);
 }
 textarea[type=checkbox], input[type=checkbox] {
   background-color: transparent;

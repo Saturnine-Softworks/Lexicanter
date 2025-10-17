@@ -76,9 +76,6 @@ button.inflection, select.inflection {
   color: #f0f0d8;
 }
 
-svg {
-  stroke: #f0f0d8;
-}
 svg .lex-entry, svg .lex-body {
   fill: #f0f0d8;
   color: #f0f0d8;
@@ -103,13 +100,18 @@ svg rect {
 svg rect.lex {
   fill: transparent;
   transition: 0.3s;
-  rx: 10;
-  height: 3em;
-  padding: 5px;
 }
 svg rect.lex:hover, svg rect.lex:has(~ :hover) {
   fill: #895082;
   cursor: pointer;
+}
+svg rect.lex {
+  rx: 10;
+  height: 3em;
+  padding: 5px;
+}
+svg {
+  stroke: #f0f0d8;
 }
 
 .tag-item, [id=entry-counter] {
@@ -136,15 +138,15 @@ label {
   color: #b6d8bd;
 }
 
-textarea, input {
-  color: #f0f0d8 !important;
-  background-color: #77b555;
-}
 textarea.pronunciation, input.pronunciation {
   background-color: transparent;
 }
 textarea.pronunciation:hover, input.pronunciation:hover {
   background-color: #624e5d;
+}
+textarea, input {
+  color: #f0f0d8 !important;
+  background-color: #77b555;
 }
 textarea[type=checkbox], input[type=checkbox] {
   background-color: transparent;

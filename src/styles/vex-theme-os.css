@@ -106,13 +106,13 @@
   box-shadow: inset 0 0 0 1px #3288e6;
   outline: none;
 }
-.vex.vex-theme-os .vex-dialog-form .vex-dialog-buttons {
-  *zoom: 1;
-}
 .vex.vex-theme-os .vex-dialog-form .vex-dialog-buttons:after {
   content: "";
   display: table;
   clear: both;
+}
+.vex.vex-theme-os .vex-dialog-form .vex-dialog-buttons {
+  *zoom: 1;
 }
 .vex.vex-theme-os .vex-dialog-button {
   border-radius: 3px;
