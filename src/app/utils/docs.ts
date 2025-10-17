@@ -12,7 +12,8 @@ import TextVariantTune from '@editorjs/text-variant-tune';
 // @ts-expect-error: no types included with this package, not bothering to write them myself
 import ToggleBlock from 'editorjs-toggle-block';
 import type { EditorConfig } from '@editorjs/editorjs';
-enum LogLevels { // REVIEW - monkeypatch gets around type check error, can't import this from @editorjs/editorjs/types for ...reasons.
+enum LogLevels {
+    // REVIEW - monkeypatch gets around type check error, can't import this from @editorjs/editorjs/types for ...reasons.
     VERBOSE = 'VERBOSE',
     INFO = 'INFO',
     WARN = 'WARN',
@@ -26,7 +27,10 @@ enum LogLevels { // REVIEW - monkeypatch gets around type check error, can't imp
  * will be initialized with an empty document.
  * @param {Object} data
  */
-export function initializeDocs(data: OutputData | false, holder='docs-tab'): void {
+export function initializeDocs(
+    data: OutputData | false,
+    holder = 'docs-tab',
+): void {
     const config = {
         holder: holder,
         data: data || null,
@@ -41,7 +45,7 @@ export function initializeDocs(data: OutputData | false, holder='docs-tab'): voi
                 inlineToolbar: true,
                 config: {
                     placeholder:
-                    'This panel can be used to document and describe your languge’s features in greater detail.',
+                        'This panel can be used to document and describe your languge’s features in greater detail.',
                 },
             },
             table: {
@@ -64,20 +68,17 @@ export function initializeDocs(data: OutputData | false, holder='docs-tab'): voi
             alignment: {
                 class: AlignmentTuneTool,
                 config: {
-                    default: "left",
-                }
+                    default: 'left',
+                },
             },
             // mermaid: MermaidTool,
             textVariant: TextVariantTune,
         },
-        tunes: [
-            'alignment',
-            'textVariant',
-        ],
+        tunes: ['alignment', 'textVariant'],
         logLevel: LogLevels.ERROR,
-        readOnly: holder === 'ref-docs'
+        readOnly: holder === 'ref-docs',
     };
-    
+
     const editor = new EditorJS(config as unknown as EditorConfig); // type gymnastics
     if (holder === 'docs-tab') {
         docsEditor.set(editor);

@@ -8,21 +8,16 @@
         "rust:build-dev": "cargo build --manifest-path=library/graphemy_ffi/Cargo.toml --release; cargo build --manifest-path=library/tadpole_ffi/Cargo.toml --release",
         "rust:build-all-targets": "bash scripts/cargobuild.bash",
         "precompile": "npm run rust:build-dev && sass -q src/sass/:src/styles && vite build",
-
         "dev": "NODE_ENV=development concurrently \"npm run rust:build-dev\" \"sass -w -q src/sass/:src/styles\" \"npm run web:watch\" \"sleep 5 && npm run electron:start\"",
         "start": "npm run precompile && npm run electron:start",
-
         "web:watch": "vite --port 3000",
         "electron:start": "electron .",
-
         "build": "npm run rust:build-all-targets && bash scripts/build.bash",
         "build-mac": "npm run precompile && electron-builder --mac --x64 --arm64 --publish never",
         "build-win": "npm run precompile && electron-builder --win --x64 --ia32 --publish never",
         "build-linux": "npm run precompile && electron-builder --linux --x64 --arm64 --publish never",
-
         "publish": "npm run precompile && bash scripts/cargobuild.bash && bash scripts/publish.bash",
         "publish-only": "bash scripts/publish.bash",
-        
         "check": "svelte-check --tsconfig ./tsconfig.json",
         "format": "prettier --write ."
     },
@@ -102,8 +97,6 @@
                     "**/*"
                 ]
             },
-            
-
             {
                 "from": "./library/tadpole_ffi/target/aarch64-apple-darwin/release/lib_tadpole_ffi.dylib",
                 "to": "aarch64-apple-darwin/tadpole_ffi.dylib",
@@ -201,6 +194,7 @@
         "eslint": "9.37.0",
         "globals": "16.4.0",
         "mdsvex": "0.12.6",
+        "prettier": "^3.6.2",
         "svelte": "5.40.2",
         "svelte-check": "4.3.3",
         "svelte-preprocess": "6.0.3",

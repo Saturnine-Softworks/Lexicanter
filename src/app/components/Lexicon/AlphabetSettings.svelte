@@ -5,10 +5,6 @@
     import { alphabetize } from '../../utils/alphabetize';
     import Draggable from '../Draggable.svelte';
 
-    ipcRenderer.on('update-lexicon-for-gods-sake-please', () => {
-        $Language.Lexicon = {...$Language.Lexicon};
-    });
-
     let searchWords = ''; let searchDefinitions = ''; let searchTags = ''; let lectFilter = '';
     $: searchWords, searchDefinitions, searchTags, lectFilter; // Update the search when these values change
     let keys: (string | null)[] = [];

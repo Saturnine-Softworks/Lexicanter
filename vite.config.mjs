@@ -4,7 +4,7 @@ import process from 'process';
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { mdsvex } from "mdsvex";
+import { mdsvex } from 'mdsvex';
 import renderer from 'vite-plugin-electron-renderer';
 
 export default defineConfig({
@@ -16,12 +16,12 @@ export default defineConfig({
                         quotes: true,
                         ellipses: true,
                         backticks: false,
-                        dashes: 'oldschool'
-                    }
+                        dashes: 'oldschool',
+                    },
                 }),
                 vitePreprocess({
-                    script: true
-                })
+                    script: true,
+                }),
             ],
             compilerOptions: {
                 dev: true,

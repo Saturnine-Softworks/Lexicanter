@@ -11,6 +11,7 @@ export default [
         rules: {
             '@typescript-eslint/no-namespace': 'off',
             'no-prototype-builtins': 'off',
+            'no-unexpected-multiline': 'off',
         },
     },
 ];

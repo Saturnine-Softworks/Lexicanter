@@ -2,469 +2,489 @@
    Copyright (C) 2023 Ethan Ray.
    See GNU General Public License Version 3.  */
 body {
-  color: #b97d91;
-  background-color: #4b041e;
+    color: #b97d91;
+    background-color: #4b041e;
 }
 
-button, select {
-  color: #ad687b;
-  background-color: #751d40;
+button,
+select {
+    color: #ad687b;
+    background-color: #751d40;
 }
-button[id=overwrite], select[id=overwrite] {
-  color: darkred;
+button[id='overwrite'],
+select[id='overwrite'] {
+    color: darkred;
 }
-button.inflection, select.inflection {
-  background-color: transparent !important;
-  border: none !important;
-  font-family: Noto;
-  font-size: 9pt;
+button.inflection,
+select.inflection {
+    background-color: transparent !important;
+    border: none !important;
+    font-family: Noto;
+    font-size: 9pt;
 }
 
 .hover-highlight:hover {
-  color: #e8d1d7;
+    color: #e8d1d7;
 }
 
 .hover-shadow:hover {
-  box-shadow: 0px 2px 12px #343434;
+    box-shadow: 0px 2px 12px #343434;
 }
 
-.tab-container .button-container, .tab-container .button-container button {
-  color: #a54358;
-  background-color: #330609;
+.tab-container .button-container,
+.tab-container .button-container button {
+    color: #a54358;
+    background-color: #330609;
 }
-.tab-container .button-container:hover, .tab-container .button-container button:hover {
-  color: #e8d1d7;
+.tab-container .button-container:hover,
+.tab-container .button-container button:hover {
+    color: #e8d1d7;
 }
 
 .selected {
-  background-color: #4b041e !important;
+    background-color: #4b041e !important;
 }
 
 .container {
-  background-color: #692633;
-  border: 1px solid #b1656f;
-  border-radius: 0;
+    background-color: #692633;
+    border: 1px solid #b1656f;
+    border-radius: 0;
 }
 
 .draggable {
-  border: 0.5px solid #b1656f;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.2666666667);
+    border: 0.5px solid #b1656f;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.2666666667);
 }
 .draggable .container {
-  border: none;
-  border-top: 1px solid #b1656f;
+    border: none;
+    border-top: 1px solid #b1656f;
 }
 .draggable .dragbar {
-  background-color: #4b041e;
+    background-color: #4b041e;
 }
 
 .info {
-  color: #b65e79;
+    color: #b65e79;
 }
 
 .version-info {
-  color: #d38e9f;
+    color: #d38e9f;
 }
 
-.lex-entry, .lex-body {
-  color: #b97d91;
+.lex-entry,
+.lex-body {
+    color: #b97d91;
 }
 .lex-entry {
-  --graphemy-color-override: #b97d91;
+    --graphemy-color-override: #b97d91;
 }
 .lex-entry:hover {
-  --graphemy-color-override: #d5aab5;
-  background: #461d27;
-  color: #d5aab5;
+    --graphemy-color-override: #d5aab5;
+    background: #461d27;
+    color: #d5aab5;
 }
 
-svg .lex-entry, svg .lex-body {
-  fill: #b97d91;
-  color: #b97d91;
+svg .lex-entry,
+svg .lex-body {
+    fill: #b97d91;
+    color: #b97d91;
 }
 svg .lex-entry:hover {
-  fill: #d5aab5;
-  color: #d5aab5;
-  background-color: #461d27;
+    fill: #d5aab5;
+    color: #d5aab5;
+    background-color: #461d27;
 }
 svg .tag-item {
-  fill: #b97d91;
-  font-weight: bold;
+    fill: #b97d91;
+    font-weight: bold;
 }
-svg g:hover > text.tag-item, svg g:hover > text.lex-entry {
-  stroke: #d5aab5;
-  fill: #d5aab5;
-  cursor: pointer;
+svg g:hover > text.tag-item,
+svg g:hover > text.lex-entry {
+    stroke: #d5aab5;
+    fill: #d5aab5;
+    cursor: pointer;
 }
 svg rect {
-  stroke: none;
+    stroke: none;
 }
 svg rect.lex {
-  fill: transparent;
-  transition: 0.3s;
+    fill: transparent;
+    transition: 0.3s;
 }
-svg rect.lex:hover, svg rect.lex:has(~ :hover) {
-  fill: #461d27;
-  cursor: pointer;
+svg rect.lex:hover,
+svg rect.lex:has(~ :hover) {
+    fill: #461d27;
+    cursor: pointer;
 }
 svg rect.lex {
-  rx: 10;
-  height: 3em;
-  padding: 5px;
+    rx: 10;
+    height: 3em;
+    padding: 5px;
 }
 svg {
-  stroke: #b97d91;
+    stroke: #b97d91;
 }
 
-.tag-item, [id=entry-counter] {
-  color: #b97d91;
-  background-color: #872850;
+.tag-item,
+[id='entry-counter'] {
+    color: #b97d91;
+    background-color: #872850;
 }
 
 .pronunciation {
-  color: #a0556d;
+    color: #a0556d;
 }
 
 .lect {
-  color: #a0556d;
+    color: #a0556d;
 }
 
 hr {
-  border: 1px solid #b97d91;
-  border-left: none;
-  border-right: none;
-  border-top: none;
+    border: 1px solid #b97d91;
+    border-left: none;
+    border-right: none;
+    border-top: none;
 }
 
 label {
-  color: #d38e9f;
+    color: #d38e9f;
 }
 
-textarea.pronunciation, input.pronunciation {
-  background-color: transparent;
+textarea.pronunciation,
+input.pronunciation {
+    background-color: transparent;
 }
-textarea.pronunciation:hover, input.pronunciation:hover {
-  background-color: #8c3f49;
+textarea.pronunciation:hover,
+input.pronunciation:hover {
+    background-color: #8c3f49;
 }
-textarea, input {
-  color: #b97d91 !important;
-  background-color: #4d1929;
+textarea,
+input {
+    color: #b97d91 !important;
+    background-color: #4d1929;
 }
-textarea[type=checkbox], input[type=checkbox] {
-  background-color: transparent;
-  border: 0.15em solid #b97d91;
+textarea[type='checkbox'],
+input[type='checkbox'] {
+    background-color: transparent;
+    border: 0.15em solid #b97d91;
 }
-textarea[type=checkbox]::before, input[type=checkbox]::before {
-  background-color: #f4a2b4;
+textarea[type='checkbox']::before,
+input[type='checkbox']::before {
+    background-color: #f4a2b4;
 }
 
 td {
-  border: 1px solid #b1656f;
+    border: 1px solid #b1656f;
 }
 
 tr:nth-child(odd) {
-  background-color: #4d1929;
+    background-color: #4d1929;
 }
 tr:nth-child(even) {
-  background-color: rgb(115.5, 37.5, 61.5);
+    background-color: rgb(115.5, 37.5, 61.5);
 }
 
 ::-webkit-resizer {
-  background-color: #6c3644;
+    background-color: #6c3644;
 }
 ::-webkit-resizer:hover {
-  background-color: #994459;
+    background-color: #994459;
 }
 ::-webkit-scrollbar-track {
-  background-color: #4b041e;
+    background-color: #4b041e;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #6c3644;
+    background-color: #6c3644;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #994459;
+    background-color: #994459;
 }
 
 a {
-  color: #f4a2b4;
-  transition: 0.5s;
+    color: #f4a2b4;
+    transition: 0.5s;
 }
 a:hover {
-  color: #e8d1d7;
+    color: #e8d1d7;
 }
 
-.ce-toolbar__settings-btn, .ce-toolbar__plus {
-  color: #b97d91 !important;
+.ce-toolbar__settings-btn,
+.ce-toolbar__plus {
+    color: #b97d91 !important;
 }
 .ce-toolbar:hover {
-  background-color: #751d40 !important;
+    background-color: #751d40 !important;
 }
 .ce-conversion-tool {
-  background-color: #751d40 !important;
+    background-color: #751d40 !important;
 }
 .ce-conversion-toolbar {
-  background-color: #872850 !important;
+    background-color: #872850 !important;
 }
 .ce-conversion-tool:hover {
-  background-color: #b65e79 !important;
+    background-color: #b65e79 !important;
 }
-.ce-popover, .ce-popover--opened {
-  background-color: #751d40 !important;
+.ce-popover,
+.ce-popover--opened {
+    background-color: #751d40 !important;
 }
 .ce-popover__item {
-  background-color: #751d40 !important;
+    background-color: #751d40 !important;
 }
 .ce-popover__item:hover {
-  background-color: #b65e79 !important;
+    background-color: #b65e79 !important;
 }
 .ce-inline-tool {
-  background-color: #872850 !important;
+    background-color: #872850 !important;
 }
 .ce-inline-tool:hover {
-  background-color: #b65e79 !important;
+    background-color: #b65e79 !important;
 }
-.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
-  background-color: #872850 !important;
+.ce-inline-toolbar,
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons {
+    background-color: #872850 !important;
 }
 .ce-paragraph[data-placeholder]:empty::before {
-  color: #a0556d !important;
+    color: #a0556d !important;
 }
 
 .tc-popover {
-  --color-border: #f4a2b4 !important;
-  --color-background: #872850 !important;
-  --color-background-hover: #751d40 !important;
-  --color-background-confirm: #812b2b !important;
-  --color-background-confirm-hover: #a12929 !important;
-  --color-text-confirm: white !important;
+    --color-border: #f4a2b4 !important;
+    --color-background: #872850 !important;
+    --color-background-hover: #751d40 !important;
+    --color-background-confirm: #812b2b !important;
+    --color-background-confirm-hover: #a12929 !important;
+    --color-text-confirm: white !important;
 }
 .tc-wrap {
-  --color-background: rgba(255, 255, 255, 0.396) !important;
-  --color-text-secondary: #a0556d !important;
-  --color-border: #f4a2b4 !important;
+    --color-background: rgba(255, 255, 255, 0.396) !important;
+    --color-text-secondary: #a0556d !important;
+    --color-border: #f4a2b4 !important;
 }
 
 table {
-  border-color: #f4a2b4;
+    border-color: #f4a2b4;
 }
 
 .inflection td {
-  border-color: #f4a2b4 !important;
-  background-color: transparent !important;
+    border-color: #f4a2b4 !important;
+    background-color: transparent !important;
 }
 .inflection tr {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 .milkyWay {
-  width: 100px;
-  height: 100px;
-  background: transparent;
-  margin: auto;
-  position: relative;
-  border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    margin: auto;
+    position: relative;
+    border-radius: 50%;
 }
 .milkyWay .planet {
-  border: 1px solid #fff;
-  animation-name: orbit;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  animation-play-state: paused;
+    border: 1px solid #fff;
+    animation-name: orbit;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-play-state: paused;
 }
-.milkyWay .planet::before, .milkyWay .planet::after {
-  position: absolute;
-  content: "";
-  display: block;
-  border-radius: 50%;
+.milkyWay .planet::before,
+.milkyWay .planet::after {
+    position: absolute;
+    content: '';
+    display: block;
+    border-radius: 50%;
 }
 .milkyWay > div {
-  position: absolute;
-  border-radius: 50%;
+    position: absolute;
+    border-radius: 50%;
 }
 
 .sun {
-  background: #faca09;
-  width: 10%;
-  height: 10%;
-  top: 45%;
-  left: 45%;
+    background: #faca09;
+    width: 10%;
+    height: 10%;
+    top: 45%;
+    left: 45%;
 }
 
 .mercury {
-  width: 20%;
-  height: 20%;
-  top: calc(40% - 1px);
-  left: calc(40% - 1px);
-  animation-duration: 2s;
+    width: 20%;
+    height: 20%;
+    top: calc(40% - 1px);
+    left: calc(40% - 1px);
+    animation-duration: 2s;
 }
 .mercury::before {
-  background: #9fb5b6;
-  width: 16%;
-  height: 16%;
-  top: -8%;
-  left: 42%;
+    background: #9fb5b6;
+    width: 16%;
+    height: 16%;
+    top: -8%;
+    left: 42%;
 }
 
 .venus {
-  width: 30%;
-  height: 30%;
-  top: calc(35% - 1px);
-  left: calc(35% - 1px);
-  animation-duration: 3s;
+    width: 30%;
+    height: 30%;
+    top: calc(35% - 1px);
+    left: calc(35% - 1px);
+    animation-duration: 3s;
 }
 .venus::before {
-  background: #ECC98E;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #ecc98e;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 
 .earth {
-  width: 40%;
-  height: 40%;
-  top: calc(30% - 1px);
-  left: calc(30% - 1px);
-  animation-duration: 4s;
+    width: 40%;
+    height: 40%;
+    top: calc(30% - 1px);
+    left: calc(30% - 1px);
+    animation-duration: 4s;
 }
 .earth::before {
-  background: #208fd8;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #208fd8;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 .earth::after {
-  background: #33c470;
-  width: 10%;
-  height: 6%;
-  top: -3%;
-  left: 45%;
-  transform: rotate(45deg);
+    background: #33c470;
+    width: 10%;
+    height: 6%;
+    top: -3%;
+    left: 45%;
+    transform: rotate(45deg);
 }
 
 .mars {
-  width: 50%;
-  height: 50%;
-  top: calc(25% - 1px);
-  left: calc(25% - 1px);
-  animation-duration: 5s;
+    width: 50%;
+    height: 50%;
+    top: calc(25% - 1px);
+    left: calc(25% - 1px);
+    animation-duration: 5s;
 }
 .mars::before {
-  background: #d35400;
-  width: 6%;
-  height: 6%;
-  top: -3%;
-  left: 47%;
+    background: #d35400;
+    width: 6%;
+    height: 6%;
+    top: -3%;
+    left: 47%;
 }
 
 .jupiter {
-  width: 60%;
-  height: 60%;
-  top: calc(20% - 1px);
-  left: calc(20% - 1px);
-  animation-duration: 6s;
+    width: 60%;
+    height: 60%;
+    top: calc(20% - 1px);
+    left: calc(20% - 1px);
+    animation-duration: 6s;
 }
 .jupiter::before {
-  background: #d4975a;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #d4975a;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 
 .saturn {
-  width: 70%;
-  height: 70%;
-  top: calc(15% - 1px);
-  left: calc(15% - 1px);
-  animation-duration: 7s;
+    width: 70%;
+    height: 70%;
+    top: calc(15% - 1px);
+    left: calc(15% - 1px);
+    animation-duration: 7s;
 }
 .saturn::before {
-  background: #E4D191;
-  width: 7%;
-  height: 7%;
-  top: -4%;
-  left: 48%;
+    background: #e4d191;
+    width: 7%;
+    height: 7%;
+    top: -4%;
+    left: 48%;
 }
 .saturn::after {
-  background: #F0E4C1;
-  width: 12%;
-  height: 1%;
-  top: -1%;
-  left: 45.5%;
-  transform: rotate(-15deg);
+    background: #f0e4c1;
+    width: 12%;
+    height: 1%;
+    top: -1%;
+    left: 45.5%;
+    transform: rotate(-15deg);
 }
 
 .uranus {
-  width: 80%;
-  height: 80%;
-  top: calc(10% - 1px);
-  left: calc(10% - 1px);
-  animation-duration: 8s;
+    width: 80%;
+    height: 80%;
+    top: calc(10% - 1px);
+    left: calc(10% - 1px);
+    animation-duration: 8s;
 }
 .uranus::before {
-  background: #3498db;
-  width: 5%;
-  height: 5%;
-  top: -2%;
-  left: 48%;
+    background: #3498db;
+    width: 5%;
+    height: 5%;
+    top: -2%;
+    left: 48%;
 }
 .uranus::after {
-  background: #b0d0e5;
-  width: 8%;
-  height: 0.5%;
-  top: 0%;
-  left: 46.25%;
-  transform: rotate(-15deg);
+    background: #b0d0e5;
+    width: 8%;
+    height: 0.5%;
+    top: 0%;
+    left: 46.25%;
+    transform: rotate(-15deg);
 }
 
 .neptune {
-  width: 90%;
-  height: 90%;
-  top: calc(5% - 1px);
-  left: calc(5% - 1px);
-  animation-duration: 9s;
+    width: 90%;
+    height: 90%;
+    top: calc(5% - 1px);
+    left: calc(5% - 1px);
+    animation-duration: 9s;
 }
 .neptune::before {
-  background: #1269a3;
-  width: 4%;
-  height: 4%;
-  top: -1%;
-  left: 49%;
+    background: #1269a3;
+    width: 4%;
+    height: 4%;
+    top: -1%;
+    left: 49%;
 }
 .neptune::after {
-  background: #91cbf2;
-  width: 6%;
-  height: 0.5%;
-  top: 0.5%;
-  left: 48%;
-  transform: rotate(-15deg);
+    background: #91cbf2;
+    width: 6%;
+    height: 0.5%;
+    top: 0.5%;
+    left: 48%;
+    transform: rotate(-15deg);
 }
 
 .pluto {
-  width: 100%;
-  height: 100%;
-  top: calc(0% - 1px);
-  left: calc(0% - 1px);
-  animation-duration: 10s;
+    width: 100%;
+    height: 100%;
+    top: calc(0% - 1px);
+    left: calc(0% - 1px);
+    animation-duration: 10s;
 }
 .pluto::before {
-  background: #b78c7a;
-  width: 2%;
-  height: 2%;
-  top: -0.5%;
-  left: 49%;
+    background: #b78c7a;
+    width: 2%;
+    height: 2%;
+    top: -0.5%;
+    left: 49%;
 }
 
 @keyframes orbit {
-  0% {
-    transform: rotate(-180deg);
-  }
-  100% {
-    transform: rotate(180deg);
-  }
+    0% {
+        transform: rotate(-180deg);
+    }
+    100% {
+        transform: rotate(180deg);
+    }
 }
 
 /*# sourceMappingURL=pomegranate.css.map */

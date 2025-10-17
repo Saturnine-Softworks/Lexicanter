@@ -10,10 +10,6 @@
     import Draggable from '../Draggable.svelte';
     const vex = require('vex-js');
 
-    ipcRenderer.on('update-lexicon-for-gods-sake-please', () => {
-        $Language.Lexicon = {...$Language.Lexicon};
-    });
-
     let keys: (string | null)[] = [];
 
     let filtered_lex: Lexc.Lexicon;

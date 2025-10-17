@@ -1,212 +1,225 @@
 body {
-  color: #e0a9ff;
-  background-color: rgb(46, 0, 53);
+    color: #e0a9ff;
+    background-color: rgb(46, 0, 53);
 }
 
 select {
-  color: #e0a9ff;
-  background-color: rgb(13, 0, 21);
-  border: 2px solid #f89dff !important;
-  border-radius: 8px;
+    color: #e0a9ff;
+    background-color: rgb(13, 0, 21);
+    border: 2px solid #f89dff !important;
+    border-radius: 8px;
 }
 
 button {
-  color: #e0a9ff;
-  background-color: rgb(13, 0, 21);
-  border: 2px solid rgb(75, 0, 87) !important;
-  border-radius: 8px;
+    color: #e0a9ff;
+    background-color: rgb(13, 0, 21);
+    border: 2px solid rgb(75, 0, 87) !important;
+    border-radius: 8px;
 }
-button[id=overwrite] {
-  color: darkred;
+button[id='overwrite'] {
+    color: darkred;
 }
 
 .hover-highlight:hover {
-  color: #e9e6eb;
+    color: #e9e6eb;
 }
 
 .hover-shadow:hover {
-  box-shadow: 0px 2px 12px #0f001e;
+    box-shadow: 0px 2px 12px #0f001e;
 }
 
-.tab-container .button-container, .tab-container .button-container button {
-  color: rgb(128, 1, 148);
-  background-color: rgb(38, 0, 37);
+.tab-container .button-container,
+.tab-container .button-container button {
+    color: rgb(128, 1, 148);
+    background-color: rgb(38, 0, 37);
 }
-.tab-container .button-container:hover, .tab-container .button-container button:hover {
-  color: #e9e6eb;
+.tab-container .button-container:hover,
+.tab-container .button-container button:hover {
+    color: #e9e6eb;
 }
 
 .selected {
-  background-color: rgb(46, 0, 53) !important;
+    background-color: rgb(46, 0, 53) !important;
 }
 
 .container {
-  background-color: rgb(19, 1, 33);
-  border: 1px solid none;
+    background-color: rgb(19, 1, 33);
+    border: 1px solid none;
 }
 
 .info {
-  color: #7a577f;
+    color: #7a577f;
 }
 
 .version-info {
-  color: #d18af9;
+    color: #d18af9;
 }
 
-.lex-entry, .lex-body {
-  color: #e0a9ff;
+.lex-entry,
+.lex-body {
+    color: #e0a9ff;
 }
 .lex-entry:hover {
-  background: rgb(58, 0, 67);
-  color: #e9e6eb;
+    background: rgb(58, 0, 67);
+    color: #e9e6eb;
 }
 
-.tag-item, [id=entry-counter] {
-  color: rgb(170, 170, 170);
-  background-color: rgb(126, 15, 15);
+.tag-item,
+[id='entry-counter'] {
+    color: rgb(170, 170, 170);
+    background-color: rgb(126, 15, 15);
 }
 
 .pronunciation {
-  color: rgb(146, 146, 146);
+    color: rgb(146, 146, 146);
 }
 
 hr {
-  border: 1px solid #e0a9ff;
+    border: 1px solid #e0a9ff;
 }
 
 label {
-  color: #d18af9;
+    color: #d18af9;
 }
 
-textarea, input {
-  color: #e0a9ff !important;
-  background-color: rgb(13, 0, 21);
+textarea,
+input {
+    color: #e0a9ff !important;
+    background-color: rgb(13, 0, 21);
 }
-textarea.pronunciation, input.pronunciation {
-  background-color: rgb(16, 0, 30);
+textarea.pronunciation,
+input.pronunciation {
+    background-color: rgb(16, 0, 30);
 }
-textarea.pronunciation:hover, input.pronunciation:hover {
-  background-color: rgb(67, 0, 37);
+textarea.pronunciation:hover,
+input.pronunciation:hover {
+    background-color: rgb(67, 0, 37);
 }
-textarea[type=checkbox], input[type=checkbox] {
-  background-color: transparent;
-  border: 0.15em solid #e0a9ff;
+textarea[type='checkbox'],
+input[type='checkbox'] {
+    background-color: transparent;
+    border: 0.15em solid #e0a9ff;
 }
-textarea[type=checkbox]::before, input[type=checkbox]::before {
-  background-color: #6400bc;
+textarea[type='checkbox']::before,
+input[type='checkbox']::before {
+    background-color: #6400bc;
 }
 
 td {
-  border: 1px solid none;
+    border: 1px solid none;
 }
 
 tr:nth-child(odd) {
-  background-color: rgb(13, 0, 21);
+    background-color: rgb(13, 0, 21);
 }
 tr:nth-child(even) {
-  background-color: #2d0048;
+    background-color: #2d0048;
 }
 
 ::-webkit-resizer {
-  background-color: #3b002a;
+    background-color: #3b002a;
 }
 ::-webkit-resizer:hover {
-  background-color: #68004a;
+    background-color: #68004a;
 }
 ::-webkit-scrollbar-track {
-  background-color: rgb(46, 0, 53);
+    background-color: rgb(46, 0, 53);
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #3b002a;
+    background-color: #3b002a;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #68004a;
+    background-color: #68004a;
 }
 
 a {
-  color: #6400bc;
-  transition: 0.5s;
+    color: #6400bc;
+    transition: 0.5s;
 }
 a:hover {
-  color: #e9e6eb;
+    color: #e9e6eb;
 }
 
-.ce-toolbar__settings-btn, .ce-toolbar__plus {
-  color: #e0a9ff !important;
+.ce-toolbar__settings-btn,
+.ce-toolbar__plus {
+    color: #e0a9ff !important;
 }
 .ce-toolbar:hover {
-  background-color: rgb(13, 0, 21) !important;
+    background-color: rgb(13, 0, 21) !important;
 }
 .ce-conversion-tool {
-  background-color: rgb(13, 0, 21) !important;
+    background-color: rgb(13, 0, 21) !important;
 }
 .ce-conversion-toolbar {
-  background-color: rgb(126, 15, 15) !important;
+    background-color: rgb(126, 15, 15) !important;
 }
 .ce-conversion-tool:hover {
-  background-color: #7a577f !important;
+    background-color: #7a577f !important;
 }
-.ce-popover, .ce-popover--opened {
-  background-color: rgb(13, 0, 21) !important;
+.ce-popover,
+.ce-popover--opened {
+    background-color: rgb(13, 0, 21) !important;
 }
 .ce-popover__item {
-  background-color: rgb(13, 0, 21) !important;
+    background-color: rgb(13, 0, 21) !important;
 }
 .ce-popover__item:hover {
-  background-color: #7a577f !important;
+    background-color: #7a577f !important;
 }
 .ce-inline-tool {
-  background-color: rgb(13, 0, 21) !important;
+    background-color: rgb(13, 0, 21) !important;
 }
 .ce-inline-tool:hover {
-  background-color: rgb(67, 0, 37) !important;
+    background-color: rgb(67, 0, 37) !important;
 }
-.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
-  background-color: rgb(13, 0, 21) !important;
+.ce-inline-toolbar,
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons {
+    background-color: rgb(13, 0, 21) !important;
 }
 .ce-paragraph[data-placeholder]:empty::before {
-  color: rgb(146, 146, 146) !important;
+    color: rgb(146, 146, 146) !important;
 }
 
 .tc-popover {
-  --color-border: #e0a9ff !important;
-  --color-background: rgb(13, 0, 21) !important;
-  --color-background-hover: rgb(13, 0, 21) !important;
-  --color-background-confirm: #812b2b !important;
-  --color-background-confirm-hover: #a12929 !important;
-  --color-text-confirm: white !important;
+    --color-border: #e0a9ff !important;
+    --color-background: rgb(13, 0, 21) !important;
+    --color-background-hover: rgb(13, 0, 21) !important;
+    --color-background-confirm: #812b2b !important;
+    --color-background-confirm-hover: #a12929 !important;
+    --color-text-confirm: white !important;
 }
 .tc-wrap {
-  --color-background: rgba(144, 144, 144, 0.396) !important;
-  --color-text-secondary: rgb(146, 146, 146) !important;
-  --color-border: #6400bc !important;
+    --color-background: rgba(144, 144, 144, 0.396) !important;
+    --color-text-secondary: rgb(146, 146, 146) !important;
+    --color-border: #6400bc !important;
 }
 
 .ce-block--selected .ce-block__content {
-  background-color: rgba(77, 0, 115, 0.396) !important;
+    background-color: rgba(77, 0, 115, 0.396) !important;
 }
 
 ::selection {
-  background-color: rgb(77, 0, 115) !important;
+    background-color: rgb(77, 0, 115) !important;
 }
 
 .ce-toolbar__plus,
 .ce-toolbar__settings-btn,
 .ce-conversion-toolbar__label {
-  color: rgb(120, 52, 79) !important;
+    color: rgb(120, 52, 79) !important;
 }
 
 .ce-toolbar__plus:hover,
 .ce-toolbar__settings-btn:hover,
 .ce-conversion-toolbar__label {
-  background-color: var(--lpurple) !important;
+    background-color: var(--lpurple) !important;
 }
 
 /* These are the buttons */
 .ce-popover,
 .ce-inline-tool,
 .ce-conversion-tool {
-  background-color: rgb(120, 52, 79) !important;
+    background-color: rgb(120, 52, 79) !important;
 }
 
 /* These are the containers for the buttons */
@@ -217,7 +230,7 @@ a:hover {
 .ce-inline-toolbar__buttons,
 .ce-conversion-toolbar,
 .ce-inline-toolbar {
-  background-color: rgb(38, 0, 37) !important;
+    background-color: rgb(38, 0, 37) !important;
 }
 
 /* The buttons on mouse hover */
@@ -225,41 +238,41 @@ a:hover {
 .ce-inline-tool:hover,
 .ce-inline-tool--active,
 .ce-conversion-tool:hover {
-  color: var(--lpurple) !important;
-  background-color: rgb(38, 0, 37) !important;
+    color: var(--lpurple) !important;
+    background-color: rgb(38, 0, 37) !important;
 }
 
-input[type=checkbox] {
-  background-color: var(--dpurple);
-  border: 0.15em solid rgb(75, 0, 87);
+input[type='checkbox'] {
+    background-color: var(--dpurple);
+    border: 0.15em solid rgb(75, 0, 87);
 }
 
 /* The color of the checkmark in checkboxes. */
-input[type=checkbox]::before {
-  background-color: rgb(132, 0, 209);
+input[type='checkbox']::before {
+    background-color: rgb(132, 0, 209);
 }
 
 .tab-container .button-container,
 .tab-container .button-container button {
-  background-color: rgb(38, 0, 37);
-  border: none !important;
+    background-color: rgb(38, 0, 37);
+    border: none !important;
 }
 
 .selected {
-  color: rgb(132, 0, 209) !important;
-  background-color: rgb(38, 0, 37) !important;
+    color: rgb(132, 0, 209) !important;
+    background-color: rgb(38, 0, 37) !important;
 }
 
 :is(input, textarea):focus {
-  outline: none;
-  border: 2px solid #f89dff !important;
-  border-radius: 8px;
+    outline: none;
+    border: 2px solid #f89dff !important;
+    border-radius: 8px;
 }
 
 :is(select, button):focus {
-  outline: none;
-  border: 2px solid #f5d2ff !important;
-  border-radius: 8px;
+    outline: none;
+    border: 2px solid #f5d2ff !important;
+    border-radius: 8px;
 }
 
 /*# sourceMappingURL=Purple-maar.css.map */

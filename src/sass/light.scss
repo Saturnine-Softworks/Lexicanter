@@ -26,7 +26,9 @@
     $label-color: #646464,
     $info-color: #8e8e8e,
     $shadow-color: #343434,
-    $container-border: #c0c0c0,
+    $container-border: #c0c0c0
 );
 
-@use 'orbits' with ($orbit-ring-color: #000)
+@use 'orbits' with (
+    $orbit-ring-color: #000
+);

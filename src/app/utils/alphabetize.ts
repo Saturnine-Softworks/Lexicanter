@@ -5,7 +5,7 @@ const Lang = () => get(Language);
 
 /**
  * Takes a Lexicon object and returns an array of words in the alphabetical order
- * of the language, defined by the Alphabet property in the language file, and 
+ * of the language, defined by the Alphabet property in the language file, and
  * with the any words which contain any HeaderTags at the top.
  * @param lexicon - the lexicon object
  * @returns An array of words, sorted by the alphabetical order of the language.
@@ -21,13 +21,15 @@ export function alphabetize(lexicon: Lexc.Lexicon): string[] {
     for (const tag of priority_tags) {
         tag_ordered_lexes.push([]);
         for (const word in all_words) {
-            if ((():string[] => {
-                const tags = [];
-                all_words[word].Senses.forEach((sense: Lexc.Sense) => {
-                    tags.push(...sense.tags);
-                });
-                return tags;
-            })().includes(tag)) {
+            if (
+                ((): string[] => {
+                    const tags = [];
+                    all_words[word].Senses.forEach((sense: Lexc.Sense) => {
+                        tags.push(...sense.tags);
+                    });
+                    return tags;
+                })().includes(tag)
+            ) {
                 tag_ordered_lexes[tag_ordered_lexes.length - 1].push(word);
             }
         }
@@ -42,11 +44,13 @@ export function alphabetize(lexicon: Lexc.Lexicon): string[] {
     tag_ordered_lexes.push(remaining_words);
 
     // Lowercase alphabet if case-sensitivity is unticked
-    $alphabet = $case_sensitive? $alphabet.trim() : $alphabet.trim().toLowerCase();
+    $alphabet = $case_sensitive
+        ? $alphabet.trim()
+        : $alphabet.trim().toLowerCase();
     const order = $alphabet.split(/\s+/);
     // to make sure we find the largest tokens first, i.e. for cases where 'st' comes before 'str' alphabetically
     const find_in_order = Array.from(new Set(order)).sort(
-        (a, b) => b.length - a.length
+        (a, b) => b.length - a.length,
     ); // descending, ensures uniqueness
 
     const final_sort = [];
@@ -55,15 +59,20 @@ export function alphabetize(lexicon: Lexc.Lexicon): string[] {
         const list = [];
         for (const word of group) {
             // case sensitivity
-            let w: string = $case_sensitive? word : word.toLowerCase();
+            let w: string = $case_sensitive ? word : word.toLowerCase();
 
             // diacritic sensitivity
-            w = $ignore_diacritics? w.normalize('NFD').replace(/\p{Diacritic}/gu, '') : w;
+            w = $ignore_diacritics
+                ? w.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+                : w;
 
             for (const token of find_in_order) {
                 w = w.replace(
-                    new RegExp(`${token.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}`, 'g'),
-                    `${order.indexOf(token)}.`
+                    new RegExp(
+                        `${token.replace(/[-[\]{}()*+?.,\\/^$|#\s]/g, '\\$&')}`,
+                        'g',
+                    ),
+                    `${order.indexOf(token)}.`,
                 );
             }
             const append: (string | number)[] = w.split('.');
@@ -107,9 +116,14 @@ type valid = string & { __brand: 'valid' };
  */
 export function alphabetPrecheck(word: string): word is valid {
     // check in order of length descending, solves combining diacritcs issue (i.e. 'a' would be removed from 'å', leaving the ring)
-    const alphabet = Lang().Alphabet.trim().split(/\s+/).sort((a, b) => b.length - a.length);
-    word = Lang().CaseSensitive? word : word.toLowerCase();
-    word = Lang().IgnoreDiacritics? word.normalize('NFD').replace(/\p{Diacritic}/gu, '') : word;
+    const alphabet = Lang()
+        .Alphabet.trim()
+        .split(/\s+/)
+        .sort((a, b) => b.length - a.length);
+    word = Lang().CaseSensitive ? word : word.toLowerCase();
+    word = Lang().IgnoreDiacritics
+        ? word.normalize('NFD').replace(/\p{Diacritic}/gu, '')
+        : word;
     alphabet.forEach((token) => {
         word = word.replaceAll(token, '');
         // debug.log(`alphabetPrecheck: ${word} | ${token}`, false);

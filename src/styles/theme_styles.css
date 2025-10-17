@@ -1,257 +1,276 @@
 body {
-  color: #000;
-  background-color: #000;
+    color: #000;
+    background-color: #000;
 }
 
-button, select {
-  color: #000;
-  background-color: #000;
+button,
+select {
+    color: #000;
+    background-color: #000;
 }
-button[id=overwrite], select[id=overwrite] {
-  color: darkred;
+button[id='overwrite'],
+select[id='overwrite'] {
+    color: darkred;
 }
-button.inflection, select.inflection {
-  background-color: transparent !important;
-  border: none !important;
-  font-family: Noto;
-  font-size: 9pt;
+button.inflection,
+select.inflection {
+    background-color: transparent !important;
+    border: none !important;
+    font-family: Noto;
+    font-size: 9pt;
 }
 
 .hover-highlight:hover {
-  color: #000;
+    color: #000;
 }
 
 .hover-shadow:hover {
-  box-shadow: 0px 2px 12px #000;
+    box-shadow: 0px 2px 12px #000;
 }
 
-.tab-container .button-container, .tab-container .button-container button {
-  color: #000;
-  background-color: #000;
+.tab-container .button-container,
+.tab-container .button-container button {
+    color: #000;
+    background-color: #000;
 }
-.tab-container .button-container:hover, .tab-container .button-container button:hover {
-  color: #000;
+.tab-container .button-container:hover,
+.tab-container .button-container button:hover {
+    color: #000;
 }
 
 .selected {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
 
 .container {
-  background-color: #000;
-  border: 1px solid #000;
-  border-radius: 0;
+    background-color: #000;
+    border: 1px solid #000;
+    border-radius: 0;
 }
 
 .draggable {
-  border: 0.5px solid #000;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.2666666667);
+    border: 0.5px solid #000;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.2666666667);
 }
 .draggable .container {
-  border: none;
-  border-top: 1px solid #000;
+    border: none;
+    border-top: 1px solid #000;
 }
 .draggable .dragbar {
-  background-color: #000;
+    background-color: #000;
 }
 
 .info {
-  color: #000;
+    color: #000;
 }
 
 .version-info {
-  color: #000;
+    color: #000;
 }
 
-.lex-entry, .lex-body {
-  color: #000;
+.lex-entry,
+.lex-body {
+    color: #000;
 }
 .lex-entry {
-  --graphemy-color-override: #000;
+    --graphemy-color-override: #000;
 }
 .lex-entry:hover {
-  --graphemy-color-override: #000;
-  background: #000;
-  color: #000;
+    --graphemy-color-override: #000;
+    background: #000;
+    color: #000;
 }
 
-svg .lex-entry, svg .lex-body {
-  fill: #000;
-  color: #000;
+svg .lex-entry,
+svg .lex-body {
+    fill: #000;
+    color: #000;
 }
 svg .lex-entry:hover {
-  fill: #000;
-  color: #000;
-  background-color: #000;
+    fill: #000;
+    color: #000;
+    background-color: #000;
 }
 svg .tag-item {
-  fill: #000;
-  font-weight: bold;
+    fill: #000;
+    font-weight: bold;
 }
-svg g:hover > text.tag-item, svg g:hover > text.lex-entry {
-  stroke: #000;
-  fill: #000;
-  cursor: pointer;
+svg g:hover > text.tag-item,
+svg g:hover > text.lex-entry {
+    stroke: #000;
+    fill: #000;
+    cursor: pointer;
 }
 svg rect {
-  stroke: none;
+    stroke: none;
 }
 svg rect.lex {
-  fill: transparent;
-  transition: 0.3s;
+    fill: transparent;
+    transition: 0.3s;
 }
-svg rect.lex:hover, svg rect.lex:has(~ :hover) {
-  fill: #000;
-  cursor: pointer;
+svg rect.lex:hover,
+svg rect.lex:has(~ :hover) {
+    fill: #000;
+    cursor: pointer;
 }
 svg rect.lex {
-  rx: 10;
-  height: 3em;
-  padding: 5px;
+    rx: 10;
+    height: 3em;
+    padding: 5px;
 }
 svg {
-  stroke: #000;
+    stroke: #000;
 }
 
-.tag-item, [id=entry-counter] {
-  color: #000;
-  background-color: #000;
+.tag-item,
+[id='entry-counter'] {
+    color: #000;
+    background-color: #000;
 }
 
 .pronunciation {
-  color: #000;
+    color: #000;
 }
 
 .lect {
-  color: #000;
+    color: #000;
 }
 
 hr {
-  border: 1px solid #000;
-  border-left: none;
-  border-right: none;
-  border-top: none;
+    border: 1px solid #000;
+    border-left: none;
+    border-right: none;
+    border-top: none;
 }
 
 label {
-  color: #000;
+    color: #000;
 }
 
-textarea.pronunciation, input.pronunciation {
-  background-color: transparent;
+textarea.pronunciation,
+input.pronunciation {
+    background-color: transparent;
 }
-textarea.pronunciation:hover, input.pronunciation:hover {
-  background-color: #000;
+textarea.pronunciation:hover,
+input.pronunciation:hover {
+    background-color: #000;
 }
-textarea, input {
-  color: #000 !important;
-  background-color: #000;
+textarea,
+input {
+    color: #000 !important;
+    background-color: #000;
 }
-textarea[type=checkbox], input[type=checkbox] {
-  background-color: transparent;
-  border: 0.15em solid #000;
+textarea[type='checkbox'],
+input[type='checkbox'] {
+    background-color: transparent;
+    border: 0.15em solid #000;
 }
-textarea[type=checkbox]::before, input[type=checkbox]::before {
-  background-color: #000;
+textarea[type='checkbox']::before,
+input[type='checkbox']::before {
+    background-color: #000;
 }
 
 td {
-  border: 1px solid #000;
+    border: 1px solid #000;
 }
 
 tr:nth-child(odd) {
-  background-color: #000;
+    background-color: #000;
 }
 tr:nth-child(even) {
-  background-color: rgb(25.5, 25.5, 25.5);
+    background-color: rgb(25.5, 25.5, 25.5);
 }
 
 ::-webkit-resizer {
-  background-color: #000;
+    background-color: #000;
 }
 ::-webkit-resizer:hover {
-  background-color: #000;
+    background-color: #000;
 }
 ::-webkit-scrollbar-track {
-  background-color: #000;
+    background-color: #000;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #000;
+    background-color: #000;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #000;
+    background-color: #000;
 }
 
 a {
-  color: #000;
-  transition: 0.5s;
+    color: #000;
+    transition: 0.5s;
 }
 a:hover {
-  color: #000;
+    color: #000;
 }
 
-.ce-toolbar__settings-btn, .ce-toolbar__plus {
-  color: #000 !important;
+.ce-toolbar__settings-btn,
+.ce-toolbar__plus {
+    color: #000 !important;
 }
 .ce-toolbar:hover {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
 .ce-conversion-tool {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
 .ce-conversion-toolbar {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
 .ce-conversion-tool:hover {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
-.ce-popover, .ce-popover--opened {
-  background-color: #000 !important;
+.ce-popover,
+.ce-popover--opened {
+    background-color: #000 !important;
 }
 .ce-popover__item {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
 .ce-popover__item:hover {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
 .ce-inline-tool {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
 .ce-inline-tool:hover {
-  background-color: #000 !important;
+    background-color: #000 !important;
 }
-.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
-  background-color: #000 !important;
+.ce-inline-toolbar,
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons {
+    background-color: #000 !important;
 }
 .ce-paragraph[data-placeholder]:empty::before {
-  color: #000 !important;
+    color: #000 !important;
 }
 
 .tc-popover {
-  --color-border: #000 !important;
-  --color-background: #000 !important;
-  --color-background-hover: #000 !important;
-  --color-background-confirm: #812b2b !important;
-  --color-background-confirm-hover: #a12929 !important;
-  --color-text-confirm: white !important;
+    --color-border: #000 !important;
+    --color-background: #000 !important;
+    --color-background-hover: #000 !important;
+    --color-background-confirm: #812b2b !important;
+    --color-background-confirm-hover: #a12929 !important;
+    --color-text-confirm: white !important;
 }
 .tc-wrap {
-  --color-background: rgba(255, 255, 255, 0.396) !important;
-  --color-text-secondary: #000 !important;
-  --color-border: #000 !important;
+    --color-background: rgba(255, 255, 255, 0.396) !important;
+    --color-text-secondary: #000 !important;
+    --color-border: #000 !important;
 }
 
 table {
-  border-color: #000;
+    border-color: #000;
 }
 
 .inflection td {
-  border-color: #000 !important;
-  background-color: transparent !important;
+    border-color: #000 !important;
+    background-color: transparent !important;
 }
 .inflection tr {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 /*# sourceMappingURL=theme_styles.css.map */

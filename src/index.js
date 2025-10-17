@@ -2,11 +2,18 @@
  * Lexicanter, a constructed language organization app.
  * Copyright (C) 2023 Ethan Ray.
  * See GNU General Public License Version 3.
-*/
+ */
 
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-require-imports */
-const { app, BrowserWindow, ipcMain, dialog, shell, session } = require('electron');
+const {
+    app,
+    BrowserWindow,
+    ipcMain,
+    dialog,
+    shell,
+    session,
+} = require('electron');
 const path = require('path');
 const { autoUpdater } = require('electron-updater');
 const ffi = require('koffi');
@@ -15,26 +22,30 @@ const fs = require('node:fs');
 // Auto-updater flags
 autoUpdater.autoDownload = true;
 
-const alchemyPath = app.getPath('userData') + path.sep + "alchemy.json";
+const alchemyPath = app.getPath('userData') + path.sep + 'alchemy.json';
 let allowAlchemy = false;
 if (fs.existsSync(alchemyPath)) {
     const data = fs.readFileSync(alchemyPath);
-    console.log("\
+    console.log(
+        '\
         --------------------------------------------\n\
-         Alchemy preference:", data.toString(), "\n\
+         Alchemy preference:',
+        data.toString(),
+        '\n\
         --------------------------------------------\n\
-    ");
+    ',
+    );
     allowAlchemy = JSON.parse(data).allowAlchemy ?? false;
 } else {
-    fs.writeFileSync(alchemyPath, JSON.stringify({allowAlchemy: false}));
-    console.log("\nWrote alchemy preference file at: ", alchemyPath, "\n");
+    fs.writeFileSync(alchemyPath, JSON.stringify({ allowAlchemy: false }));
+    console.log('\nWrote alchemy preference file at: ', alchemyPath, '\n');
 }
 autoUpdater.allowPrerelease = allowAlchemy;
 
 const isDev = !app.isPackaged;
 const version = app.getVersion();
 
-function createWindow () {
+function createWindow() {
     var loadingWindow = new BrowserWindow({
         width: 300,
         height: 300,
@@ -91,27 +102,26 @@ function createWindow () {
         mainWindow.setWindowButtonVisibility(false);
     }
 
-    session.defaultSession.on('file-system-access-restricted', async (e, details, callback) => {
-        const { path } = details
-        const { response } = await dialog.showMessageBox({
-            message: `Your operating system has blocked Lexicanter from opening a restricted path: \n\n ${path} \n\n Please grant access or choose a different location.`,
-            title: 'File System Access Restricted',
-            buttons: [
-                'Allow', 
-                'Choose a different folder', 
-                'Cancel'
-            ],
-            cancelId: 2
-        })
+    session.defaultSession.on(
+        'file-system-access-restricted',
+        async (e, details, callback) => {
+            const { path } = details;
+            const { response } = await dialog.showMessageBox({
+                message: `Your operating system has blocked Lexicanter from opening a restricted path: \n\n ${path} \n\n Please grant access or choose a different location.`,
+                title: 'File System Access Restricted',
+                buttons: ['Allow', 'Choose a different folder', 'Cancel'],
+                cancelId: 2,
+            });
 
-        if (response === 0) {
-            callback('allow')
-        } else if (response === 1) {
-            callback('tryAgain')
-        } else {
-            callback('deny')
-        }
-    })
+            if (response === 0) {
+                callback('allow');
+            } else if (response === 1) {
+                callback('tryAgain');
+            } else {
+                callback('deny');
+            }
+        },
+    );
 
     const WC = mainWindow.webContents;
     WC.on('will-navigate', function (e, url) {
@@ -121,8 +131,8 @@ function createWindow () {
             // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', ''));
         } else if (decodeURI(url).match(/\[\[.+?\]\]/)) {
             e.preventDefault();
-            let link = decodeURI(url).matchAll(/\[\[(.+?)\]\]/)[1]
-            WC.send('lexicon link', link)
+            let link = decodeURI(url).matchAll(/\[\[(.+?)\]\]/)[1];
+            WC.send('lexicon link', link);
             // console.log('Lexicon link clicked: ' + decodeURI(url).replace('lex::', ''));
         } else if (path.basename(url) === 'index.html') {
             e.preventDefault();
@@ -138,19 +148,19 @@ function createWindow () {
     ipcMain.handle('showOpenDialog', (_, params) =>
         dialog.showOpenDialogSync(params),
     );
-    
-    ipcMain.handle('getVersion', () => (isDev? 'dev-' : '') + version);
+
+    ipcMain.handle('getVersion', () => (isDev ? 'dev-' : '') + version);
     ipcMain.handle('platform', () => process.platform + '-' + process.arch);
     ipcMain.handle('isDev', () => isDev);
-    
+
     ipcMain.handle('debug', (_, message) => console.log(message));
 
     ipcMain.on('buttonclose', () => mainWindow.webContents.send('app-close'));
     ipcMain.on('minimize', () => mainWindow.minimize());
     ipcMain.on('maximize', () =>
-        mainWindow.isMaximized()?
-            mainWindow.unmaximize()
-        :   mainWindow.maximize(),
+        mainWindow.isMaximized()
+            ? mainWindow.unmaximize()
+            : mainWindow.maximize(),
     );
 
     ipcMain.on('close', () => {
@@ -164,54 +174,61 @@ function createWindow () {
     const arch = {
         ia32: 'i686-',
         x64: 'x86_64-',
-        arm64: 'aarch64-'
+        arm64: 'aarch64-',
     }[process.arch];
 
     const platform = {
         darwin: 'apple-darwin',
         linux: 'unknown-linux-gnu',
-        win32: 'pc-windows-gnu'
+        win32: 'pc-windows-gnu',
     }[process.platform];
 
     const extension = {
         darwin: '.dylib',
         linux: '.so',
-        win32: '.dll'
+        win32: '.dll',
     }[process.platform];
 
-
     function get_lib_path(name) {
-        return isDev? 
-            path.resolve(
-                path.join(
-                    __dirname,
-                    `../library/${name}_ffi/target/release/lib_${name}_ffi.dylib`,
-                ),
-            )
-        :   path.resolve(process.resourcesPath, arch + platform + path.sep + `${name}_ffi` + extension);
+        return isDev
+            ? path.resolve(
+                  path.join(
+                      __dirname,
+                      `../library/${name}_ffi/target/release/lib_${name}_ffi.dylib`,
+                  ),
+              )
+            : path.resolve(
+                  process.resourcesPath,
+                  arch + platform + path.sep + `${name}_ffi` + extension,
+              );
     }
     const graphemy_lib_path = get_lib_path('graphemy');
     const tadpole_lib_path = get_lib_path('tadpole');
-    
+
     const graphemy_lib = ffi.load(graphemy_lib_path);
     const tadpole_lib = ffi.load(tadpole_lib_path);
-    
+
     const lib_fns = {
         // fn name = lib.func(rust fn name, return type, [parameter types])
         echo: graphemy_lib.func('echo', 'str', ['str']),
-        graphemify: graphemy_lib.func('graphemify', 'str', ['str', 'str', 'float32', 'float32']),
+        graphemify: graphemy_lib.func('graphemify', 'str', [
+            'str',
+            'str',
+            'float32',
+            'float32',
+        ]),
         tadpole: tadpole_lib.func('tadpole', 'str', ['str', 'str', 'str']),
     };
     ipcMain.handle('ffi', (_, name, ...args) => {
         // console.log(
         //     name,
-        //     ...args, 
+        //     ...args,
         //     // '\n', fns[name]
         // );
         // console.log(fns[name](...args));
         return lib_fns[name](...args);
     });
-};
+}
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

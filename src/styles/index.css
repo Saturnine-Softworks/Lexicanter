@@ -1,708 +1,741 @@
 @charset "UTF-8";
 @font-face {
-  font-family: Noto;
-  src: url(../res/Noto_Sans/NotoSans-Regular.ttf);
-  font-style: normal;
+    font-family: Noto;
+    src: url(../res/Noto_Sans/NotoSans-Regular.ttf);
+    font-style: normal;
 }
 @font-face {
-  font-family: Noto;
-  src: url(../res/Noto_Sans/NotoSans-Italic.ttf);
-  font-style: italic;
+    font-family: Noto;
+    src: url(../res/Noto_Sans/NotoSans-Italic.ttf);
+    font-style: italic;
 }
 @font-face {
-  font-family: Noto;
-  src: url(../res/Noto_Sans/NotoSans-Bold.ttf);
-  font-style: normal;
-  font-weight: bold;
+    font-family: Noto;
+    src: url(../res/Noto_Sans/NotoSans-Bold.ttf);
+    font-style: normal;
+    font-weight: bold;
 }
 @font-face {
-  font-family: Noto;
-  src: url(../res/Noto_Sans/NotoSans-BoldItalic.ttf);
-  font-style: italic;
-  font-weight: bold;
+    font-family: Noto;
+    src: url(../res/Noto_Sans/NotoSans-BoldItalic.ttf);
+    font-style: italic;
+    font-weight: bold;
 }
 @font-face {
-  font-family: Gentium;
-  src: url(../res/Gentium/Gentium-Regular.ttf);
-  font-style: normal;
+    font-family: Gentium;
+    src: url(../res/Gentium/Gentium-Regular.ttf);
+    font-style: normal;
 }
 @font-face {
-  font-family: Gentium;
-  src: url(../res/Gentium/Gentium-Italic.ttf);
-  font-style: italic;
+    font-family: Gentium;
+    src: url(../res/Gentium/Gentium-Italic.ttf);
+    font-style: italic;
 }
 @font-face {
-  font-family: Gentium;
-  src: url(../res/Gentium/Gentium-Bold.ttf);
-  font-style: normal;
-  font-weight: bold;
+    font-family: Gentium;
+    src: url(../res/Gentium/Gentium-Bold.ttf);
+    font-style: normal;
+    font-weight: bold;
 }
 @font-face {
-  font-family: Gentium;
-  src: url(../res/Gentium/Gentium-BoldItalic.ttf);
-  font-style: italic;
-  font-weight: bold;
+    font-family: Gentium;
+    src: url(../res/Gentium/Gentium-BoldItalic.ttf);
+    font-style: italic;
+    font-weight: bold;
 }
-html, body, main {
-  align-items: center;
+html,
+body,
+main {
+    align-items: center;
 }
 
-body, main {
-  font-family: Noto;
-  font-size: 11pt;
-  min-width: 600px;
-  min-height: 600px;
-  margin: 0px;
-  overflow: hidden;
-  -webkit-app-region: drag;
+body,
+main {
+    font-family: Noto;
+    font-size: 11pt;
+    min-width: 600px;
+    min-height: 600px;
+    margin: 0px;
+    overflow: hidden;
+    -webkit-app-region: drag;
 }
 
 button {
-  font-family: Noto;
-  font-size: 11pt;
-  transition-duration: 0.33s;
-  cursor: pointer;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: none;
+    font-family: Noto;
+    font-size: 11pt;
+    transition-duration: 0.33s;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+    -webkit-user-select: none;
 }
-button[id=overwrite] {
-  font-weight: bold;
+button[id='overwrite'] {
+    font-weight: bold;
 }
 button.collapser {
-  max-width: 1em;
-  height: 100%;
-  border-color: transparent !important;
-  background-color: rgba(17, 17, 17, 0.0666666667);
-  display: flex;
-  float: right;
-  margin: 0px;
-  padding: 0px;
+    max-width: 1em;
+    height: 100%;
+    border-color: transparent !important;
+    background-color: rgba(17, 17, 17, 0.0666666667);
+    display: flex;
+    float: right;
+    margin: 0px;
+    padding: 0px;
 }
 button.collapser:hover {
-  border-color: rgba(255, 255, 255, 0.2666666667) !important;
-  background-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2666666667) !important;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 button.collapser::after {
-  content: "‖";
-  margin: auto;
+    content: '‖';
+    margin: auto;
 }
 button.collapser-h {
-  max-height: 1.33em;
-  width: 100% !important;
-  border-color: transparent !important;
-  background-color: rgba(17, 17, 17, 0.0666666667);
-  display: flex;
-  margin: 0px;
-  padding: 0px;
+    max-height: 1.33em;
+    width: 100% !important;
+    border-color: transparent !important;
+    background-color: rgba(17, 17, 17, 0.0666666667);
+    display: flex;
+    margin: 0px;
+    padding: 0px;
 }
 button.collapser-h:hover {
-  border-color: rgba(255, 255, 255, 0.2666666667) !important;
-  background-color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2666666667) !important;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 button.collapser-h::after {
-  content: "═";
-  margin: auto;
+    content: '═';
+    margin: auto;
 }
 
 .tab-container {
-  width: 100vw;
-  height: 100vh;
-  -webkit-user-select: none;
+    width: 100vw;
+    height: 100vh;
+    -webkit-user-select: none;
 }
 
 .button-container {
-  width: 100%;
-  text-align: center;
+    width: 100%;
+    text-align: center;
 }
 .button-container .tab-button {
-  border: none !important;
-  border-radius: 0px !important;
-  outline: none !important;
-  padding: 4px !important;
-  margin: 0px !important;
-  width: fit-content !important;
-  display: inline !important;
+    border: none !important;
+    border-radius: 0px !important;
+    outline: none !important;
+    padding: 4px !important;
+    margin: 0px !important;
+    width: fit-content !important;
+    display: inline !important;
 }
 
 .window-control {
-  text-align: left;
-  height: 0px;
-  overflow: visible;
+    text-align: left;
+    height: 0px;
+    overflow: visible;
 }
 .window-control button {
-  border: none !important;
-  outline: none !important;
-  background-color: transparent;
-  display: inline !important;
-  text-align: center !important;
-  font-size: 1em;
+    border: none !important;
+    outline: none !important;
+    background-color: transparent;
+    display: inline !important;
+    text-align: center !important;
+    font-size: 1em;
 }
 .window-control button.close:hover {
-  background-color: #c30a0a;
-  color: black;
+    background-color: #c30a0a;
+    color: black;
 }
 .window-control button.minimize:hover {
-  background-color: #e1e115;
-  color: black;
+    background-color: #e1e115;
+    color: black;
 }
 .window-control button.maximize:hover {
-  background-color: #369336;
-  color: black;
+    background-color: #369336;
+    color: black;
 }
 
 .tab-pane {
-  height: 100vh;
-  box-sizing: border-box;
-  -webkit-app-region: no-drag;
-  -webkit-user-select: text;
+    height: 100vh;
+    box-sizing: border-box;
+    -webkit-app-region: no-drag;
+    -webkit-user-select: text;
 }
 
 .row {
-  display: flex;
-  margin: auto;
+    display: flex;
+    margin: auto;
 }
 .row:has(~ .collapsible-row .collapsed) {
-  height: 90vh !important;
+    height: 90vh !important;
 }
 
 .column {
-  width: 100%;
+    width: 100%;
 }
 
 .collapsible-column {
-  min-width: 2%;
-  /* width: fit-content */
+    min-width: 2%;
+    /* width: fit-content */
 }
 
 .collapsible-row:has(.collapsed) {
-  height: 3vh !important;
+    height: 3vh !important;
 }
 
 .collapsed {
-  display: none;
+    display: none;
 }
 
 .text-left {
-  text-align: left;
+    text-align: left;
 }
 .text-right {
-  text-align: right;
+    text-align: right;
 }
 .text-center {
-  text-align: center;
+    text-align: center;
 }
 
 .prelined {
-  white-space: pre-line;
-  /* This is solely to make the \n character work from the JS side */
+    white-space: pre-line;
+    /* This is solely to make the \n character work from the JS side */
 }
 
 p {
-  margin: 0px;
+    margin: 0px;
 }
 
-div[id=tables-pane] {
-  font-family: Gentium;
-  font-size: 11pt;
+div[id='tables-pane'] {
+    font-family: Gentium;
+    font-size: 11pt;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-style: italic;
-  padding-top: 0.25em !important;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-style: italic;
+    padding-top: 0.25em !important;
 }
 
 .info {
-  font-family: Noto;
-  font-size: 11pt;
-  font-style: italic;
-  line-height: 1.5em;
-  -webkit-user-select: none;
+    font-family: Noto;
+    font-size: 11pt;
+    font-style: italic;
+    line-height: 1.5em;
+    -webkit-user-select: none;
 }
 
 .phonology {
-  font-family: Gentium;
-  font-size: 11pt;
-  width: 95%;
+    font-family: Gentium;
+    font-size: 11pt;
+    width: 95%;
 }
 
 .version-info {
-  font-family: Noto;
-  font-size: 7pt;
-  text-align: left;
-  display: inline;
-  float: right;
-  -webkit-user-select: none;
+    font-family: Noto;
+    font-size: 7pt;
+    text-align: left;
+    display: inline;
+    float: right;
+    -webkit-user-select: none;
 }
 
 .lex-body {
-  white-space: pre-line;
+    white-space: pre-line;
 }
 .lex-entry {
-  font-family: Gentium;
-  font-size: 11pt;
-  transition: 0.3s;
-  padding: 1em;
+    font-family: Gentium;
+    font-size: 11pt;
+    transition: 0.3s;
+    padding: 1em;
 }
 
 .variants {
-  font-family: Gentium;
-  font-size: 11pt;
+    font-family: Gentium;
+    font-size: 11pt;
 }
 .variants div.column {
-  margin: 0.6em;
+    margin: 0.6em;
 }
 
 .capitalize {
-  text-transform: capitalize;
+    text-transform: capitalize;
 }
 
 .tag-item {
-  font-family: Noto;
-  font-size: 7pt;
-  border-radius: 7%;
-  width: fit-content;
-  padding: 0.2em;
-  margin: 0.2em;
-  text-transform: uppercase;
-  display: inline-block;
+    font-family: Noto;
+    font-size: 7pt;
+    border-radius: 7%;
+    width: fit-content;
+    padding: 0.2em;
+    margin: 0.2em;
+    text-transform: uppercase;
+    display: inline-block;
 }
 
 .sense {
-  font-family: Gentium;
-  font-size: 9pt;
-  border-radius: 7%;
-  width: fit-content;
-  padding: 0.2em;
-  margin: 0.2em;
-  font-weight: bold;
-  font-style: italic;
-  display: inline-block;
-  background-color: transparent;
-  margin-top: 1em;
+    font-family: Gentium;
+    font-size: 9pt;
+    border-radius: 7%;
+    width: fit-content;
+    padding: 0.2em;
+    margin: 0.2em;
+    font-weight: bold;
+    font-style: italic;
+    display: inline-block;
+    background-color: transparent;
+    margin-top: 1em;
 }
 
 .lect {
-  font-family: Noto;
-  font-size: 9pt;
-  font-style: italic;
-  margin-top: 0.1em;
+    font-family: Noto;
+    font-size: 9pt;
+    font-style: italic;
+    margin-top: 0.1em;
 }
 
-[id=entry-counter] {
-  font-family: Noto;
-  font-size: 7pt;
-  border-radius: 7%;
-  width: fit-content;
-  padding: 0.2em;
-  margin: 0.2em;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin: auto;
+[id='entry-counter'] {
+    font-family: Noto;
+    font-size: 7pt;
+    border-radius: 7%;
+    width: fit-content;
+    padding: 0.2em;
+    margin: 0.2em;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin: auto;
 }
 
 .scrolled {
-  overflow-y: auto;
-  overflow-x: wrap;
+    overflow-y: auto;
+    overflow-x: wrap;
 }
 
 .container {
-  border-radius: 6px;
-  text-align: center;
-  margin: 6px;
-  padding: 6px;
+    border-radius: 6px;
+    text-align: center;
+    margin: 6px;
+    padding: 6px;
 }
 
 .glasspane {
-  height: 100%;
-  margin: 0;
-  opacity: 90%;
+    height: 100%;
+    margin: 0;
+    opacity: 90%;
 }
 
 .row button {
-  padding: 2px 10px 2px 10px;
-  margin: 4px auto 4px auto;
-  display: flex;
-  width: fit-content;
-  border: 1px solid black;
-  border-radius: 8px;
+    padding: 2px 10px 2px 10px;
+    margin: 4px auto 4px auto;
+    display: flex;
+    width: fit-content;
+    border: 1px solid black;
+    border-radius: 8px;
 }
 
 label {
-  font-family: Noto;
-  font-size: 11pt;
-  -webkit-user-select: none;
+    font-family: Noto;
+    font-size: 11pt;
+    -webkit-user-select: none;
 }
 
 .pronunciation {
-  font-family: Gentium;
-  font-size: 9pt;
+    font-family: Gentium;
+    font-size: 9pt;
 }
 
-textarea, input {
-  font-family: Gentium;
-  font-size: 11pt;
-  display: flex;
-  text-align: center;
-  padding: 4px;
-  margin: 1px auto 1px auto;
-  border: none;
-  border-radius: 3px;
-  width: 80%;
-  resize: vertical;
-  transition: 0.2s;
+textarea,
+input {
+    font-family: Gentium;
+    font-size: 11pt;
+    display: flex;
+    text-align: center;
+    padding: 4px;
+    margin: 1px auto 1px auto;
+    border: none;
+    border-radius: 3px;
+    width: 80%;
+    resize: vertical;
+    transition: 0.2s;
 }
-textarea .pronunciation, input .pronunciation {
-  font-family: Gentium;
-  font-size: 9pt;
+textarea .pronunciation,
+input .pronunciation {
+    font-family: Gentium;
+    font-size: 9pt;
 }
-textarea[type=number], input[type=number] {
-  padding: 1px;
-  width: 4em;
+textarea[type='number'],
+input[type='number'] {
+    padding: 1px;
+    width: 4em;
 }
-textarea[type=checkbox], input[type=checkbox] {
-  appearance: none;
-  margin: auto;
-  font: inherit;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0.15em;
-  transform: translateY(-0.075em);
-  display: grid;
-  place-content: center;
+textarea[type='checkbox'],
+input[type='checkbox'] {
+    appearance: none;
+    margin: auto;
+    font: inherit;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.15em;
+    transform: translateY(-0.075em);
+    display: grid;
+    place-content: center;
 }
-textarea[type=checkbox]::before, input[type=checkbox]::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  transform: scale(0);
-  transition: 120ms transform ease-in-out;
+textarea[type='checkbox']::before,
+input[type='checkbox']::before {
+    content: '';
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
 }
-textarea[type=checkbox]:checked::before, input[type=checkbox]:checked::before {
-  transform: scale(1);
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+textarea[type='checkbox']:checked::before,
+input[type='checkbox']:checked::before {
+    transform: scale(1);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 }
 
 .header input {
-  width: 70%;
+    width: 70%;
 }
 
 .narrow {
-  width: 50%;
-  margin: auto;
+    width: 50%;
+    margin: auto;
 }
 .narrow-col {
-  width: 15%;
+    width: 15%;
 }
 
 .search {
-  text-align: left;
-  width: 100%;
-  margin: 2px auto 2px auto;
+    text-align: left;
+    width: 100%;
+    margin: 2px auto 2px auto;
 }
 
 .search-container {
-  padding: 0 0.5em 0 0.5em;
-  position: relative;
+    padding: 0 0.5em 0 0.5em;
+    position: relative;
 }
 
 table {
-  border-collapse: collapse;
-  width: 95%;
+    border-collapse: collapse;
+    width: 95%;
 }
 table-container {
-  font-family: Gentium;
-  font-size: 11pt;
-  margin: auto;
-  padding: 30px 5%;
+    font-family: Gentium;
+    font-size: 11pt;
+    margin: auto;
+    padding: 30px 5%;
 }
 table-title {
-  font-family: Gentium;
-  font-size: 14pt;
-  font-style: italic;
+    font-family: Gentium;
+    font-size: 14pt;
+    font-style: italic;
 }
 
 td {
-  padding: 2px 6px 2px 6px;
-  text-align: center;
-  user-select: none;
+    padding: 2px 6px 2px 6px;
+    text-align: center;
+    user-select: none;
 }
 
-.inflection, .reference {
-  font-family: Gentium;
-  font-size: 9pt;
+.inflection,
+.reference {
+    font-family: Gentium;
+    font-size: 9pt;
 }
-.inflection h1, .inflection h2, .inflection h3, .inflection h4, .inflection h5, .inflection h6, .reference h1, .reference h2, .reference h3, .reference h4, .reference h5, .reference h6 {
-  padding-top: 0.2em;
+.inflection h1,
+.inflection h2,
+.inflection h3,
+.inflection h4,
+.inflection h5,
+.inflection h6,
+.reference h1,
+.reference h2,
+.reference h3,
+.reference h4,
+.reference h5,
+.reference h6 {
+    padding-top: 0.2em;
 }
-.inflection h1, .reference h1 {
-  font-size: 1.5em;
+.inflection h1,
+.reference h1 {
+    font-size: 1.5em;
 }
-.inflection h2, .reference h2 {
-  font-size: 1.3em;
+.inflection h2,
+.reference h2 {
+    font-size: 1.3em;
 }
-.inflection h3, .reference h3 {
-  font-size: 1.1em;
+.inflection h3,
+.reference h3 {
+    font-size: 1.1em;
 }
-.inflection h4, .reference h4 {
-  font-size: 1em;
+.inflection h4,
+.reference h4 {
+    font-size: 1em;
 }
-.inflection h5, .reference h5 {
-  font-size: 0.9em;
+.inflection h5,
+.reference h5 {
+    font-size: 0.9em;
 }
-.inflection h6, .reference h6 {
-  font-size: 0.8em;
+.inflection h6,
+.reference h6 {
+    font-size: 0.8em;
 }
 
 ::-webkit-resizer {
-  border-radius: 6px 0px 0px 0px;
+    border-radius: 6px 0px 0px 0px;
 }
 ::-webkit-scrollbar {
-  width: 9px;
+    width: 9px;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 6px;
-  transition: 0.2s;
+    border-radius: 6px;
+    transition: 0.2s;
 }
 ::-webkit-scrollbar-button {
-  display: none;
+    display: none;
 }
 ::-webkit-scrollbar-corner {
-  border-radius: 6px 0px 0px 0px;
+    border-radius: 6px 0px 0px 0px;
 }
 
 hr {
-  margin-bottom: 0.2em;
-  margin-top: 0.2em;
-  max-width: 66.66%;
-  padding: 0px;
+    margin-bottom: 0.2em;
+    margin-top: 0.2em;
+    max-width: 66.66%;
+    padding: 0px;
 }
 
 .milkyWay {
-  width: 100px;
-  height: 100px;
-  background: transparent;
-  margin: auto;
-  position: relative;
-  border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    margin: auto;
+    position: relative;
+    border-radius: 50%;
 }
 .milkyWay > div {
-  position: absolute;
-  border-radius: 50%;
+    position: absolute;
+    border-radius: 50%;
 }
 .milkyWay .planet {
-  border: 1px solid white;
-  animation-name: orbit;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  animation-play-state: paused;
+    border: 1px solid white;
+    animation-name: orbit;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-play-state: paused;
 }
-.milkyWay .planet::before, .milkyWay .planet::after {
-  position: absolute;
-  content: "";
-  display: block;
-  border-radius: 50%;
+.milkyWay .planet::before,
+.milkyWay .planet::after {
+    position: absolute;
+    content: '';
+    display: block;
+    border-radius: 50%;
 }
 
 .sun {
-  background: #faca09;
-  width: 10%;
-  height: 10%;
-  top: 45%;
-  left: 45%;
+    background: #faca09;
+    width: 10%;
+    height: 10%;
+    top: 45%;
+    left: 45%;
 }
 
 .mercury {
-  width: 20%;
-  height: 20%;
-  top: calc(40% - 1px);
-  left: calc(40% - 1px);
-  animation-duration: 2s;
+    width: 20%;
+    height: 20%;
+    top: calc(40% - 1px);
+    left: calc(40% - 1px);
+    animation-duration: 2s;
 }
 .mercury::before {
-  background: #9fb5b6;
-  width: 16%;
-  height: 16%;
-  top: -8%;
-  left: 42%;
+    background: #9fb5b6;
+    width: 16%;
+    height: 16%;
+    top: -8%;
+    left: 42%;
 }
 
 .venus {
-  width: 30%;
-  height: 30%;
-  top: calc(35% - 1px);
-  left: calc(35% - 1px);
-  animation-duration: 3s;
+    width: 30%;
+    height: 30%;
+    top: calc(35% - 1px);
+    left: calc(35% - 1px);
+    animation-duration: 3s;
 }
 .venus::before {
-  background: #ECC98E;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #ecc98e;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 
 .earth {
-  width: 40%;
-  height: 40%;
-  top: calc(30% - 1px);
-  left: calc(30% - 1px);
-  animation-duration: 4s;
+    width: 40%;
+    height: 40%;
+    top: calc(30% - 1px);
+    left: calc(30% - 1px);
+    animation-duration: 4s;
 }
 .earth::before {
-  background: #208fd8;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #208fd8;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 .earth::after {
-  background: #33c470;
-  width: 10%;
-  height: 6%;
-  top: -3%;
-  left: 45%;
-  transform: rotate(45deg);
+    background: #33c470;
+    width: 10%;
+    height: 6%;
+    top: -3%;
+    left: 45%;
+    transform: rotate(45deg);
 }
 
 .mars {
-  width: 50%;
-  height: 50%;
-  top: calc(25% - 1px);
-  left: calc(25% - 1px);
-  animation-duration: 5s;
+    width: 50%;
+    height: 50%;
+    top: calc(25% - 1px);
+    left: calc(25% - 1px);
+    animation-duration: 5s;
 }
 .mars::before {
-  background: #d35400;
-  width: 6%;
-  height: 6%;
-  top: -3%;
-  left: 47%;
+    background: #d35400;
+    width: 6%;
+    height: 6%;
+    top: -3%;
+    left: 47%;
 }
 
 .jupiter {
-  width: 60%;
-  height: 60%;
-  top: calc(20% - 1px);
-  left: calc(20% - 1px);
-  animation-duration: 6s;
+    width: 60%;
+    height: 60%;
+    top: calc(20% - 1px);
+    left: calc(20% - 1px);
+    animation-duration: 6s;
 }
 .jupiter::before {
-  background: #d4975a;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #d4975a;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 
 .saturn {
-  width: 70%;
-  height: 70%;
-  top: calc(15% - 1px);
-  left: calc(15% - 1px);
-  animation-duration: 7s;
+    width: 70%;
+    height: 70%;
+    top: calc(15% - 1px);
+    left: calc(15% - 1px);
+    animation-duration: 7s;
 }
 .saturn::before {
-  background: #E4D191;
-  width: 7%;
-  height: 7%;
-  top: -4%;
-  left: 48%;
+    background: #e4d191;
+    width: 7%;
+    height: 7%;
+    top: -4%;
+    left: 48%;
 }
 .saturn::after {
-  background: #F0E4C1;
-  width: 12%;
-  height: 1%;
-  top: -1%;
-  left: 45.5%;
-  transform: rotate(-15deg);
+    background: #f0e4c1;
+    width: 12%;
+    height: 1%;
+    top: -1%;
+    left: 45.5%;
+    transform: rotate(-15deg);
 }
 
 .uranus {
-  width: 80%;
-  height: 80%;
-  top: calc(10% - 1px);
-  left: calc(10% - 1px);
-  animation-duration: 8s;
+    width: 80%;
+    height: 80%;
+    top: calc(10% - 1px);
+    left: calc(10% - 1px);
+    animation-duration: 8s;
 }
 .uranus::before {
-  background: #3498db;
-  width: 5%;
-  height: 5%;
-  top: -2%;
-  left: 48%;
+    background: #3498db;
+    width: 5%;
+    height: 5%;
+    top: -2%;
+    left: 48%;
 }
 .uranus::after {
-  background: #b0d0e5;
-  width: 8%;
-  height: 0.5%;
-  top: 0%;
-  left: 46.25%;
-  transform: rotate(-15deg);
+    background: #b0d0e5;
+    width: 8%;
+    height: 0.5%;
+    top: 0%;
+    left: 46.25%;
+    transform: rotate(-15deg);
 }
 
 .neptune {
-  width: 90%;
-  height: 90%;
-  top: calc(5% - 1px);
-  left: calc(5% - 1px);
-  animation-duration: 9s;
+    width: 90%;
+    height: 90%;
+    top: calc(5% - 1px);
+    left: calc(5% - 1px);
+    animation-duration: 9s;
 }
 .neptune::before {
-  background: #1269a3;
-  width: 4%;
-  height: 4%;
-  top: -1%;
-  left: 49%;
+    background: #1269a3;
+    width: 4%;
+    height: 4%;
+    top: -1%;
+    left: 49%;
 }
 .neptune::after {
-  background: #91cbf2;
-  width: 6%;
-  height: 0.5%;
-  top: 0.5%;
-  left: 48%;
-  transform: rotate(-15deg);
+    background: #91cbf2;
+    width: 6%;
+    height: 0.5%;
+    top: 0.5%;
+    left: 48%;
+    transform: rotate(-15deg);
 }
 
 .pluto {
-  width: 100%;
-  height: 100%;
-  top: calc(0% - 1px);
-  left: calc(0% - 1px);
-  animation-duration: 10s;
+    width: 100%;
+    height: 100%;
+    top: calc(0% - 1px);
+    left: calc(0% - 1px);
+    animation-duration: 10s;
 }
 .pluto::before {
-  background: #b78c7a;
-  width: 1%;
-  height: 1%;
-  top: -0.5%;
-  left: 49.5%;
+    background: #b78c7a;
+    width: 1%;
+    height: 1%;
+    top: -0.5%;
+    left: 49.5%;
 }
 
 @keyframes orbit {
-  0% {
-    transform: rotate(-180deg);
-  }
-  100% {
-    transform: rotate(180deg);
-  }
+    0% {
+        transform: rotate(-180deg);
+    }
+    100% {
+        transform: rotate(180deg);
+    }
 }
 /* EditorJS Overrides */
 .ce-toolbar__plus {
-  transition: 0.33s;
+    transition: 0.33s;
 }
 .ce-toolbar__content {
-  max-width: 90% !important;
+    max-width: 90% !important;
 }
 .ce-block__content {
-  margin: auto;
-  width: 80% !important;
+    margin: auto;
+    width: 80% !important;
 }
 .ce-block--selected .ce-block__content {
-  background-color: rgba(255, 255, 255, 0.3333333333) !important;
+    background-color: rgba(255, 255, 255, 0.3333333333) !important;
 }
 
 ::selection {
-  background-color: rgba(255, 255, 255, 0.3333333333) !important;
+    background-color: rgba(255, 255, 255, 0.3333333333) !important;
 }
 
 /*# sourceMappingURL=index.css.map */

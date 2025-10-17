@@ -8,9 +8,9 @@
     import { alphabetize, alphabetPrecheck } from '../utils/alphabetize';
     import { get_pronunciation } from '../utils/phonetics';
 
-    ipcRenderer.on('update-lexicon-for-gods-sake-please', () => {
-        $Language.Lexicon = {...$Language.Lexicon};
-    });
+    // ipcRenderer.on('update-lexicon-for-gods-sake-please', () => {
+    //     $Language.Lexicon = {...$Language.Lexicon};
+    // });
 
     let searchWords = ''; let searchDefinitions = ''; let searchTags = ''; let lectFilter = '';
     $: searchWords, searchDefinitions, searchTags, lectFilter; // Update the search when these values change

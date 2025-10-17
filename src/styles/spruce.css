@@ -1,436 +1,455 @@
 body {
-  color: #CDCDC2;
-  background-color: #312f39;
+    color: #cdcdc2;
+    background-color: #312f39;
 }
 
-button, select {
-  color: #CDCDC2;
-  background-color: #4a6575;
+button,
+select {
+    color: #cdcdc2;
+    background-color: #4a6575;
 }
-button[id=overwrite], select[id=overwrite] {
-  color: darkred;
+button[id='overwrite'],
+select[id='overwrite'] {
+    color: darkred;
 }
-button.inflection, select.inflection {
-  background-color: transparent !important;
-  border: none !important;
-  font-family: Noto;
-  font-size: 9pt;
+button.inflection,
+select.inflection {
+    background-color: transparent !important;
+    border: none !important;
+    font-family: Noto;
+    font-size: 9pt;
 }
 
 .hover-highlight:hover {
-  color: #9bc2b3;
+    color: #9bc2b3;
 }
 
 .hover-shadow:hover {
-  box-shadow: 0px 2px 12px #1a1a1a;
+    box-shadow: 0px 2px 12px #1a1a1a;
 }
 
-.tab-container .button-container, .tab-container .button-container button {
-  color: #CDCDC2;
-  background-color: #0F151B;
+.tab-container .button-container,
+.tab-container .button-container button {
+    color: #cdcdc2;
+    background-color: #0f151b;
 }
-.tab-container .button-container:hover, .tab-container .button-container button:hover {
-  color: #9bc2b3;
+.tab-container .button-container:hover,
+.tab-container .button-container button:hover {
+    color: #9bc2b3;
 }
 
 .selected {
-  background-color: #312f39 !important;
+    background-color: #312f39 !important;
 }
 
 .container {
-  background-color: #658478;
-  border: 1px solid #0F151B;
+    background-color: #658478;
+    border: 1px solid #0f151b;
 }
 
 .info {
-  color: #a7b4af;
+    color: #a7b4af;
 }
 
 .version-info {
-  color: #a7b4af;
+    color: #a7b4af;
 }
 
-.lex-entry, .lex-body {
-  color: #CDCDC2;
+.lex-entry,
+.lex-body {
+    color: #cdcdc2;
 }
 .lex-entry:hover {
-  background: #4a6575;
-  color: #CDCDC2;
+    background: #4a6575;
+    color: #cdcdc2;
 }
 
-svg .lex-entry, svg .lex-body {
-  fill: #CDCDC2;
+svg .lex-entry,
+svg .lex-body {
+    fill: #cdcdc2;
 }
 svg .lex-entry:hover {
-  background-color: #4a6575;
-  fill: #CDCDC2;
+    background-color: #4a6575;
+    fill: #cdcdc2;
 }
 svg .tag-item {
-  fill: #CDCDC2;
-  font-weight: bold;
+    fill: #cdcdc2;
+    font-weight: bold;
 }
 svg rect.lex {
-  fill: transparent;
-  transition: 0.3s;
-  rx: 10;
-  height: 3em;
-  padding: 5px;
+    fill: transparent;
+    transition: 0.3s;
+    rx: 10;
+    height: 3em;
+    padding: 5px;
 }
-svg rect.lex:hover, svg rect.lex:has(~ :hover) {
-  fill: #4a6575;
+svg rect.lex:hover,
+svg rect.lex:has(~ :hover) {
+    fill: #4a6575;
 }
 svg path {
-  stroke: #CDCDC2;
+    stroke: #cdcdc2;
 }
 
-.tag-item, [id=entry-counter] {
-  color: #CDCDC2;
-  background-color: #3e3e3e;
+.tag-item,
+[id='entry-counter'] {
+    color: #cdcdc2;
+    background-color: #3e3e3e;
 }
 
 .pronunciation {
-  color: #b1b1a1;
+    color: #b1b1a1;
 }
 
 .lect {
-  color: #b1b1a1;
+    color: #b1b1a1;
 }
 
 hr {
-  border: 1px solid #CDCDC2;
-  border-left: none;
-  border-right: none;
-  border-top: none;
+    border: 1px solid #cdcdc2;
+    border-left: none;
+    border-right: none;
+    border-top: none;
 }
 
 label {
-  color: #a7b4af;
+    color: #a7b4af;
 }
 
-textarea, input {
-  color: #CDCDC2 !important;
-  background-color: #47665f;
+textarea,
+input {
+    color: #cdcdc2 !important;
+    background-color: #47665f;
 }
-textarea.pronunciation, input.pronunciation {
-  background-color: transparent;
+textarea.pronunciation,
+input.pronunciation {
+    background-color: transparent;
 }
-textarea.pronunciation:hover, input.pronunciation:hover {
-  background-color: #2f3333;
+textarea.pronunciation:hover,
+input.pronunciation:hover {
+    background-color: #2f3333;
 }
-textarea[type=checkbox], input[type=checkbox] {
-  background-color: transparent;
-  border: 0.15em solid #CDCDC2;
+textarea[type='checkbox'],
+input[type='checkbox'] {
+    background-color: transparent;
+    border: 0.15em solid #cdcdc2;
 }
-textarea[type=checkbox]::before, input[type=checkbox]::before {
-  background-color: #a7b4af;
+textarea[type='checkbox']::before,
+input[type='checkbox']::before {
+    background-color: #a7b4af;
 }
 
 td {
-  border: 1px solid #0F151B;
+    border: 1px solid #0f151b;
 }
 
 tr:nth-child(odd) {
-  background-color: #47665f;
+    background-color: #47665f;
 }
 tr:nth-child(even) {
-  background-color: #5c847b;
+    background-color: #5c847b;
 }
 
 ::-webkit-resizer {
-  background-color: #374d5a;
+    background-color: #374d5a;
 }
 ::-webkit-resizer:hover {
-  background-color: #658478;
+    background-color: #658478;
 }
 ::-webkit-scrollbar-track {
-  background-color: #312f39;
+    background-color: #312f39;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #374d5a;
+    background-color: #374d5a;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #658478;
+    background-color: #658478;
 }
 
 a {
-  color: #a7b4af;
-  transition: 0.5s;
+    color: #a7b4af;
+    transition: 0.5s;
 }
 a:hover {
-  color: #9bc2b3;
+    color: #9bc2b3;
 }
 
-.ce-toolbar__settings-btn, .ce-toolbar__plus {
-  color: #CDCDC2 !important;
+.ce-toolbar__settings-btn,
+.ce-toolbar__plus {
+    color: #cdcdc2 !important;
 }
 .ce-toolbar:hover {
-  background-color: #4a6575 !important;
+    background-color: #4a6575 !important;
 }
 .ce-conversion-tool {
-  background-color: #4a6575 !important;
+    background-color: #4a6575 !important;
 }
 .ce-conversion-toolbar {
-  background-color: #3e3e3e !important;
+    background-color: #3e3e3e !important;
 }
 .ce-conversion-tool:hover {
-  background-color: #a7b4af !important;
+    background-color: #a7b4af !important;
 }
-.ce-popover, .ce-popover--opened {
-  background-color: #4a6575 !important;
+.ce-popover,
+.ce-popover--opened {
+    background-color: #4a6575 !important;
 }
 .ce-popover__item {
-  background-color: #4a6575 !important;
+    background-color: #4a6575 !important;
 }
 .ce-popover__item:hover {
-  background-color: #a7b4af !important;
+    background-color: #a7b4af !important;
 }
 .ce-inline-tool {
-  background-color: #3e3e3e !important;
+    background-color: #3e3e3e !important;
 }
 .ce-inline-tool:hover {
-  background-color: #a7b4af !important;
+    background-color: #a7b4af !important;
 }
-.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
-  background-color: #3e3e3e !important;
+.ce-inline-toolbar,
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons {
+    background-color: #3e3e3e !important;
 }
 .ce-paragraph[data-placeholder]:empty::before {
-  color: #b1b1a1 !important;
+    color: #b1b1a1 !important;
 }
 
 .tc-popover {
-  --color-border: #a7b4af !important;
-  --color-background: #3e3e3e !important;
-  --color-background-hover: #4a6575 !important;
-  --color-background-confirm: #812b2b !important;
-  --color-background-confirm-hover: #a12929 !important;
-  --color-text-confirm: white !important;
+    --color-border: #a7b4af !important;
+    --color-background: #3e3e3e !important;
+    --color-background-hover: #4a6575 !important;
+    --color-background-confirm: #812b2b !important;
+    --color-background-confirm-hover: #a12929 !important;
+    --color-text-confirm: white !important;
 }
 .tc-wrap {
-  --color-background: rgba(255, 255, 255, 0.396) !important;
-  --color-text-secondary: #b1b1a1 !important;
-  --color-border: #a7b4af !important;
+    --color-background: rgba(255, 255, 255, 0.396) !important;
+    --color-text-secondary: #b1b1a1 !important;
+    --color-border: #a7b4af !important;
 }
 
 table {
-  border-color: #a7b4af;
+    border-color: #a7b4af;
 }
 
 .inflection td {
-  border-color: #a7b4af !important;
-  background-color: transparent !important;
+    border-color: #a7b4af !important;
+    background-color: transparent !important;
 }
 .inflection tr {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 .milkyWay {
-  width: 100px;
-  height: 100px;
-  background: transparent;
-  margin: auto;
-  position: relative;
-  border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    margin: auto;
+    position: relative;
+    border-radius: 50%;
 }
 .milkyWay .planet {
-  border: 1px solid #fff;
-  animation-name: orbit;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  animation-play-state: paused;
+    border: 1px solid #fff;
+    animation-name: orbit;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-play-state: paused;
 }
-.milkyWay .planet::before, .milkyWay .planet::after {
-  position: absolute;
-  content: "";
-  display: block;
-  border-radius: 50%;
+.milkyWay .planet::before,
+.milkyWay .planet::after {
+    position: absolute;
+    content: '';
+    display: block;
+    border-radius: 50%;
 }
 .milkyWay > div {
-  position: absolute;
-  border-radius: 50%;
+    position: absolute;
+    border-radius: 50%;
 }
 
 .sun {
-  background: #faca09;
-  width: 10%;
-  height: 10%;
-  top: 45%;
-  left: 45%;
+    background: #faca09;
+    width: 10%;
+    height: 10%;
+    top: 45%;
+    left: 45%;
 }
 
 .mercury {
-  width: 20%;
-  height: 20%;
-  top: calc(40% - 1px);
-  left: calc(40% - 1px);
-  animation-duration: 2s;
+    width: 20%;
+    height: 20%;
+    top: calc(40% - 1px);
+    left: calc(40% - 1px);
+    animation-duration: 2s;
 }
 .mercury::before {
-  background: #9fb5b6;
-  width: 16%;
-  height: 16%;
-  top: -8%;
-  left: 42%;
+    background: #9fb5b6;
+    width: 16%;
+    height: 16%;
+    top: -8%;
+    left: 42%;
 }
 
 .venus {
-  width: 30%;
-  height: 30%;
-  top: calc(35% - 1px);
-  left: calc(35% - 1px);
-  animation-duration: 3s;
+    width: 30%;
+    height: 30%;
+    top: calc(35% - 1px);
+    left: calc(35% - 1px);
+    animation-duration: 3s;
 }
 .venus::before {
-  background: #ECC98E;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #ecc98e;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 
 .earth {
-  width: 40%;
-  height: 40%;
-  top: calc(30% - 1px);
-  left: calc(30% - 1px);
-  animation-duration: 4s;
+    width: 40%;
+    height: 40%;
+    top: calc(30% - 1px);
+    left: calc(30% - 1px);
+    animation-duration: 4s;
 }
 .earth::before {
-  background: #208fd8;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #208fd8;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 .earth::after {
-  background: #33c470;
-  width: 10%;
-  height: 6%;
-  top: -3%;
-  left: 45%;
-  transform: rotate(45deg);
+    background: #33c470;
+    width: 10%;
+    height: 6%;
+    top: -3%;
+    left: 45%;
+    transform: rotate(45deg);
 }
 
 .mars {
-  width: 50%;
-  height: 50%;
-  top: calc(25% - 1px);
-  left: calc(25% - 1px);
-  animation-duration: 5s;
+    width: 50%;
+    height: 50%;
+    top: calc(25% - 1px);
+    left: calc(25% - 1px);
+    animation-duration: 5s;
 }
 .mars::before {
-  background: #d35400;
-  width: 6%;
-  height: 6%;
-  top: -3%;
-  left: 47%;
+    background: #d35400;
+    width: 6%;
+    height: 6%;
+    top: -3%;
+    left: 47%;
 }
 
 .jupiter {
-  width: 60%;
-  height: 60%;
-  top: calc(20% - 1px);
-  left: calc(20% - 1px);
-  animation-duration: 6s;
+    width: 60%;
+    height: 60%;
+    top: calc(20% - 1px);
+    left: calc(20% - 1px);
+    animation-duration: 6s;
 }
 .jupiter::before {
-  background: #d4975a;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #d4975a;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 
 .saturn {
-  width: 70%;
-  height: 70%;
-  top: calc(15% - 1px);
-  left: calc(15% - 1px);
-  animation-duration: 7s;
+    width: 70%;
+    height: 70%;
+    top: calc(15% - 1px);
+    left: calc(15% - 1px);
+    animation-duration: 7s;
 }
 .saturn::before {
-  background: #E4D191;
-  width: 7%;
-  height: 7%;
-  top: -4%;
-  left: 48%;
+    background: #e4d191;
+    width: 7%;
+    height: 7%;
+    top: -4%;
+    left: 48%;
 }
 .saturn::after {
-  background: #F0E4C1;
-  width: 12%;
-  height: 1%;
-  top: -1%;
-  left: 45.5%;
-  transform: rotate(-15deg);
+    background: #f0e4c1;
+    width: 12%;
+    height: 1%;
+    top: -1%;
+    left: 45.5%;
+    transform: rotate(-15deg);
 }
 
 .uranus {
-  width: 80%;
-  height: 80%;
-  top: calc(10% - 1px);
-  left: calc(10% - 1px);
-  animation-duration: 8s;
+    width: 80%;
+    height: 80%;
+    top: calc(10% - 1px);
+    left: calc(10% - 1px);
+    animation-duration: 8s;
 }
 .uranus::before {
-  background: #3498db;
-  width: 5%;
-  height: 5%;
-  top: -2%;
-  left: 48%;
+    background: #3498db;
+    width: 5%;
+    height: 5%;
+    top: -2%;
+    left: 48%;
 }
 .uranus::after {
-  background: #b0d0e5;
-  width: 8%;
-  height: 0.5%;
-  top: 0%;
-  left: 46.25%;
-  transform: rotate(-15deg);
+    background: #b0d0e5;
+    width: 8%;
+    height: 0.5%;
+    top: 0%;
+    left: 46.25%;
+    transform: rotate(-15deg);
 }
 
 .neptune {
-  width: 90%;
-  height: 90%;
-  top: calc(5% - 1px);
-  left: calc(5% - 1px);
-  animation-duration: 9s;
+    width: 90%;
+    height: 90%;
+    top: calc(5% - 1px);
+    left: calc(5% - 1px);
+    animation-duration: 9s;
 }
 .neptune::before {
-  background: #1269a3;
-  width: 4%;
-  height: 4%;
-  top: -1%;
-  left: 49%;
+    background: #1269a3;
+    width: 4%;
+    height: 4%;
+    top: -1%;
+    left: 49%;
 }
 .neptune::after {
-  background: #91cbf2;
-  width: 6%;
-  height: 0.5%;
-  top: 0.5%;
-  left: 48%;
-  transform: rotate(-15deg);
+    background: #91cbf2;
+    width: 6%;
+    height: 0.5%;
+    top: 0.5%;
+    left: 48%;
+    transform: rotate(-15deg);
 }
 
 .pluto {
-  width: 100%;
-  height: 100%;
-  top: calc(0% - 1px);
-  left: calc(0% - 1px);
-  animation-duration: 10s;
+    width: 100%;
+    height: 100%;
+    top: calc(0% - 1px);
+    left: calc(0% - 1px);
+    animation-duration: 10s;
 }
 .pluto::before {
-  background: #b78c7a;
-  width: 2%;
-  height: 2%;
-  top: -0.5%;
-  left: 49%;
+    background: #b78c7a;
+    width: 2%;
+    height: 2%;
+    top: -0.5%;
+    left: 49%;
 }
 
 @keyframes orbit {
-  0% {
-    transform: rotate(-180deg);
-  }
-  100% {
-    transform: rotate(180deg);
-  }
+    0% {
+        transform: rotate(-180deg);
+    }
+    100% {
+        transform: rotate(180deg);
+    }
 }
 
 /*# sourceMappingURL=spruce.css.map */

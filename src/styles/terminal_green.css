@@ -1,57 +1,61 @@
 /* The background color and default text color. */
 :root {
     --black: rgb(0, 1, 0);
-    --green:rgb(0, 197, 49);
+    --green: rgb(0, 197, 49);
     --white: rgb(228, 228, 228);
 }
 
 @keyframes backgroundColorPalette {
     0% {
-      color: var(--green);
+        color: var(--green);
     }
     100% {
-      color: var(--white);
+        color: var(--white);
     }
-  }
+}
 
 body {
     color: var(--green);
-    background-color: var(--black)
+    background-color: var(--black);
 }
 
 @keyframes backgroundColorPalette2 {
     0% {
-      color: var(--black);
-      background-color: var(--green);
-      --color-background-confirm: var(--green) !important;
+        color: var(--black);
+        background-color: var(--green);
+        --color-background-confirm: var(--green) !important;
     }
     100% {
-      color: var(--green);
-      background-color: var(--black);
-      --color-background-confirm: var(--black) !important;
+        color: var(--green);
+        background-color: var(--black);
+        --color-background-confirm: var(--black) !important;
     }
-  }
+}
 body {
     color: var(--green);
-    background-color: var(--black)
+    background-color: var(--black);
 }
 
-#alph-input, #update-order {
+#alph-input,
+#update-order {
     border: 0ch;
 }
 
 /* Default buttons and dropdowns use this style. */
-button, select, #append, .hover-highlight.hover-shadow {
+button,
+select,
+#append,
+.hover-highlight.hover-shadow {
     text-align: center;
     color: var(--green);
-    background-color:var(--black);
+    background-color: var(--black);
     border: 2px solid var(--green);
     border-radius: 0px;
     transition: 0s;
 }
 
 /* This style is used for the buttons which appear to warn the user that they will be overwriting an existing entry. */
-button[id=overwrite] {
+button[id='overwrite'] {
     animation-name: backgroundColorPalette;
     animation-duration: 0.5s;
     animation-iteration-count: infinite;
@@ -75,8 +79,8 @@ button[id=overwrite] {
 
 /* This style is for the table-editing buttons when the mouse is hovering over them. */
 .table-container:focus-within .show-in-context button:hover {
-    color:var(--white);
-    background-color:var(--black);
+    color: var(--white);
+    background-color: var(--black);
 }
 
 /*
@@ -85,7 +89,7 @@ The buttons within this container are styled the same so that they are flush, an
 */
 .tab-container .button-container,
 .tab-container .button-container button {
-    background-color:black;
+    background-color: black;
 }
 
 /* This style applies to the button for the selected tab. By default it is the same as the body background-color. The !important flag is important for any styles used here. */
@@ -97,7 +101,7 @@ The buttons within this container are styled the same so that they are flush, an
 
 /* Colors and border style used for all of the panes within each tab. */
 .container {
-    background-color:var(--black);
+    background-color: var(--black);
     border: 4px solid var(--green);
 }
 
@@ -117,7 +121,7 @@ The buttons within this container are styled the same so that they are flush, an
 }
 
 .lex-entry {
-    transition: 0s
+    transition: 0s;
 }
 
 .textarea input {
@@ -125,17 +129,17 @@ The buttons within this container are styled the same so that they are flush, an
 }
 
 /* This is the style used for lexicon entries when the mouse is hovering over them. */
-.lex-entry:hover { 
+.lex-entry:hover {
     color: var(--white);
     border: 4px solid var(--green);
 }
 
-.lex-entry:hover .pronunciation  { 
+.lex-entry:hover .pronunciation {
     color: var(--white);
 }
 /* These are the colors used for tags as they appear in the lexicon. */
 .tag-item {
-    color:var(--black);
+    color: var(--black);
     background-color: var(--green);
 }
 
@@ -145,8 +149,8 @@ The buttons within this container are styled the same so that they are flush, an
 }
 
 /* The colors used for the entry counter/search results counters in the Lexicon tab. */
-[id=entry-counter] {
-    color:var(--green);
+[id='entry-counter'] {
+    color: var(--green);
     background-color: var(--black);
 }
 
@@ -157,11 +161,12 @@ hr {
 
 /* The styles used for the labels which indicate the purpose of input fields, such as 'New Word' and 'Definition' */
 label {
-    color:rgba(0, 197, 49, 0.575);
+    color: rgba(0, 197, 49, 0.575);
 }
 
 /* Default colors for text input fields. */
-textarea, input {
+textarea,
+input {
     text-align: center;
     color: var(--green) !important;
     background-color: var(--black);
@@ -170,12 +175,12 @@ textarea, input {
 }
 
 /* The background color for pronunciation-specific text input fields blends into the background color. */
-input[class=pronunciation] {
+input[class='pronunciation'] {
     background-color: inherit;
     transition: 0s;
     padding-top: 0.5%;
     padding-bottom: 0.5%;
-    margin:auto;
+    margin: auto;
     border-top-left-radius: 0%;
     border-top-right-radius: 0%;
     vertical-align: middle;
@@ -186,11 +191,13 @@ input[class=pronunciation] {
 }
 
 /* Style used for pronunciation-specific text input fields on mouse hover. */
-input[class=pronunciation]:hover {
+input[class='pronunciation']:hover {
     color: var(--white);
 }
 
-input[id=wrd-input], #phrase, #test-romans {
+input[id='wrd-input'],
+#phrase,
+#test-romans {
     border-bottom: none;
     border-bottom-left-radius: 0%;
     border-bottom-right-radius: 0%;
@@ -199,15 +206,15 @@ input[id=wrd-input], #phrase, #test-romans {
 
 /* The style used for table cells. */
 td {
-  border: 1px solid var(--green) !important;
+    border: 1px solid var(--green) !important;
 }
 
 /* The border and background colors for checkmarks. Default themes make the background transparent. */
-input[type="checkbox"] {
+input[type='checkbox'] {
     border: 0.15em solid var(--green);
 }
 /* The color of the checkmark in checkboxes. */
-input[type="checkbox"]::before {
+input[type='checkbox']::before {
     background-color: var(--green);
 }
 
@@ -241,7 +248,7 @@ input[type="checkbox"]::before {
 .ce-inline-toolbar__buttons,
 .ce-conversion-toolbar,
 .ce-inline-toolbar {
-    background-color:  var(--black) !important;
+    background-color: var(--black) !important;
     border-radius: 0%;
 }
 
@@ -259,7 +266,6 @@ input[type="checkbox"]::before {
     background-color: var(--green) !important;
 }
 
-
 /* Paragraph placeholder text */
 .ce-paragraph[data-placeholder]:empty::before {
     color: var(--white) !important;
@@ -276,7 +282,8 @@ input[type="checkbox"]::before {
     --color-text-confirm: var(--white) !important;
 }
 
-.tc-popover.tc-popover--opened, .tc-popover.tc-popover--opened *{
+.tc-popover.tc-popover--opened,
+.tc-popover.tc-popover--opened * {
     border-radius: 0%;
 }
 
@@ -322,17 +329,17 @@ input {
 }
 
 ::-webkit-scrollbar-track {
-    background-color:rgba(0, 197, 49, 0.396);
+    background-color: rgba(0, 197, 49, 0.396);
 }
 ::-webkit-scrollbar-thumb {
-    background-color:var(--green);
+    background-color: var(--green);
     border-radius: 0%;
 }
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--green);
 }
 ::-webkit-resizer {
-    background-color:var(--green);
+    background-color: var(--green);
     border: 0cm;
     margin: 0cm;
     border-radius: 0%;

@@ -7,9 +7,12 @@ const requestOptions = {
     headers: {
         'Content-Type': 'application/json',
     },
-}
+};
 
-export async function verify(userID: string, key: string): Promise<boolean|'no connection'> {
+export async function verify(
+    userID: string,
+    key: string,
+): Promise<boolean | 'no connection'> {
     try {
         const response = await fetch(API_URL, {
             ...requestOptions,
@@ -17,16 +20,16 @@ export async function verify(userID: string, key: string): Promise<boolean|'no c
                 userid: userID,
                 key: key,
                 action: {
-                    type: 'verify'
-                }
-            })
+                    type: 'verify',
+                },
+            }),
         });
         const data = await response.json();
         // console.debug(data)
         return data.success;
     } catch (error) {
         if (error?.hasOwnProperty('message')) {
-            if ((error as FetchError).message === "Failed to fetch")
+            if ((error as FetchError).message === 'Failed to fetch')
                 return 'no connection';
         }
         console.error('Failed to verify:', error);
@@ -34,7 +37,11 @@ export async function verify(userID: string, key: string): Promise<boolean|'no c
     }
 }
 
-export async function downloadFile(userID: string, key: string, fileName: string): Promise<Lexc.Language> {
+export async function downloadFile(
+    userID: string,
+    key: string,
+    fileName: string,
+): Promise<Lexc.Language> {
     try {
         const response = await fetch(API_URL, {
             ...requestOptions,
@@ -43,9 +50,9 @@ export async function downloadFile(userID: string, key: string, fileName: string
                 key: key,
                 action: {
                     type: 'download',
-                    file: fileName
-                }
-            })
+                    file: fileName,
+                },
+            }),
         });
         const data = await response.json();
         if (data.success) {
@@ -67,9 +74,9 @@ export async function uploadFile(userID: string, key: string, file: string) {
                 key: key,
                 action: {
                     type: 'upload',
-                    file: file
-                }
-            })
+                    file: file,
+                },
+            }),
         });
         const data = await response.json();
         if (!data.success) {
@@ -81,7 +88,11 @@ export async function uploadFile(userID: string, key: string, file: string) {
     }
 }
 
-export async function deleteFile(userID: string, key: string, fileName: string) {
+export async function deleteFile(
+    userID: string,
+    key: string,
+    fileName: string,
+) {
     try {
         const response = await fetch(API_URL, {
             ...requestOptions,
@@ -90,9 +101,9 @@ export async function deleteFile(userID: string, key: string, fileName: string) 
                 key: key,
                 action: {
                     type: 'delete',
-                    file: fileName
-                }
-            })
+                    file: fileName,
+                },
+            }),
         });
         const data = await response.json();
         if (!data.success) {
@@ -104,11 +115,15 @@ export async function deleteFile(userID: string, key: string, fileName: string) 
     }
 }
 
-export async function updateAccount(userID: string, key: string, fields: {
-    username?: string;
-    displayName?: string;
-    password?: string;
-}) {
+export async function updateAccount(
+    userID: string,
+    key: string,
+    fields: {
+        username?: string;
+        displayName?: string;
+        password?: string;
+    },
+) {
     try {
         const response = await fetch(API_URL, {
             ...requestOptions,
@@ -117,9 +132,9 @@ export async function updateAccount(userID: string, key: string, fields: {
                 key: key,
                 action: {
                     type: 'edit account',
-                    ...fields
-                }
-            })
+                    ...fields,
+                },
+            }),
         });
         const data = await response.json();
         if (!data.success) {

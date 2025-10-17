@@ -13,7 +13,6 @@
     $lex-hover-bg: rgb(114, 60, 116),
     $ui-hover: rgb(212, 184, 223),
     $ui-button: rgb(114, 60, 116),
-
     $base-text: rgb(92, 31, 94),
     $button-text: rgb(199, 151, 211),
     $tag-text: rgb(172, 71, 212),
@@ -25,9 +24,10 @@
     $lex-hover-text: rgb(225, 211, 230),
     $label-color: rgb(147, 82, 172),
     $info-color: rgb(177, 145, 184),
-
     $container-border: rgb(212, 184, 223),
-    $shadow-color: #444444,
+    $shadow-color: #444444
 );
 
-@use 'orbits' with ($orbit-ring-color: rgb(56, 9, 44))
+@use 'orbits' with (
+    $orbit-ring-color: rgb(56, 9, 44)
+);

@@ -1,6 +1,10 @@
 import { get } from 'svelte/store';
-import { 
-    Language, wordInput, pronunciations, phraseInput, phrasePronunciations
+import {
+    Language,
+    wordInput,
+    pronunciations,
+    phraseInput,
+    phrasePronunciations,
 } from '../stores.js';
 import { applyRules, parseRules } from './sca';
 import type * as Lexc from '../types.js';
@@ -22,14 +26,17 @@ export function get_pronunciation(word: string, lect: string): string {
 /**
  * Rewrites all pronunciations for a given lect.
  */
-export function writeRomans (lect: string) {
+export function writeRomans(lect: string) {
     get(pronunciations)[lect] = get_pronunciation(get(wordInput), lect);
 
     const lexicon: Lexc.Lexicon = Lang().Lexicon;
     for (const word in lexicon) {
         if (lexicon[word].pronunciations.hasOwnProperty(lect)) {
             if (lexicon[word].pronunciations[lect].irregular === false) {
-                lexicon[word].pronunciations[lect].ipa = get_pronunciation(word, lect);
+                lexicon[word].pronunciations[lect].ipa = get_pronunciation(
+                    word,
+                    lect,
+                );
             }
         }
     }
@@ -39,14 +46,23 @@ export function writeRomans (lect: string) {
     const phrasebook: Lexc.Phrasebook = Lang().Phrasebook;
     for (const category in phrasebook) {
         for (const entry in phrasebook[category]) {
-            if (phrasebook[category][entry].pronunciations.hasOwnProperty(lect)) {
-                if (phrasebook[category][entry].pronunciations[lect].irregular === false) {
+            if (
+                phrasebook[category][entry].pronunciations.hasOwnProperty(lect)
+            ) {
+                if (
+                    phrasebook[category][entry].pronunciations[lect]
+                        .irregular === false
+                ) {
                     phrasebook[category][entry].pronunciations[lect].ipa =
                         get_pronunciation(entry, lect);
                 }
                 for (const variant in phrasebook[category][entry].variants) {
-                    phrasebook[category][entry].variants[variant].pronunciations[lect].ipa =
-                        get_pronunciation(variant, lect);
+                    phrasebook[category][entry].variants[
+                        variant
+                    ].pronunciations[lect].ipa = get_pronunciation(
+                        variant,
+                        lect,
+                    );
                 }
             }
         }
@@ -61,19 +77,23 @@ export function writeRomans (lect: string) {
  */
 export function complete_word(trial: string) {
     const random_boolean = () => Math.floor(Math.random() * 2) === 0;
-    const choice = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+    const choice = (arr: string[]) =>
+        arr[Math.floor(Math.random() * arr.length)];
     const inventory = {
         Onsets: Lang().Phonotactics.General.Onsets.split(/\s+/g),
-        Medials: Lang().Phonotactics.General.Medials.split(/\s+/g), 
+        Medials: Lang().Phonotactics.General.Medials.split(/\s+/g),
         Codas: Lang().Phonotactics.General.Codas.split(/\s+/g),
         Vowels: Lang().Phonotactics.General.Vowels.split(/\s+/g),
-        Illegals: Lang().Phonotactics.General.Illegals.split(/\s+/g)
+        Illegals: Lang().Phonotactics.General.Illegals.split(/\s+/g),
     };
     let word = '^' + trial;
 
     const finalize = (word: string) => {
         word += '^';
-        if (!inventory.Illegals.some(v => word.includes(v)) || !inventory.Illegals[0]) {
+        if (
+            !inventory.Illegals.some((v) => word.includes(v)) ||
+            !inventory.Illegals[0]
+        ) {
             return word.replace(/\^/g, '');
         } else {
             return '';
@@ -120,16 +140,20 @@ export function complete_word(trial: string) {
 }
 
 import type { Orthography, Word, Phrase, Variant } from '../types';
-export function preprocess_ortho(word: string, ortho: Orthography, source: Word|Phrase|Variant|null = null): string {
+export function preprocess_ortho(
+    word: string,
+    ortho: Orthography,
+    source: Word | Phrase | Variant | null = null,
+): string {
     const settings = parseRules(ortho.rules);
     return applyRules(
-        settings.rules, 
-        source?
-            ortho.root === 'rom'
-            ? word 
-            : source.pronunciations[ortho.lect].ipa
-        : word,
-        settings.categories
+        settings.rules,
+        source
+            ? ortho.root === 'rom'
+                ? word
+                : source.pronunciations[ortho.lect].ipa
+            : word,
+        settings.categories,
     );
 }
 
@@ -146,19 +170,20 @@ export function generate_word() {
             Medials: Lang().Phonotactics.General.Medials.split(/\s+/g),
             Codas: Lang().Phonotactics.General.Codas.split(/\s+/g),
             Vowels: Lang().Phonotactics.General.Vowels.split(/\s+/g),
-            Illegals: Lang().Phonotactics.General.Illegals.split(/\s+/g)
+            Illegals: Lang().Phonotactics.General.Illegals.split(/\s+/g),
         };
         const random_boolean = () => Math.floor(Math.random() * 2) === 0;
-        const choice = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+        const choice = (arr: string[]) =>
+            arr[Math.floor(Math.random() * arr.length)];
         let word = '^';
-    
+
         if (random_boolean()) {
             word += choice(inventory.Vowels);
         } else {
             word += choice(inventory.Onsets);
             word += choice(inventory.Vowels);
         }
-    
+
         for (let j = 0; j < 2; j++) {
             if (random_boolean() || word.length === 2 /* word is "^vowel" */) {
                 word += choice(inventory.Medials);
@@ -168,9 +193,12 @@ export function generate_word() {
         if (random_boolean()) {
             word += choice(inventory.Codas);
         }
-    
+
         word += '^';
-        if (!inventory.Illegals.some(v => word.includes(v)) || !inventory.Illegals[0]) {
+        if (
+            !inventory.Illegals.some((v) => word.includes(v)) ||
+            !inventory.Illegals[0]
+        ) {
             return word.replace(/\^/g, '');
         } else {
             return '';

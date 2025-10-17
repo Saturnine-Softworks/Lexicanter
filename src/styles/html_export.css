@@ -1,112 +1,117 @@
-@import url("https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,4000,7001,4001,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,4000,7001,4001,700&display=swap');
 body {
-  overflow-y: auto;
-  text-align: center;
-  margin: auto;
+    overflow-y: auto;
+    text-align: center;
+    margin: auto;
 }
 
 .container {
-  overflow-x: clip;
-  overflow-y: auto;
+    overflow-x: clip;
+    overflow-y: auto;
 }
 
 .lex-body {
-  font-family: "Gentium Book Plus", serif;
+    font-family: 'Gentium Book Plus', serif;
 }
 
 .tag-item {
-  font-family: sans-serif;
+    font-family: sans-serif;
 }
 
 .search {
-  font-family: "Gentium Book Plus", serif;
+    font-family: 'Gentium Book Plus', serif;
 }
 
-.phonology, .pronunciation {
-  font-family: "Gentium Book Plus", serif !important;
+.phonology,
+.pronunciation {
+    font-family: 'Gentium Book Plus', serif !important;
 }
 
-[id=entry-counter] {
-  font-family: sans-serif;
+[id='entry-counter'] {
+    font-family: sans-serif;
 }
 
 td {
-  text-align: center;
+    text-align: center;
 }
 
 tr {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 table {
-  border-collapse: collapse;
-  margin: auto;
-  align-self: center;
+    border-collapse: collapse;
+    margin: auto;
+    align-self: center;
 }
 
-.table-container, .table-title {
-  font-family: "Gentium Book Plus", serif;
-  align-items: center;
+.table-container,
+.table-title {
+    font-family: 'Gentium Book Plus', serif;
+    align-items: center;
 }
 
 button {
-  display: none;
+    display: none;
 }
 
 .info {
-  display: none;
+    display: none;
 }
 
 .search-row {
-  display: inline-flex;
+    display: inline-flex;
 }
 
 @media only screen and (min-device-width: 601px) {
-  .sidebar {
-    max-width: 18% !important;
-  }
+    .sidebar {
+        max-width: 18% !important;
+    }
 }
 @media only screen and (max-device-width: 600px) {
-  body {
-    width: 100vw !important;
-    font-size: 12pt;
-    padding: 2vw;
-  }
-  body > h1 {
-    font-size: 36pt;
-  }
-  div.container {
-    height: 60vh !important;
-  }
-  div.column {
-    display: block;
-  }
-  div.sidebar {
-    max-height: 18vh;
-  }
-  div.row {
-    display: block;
-    min-width: 96vw !important;
-    margin-bottom: 36vh;
-  }
-  div.variants {
-    margin-bottom: 4rem;
-  }
-  .lex-entry, .lex-body {
-    font-size: 16pt !important;
-  }
-  .capitalize {
-    font-size: 24pt !important;
-  }
-  .tag-item, [id=entry-counter] {
-    font-size: 16pt;
-  }
-  .search, .sidebar p {
-    font-size: 24pt;
-  }
-  td {
-    font-size: 18pt !important;
-  }
+    body {
+        width: 100vw !important;
+        font-size: 12pt;
+        padding: 2vw;
+    }
+    body > h1 {
+        font-size: 36pt;
+    }
+    div.container {
+        height: 60vh !important;
+    }
+    div.column {
+        display: block;
+    }
+    div.sidebar {
+        max-height: 18vh;
+    }
+    div.row {
+        display: block;
+        min-width: 96vw !important;
+        margin-bottom: 36vh;
+    }
+    div.variants {
+        margin-bottom: 4rem;
+    }
+    .lex-entry,
+    .lex-body {
+        font-size: 16pt !important;
+    }
+    .capitalize {
+        font-size: 24pt !important;
+    }
+    .tag-item,
+    [id='entry-counter'] {
+        font-size: 16pt;
+    }
+    .search,
+    .sidebar p {
+        font-size: 24pt;
+    }
+    td {
+        font-size: 18pt !important;
+    }
 }
 
 /*# sourceMappingURL=html_export.css.map */

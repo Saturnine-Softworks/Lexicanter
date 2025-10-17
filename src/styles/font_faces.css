@@ -1,46 +1,46 @@
 @font-face {
-  font-family: Noto;
-  src: url(../res/Noto_Sans/NotoSans-Regular.ttf);
-  font-style: normal;
+    font-family: Noto;
+    src: url(../res/Noto_Sans/NotoSans-Regular.ttf);
+    font-style: normal;
 }
 @font-face {
-  font-family: Noto;
-  src: url(../res/Noto_Sans/NotoSans-Italic.ttf);
-  font-style: italic;
+    font-family: Noto;
+    src: url(../res/Noto_Sans/NotoSans-Italic.ttf);
+    font-style: italic;
 }
 @font-face {
-  font-family: Noto;
-  src: url(../res/Noto_Sans/NotoSans-Bold.ttf);
-  font-style: normal;
-  font-weight: bold;
+    font-family: Noto;
+    src: url(../res/Noto_Sans/NotoSans-Bold.ttf);
+    font-style: normal;
+    font-weight: bold;
 }
 @font-face {
-  font-family: Noto;
-  src: url(../res/Noto_Sans/NotoSans-BoldItalic.ttf);
-  font-style: italic;
-  font-weight: bold;
+    font-family: Noto;
+    src: url(../res/Noto_Sans/NotoSans-BoldItalic.ttf);
+    font-style: italic;
+    font-weight: bold;
 }
 @font-face {
-  font-family: Gentium;
-  src: url(../res/Gentium/Gentium-Regular.ttf);
-  font-style: normal;
+    font-family: Gentium;
+    src: url(../res/Gentium/Gentium-Regular.ttf);
+    font-style: normal;
 }
 @font-face {
-  font-family: Gentium;
-  src: url(../res/Gentium/Gentium-Italic.ttf);
-  font-style: italic;
+    font-family: Gentium;
+    src: url(../res/Gentium/Gentium-Italic.ttf);
+    font-style: italic;
 }
 @font-face {
-  font-family: Gentium;
-  src: url(../res/Gentium/Gentium-Bold.ttf);
-  font-style: normal;
-  font-weight: bold;
+    font-family: Gentium;
+    src: url(../res/Gentium/Gentium-Bold.ttf);
+    font-style: normal;
+    font-weight: bold;
 }
 @font-face {
-  font-family: Gentium;
-  src: url(../res/Gentium/Gentium-BoldItalic.ttf);
-  font-style: italic;
-  font-weight: bold;
+    font-family: Gentium;
+    src: url(../res/Gentium/Gentium-BoldItalic.ttf);
+    font-style: italic;
+    font-weight: bold;
 }
 
 /*# sourceMappingURL=font_faces.css.map */

@@ -8,9 +8,10 @@ const { ipcRenderer } = require('electron');
  * @returns {Promise<any>}
  */
 export async function ffi(
-    name: string, 
+    name: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...args: any[]): Promise<any> {
+    ...args: any[]
+): Promise<unknown> {
     return await ipcRenderer.invoke('ffi', name, ...args);
 }
 
@@ -23,7 +24,7 @@ export async function ffi(
  * @returns {Promise<string>} The rendered SVG as a string
  */
 export async function graphemify(
-    engine: string, 
+    engine: string,
     input: string,
     max_width: number = 100.0,
     max_height: number = 100.0,
@@ -34,10 +35,5 @@ export async function graphemify(
     if (!max_width) max_width = 100;
     if (!max_height) max_height = 100;
 
-    return await ffi('graphemify', 
-        engine, 
-        input,
-        max_width,
-        max_height,
-    );
+    return (await ffi('graphemify', engine, input, max_width, max_height) as string);
 }
