@@ -4,13 +4,14 @@ use std::{
 };
 
 /// Function to test that interop is working.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn echo(text: *const c_char) -> *const c_char {
     let text_str = c_char_to_string(text);
 
     string_to_c_char(text_str)
 }
 
+/// Converts Rust strings to C-like strings
 fn string_to_c_char(string: String) -> *const c_char {
     CString::new(string)
         .expect("CString::new failed")
@@ -51,7 +52,7 @@ fn try_grapheming(
     Ok(svg.to_string())
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn graphemify(
     engine: *const c_char,
     input: *const c_char,

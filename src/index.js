@@ -180,23 +180,27 @@ function createWindow () {
     }[process.platform];
 
 
-    const lib_path =
-        isDev? 
+    function get_lib_path(name) {
+        return isDev? 
             path.resolve(
                 path.join(
                     __dirname,
-                    '../library/target/release/lib_graphemy_ffi.dylib',
+                    `../library/${name}_ffi/target/release/lib_${name}_ffi.dylib`,
                 ),
             )
-        :   path.resolve(process.resourcesPath, arch + platform + path.sep + 'graphemy_ffi' + extension);
-
-    console.log('Loading graphemy ffi lib from path:', lib_path);
+        :   path.resolve(process.resourcesPath, arch + platform + path.sep + `${name}_ffi` + extension);
+    }
+    const graphemy_lib_path = get_lib_path('graphemy');
+    const tadpole_lib_path = get_lib_path('tadpole');
     
-    const lib = ffi.load(lib_path);
-    const fns = {
+    const graphemy_lib = ffi.load(graphemy_lib_path);
+    const tadpole_lib = ffi.load(tadpole_lib_path);
+    
+    const lib_fns = {
         // fn name = lib.func(rust fn name, return type, [parameter types])
-        echo: lib.func('echo', 'str', ['str']),
-        graphemify: lib.func('graphemify', 'str', ['str', 'str', 'float32', 'float32']),
+        echo: graphemy_lib.func('echo', 'str', ['str']),
+        graphemify: graphemy_lib.func('graphemify', 'str', ['str', 'str', 'float32', 'float32']),
+        tadpole: tadpole_lib.func('tadpole', 'str', ['str', 'str', 'str']),
     };
     ipcMain.handle('ffi', (_, name, ...args) => {
         // console.log(
@@ -205,7 +209,7 @@ function createWindow () {
         //     // '\n', fns[name]
         // );
         // console.log(fns[name](...args));
-        return fns[name](...args);
+        return lib_fns[name](...args);
     });
 };
 

@@ -5,11 +5,11 @@
     "description": "A lexicon management tool for constructed languages.",
     "main": "src/index.js",
     "scripts": {
-        "rust:build-dev": "cargo build --manifest-path=library/Cargo.toml --release",
+        "rust:build-dev": "cargo build --manifest-path=library/graphemy_ffi/Cargo.toml --release; cargo build --manifest-path=library/tadpole_ffi/Cargo.toml --release",
         "rust:build-all-targets": "bash scripts/cargobuild.bash",
         "precompile": "npm run rust:build-dev && sass -q src/sass/:src/styles && vite build",
 
-        "dev": "NODE_ENV=development concurrently \"npm run rust:build-dev\" \"sass -w -q src/sass/:src/styles\" \"npm run web:watch\" \"sleep 1 && npm run electron:start\"",
+        "dev": "NODE_ENV=development concurrently \"npm run rust:build-dev\" \"sass -w -q src/sass/:src/styles\" \"npm run web:watch\" \"sleep 5 && npm run electron:start\"",
         "start": "npm run precompile && npm run electron:start",
 
         "web:watch": "vite --port 3000",
@@ -61,43 +61,87 @@
         ],
         "extraResources": [
             {
-                "from": "./library/target/aarch64-apple-darwin/release/lib_graphemy_ffi.dylib",
+                "from": "./library/graphemy_ffi/target/aarch64-apple-darwin/release/lib_graphemy_ffi.dylib",
                 "to": "aarch64-apple-darwin/graphemy_ffi.dylib",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./library/target/aarch64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
+                "from": "./library/graphemy_ffi/target/aarch64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
                 "to": "aarch64-unknown-linux-gnu/graphemy_ffi.so",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./library/target/x86_64-apple-darwin/release/lib_graphemy_ffi.dylib",
+                "from": "./library/graphemy_ffi/target/x86_64-apple-darwin/release/lib_graphemy_ffi.dylib",
                 "to": "x86_64-apple-darwin/graphemy_ffi.dylib",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./library/target/x86_64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
+                "from": "./library/graphemy_ffi/target/x86_64-unknown-linux-gnu/release/lib_graphemy_ffi.so",
                 "to": "x86_64-unknown-linux-gnu/graphemy_ffi.so",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./library/target/x86_64-pc-windows-gnu/release/_graphemy_ffi.dll",
+                "from": "./library/graphemy_ffi/target/x86_64-pc-windows-gnu/release/_graphemy_ffi.dll",
                 "to": "x86_64-pc-windows-gnu/graphemy_ffi.dll",
                 "filter": [
                     "**/*"
                 ]
             },
             {
-                "from": "./library/target/i686-pc-windows-gnu/release/_graphemy_ffi.dll",
+                "from": "./library/graphemy_ffi/target/i686-pc-windows-gnu/release/_graphemy_ffi.dll",
                 "to": "i686-pc-windows-gnu/graphemy_ffi.dll",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            
+
+            {
+                "from": "./library/tadpole_ffi/target/aarch64-apple-darwin/release/lib_tadpole_ffi.dylib",
+                "to": "aarch64-apple-darwin/tadpole_ffi.dylib",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./library/tadpole_ffi/target/aarch64-unknown-linux-gnu/release/lib_tadpole_ffi.so",
+                "to": "aarch64-unknown-linux-gnu/tadpole_ffi.so",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./library/tadpole_ffi/target/x86_64-apple-darwin/release/lib_tadpole_ffi.dylib",
+                "to": "x86_64-apple-darwin/tadpole_ffi.dylib",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./library/tadpole_ffi/target/x86_64-unknown-linux-gnu/release/lib_tadpole_ffi.so",
+                "to": "x86_64-unknown-linux-gnu/tadpole_ffi.so",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./library/tadpole_ffi/target/x86_64-pc-windows-gnu/release/_tadpole_ffi.dll",
+                "to": "x86_64-pc-windows-gnu/tadpole_ffi.dll",
+                "filter": [
+                    "**/*"
+                ]
+            },
+            {
+                "from": "./library/tadpole_ffi/target/i686-pc-windows-gnu/release/_tadpole_ffi.dll",
+                "to": "i686-pc-windows-gnu/tadpole_ffi.dll",
                 "filter": [
                     "**/*"
                 ]
