@@ -7,7 +7,7 @@
     "scripts": {
         "rust:build-dev": "cargo build --manifest-path=library/graphemy_ffi/Cargo.toml --release; cargo build --manifest-path=library/tadpole_ffi/Cargo.toml --release",
         "rust:build-all-targets": "bash scripts/cargobuild.bash",
-        "precompile": "npm run rust:build-dev && sass -q src/sass/:src/styles && vite build",
+        "precompile": "npm run rust:build-dev && sass -q src/sass/:src/styles && npm run format && vite build",
         "dev": "NODE_ENV=development concurrently \"npm run rust:build-dev\" \"sass -w -q src/sass/:src/styles\" \"npm run web:watch\" \"sleep 5 && npm run electron:start\"",
         "start": "npm run precompile && npm run electron:start",
         "web:watch": "vite --port 3000",
