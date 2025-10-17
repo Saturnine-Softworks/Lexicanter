@@ -10,5 +10,4 @@ crate-type = ["cdylib"]
 [dependencies]
 tadpole = { git = "https://codeberg.org/zhuriel/tadpole.git", version = "1.0"}
 tadpole_frontend = { git = "https://codeberg.org/zhuriel/tadpole.git", version = "1.0"}
-libc = "0.2.177"
 nom = "8.0.0"

@@ -9,5 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 graphemy = { git = "https://codeberg.org/zhuriel/graphemy.git", rev = "0d5bde2173" }
-libc = "0.2.177"
 svg = "0.18.0"
