@@ -28,7 +28,7 @@
             });
         });
         Object.keys(etymologies).forEach(entry => {
-            if (!(entry in currentLexicon)) lexicon[entry] = { Senses: [], pronunciations: {}, Timestamp: Date.now() };
+            if (!(entry in currentLexicon)) lexicon[entry] = { Senses: [], pronunciations: {} };
         });
         return lexicon;
     }

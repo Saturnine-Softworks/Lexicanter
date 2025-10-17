@@ -32,6 +32,7 @@ const Default: Lexc.Language = {
     Lexicon: <Lexc.Lexicon>{},
     Etymologies: <Lexc.Etymologies>{},
     Relatives: {},
+    SoundChangeEngine: "tadpole.lexc",
     Pronunciations: <Lexc.Pronunciations>{
         General:
             'Use this field to write pronunciation rules to automatically transcribe your orthography in IPA. For example,\n' +
@@ -83,7 +84,6 @@ const Default: Lexc.Language = {
     Docs: <OutputData>{
         blocks: [],
     },
-    Diagnostics: <Lexc.Diagnostic[]>[],
     FileTheme: 'default',
     Layouts: {
         tabmode: 'switch',
@@ -93,7 +93,6 @@ const Default: Lexc.Language = {
         opentabs: [0],
         showZ: false,
     },
-    OrderByDate: false,
     SaveLocation: '',
     UploadToDatabase: false,
 };

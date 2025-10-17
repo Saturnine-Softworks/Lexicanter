@@ -4,14 +4,6 @@
 
 import type { OutputData } from '@editorjs/editorjs';
 
-export type Diagnostic = {
-    Time: string;
-    Version: string;
-    OS: string;
-    Action: string;
-    Error?: string;
-};
-
 /**
  * `Sense` is an object with a `definition` string, a `dialects` array of strings, and a `tags` array of strings.
  * @property {string} definition - The definition for this sense of a word.
@@ -43,7 +35,6 @@ export type EntryPronunciations = {
 export type Word = {
     pronunciations: EntryPronunciations;
     Senses: Sense[];
-    Timestamp: number;
 };
 
 /**
@@ -202,33 +193,13 @@ export type Layouts = {
     };
 };
 
+export type SoundChangeEngine = 
+      "legacy"
+    | "tadpole.lexc"
+    | "tadpole.tadpole"
+
 /**
- * A language is a collection of words, phrases, organization and configuration settings, and sets of pronunciation rules.
- * Below are all the places where the name of key should be the name of a lect:
- * ```
- * Language.Lexicon.Word.pronunciations[lect]
- * Language.Phrasebook.Phrase.pronunciations[lect]
- * Language.Phrasebook.Phrase.Variant.pronunciations[lect]
- * Language.Phonotactics[lect]
- * Language.Pronunciations[lect]
- * ```
- * Additionally, the values of the following keys should be arrays of lect names:
- * ```
- * Language.Lexicon.Word.Senses.lects
- * Language.Phrasebook.Phrase.lects
- * Language.Phrasebook.Phrase.variants.lects
- * ```
- * @property {number} Version - The version of the app which the language was saved with. This is used to determine how to load the language.
- * @property {string} Name - The name of the language.
- * @property {Lexicon} Lexicon - A {@link Lexicon} object that contains all the words in the language.
- * @property {Phrasebook} Phrasebook - A {@link Phrasebook} object that contains all the phrases in the language.
- * @property {string} Alphabet - Space-separated tokens representing the alphabetization order for the lexicon.
- * @property {string} Pronunciations - The values of the text inputs for each dialect from the Pronunciations field in the Phonology tab.
- * @property {Phonotactics} Phonotactics - A {@link Phonotactics} object that contains the phonotactics rules.
- * @property {OutputData} Docs - An {@link OutputData} object that contains the documentation for the language saved by EditorJS.
- * @property {string} HeaderTags - This is a string of lexicon tags that will be placed at the top of the lexicon display.
- * @property {boolean} CaseSensitive - Whether or not alphabetization and pronunciation rules are case sensitive.
- * @property {boolean} IgnoreDiacritics - Whether or not alphabetization and pronunciation rules ignore diacritics.
+ * Defines the structure of the global Language object.
  */
 export type Language = {
     Version: string;
@@ -248,6 +219,7 @@ export type Language = {
     ShowPhrasebook: boolean;
     Alphabet: string;
     ShowAlphabet: boolean;
+    SoundChangeEngine: SoundChangeEngine;
     Pronunciations: Pronunciations;
     Orthographies: Orthography[];
     ShowPronunciation: boolean;
@@ -262,10 +234,8 @@ export type Language = {
     IgnoreDiacritics: boolean;
     ShowEtymology: boolean;
     UseLects: boolean;
-    Diagnostics: Diagnostic[];
     FileTheme: string;
     Layouts: Layouts;
-    OrderByDate: boolean;
     SaveLocation: string;
     UploadToDatabase: boolean;
 };

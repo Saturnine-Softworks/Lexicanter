@@ -78,20 +78,19 @@
             if (contents.hasOwnProperty('ShowPronunciation')) {
                 $Language.ShowPronunciation = contents.ShowPronunciation;
             }
-            if (contents.hasOwnProperty('OrderByDate')) {
-                $Language.OrderByDate = contents.OrderByDate;
-            } else {
-                for (let word in contents.Lexicon) {
-                    contents.Lexicon[word].Timestamp = Date.now();
-                }
-            }
             if (contents.hasOwnProperty('SaveLocation')) {
                 $Language.SaveLocation = contents.SaveLocation;
             }
             if (contents.hasOwnProperty('FileVersion')) {
                 $Language.FileVersion = contents.FileVersion
             }
-
+            if (contents.hasOwnProperty('SoundChangeEngine')) {
+                $Language.SoundChangeEngine = contents.SoundChangeEngine;
+            } else {
+                // default to legacy instead of tadpole.lexc for files that were created before 2.2.6
+                $Language.SoundChangeEngine = 'legacy'; 
+            }
+            
             errorMessage = 'There was a problem loading the alphabet from the file.'
             $Language.Alphabet = contents.Alphabet;
             if (contents.hasOwnProperty('ShowAlphabet'))
