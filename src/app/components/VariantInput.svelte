@@ -18,8 +18,8 @@
     } = $props()
 
     $effect(() => {
-        lects.forEach(lect => {
-            pronunciations[lect].ipa = get_pronunciation(phrase, lect);
+        lects.forEach(async lect => {
+            pronunciations[lect].ipa = await get_pronunciation(phrase, lect);
         })
     });
 </script>

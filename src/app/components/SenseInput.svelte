@@ -29,12 +29,12 @@
 
     $effect(()=>{$Language.Lects; refilter_lects()});
 
-    function change(lect: string) {
+    async function change(lect: string) {
         if (lects.includes(lect)) {
             lects = lects.filter((l) => l !== lect);
         } else {
             lects = [...lects, lect];
-            $pronunciations[lect] = get_pronunciation($wordInput, lect);
+            $pronunciations[lect] = await get_pronunciation($wordInput, lect);
         }
     }
 </script>

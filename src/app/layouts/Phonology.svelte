@@ -293,15 +293,25 @@
                     <label>
                         Rule Testing
                         <textarea
-                            class="prelined" rows="2"
+                            class=prelined 
+                            rows=2
                             bind:value={ortho_test}
                         ></textarea>
                     </label>
-                    <textarea
-                        class="pronunciation" rows="2"
-                        bind:value={test_pronunciation}
-                        readonly
-                    ></textarea>
+                    {#await test_pronunciation}
+                        <textarea
+                            class=pronunciation 
+                            rows=2
+                            readonly
+                        ></textarea>
+                    {:then test_res} 
+                        <textarea
+                            class=pronunciation 
+                            rows=2
+                            value={test_res}
+                            readonly
+                        ></textarea>
+                    {/await}
                 </div>
             </Draggable>
         {/if}

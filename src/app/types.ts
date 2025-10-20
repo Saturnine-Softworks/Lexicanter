@@ -193,10 +193,7 @@ export type Layouts = {
     };
 };
 
-export type SoundChangeEngine = 
-      "legacy"
-    | "tadpole.lexc"
-    | "tadpole.tadpole"
+export type SoundChangeEngine = 'legacy' | 'tadpole.lexc' | 'tadpole.tadpole';
 
 /**
  * Defines the structure of the global Language object.

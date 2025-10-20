@@ -90,7 +90,6 @@
         }
     }
 
-
     /**
      * Searches the lexicon for a word, definition, or tag. 
      * The character '!' is used to require an exact match.

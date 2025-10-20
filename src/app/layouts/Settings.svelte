@@ -723,11 +723,37 @@
                     {/if}
                 </label>
                 <br><hr/><br>
+
                 <p>Experimental</p>
                 <br>
                 <label> Download Experimental Updates
                     <input type=checkbox onchange={toggleAlchemy} bind:checked={allowExperimental}>
+                    <p class='info narrow'>
+                        Turn this setting on if you would like the app to automatically update to experimental pre-release versions.
+                        If you are running a pre-release version of the app, a <b>β</b> will appear in the top-right corner
+                        before the version number, and you might see some additional settings below.
+                    </p>
                 </label>
+                <br>
+                <label> Sound Change Syntax <br>
+                    <select bind:value={$Language.SoundChangeEngine}>
+                        <option value=tadpole.tadpole>Tadpole</option>
+                        <option value=tadpole.lexc>Tadpolexic</option>
+                        <option value=legacy>Legacy</option>
+                    </select>
+                    <p class='info narrow'>
+                        Changing this setting changes how all of your sound change rules are parsed. The default is <b>Tadpolexic</b>, but
+                        files created before version 2.2.6 will default to <b>Legacy</b>.
+                        <br><br>
+                        It is possible that there may be some discrepancies between the results produced by <b>Tadpolexic</b> and <b>Legacy</b>, but
+                        for the most part, you should be able to switch between these two without issues. 
+                        <br><br>
+                        However, <b>Tadpole</b> is <b>not</b> compatible with the legacy syntax; if you switch to this syntax, you will need to
+                        rewrite any existing sound change notation (such as pronunciation rules or orthography conversion rules). Tadpole, however,
+                        has many more features available which make it very useful for advanced users.
+                    </p>
+                </label>
+
                 <br><hr/><br>
                 <p>Advanced Settings</p> <br>
                 <label>Show Multi-Lect Features
@@ -764,11 +790,11 @@
                                 <button class="hover-highlight hover-shadow" style="display: inline-block;" onclick={() => {
                                     vex.dialog.confirm({
                                         message: `Add all words in the lexicon to the lect ‘${lect}’?`,
-                                        callback: function (response: boolean) {
+                                        callback: async function (response: boolean) {
                                             if (response) {
                                                 for (let word in $Language.Lexicon) {
                                                     $Language.Lexicon[word].pronunciations[lect] = {
-                                                        ipa: get_pronunciation(word, lect),
+                                                        ipa: await get_pronunciation(word, lect),
                                                         irregular: false,
                                                     }
                                                     $Language.Lexicon[word].Senses.forEach(sense => {
@@ -789,11 +815,11 @@
                                 message: 'Add a New Lect',
                                 placeholder: `New ${$Language.Name} Lect`,
                                 // @ts-ignore: complains that "response" has implicity any type, but type annotations cannot be used here.
-                                callback: function (response) {
+                                callback: async function (response) {
                                     if (response === false) return;
                                     $Language.Lects = [...$Language.Lects, response];
                                     $Language.Pronunciations[response] = 'place > holder';
-                                    $pronunciations[response] = get_pronunciation($wordInput, response);
+                                    $pronunciations[response] = await get_pronunciation($wordInput, response);
                                 }
                             })
                         }}> + Lect </button>

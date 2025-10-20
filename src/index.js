@@ -27,13 +27,9 @@ let allowAlchemy = false;
 if (fs.existsSync(alchemyPath)) {
     const data = fs.readFileSync(alchemyPath);
     console.log(
-        '\
-        --------------------------------------------\n\
-         Alchemy preference:',
+        '\n ---- Lexicanter > Alchemy Preference:',
         data.toString(),
-        '\n\
-        --------------------------------------------\n\
-    ',
+        '\n\n',
     );
     allowAlchemy = JSON.parse(data).allowAlchemy ?? false;
 } else {

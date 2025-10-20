@@ -378,7 +378,11 @@ function applyRule(
 }
 
 let indialog = false;
-export function applyRules(rules: string[], input: string, categories): string {
+export function applyRules(
+    rules: string[],
+    input: string,
+    categories: { [index: string]: string[] },
+): string {
     let result = input;
     rules.forEach((rule) => {
         try {

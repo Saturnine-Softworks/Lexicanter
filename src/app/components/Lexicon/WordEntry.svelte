@@ -42,7 +42,7 @@
      * @param {string} word
      * @param {bool} append
      */
-    function commitWord(word: string, append: boolean): void {
+    async function commitWord(word: string, append: boolean) {
         // TODO: why the fuck am I indexing `senses` with an empty string, and why the fuck does it work?
         // @ts-ignore
         const emptySensesFilter = (sense: senseInput) => <boolean> (senses[''] !== sense) && (!!sense.definition);
@@ -53,14 +53,18 @@
         };
         if (!append) {
             $Language.Lexicon[word] = <Lexc.Word> {
-                pronunciations: <Lexc.EntryPronunciations> (() => {
+                pronunciations: <Lexc.EntryPronunciations> await (async () => {
                     const obj: Lexc.EntryPronunciations = {};
-                    Object.keys($pronunciations).filter(key => $senses.map(sense => sense.lects).flat().includes(key)).forEach(lect => {
+                    const lects = Object.keys($pronunciations).filter(key => $senses.map(sense => sense.lects).flat().includes(key));
+                    
+                    for (let lect of lects) {
+                        let stdpronunciation = await get_pronunciation(word, lect);
                         obj[lect] = {
                             ipa: $pronunciations[lect].trim(),
-                            irregular: $pronunciations[lect].trim() !== get_pronunciation(word, lect),
+                            irregular: $pronunciations[lect].trim() !== stdpronunciation
                         }
-                    });
+                    }
+
                     return obj;
                 })(), 
                 Senses: $senses.filter(emptySensesFilter).map(senseRemapper),
@@ -71,7 +75,7 @@
         $Language.Lexicon = {...$Language.Lexicon}; // assignment trigger
 
         // scroll to added word
-        // window.setTimeout(() => ipcRenderer.send('lexicon link', word), 50);
+        window.setTimeout(() => ipcRenderer.send('lexicon link', word), 50);
 
         $wordInput = '';
         $pronunciations = (()=>{
@@ -113,6 +117,10 @@
             commitWord(word, append);
         }
     }
+
+    async function set_pronuncations(lect: string) {
+        $pronunciations[lect] = await get_pronunciation($wordInput, lect);
+    }
 </script>
 
 <Draggable panel=newword>
@@ -121,9 +129,7 @@
         <input id="wrd-input" type="text"
             bind:value={$wordInput}
             on:input={() => {
-                lectSet.forEach(lect => {
-                    $pronunciations[lect] = get_pronunciation($wordInput, lect);
-                });
+                lectSet.forEach(lect => set_pronuncations(lect));
             }}
         >
         {#if $Language.UseLects}

@@ -16,33 +16,42 @@ const Lang = () => get(Language);
  * @param {string} word
  * @returns {string}
  */
-export function get_pronunciation(word: string, lect: string): string {
-    // console.log('Requested pronunciation for ' + word + ' in ' + lect + '.');
+export async function get_pronunciation(
+    word: string,
+    lect: string,
+): Promise<string> {
+    console.log('Requested pronunciation for ' + word + ' in ' + lect + '.');
     const rules: string = Lang().Pronunciations[lect];
-    const settings = parseRules(rules);
-    return applyRules(settings.rules, word, settings.categories);
+
+    if (Lang().SoundChangeEngine === 'legacy') {
+        const settings = parseRules(rules);
+        return applyRules(settings.rules, word, settings.categories);
+    }
+
+    return await tadpole(Lang().SoundChangeEngine, word, rules);
 }
 
 /**
  * Rewrites all pronunciations for a given lect.
  */
-export function writeRomans(lect: string) {
-    get(pronunciations)[lect] = get_pronunciation(get(wordInput), lect);
+export async function writeRomans(lect: string) {
+    get(pronunciations)[lect] = await get_pronunciation(get(wordInput), lect);
 
     const lexicon: Lexc.Lexicon = Lang().Lexicon;
     for (const word in lexicon) {
         if (lexicon[word].pronunciations.hasOwnProperty(lect)) {
             if (lexicon[word].pronunciations[lect].irregular === false) {
-                lexicon[word].pronunciations[lect].ipa = get_pronunciation(
-                    word,
-                    lect,
-                );
+                lexicon[word].pronunciations[lect].ipa =
+                    await get_pronunciation(word, lect);
             }
         }
     }
     Lang().Lexicon = lexicon;
 
-    get(phrasePronunciations)[lect] = get_pronunciation(get(phraseInput), lect);
+    get(phrasePronunciations)[lect] = await get_pronunciation(
+        get(phraseInput),
+        lect,
+    );
     const phrasebook: Lexc.Phrasebook = Lang().Phrasebook;
     for (const category in phrasebook) {
         for (const entry in phrasebook[category]) {
@@ -54,12 +63,12 @@ export function writeRomans(lect: string) {
                         .irregular === false
                 ) {
                     phrasebook[category][entry].pronunciations[lect].ipa =
-                        get_pronunciation(entry, lect);
+                        await get_pronunciation(entry, lect);
                 }
                 for (const variant in phrasebook[category][entry].variants) {
                     phrasebook[category][entry].variants[
                         variant
-                    ].pronunciations[lect].ipa = get_pronunciation(
+                    ].pronunciations[lect].ipa = await get_pronunciation(
                         variant,
                         lect,
                     );
@@ -140,21 +149,22 @@ export function complete_word(trial: string) {
 }
 
 import type { Orthography, Word, Phrase, Variant } from '../types';
-export function preprocess_ortho(
+import { tadpole } from './interop.js';
+export async function preprocess_ortho(
     word: string,
     ortho: Orthography,
     source: Word | Phrase | Variant | null = null,
-): string {
-    const settings = parseRules(ortho.rules);
-    return applyRules(
-        settings.rules,
-        source
-            ? ortho.root === 'rom'
-                ? word
-                : source.pronunciations[ortho.lect].ipa
-            : word,
-        settings.categories,
-    );
+): Promise<string> {
+    const input = source
+        ? ortho.root === 'rom'
+            ? word
+            : source.pronunciations[ortho.lect].ipa
+        : word;
+    if (Lang().SoundChangeEngine === 'legacy') {
+        const settings = parseRules(ortho.rules);
+        return applyRules(settings.rules, input, settings.categories);
+    }
+    return await tadpole(Lang().SoundChangeEngine, input, ortho.rules);
 }
 
 /**

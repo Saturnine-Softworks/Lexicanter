@@ -2,15 +2,20 @@
     import { Language, defaultLanguage, docsEditor } from '../stores';
     import { parseRules, applyRules } from '../utils/sca';
     import { saveFile } from '../utils/files';
-    import Etymology from '../layouts/Etymology.svelte';
     import { initializeDocs } from '../utils/docs';
+    import { tadpole } from '../utils/interop';
     const vex = require('vex-js');
     let soundChanges: string = ''; let testChanges: string = ''; let newName: string = '';
     let usePronunciations: boolean = false; let baseLect: string = $Language.Lects[0];
-    function soundChange(text: string) {
-        const settings = parseRules(soundChanges);
-        return applyRules(settings.rules, text, settings.categories);
+    
+    async function soundChange(text: string) {
+        if ($Language.SoundChangeEngine === 'legacy') {
+            const settings = parseRules(soundChanges);
+            return applyRules(settings.rules, text, settings.categories);
+        }
+        return await tadpole($Language.SoundChangeEngine, text, soundChanges);
     }
+    
 </script>
 <div class="column narrow">
     <label>New Language Name
@@ -46,7 +51,11 @@
     <div class=column>
         <label>Test Changes
             <textarea rows=3 bind:value={testChanges}></textarea>
-            <textarea rows=3 class=pronunciation value={soundChange(testChanges)} readonly></textarea>
+            {#await soundChange(testChanges)}
+                <textarea rows=3 class=pronunciation value=… readonly></textarea>
+            {:then testRes} 
+                <textarea rows=3 class=pronunciation value={testRes} readonly></textarea>
+            {/await}
         </label>
         
     </div>
@@ -64,13 +73,13 @@
             const newLanguage = structuredClone($defaultLanguage);
             newLanguage.Name = newName;
             newLanguage.ShowEtymology = true;
-            Object.keys($Language.Lexicon).forEach(word => {
+            Object.keys($Language.Lexicon).forEach(async word => {
                 let baseWord = `${word}`;
                 if (usePronunciations) {
                     if (!$Language.Lexicon[word].pronunciations.hasOwnProperty(baseLect)) return;
                     else baseWord = $Language.Lexicon[word].pronunciations[baseLect].ipa;
                 }
-                const newWord = soundChange(baseWord);
+                const newWord = await soundChange(baseWord);
                 newLanguage.Lexicon[newWord] = structuredClone($Language.Lexicon[word]);
                 
                 // Clean up the new entry

@@ -1,3 +1,5 @@
+import type { SoundChangeEngine } from '../types';
+
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { ipcRenderer } = require('electron');
 
@@ -35,5 +37,33 @@ export async function graphemify(
     if (!max_width) max_width = 100;
     if (!max_height) max_height = 100;
 
-    return (await ffi('graphemify', engine, input, max_width, max_height) as string);
+    return (await ffi(
+        'graphemify',
+        engine,
+        input,
+        max_width,
+        max_height,
+    )) as string;
+}
+
+export async function tadpole(
+    parser: SoundChangeEngine,
+    input: string,
+    spec: string,
+): Promise<string> {
+    let parser_str = '';
+    switch (parser) {
+        case 'legacy':
+            return '<< error: wrong parser function >>';
+        case 'tadpole.lexc':
+            parser_str = 'lexc';
+            spec += '\n.>.'; // final rule is ignored 
+            break;
+        case 'tadpole.tadpole':
+            parser_str = 'tadpole';
+            break;
+    }
+    const res = (await ffi('tadpole', parser_str, input, spec)) as string;
+    console.log('result: ', res);
+    return res;
 }

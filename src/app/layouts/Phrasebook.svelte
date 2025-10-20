@@ -136,11 +136,11 @@
         if (!category) return
         let pronunciations: Record<string, {ipa: string, irregular: boolean}> = {};
         console.log($phrasePronunciations, lects);
-        Object.keys($phrasePronunciations).filter(lect => lects.includes(lect)).forEach(lect => {
+        Object.keys($phrasePronunciations).filter(lect => lects.includes(lect)).forEach(async lect => {
             console.log(lect)
             pronunciations[lect] = {
                 ipa: $phrasePronunciations[lect].trim(),
-                irregular: $phrasePronunciations[lect].trim() !== get_pronunciation(newPhrase, lect),
+                irregular: $phrasePronunciations[lect].trim() !== await get_pronunciation(newPhrase, lect),
             };
         });
         
@@ -159,10 +159,10 @@
                         const description = variant.description.trim();
                         if (!description) continue;
                         let pronunciations: Lexc.EntryPronunciations = {};
-                        Object.keys(variant.pronunciations).forEach(lect => {
+                        Object.keys(variant.pronunciations).forEach(async lect => {
                             pronunciations[lect] = {
                                 ipa: variant.pronunciations[lect].ipa.trim(),
-                                irregular: variant.pronunciations[lect].ipa.trim() !== get_pronunciation(phrase, lect),
+                                irregular: variant.pronunciations[lect].ipa.trim() !== await get_pronunciation(phrase, lect),
                             };
                         });
                         variants[phrase] = <Lexc.Variant> {
@@ -287,8 +287,8 @@
             
                         <label for="phrase">Phrase</label>
                         <input type="text" bind:value={$phraseInput} on:input={() => {
-                            lects.forEach(lect => {
-                                $phrasePronunciations[lect] = get_pronunciation($phraseInput, lect);
+                            lects.forEach(async lect => {
+                                $phrasePronunciations[lect] = await get_pronunciation($phraseInput, lect);
                             });
                         }}/>
             
@@ -326,9 +326,9 @@
                                 bind:pronunciations={variantInputs[i].pronunciations}
                                 bind:description={variantInputs[i].description}
                                 update={() => {
-                                    lects.forEach(lect => {
+                                    lects.forEach(async lect => {
                                         variantInputs[i].pronunciations[lect] = {
-                                            ipa: get_pronunciation(variantInputs[i].phrase, lect),
+                                            ipa: await get_pronunciation(variantInputs[i].phrase, lect),
                                             irregular: false,
                                         };
                                     });

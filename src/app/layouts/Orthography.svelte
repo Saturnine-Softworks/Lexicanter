@@ -259,15 +259,19 @@
                                 readonly
                             ></textarea>
                         {:else if ortho?.typesetter === 'graphemy' && ortho.graphemy}
-                            {#await graphemify(
-                                ortho.graphemy.engine, 
-                                preprocess_ortho(testInput, ortho), 
-                                ortho.graphemy.bounds.width, 
-                                ortho.graphemy.bounds.height
-                            )}
+                            {#await preprocess_ortho(testInput, ortho)}
                                 <i>generating...</i>
-                            {:then svg} 
-                                <span class=grapheme-svg>{@html svg}</span>
+                            {:then resInput} 
+                                {#await graphemify(
+                                    ortho.graphemy.engine, 
+                                    resInput, 
+                                    ortho.graphemy.bounds.width, 
+                                    ortho.graphemy.bounds.height
+                                )}
+                                    <i>generating...</i>
+                                {:then svg} 
+                                    <span class=grapheme-svg>{@html svg}</span>
+                                {/await}
                             {/await}
                         {/if}
                     </svelte:boundary>

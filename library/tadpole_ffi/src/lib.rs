@@ -10,7 +10,9 @@ fn string_to_c_char(string: String) -> *const c_char {
 /// Converts C-like strings into Rust-like strings
 fn c_char_to_string(c_str: *const c_char) -> String {
     let c_str = unsafe {
-        assert!(!c_str.is_null());
+        if c_str.is_null() {
+            return String::from("");
+        }
         CStr::from_ptr(c_str)
     };
 
@@ -49,6 +51,9 @@ pub unsafe extern "C" fn tadpole(
             outputs: Vec::new(),
         })
         .result;
+    
+    println!("Parser: {parser_str}\n\n{spec_str}\n");
+    println!("{input_str} -> {res}\n");
 
     string_to_c_char(res)
 }

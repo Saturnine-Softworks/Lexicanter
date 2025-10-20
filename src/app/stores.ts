@@ -32,7 +32,7 @@ const Default: Lexc.Language = {
     Lexicon: <Lexc.Lexicon>{},
     Etymologies: <Lexc.Etymologies>{},
     Relatives: {},
-    SoundChangeEngine: "tadpole.lexc",
+    SoundChangeEngine: 'tadpole.lexc',
     Pronunciations: <Lexc.Pronunciations>{
         General:
             'Use this field to write pronunciation rules to automatically transcribe your orthography in IPA. For example,\n' +
