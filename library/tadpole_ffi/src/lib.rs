@@ -41,10 +41,14 @@ pub unsafe extern "C" fn tadpole(
         "lexc" => SoundChanger::parse_string(&spec_str, &TadpoleLexc),
         "tadpole" => SoundChanger::parse_string(&spec_str, &TadpoleParser::new()),
         _ => return string_to_c_char(String::from("Not a valid parser.")),
-    }
-    .unwrap();
+    };
 
-    let res = engine
+    if engine.is_err() {
+        let err_msg = engine.unwrap_err().to_string();
+        return string_to_c_char(err_msg);
+    } 
+
+    let res = engine.unwrap()
         .run(&input_str)
         .unwrap_or(SoundChangerResult {
             result: String::from("[ Parser Error ]"),
@@ -52,7 +56,7 @@ pub unsafe extern "C" fn tadpole(
         })
         .result;
     
-    println!("Parser: {parser_str}\n\n{spec_str}\n");
+    // println!("Parser: {parser_str}\n\n{spec_str}\n");
     println!("{input_str} -> {res}\n");
 
     string_to_c_char(res)

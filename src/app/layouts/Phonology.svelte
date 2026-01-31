@@ -281,7 +281,8 @@
                                 {/each}
                             </select>
                         {/if}
-                        <textarea class="prelined" rows="24" style="text-align: left" id="pronunciations-input"
+                        <textarea class="prelined" rows="24" style:text-align=left id="pronunciations-input"
+                            style:font-family={$Language.SoundChangeEngine === 'tadpole.tadpole'? '"Fira Code", Courier, monospace' : 'Gentium'}
                             value={$Language.Pronunciations[selectedLect]}
                             on:blur={e => {
                                 setInStone(e); // binding directly to the store is very slow when the language is large
@@ -306,8 +307,13 @@
                         ></textarea>
                     {:then test_res} 
                         <textarea
-                            class=pronunciation 
-                            rows=2
+                            class={test_res.startsWith('error')? '' : 'pronunciation'}
+                            style={test_res.startsWith('error')? '\
+                                font-family: "Fira Code", Courier, monospace;\
+                                text-align: left;\
+                                font-size: 10pt;\
+                            ' : ''}
+                            rows={$Language.SoundChangeEngine === 'tadpole.tadpole'? 6 : 3}
                             value={test_res}
                             readonly
                         ></textarea>

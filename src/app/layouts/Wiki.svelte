@@ -39,6 +39,7 @@
                     <div style='width: 85%; max-width: 50rem; margin: auto'>
                         {@html markdownToHtml(wikiInfo[page as keyof typeof wikiInfo])}
                     </div>
+                    <br><br><br><br>
                 </div>
             </div>
         </Draggable>

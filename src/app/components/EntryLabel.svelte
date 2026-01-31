@@ -28,15 +28,19 @@
 
             <svelte:boundary> <!-- I simply don't trust anything not to explode. -->
                 {#key $Language.Lexicon}
-                    {#await graphemify(
-                        ortho.graphemy.engine, 
-                        preprocess_ortho(word, ortho, source), 
-                        ortho.graphemy.bounds.width, 
-                        ortho.graphemy.bounds.height
-                    )}
-                        <i>generating...</i>
-                    {:then svg} 
-                        <span class=grapheme-svg>{@html svg}</span>
+                    {#await preprocess_ortho(word, ortho, source)}
+                        <i>preprocessing...</i>
+                    {:then input}
+                        {#await graphemify(
+                            ortho.graphemy.engine, 
+                            input, 
+                            ortho.graphemy.bounds.width, 
+                            ortho.graphemy.bounds.height
+                        )}
+                            <i>generating...</i>
+                        {:then svg} 
+                            <span class=grapheme-svg>{@html svg}</span>
+                        {/await}
                     {/await}
                     <!-- In the event that the graphemy renderer is in a murderous mood -->
                     {#snippet failed(error, reset)}
@@ -49,7 +53,11 @@
 
         {:else}
             <p style:font-family={$Language.Orthographies.find(o => o.name === ortho.name)?.font}>
-                {preprocess_ortho(word, ortho, source)}
+                {#await preprocess_ortho(word, ortho, source)}
+                    <i>preprocessing...</i>
+                {:then output} 
+                    {output}
+                {/await}
             </p>
         {/if}
 

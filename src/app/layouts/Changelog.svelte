@@ -11,6 +11,16 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
+        '2.3.0': {
+            type: MINOR,
+            notes: [
+                'Experimental implementation of the <a href="https://codeberg.org/zhuriel/tadpole/">Tadpole engine</a>.',
+                'Updated <a href="https://codeberg.org/zhuriel/graphemy/releases/tag/v0.6.0">Graphemy typesetter to v0.6.0</a>.',
+                'Added ability to change the display order of panels (z-index).',
+                'Added tabs and semicolons as delimiter options for CSV/TSV import.',
+                'Fixed a minor display issue where the end of pages in the Help tab could not be read.'
+            ]
+        },
         '2.2.5': {
             type: PATCH,
             notes: [
@@ -404,6 +414,7 @@
                     </p>
                     <br>
                 {/each}
+                <br><br><br><br>
             </div>
         </Draggable>
     {/if}

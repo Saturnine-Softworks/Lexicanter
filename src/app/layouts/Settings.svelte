@@ -20,7 +20,7 @@
     import * as PATH from 'node:path';
     // const path = require('path');
     const vex = require('vex-js');
-    import { get_pronunciation } from '../utils/phonetics';
+    import { get_pronunciation, writeRomans } from '../utils/phonetics';
     import TagSelector from '../components/TagSelector.svelte';
     import { verify } from '../../db/database';
     import { initializeDocs } from '../utils/docs';
@@ -735,20 +735,20 @@
                     </p>
                 </label>
                 <br>
-                <label> Sound Change Syntax <br>
-                    <select bind:value={$Language.SoundChangeEngine}>
+                <label> Text Transform Engine <br>
+                    <select bind:value={$Language.SoundChangeEngine} onchange={() => $Language.Lects.forEach(lect => writeRomans(lect))}>
                         <option value=tadpole.tadpole>Tadpole</option>
-                        <option value=tadpole.lexc>Tadpolexic</option>
+                        <option value=tadpole.lexc>Tadpole.Lexc</option>
                         <option value=legacy>Legacy</option>
                     </select>
                     <p class='info narrow'>
-                        Changing this setting changes how all of your sound change rules are parsed. The default is <b>Tadpolexic</b>, but
-                        files created before version 2.2.6 will default to <b>Legacy</b>.
+                        Changing this setting changes how all of your text transform (i.e. pronunciations, sound change) rules are parsed. The default is 
+                        <b>Tadpole.Lexc</b>, but files created before version 2.2.6 will default to <i>Legacy</i>.
                         <br><br>
-                        It is possible that there may be some discrepancies between the results produced by <b>Tadpolexic</b> and <b>Legacy</b>, but
-                        for the most part, you should be able to switch between these two without issues. 
+                        It is possible that there may be some discrepancies between the results produced by <i>Tadpole.Lexc</i> and <i>Legacy</i>, but
+                        for the most part, you should be able to switch between these two without issues. [As of the first 2.3.0 prerelease, <i>Tadpole.Lexc</i> does not support anonymous categories]. 
                         <br><br>
-                        However, <b>Tadpole</b> is <b>not</b> compatible with the legacy syntax; if you switch to this syntax, you will need to
+                        However, <i>Tadpole</i> is <b>not</b> compatible with the legacy syntax; if you switch to this syntax, you will need to
                         rewrite any existing sound change notation (such as pronunciation rules or orthography conversion rules). Tadpole, however,
                         has many more features available which make it very useful for advanced users.
                     </p>

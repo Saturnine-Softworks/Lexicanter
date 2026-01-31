@@ -46,6 +46,7 @@ fn try_grapheming(
         margin: 5.0,
         comment: None,
         color_mode: graphemy::layout::render::RenderColor::Css,
+        view_area: layout::render::ViewArea::default()
     };
 
     let svg = typesetter.render(&input, TypesetSettings::CONTAINER, settings)?;

@@ -14,7 +14,12 @@ export async function ffi(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...args: any[]
 ): Promise<unknown> {
-    return await ipcRenderer.invoke('ffi', name, ...args);
+    try {
+        // console.log(name, ...args);
+        return await ipcRenderer.invoke('ffi', name, ...args);
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 /**
@@ -57,7 +62,7 @@ export async function tadpole(
             return '<< error: wrong parser function >>';
         case 'tadpole.lexc':
             parser_str = 'lexc';
-            spec += '\n.>.'; // final rule is ignored 
+            spec += '\n.>.'; // final rule is ignored
             break;
         case 'tadpole.tadpole':
             parser_str = 'tadpole';

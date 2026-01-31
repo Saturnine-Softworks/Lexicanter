@@ -463,7 +463,7 @@ var app = (function () {
     function xe(e, t) {
         (-1 === e.$$.dirty[0] &&
             (X.push(e), te || ((te = !0), ee.then(ae)), e.$$.dirty.fill(0)),
-            (e.$$.dirty[(t / 31) | 0] |= 1 << t % 31));
+            (e.$$.dirty[(t / 31) | 0] |= 1 << (t % 31)));
     }
     function Ce(t, n, r, s, a, l, c, d = [-1]) {
         const h = z;
@@ -1691,7 +1691,6 @@ var app = (function () {
                                   !o.classList.contains(t) &&
                                   (i = null),
                               !i));
-
                       )
                           ((o = o.parentNode), r--);
                   }),
@@ -7664,7 +7663,6 @@ var app = (function () {
                         ? () => e > this.stackOfSelected[c]
                         : () => e < this.stackOfSelected[c];
                 l();
-
             )
                 (this.rectCrossesBlocks &&
                     this.Editor.BlockSelection.unSelectBlockByIndex(
@@ -13667,7 +13665,6 @@ var app = (function () {
                     e &&
                     ((p = !1), (t = b.exec(e))) &&
                     !this.rules.block.hr.test(e);
-
                 ) {
                     if (
                         ((n = t[0]),
@@ -13714,7 +13711,6 @@ var app = (function () {
                             !s.test(d) &&
                             !t.test(d) &&
                             !o.test(e);
-
                         ) {
                             if (d.search(/[^ ]/) >= r || !d.trim())
                                 u += '\n' + d.slice(r);
@@ -14017,7 +14013,6 @@ var app = (function () {
                 for (
                     l.lastIndex = 0, t = t.slice(-1 * e.length + n);
                     null != (o = l.exec(t));
-
                 ) {
                     if (
                         ((i = o[1] || o[2] || o[3] || o[4] || o[5] || o[6]), !i)
@@ -14438,7 +14433,6 @@ var app = (function () {
                 e = e.replace(/\r\n|\r/g, '\n'),
                     this.blockTokens(e, this.tokens);
                 (t = this.inlineQueue.shift());
-
             )
                 this.inlineTokens(t.src, t.tokens);
             return this.tokens;
@@ -14453,7 +14447,6 @@ var app = (function () {
                           (e, t, n) => t + '    '.repeat(n.length),
                       );
                 e;
-
             )
                 if (
                     !(
@@ -14587,7 +14580,6 @@ var app = (function () {
                         ;
                         null !=
                         (r = this.tokenizer.rules.inline.reflinkSearch.exec(l));
-
                     )
                         e.includes(r[0].slice(r[0].lastIndexOf('[') + 1, -1)) &&
                             (l =
@@ -14603,7 +14595,6 @@ var app = (function () {
             for (
                 ;
                 null != (r = this.tokenizer.rules.inline.blockSkip.exec(l));
-
             )
                 l =
                     l.slice(0, r.index) +
@@ -14614,7 +14605,6 @@ var app = (function () {
             for (
                 ;
                 null != (r = this.tokenizer.rules.inline.escapedEmSt.exec(l));
-
             )
                 ((l =
                     l.slice(0, r.index + r[0].length - 2) +
@@ -15074,7 +15064,6 @@ var app = (function () {
                                     ? this.parseInline(h.tokens)
                                     : h.text;
                                 n + 1 < x && 'text' === e[n + 1].type;
-
                             )
                                 ((h = e[++n]),
                                     (d +=
@@ -16002,7 +15991,6 @@ var app = (function () {
                                         t.includes(e.name),
                                     ),
                                 ) && n;
-
                             )
                                 (n--,
                                     e.push(
@@ -27362,9 +27350,9 @@ var app = (function () {
                                     (void 0 === o &&
                                         (o = Boolean(
                                             window &&
-                                                document &&
-                                                document.all &&
-                                                !window.atob,
+                                            document &&
+                                            document.all &&
+                                            !window.atob,
                                         )),
                                     o));
                             var n = a((e = e || []), t);
