@@ -9,6 +9,8 @@
  * - You, May 23 2025
  */
 
+import type { Layouts } from '../types';
+
 const defaultPanel = {
     top: 25,
     left: 0,
@@ -125,6 +127,19 @@ export const defaultPanelPositions = () => {
         },
     };
 };
+export const defaultPanelRatios = () => {
+    const r = defaultPanelPositions();
+    const p: Layouts['ratios'] = {};
+    for (const index in defaultPanelPositions()) {
+        p[index as keyof typeof r] = {
+            top: r[index as keyof typeof r].top / 900,
+            height: r[index as keyof typeof r].height / 900,
+            width: r[index as keyof typeof r].width / 1400,
+            left: r[index as keyof typeof r].left / 1400,
+        };
+    }
+    return p;
+};
 
 export const defaultPanelSnap = () => {
     return {
@@ -142,3 +157,32 @@ export const defaultWindow = () => {
         width: 1400,
     };
 };
+
+export function calcRatios(layouts: Layouts, panel: string) {
+    const sensitivity = 1000; // determines to how many decimal places the ratios are calculated
+    if (!layouts.hasOwnProperty('ratios')) layouts.ratios = {};
+    layouts.ratios[panel] = {
+        top:
+            Math.round(
+                ((layouts.positions[panel].top - 25) / layouts.window.height) *
+                    sensitivity,
+            ) / sensitivity,
+        height:
+            Math.round(
+                (layouts.positions[panel].height /
+                    (layouts.window.height - 25)) *
+                    sensitivity,
+            ) / sensitivity,
+        width:
+            Math.round(
+                (layouts.positions[panel].width / layouts.window.width) *
+                    sensitivity,
+            ) / sensitivity,
+        left:
+            Math.round(
+                (layouts.positions[panel].left / layouts.window.width) *
+                    sensitivity,
+            ) / sensitivity,
+    };
+    return layouts.ratios;
+}

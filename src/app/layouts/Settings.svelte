@@ -24,7 +24,7 @@
     import TagSelector from '../components/TagSelector.svelte';
     import { verify } from '../../db/database';
     import { initializeDocs } from '../utils/docs';
-    import { defaultPanelPositions, defaultPanelSnap, defaultWindow } from '../utils/layouts';
+    import { defaultPanelPositions, defaultPanelRatios, defaultPanelSnap, defaultWindow } from '../utils/layouts';
 
     let tag: string = $state('');
     let onlineFileVersion: string = $state('');
@@ -492,6 +492,7 @@
         const defaultLayouts: Lexc.Layouts = {
             window: defaultWindow(),
             positions: defaultPanelPositions(),
+            ratios: defaultPanelRatios(),
             snapping: defaultPanelSnap(),
             tabmode: 'switch',
             opentabs: [8],
@@ -612,12 +613,12 @@
                         <br>
                         <div style="display:flex">
                             x-axis:
-                            <input type=range bind:value={$CurrentLayouts.snapping.x} min=1 max=500 disabled={$CurrentLayouts.snapping.proportional}/>
+                            <input type=range bind:value={$CurrentLayouts.snapping.x} min=60 max=500 disabled={$CurrentLayouts.snapping.proportional}/>
                             {Math.round($CurrentLayouts.snapping.x)}
                         </div>
                         <div style="display:flex">
                             y-axis:
-                            <input type=range bind:value={$CurrentLayouts.snapping.y} min=1 max=500 disabled={$CurrentLayouts.snapping.proportional}/>
+                            <input type=range bind:value={$CurrentLayouts.snapping.y} min=60 max=500 disabled={$CurrentLayouts.snapping.proportional}/>
                             {Math.round($CurrentLayouts.snapping.y)}
                         </div>
                     </label>

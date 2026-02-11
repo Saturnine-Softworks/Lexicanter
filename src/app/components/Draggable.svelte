@@ -2,6 +2,8 @@
 <script lang=ts>
     import { onMount, type Snippet } from "svelte";
     import { CurrentLayouts, Language } from "../stores";
+    import type { Layouts } from "../types";
+    import { calcRatios } from "../utils/layouts";
     let { 
         panel, 
         auto_maximize = false,
@@ -66,7 +68,7 @@
 	}
 
     function snap(axis: 'top'|'left'|'height'|'width', panelOverride: string|false = false) {
-        let n = {
+        let snapSize = {
             left: $CurrentLayouts.snapping.x,
             width: $CurrentLayouts.snapping.x,
             top: $CurrentLayouts.snapping.y,
@@ -75,25 +77,36 @@
         let p = panelOverride? panelOverride : panel;
         
         return Math.round(
-            $CurrentLayouts.positions[p][axis] / n
-        ) * n + (axis==='top'? 25:0);
+            ($CurrentLayouts.positions[p][axis] - (axis==='top'? 10:0)) / snapSize // I don't truly understand why 10 seems to be the magic number here
+                                                                                   // in order to prevent the panel from shrinking and shooting to the 
+                                                                                   // bottom of the screen when the y snapSize gets below 50
+        ) * snapSize + (axis==='top'? 25:0);
     }
 
     function resizeSnap(panelOverride: string|false = false) {
         mousedown = true;
         let p = panelOverride? panelOverride : panel;
 
-        if ($CurrentLayouts.positions[p].left >= window.innerWidth) $CurrentLayouts.positions[p].left -= $CurrentLayouts.positions[p].left - window.innerWidth + $CurrentLayouts.positions[p].width;
-        if ($CurrentLayouts.positions[p].top >= window.innerHeight) $CurrentLayouts.positions[p].top -= $CurrentLayouts.positions[p].top - window.innerHeight + $CurrentLayouts.positions[p].height;
+        // sanity checks/resets
+        if ($CurrentLayouts.positions[p].left >= window.innerWidth) 
+            $CurrentLayouts.positions[p].left -= $CurrentLayouts.positions[p].left - window.innerWidth + $CurrentLayouts.positions[p].width;
+        if ($CurrentLayouts.positions[p].top >= window.innerHeight) 
+            $CurrentLayouts.positions[p].top -= $CurrentLayouts.positions[p].top - window.innerHeight + $CurrentLayouts.positions[p].height;
 
+        // do nothing further with minimum size panels
         if ($CurrentLayouts.positions[p].width === 60 && $CurrentLayouts.positions[p].height === 20)
             return;
 
+        // snap to grid
         $CurrentLayouts.positions[p].width = Math.max(snap('width', panelOverride), 60);
         $CurrentLayouts.positions[p].height = Math.max(snap('height', panelOverride), 20);
         
         $CurrentLayouts.positions[p].width -= Math.max(($CurrentLayouts.positions[p].left + $CurrentLayouts.positions[p].width) - window.innerWidth, 0);
         $CurrentLayouts.positions[p].height -= Math.max(($CurrentLayouts.positions[p].top + $CurrentLayouts.positions[p].height) - window.innerHeight, 0);
+
+        // recalc ratios
+        $CurrentLayouts.ratios = calcRatios($CurrentLayouts, p);
+
     }
 
     function maximize() {
@@ -214,6 +227,7 @@
         {/if}
         {
             // debug
+            // JSON.stringify($CurrentLayouts.ratios[panel]) +
             // JSON.stringify($CurrentLayouts.positions[panel].z) +
             // JSON.stringify($CurrentLayouts.snapping) +
             ""

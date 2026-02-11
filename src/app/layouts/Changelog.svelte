@@ -3,7 +3,7 @@
     import Draggable from "../components/Draggable.svelte";
     import { selectedTab } from "../stores";
 
-    const [MAJOR, MINOR, PATCH] = [0, 1, 2];
+    const [MAJOR, MINOR, PATCH, EX] = [0, 1, 2, 3];
     
     interface ChangelogEntry {
         type: number;
@@ -11,8 +11,14 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
-        '2.3.0': {
-            type: MINOR,
+        '2.3.0-1': {
+            type: EX,
+            notes: [
+                'Improved proportional window sizing: rapidly scaling the window should no longer break layouts, even complex ones.',
+            ]
+        },
+        '2.3.0-0': {
+            type: EX,
             notes: [
                 'Experimental implementation of the <a href="https://codeberg.org/zhuriel/tadpole/">Tadpole engine</a>.',
                 'Updated <a href="https://codeberg.org/zhuriel/graphemy/releases/tag/v0.6.0">Graphemy typesetter to v0.6.0</a>.',
@@ -406,7 +412,7 @@
             
                 <br><hr/><br>
                 {#each Object.keys(changelog) as version}
-                    <p><u>{['Overhaul', 'Update', 'Patch'][changelog[version].type]} {version}</u></p>
+                    <p><u>{['Overhaul', 'Update', 'Patch', 'Experiment'][changelog[version].type]} {version}</u></p>
                     <p style='width: 70%; margin: auto; text-align: left; line-height: 1.6'>
                         {#each changelog[version].notes as note}
                             • {@html note} <br>

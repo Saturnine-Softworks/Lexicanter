@@ -2,6 +2,7 @@ import { get, writable, type Writable } from 'svelte/store';
 import EditorJS, { type OutputData } from '@editorjs/editorjs';
 import {
     defaultPanelPositions,
+    defaultPanelRatios,
     defaultPanelSnap,
     defaultWindow,
 } from './utils/layouts';
@@ -9,6 +10,7 @@ import type * as Lexc from './types';
 
 export const CurrentLayouts: Writable<Lexc.Layouts> = writable({
     positions: defaultPanelPositions(),
+    ratios: defaultPanelRatios(),
     snapping: defaultPanelSnap(),
     window: defaultWindow(),
     tabmode: 'switch',
@@ -88,6 +90,7 @@ const Default: Lexc.Language = {
     Layouts: {
         tabmode: 'switch',
         positions: defaultPanelPositions(),
+        ratios: defaultPanelRatios(),
         snapping: defaultPanelSnap(),
         window: defaultWindow(),
         opentabs: [0],

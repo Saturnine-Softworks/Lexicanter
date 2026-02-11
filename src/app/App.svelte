@@ -50,9 +50,22 @@
             width: window.innerWidth,
             height: window.innerHeight
         }
+        // resize based on ratios
+        console.log($CurrentLayouts.ratios)
+        for (const p in $CurrentLayouts.positions) {
+            $CurrentLayouts.positions[p] = {
+                top: $CurrentLayouts.ratios[p].top * ($CurrentLayouts.window.height - 25),
+                left: $CurrentLayouts.ratios[p].left * $CurrentLayouts.window.width,
+                height: $CurrentLayouts.ratios[p].height * ($CurrentLayouts.window.height - 25),
+                width: $CurrentLayouts.ratios[p].width * $CurrentLayouts.window.width,
+                z: $CurrentLayouts.positions[p].z,
+            }
+        }
+
         if (!$CurrentLayouts.snapping.proportional) return;
-        $CurrentLayouts.snapping.x = Math.round(window.innerWidth / $CurrentLayouts.snapping.columns)
-        $CurrentLayouts.snapping.y = Math.round((window.innerHeight-25) / $CurrentLayouts.snapping.rows)
+        const sensitivity = 1000;
+        $CurrentLayouts.snapping.x = Math.round(window.innerWidth / $CurrentLayouts.snapping.columns * 100)/100
+        $CurrentLayouts.snapping.y = Math.round((window.innerHeight - 25) / $CurrentLayouts.snapping.rows * 100)/100
     }
 
     let version: string = $state('');

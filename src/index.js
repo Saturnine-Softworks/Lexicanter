@@ -65,6 +65,8 @@ function createWindow() {
     var mainWindow = new BrowserWindow({
         width: 1400,
         height: 900,
+        minHeight: 600,
+        minWidth: 400,
         autoHideMenuBar: true,
         titleBarStyle: 'hidden',
         titleBarOverlay: false,

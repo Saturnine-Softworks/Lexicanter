@@ -20,15 +20,15 @@ export async function get_pronunciation(
     word: string,
     lect: string,
 ): Promise<string> {
-    console.log(
-        'Requested pronunciation for ' +
-            word +
-            ' in ' +
-            lect +
-            ' using "' +
-            Lang().SoundChangeEngine +
-            '" engine.',
-    );
+    // console.log(
+    //     'Requested pronunciation for ' +
+    //         word +
+    //         ' in ' +
+    //         lect +
+    //         ' using "' +
+    //         Lang().SoundChangeEngine +
+    //         '" engine.',
+    // );
     const rules: string = Lang().Pronunciations[lect];
 
     if (Lang().SoundChangeEngine === 'legacy') {

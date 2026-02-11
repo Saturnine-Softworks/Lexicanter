@@ -180,6 +180,14 @@ export type Layouts = {
             z: number;
         };
     };
+    ratios: {
+        [index: string]: {
+            top: number;
+            left: number;
+            height: number;
+            width: number;
+        };
+    };
     snapping: {
         x: number;
         y: number;

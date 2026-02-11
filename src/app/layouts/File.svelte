@@ -10,7 +10,7 @@
     import { initializeDocs } from '../utils/docs';
     import Evolver from '../components/Evolver.svelte';
     import { verify } from '../../db/database';
-    import { defaultPanelPositions, defaultPanelSnap, defaultWindow } from '../utils/layouts';
+    import { calcRatios, defaultPanelPositions, defaultPanelRatios, defaultPanelSnap, defaultWindow } from '../utils/layouts';
 
     const vex = require('vex-js');
 
@@ -167,12 +167,22 @@
 
             errorMessage = 'There was a problem loading the layout.'
             if (contents.hasOwnProperty('Layouts')) {
-                if (!contents.Layouts.hasOwnProperty('showZ')) contents.Layouts.showZ = false // setting added in later patch
+                if (!contents.Layouts.hasOwnProperty('showZ')) // added in 2.3.0
+                    contents.Layouts.showZ = false 
+
+                if (!contents.Layouts.hasOwnProperty('ratios')) { // added in 2.3.1
+                    contents.Layouts.ratios = {} as Lexc.Layouts['ratios'];
+                    for (const p in contents.Layouts.positions) {
+                        contents.Layouts.ratios = calcRatios(contents.Layouts, p)
+
+                    }
+                }
+
+                $Language.Layouts = contents.Layouts;
                 window.resizeTo(contents.Layouts.window.width, contents.Layouts.window.height);
                 setTimeout(() => { 
                     // the window does not resize instantly, so waiting half a beat before 
                     // setting the panel settings ensures the window can fit everything
-                    $Language.Layouts = contents.Layouts;
                     $CurrentLayouts = contents.Layouts;
                     $selectedTab = $CurrentLayouts.opentabs;
                 }, 50);
@@ -183,6 +193,7 @@
                     opentabs: [7],
                     window: defaultWindow(),
                     positions: defaultPanelPositions(),
+                    ratios: defaultPanelRatios(),
                     snapping: defaultPanelSnap(),
                     showZ: false,
                 };

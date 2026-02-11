@@ -69,6 +69,6 @@ export async function tadpole(
             break;
     }
     const res = (await ffi('tadpole', parser_str, input, spec)) as string;
-    console.log('result: ', res);
+    // console.log('result: ', res);
     return res;
 }
