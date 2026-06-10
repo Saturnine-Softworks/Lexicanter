@@ -12,12 +12,12 @@
                     font-family: 'Fira Code', Courier, monospace;
                     text-align: left;
                     size: 12pt;
-                ">{pronunciations[lect].ipa}</span>
+                "> {pronunciations[lect].ipa} </span>
             {:else}
-                <p class="lect">
+                <p class=lect>
                     <u>{lect}</u>
-                    <span class="pronunciation">
-                        {pronunciations[lect].ipa}
+                    <span class=pronunciation style={$Language.PronunciationsDisplay.small? '' : 'font-size: 11pt !important'}>
+                        {$Language.PronunciationsDisplay.circumfix[0]}{pronunciations[lect].ipa}{$Language.PronunciationsDisplay.circumfix[1]}
                         {#if pronunciations[lect].irregular}
                             <span class='material-icons' 
                                 style='font-size:0.75em; margin-right:-1em'>
@@ -33,10 +33,14 @@
                 font-family: 'Fira Code', Courier, monospace;
                 text-align: left;
                 font-size: 8pt;
-            ">{pronunciations[$Language.Lects[0]].ipa}</p>
+            ">
+                {pronunciations[$Language.Lects[0]].ipa}
+            </p>
         {:else}
-            <p class="pronunciation">
-                <span class=pronunciation>{pronunciations[$Language.Lects[0]].ipa}</span>
+            <p class=pronunciation>
+                <span class=pronunciation style={$Language.PronunciationsDisplay.small? '' : 'font-size: 11pt !important'}>
+                    {$Language.PronunciationsDisplay.circumfix[0]}{pronunciations[$Language.Lects[0]].ipa}{$Language.PronunciationsDisplay.circumfix[1]}
+                </span>
                 {#if pronunciations[$Language.Lects[0]].irregular}
                     <span class='material-icons' 
                         style='font-size:0.75em; margin-right:-1em'>

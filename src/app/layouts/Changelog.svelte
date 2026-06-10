@@ -11,20 +11,23 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
-        '2.3.0-1': {
-            type: EX,
+        '2.3.0': {
+            type: MINOR,
             notes: [
+                'Re-implemented and-wise and or-wise lexicon search filtering: use <code>&&</code> and <code>||</code> in the search bars to find the words you need.',
+                'Added pronunciation circumfix and font size options (under Appearance Settings).',
+                'Added italicization toggle for base romanization display (under Appearance Settings).',
+                'Added tabs and semicolons as delimiter options for CSV/TSV import.',
+                'Added ability to change the display order of panels (z-index).',
                 'Improved proportional window sizing: rapidly scaling the window should no longer break layouts, even complex ones.',
-            ]
-        },
-        '2.3.0-0': {
-            type: EX,
-            notes: [
                 'Experimental implementation of the <a href="https://codeberg.org/zhuriel/tadpole/">Tadpole engine</a>.',
                 'Updated <a href="https://codeberg.org/zhuriel/graphemy/releases/tag/v0.6.0">Graphemy typesetter to v0.6.0</a>.',
-                'Added ability to change the display order of panels (z-index).',
-                'Added tabs and semicolons as delimiter options for CSV/TSV import.',
-                'Fixed a minor display issue where the end of pages in the Help tab could not be read.'
+                'Adjusted the Juniper color theme to have better contrast for better legibility.',
+                'Fixed an old issue causing the lexicon not to scroll to newly added words.',
+                'Fixed a minor display issue where the end of pages in the Help tab could not be read.',
+                'Fixed missing lexicon scroll bar issue.',
+                'Fixed a stroke width issue with Graphemy-rendered characters.',
+                'Fixed an issue with lexicon filtering where using <code>^</code> as a word-edge character often did not work correctly.',
             ]
         },
         '2.2.5': {

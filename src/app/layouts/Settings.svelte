@@ -586,10 +586,13 @@
                 <button class="hover-highlight hover-shadow" onclick={custom_theme}> Load Custom Theme… </button>
                 <br>
                 <div class=narrow>
-                    <label>Floating Pane Position Grid Snap
+                    <label>Floating Pane Grid Snap
                         <br><br>
-                        <input type=checkbox bind:checked={$CurrentLayouts.snapping.proportional}/>
-                        <p>Keep proportional to window size</p>
+                        <p>
+                            Keep proportional to window size
+                            <input type=checkbox bind:checked={$CurrentLayouts.snapping.proportional}/>
+                        </p>
+                        <br>
                         {#if $CurrentLayouts.snapping.proportional}
                             <div class='row narrow'>
                                 <div class=column>
@@ -651,6 +654,28 @@
                             <button onclick={async () => await export_layout()}>Export Layout</button>
                         </div>
                     </div>
+                </div>
+                <br><br>
+                <div class=narrow>
+                    <label>Pronunciation Display
+                        <br>
+                        <p>Circumfix</p>
+                        <input type=text style='width: 2em; display:inline' bind:value={$Language.PronunciationsDisplay.circumfix[0]}> 
+                        ipa 
+                        <input type=text style='width: 2em; display:inline' bind:value={$Language.PronunciationsDisplay.circumfix[1]}>
+                        <br><br>
+                        <p>
+                            Smaller Font Size
+                            <input type=checkbox bind:checked={$Language.PronunciationsDisplay.small}>
+                        </p>
+                    </label>
+                    <br><br>
+                    <label>Romanization Display
+                        <p>
+                            Italicize
+                            <input type=checkbox bind:checked={$Language.RomanizationDisplay.italic}>
+                        </p>
+                    </label>
                 </div>
                 <br><hr/><br>
                 <p>Save Settings</p> <br>

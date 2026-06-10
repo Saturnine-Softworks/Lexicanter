@@ -304,6 +304,7 @@
                             class=pronunciation 
                             rows=2
                             readonly
+                            style={$Language.PronunciationsDisplay.small? '' : 'size: 11pt'}
                         ></textarea>
                     {:then test_res} 
                         <textarea

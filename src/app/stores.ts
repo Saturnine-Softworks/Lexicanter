@@ -34,7 +34,7 @@ const Default: Lexc.Language = {
     Lexicon: <Lexc.Lexicon>{},
     Etymologies: <Lexc.Etymologies>{},
     Relatives: {},
-    SoundChangeEngine: 'tadpole.lexc',
+    SoundChangeEngine: 'legacy',
     Pronunciations: <Lexc.Pronunciations>{
         General:
             'Use this field to write pronunciation rules to automatically transcribe your orthography in IPA. For example,\n' +
@@ -50,6 +50,8 @@ const Default: Lexc.Language = {
             'e > ɛ\n' +
             'Now both rules will be applied correctly. You can test this by removing the first set of rules from this demo.',
     },
+    PronunciationsDisplay: { circumfix: ['/', '/'], small: true },
+    RomanizationDisplay: { italic: true },
     Orthographies: <Lexc.Orthography[]>[
         {
             name: 'Romanization',

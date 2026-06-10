@@ -16,7 +16,7 @@
 
 <!--                                                     check if source is a phrase/variant entry, use appropriate setting -->
 {#if $Language.Orthographies.find(o => o.name === 'Romanization')!['description' in source? 'displayInPhrasebook' : 'display']}
-        <p style="font-style: italic">{word}</p>
+        <p style={$Language.RomanizationDisplay.italic? 'font-style: italic' : ''}>{word}</p>
 {/if}
 {#each $Language.Orthographies as ortho}
     {#if ortho.name !== 'Romanization' 

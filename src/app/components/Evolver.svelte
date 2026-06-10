@@ -54,7 +54,7 @@
             {#await soundChange(testChanges)}
                 <textarea rows=3 class=pronunciation value=… readonly></textarea>
             {:then testRes} 
-                <textarea rows=3 class=pronunciation value={testRes} readonly></textarea>
+                <textarea rows=3 class=pronunciation value={testRes} style={$Language.PronunciationsDisplay.small? '' : 'font-size: 11pt'} readonly></textarea>
             {/await}
         </label>
         

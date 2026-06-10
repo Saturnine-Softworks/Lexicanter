@@ -30,25 +30,6 @@
         })();
     } 
 
-    function scrollIntoView(word: string) {
-        const entry = document.getElementById(word);
-        if (entry) {
-            if (!!$selectedTab) {
-                $Language.Layouts.tabmode === 'switch'
-                    ? $selectedTab = [0]
-                    : $selectedTab.push(0)
-            };
-            searchDefinitions = ''; searchTags = ''; searchWords = ''; lectFilter = '';
-            entry.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-            })
-        };
-    }
-    ipcRenderer.on('lexicon link', (_:any, word: string) => {
-        console.log('link:', word);
-        scrollIntoView(word);
-    });
 
     /**
      * This function is used to delete an entry from the lexicon and
@@ -99,84 +80,94 @@
      * selected as matches. 
      */
     function search_lex(): void {
-        let words_search = $Language.CaseSensitive?  searchWords.trim() : searchWords.toLowerCase().trim();
+        let words_search = $Language.CaseSensitive? searchWords.trim() : searchWords.toLowerCase().trim();
         let definitions_search = searchDefinitions.toLowerCase().trim();
         let tags_search = searchTags.toLowerCase().trim();
         keys = [];
         if (!!words_search || !!definitions_search || !!tags_search || !!lectFilter) { // if there is at least one search term
-            for (let word in $Language.Lexicon) {
-                let entry = $Language.Lexicon[word];
-                let match = true;
-
-                // check lect filter
-                if ( !!lectFilter ) {
-                    if ( !entry.Senses.some(sense => sense.lects.includes(lectFilter)) ) {
-                        match = false;
-                        continue;
-                    }
-                }
-
-                // check word
-                if ( !!words_search ) {
-                    let caseFixedWord = $Language.CaseSensitive? word : word.toLowerCase();
-                    if ( words_search[0] === '!') { // requires exact match
-                        if (caseFixedWord !== words_search.split('!')[1]) {
+            words_search.split(/\s*\|\|\s*/).forEach(words => {
+            definitions_search.split(/\s*\|\|\s*/).forEach(definitions => {
+            tags_search.split(/\s*\|\|\s*/).forEach(tags => {
+                for (let word in $Language.Lexicon) {
+                    let entry = $Language.Lexicon[word];
+                    let match = true;
+    
+                    // check lect filter
+                    if ( !!lectFilter ) {
+                        if ( !entry.Senses.some(sense => sense.lects.includes(lectFilter)) ) {
                             match = false;
                             continue;
                         }
-                    } else if ( !('^' + caseFixedWord.replaceAll(/\s+/g, '^') + '^').includes(words_search.replaceAll(/\s+/g, '^')) ) {
-                        // searches for inexact match
-                        match = false;
-                        continue;
                     }
-                }
-
-                // check definitions
-                if ( !!definitions_search ) {
-                    if ( definitions_search[0] === '!' ) { // requires exact match
-                        if (!entry.Senses.some(sense => {
-                            return sense.definition === definitions_search.split('!')[1]
-                        })) {
-                            match = false;
-                            continue;
-                        }
-                    } else if (!entry.Senses.some(sense =>
-                        ["^", sense.definition, "^"]
-                        .join()
-                        .replaceAll(/\s+/g, '^')
-                        .toLowerCase()
-                        .includes(
-                            definitions_search
-                            .replaceAll(/\s+/g, '^')
-                        )
-                    )) {
-                        // searches for inexact match
-                        match = false;
-                        continue;
-                    }
-                }
-
-                // check tags
-                if ( !!tags_search ) {
-                    let tag_search_array = tags_search.split(/\s+/);
-                    for (let tag_search of tag_search_array) {
-                        if (tag_search[0] === '!') { // requires exact match (per tag basis)
-                            if (!entry.Senses.some(sense => sense.tags.some(tag => tag.toLowerCase() === tag_search.split('!')[1]))) {
+    
+                    // check word
+                    if ( !!words ) {
+                        words.split(/\s*&&\s*/).forEach(search_term => {
+                            let caseFixedWord = $Language.CaseSensitive? word : word.toLowerCase();
+                            if ( search_term[0] === '!') { // requires exact match
+                                if (caseFixedWord !== search_term.split('!')[1]) {
+                                    match = false;
+                                    // continue;
+                                }
+                            } else if ( !('^' + caseFixedWord.replaceAll(/\s+/g, '^') + '^').includes(search_term.replaceAll(/\s+/g, '^')) ) {
+                                // searches for inexact match
                                 match = false;
-                                continue;
+                                // continue;
                             }
-                        } else if ( !entry.Senses.some(sense => sense.tags.some(tag => `^${tag.toLowerCase()}^`.includes(tag_search))) ) { 
-                            // searches for inexact match (per tag basis)
-                            match = false;
-                            continue;
-                        }
+                        })
+                    }
+                    if ( !match ) continue;
+    
+                    // check definitions
+                    if ( !!definitions ) {
+                        definitions.split(/\s*&&\s*/).forEach(search_term => {
+                            if ( search_term[0] === '!' ) { // requires exact match
+                                if (!entry.Senses.some(sense => {
+                                    return sense.definition === search_term.split('!')[1]
+                                })) {
+                                    match = false;
+                                    // continue;
+                                }
+                            } else if (!entry.Senses.some(sense =>
+                                ('^' + sense.definition + '^')
+                                .replaceAll(/\s+/g, '^')
+                                .toLowerCase()
+                                .includes(
+                                    search_term
+                                    .replaceAll(/\s+/g, '^')
+                                )
+                            )) {
+                                // searches for inexact match
+                                match = false;
+                                // continue;
+                            }
+                        })
+                    }
+    
+                    if ( !match ) continue;
+    
+                    // check tags
+                    if ( !!tags ) {
+                            let tag_search_array = tags.split(/\s+/);
+                            for (let tag_search of tag_search_array) {
+                                if (tag_search[0] === '!') { // requires exact match (per tag basis)
+                                    if (!entry.Senses.some(sense => sense.tags.some(tag => tag.toLowerCase() === tag_search.split('!')[1]))) {
+                                        match = false;
+                                        continue;
+                                    }
+                                } else if ( !entry.Senses.some(sense => sense.tags.some(tag => `^${tag.toLowerCase()}^`.includes(tag_search))) ) { 
+                                    // searches for inexact match (per tag basis)
+                                    match = false;
+                                    continue;
+                                }
+                            }
+                    }
+    
+                    if ( match ) {
+                        keys = [...keys, word];
                     }
                 }
-
-                if ( match ) {
-                    keys = [...keys, word];
-                }
-            }
+            }) }) })
             if (!keys.length) {keys = [null]}; // Search was attempted, no results
         }
     }
@@ -202,11 +193,11 @@
     <div class='container glasspane' style='
         overflow: hidden;
         postion: relative;
-        width: 100%;
+
     ' bind:clientWidth={displayWidth}>
         <section id=search-filters style='
             position: absolute;
-            width: {displayWidth}px;
+            width: {displayWidth-15}px;
         '>
             <div class='row'>
                 <div class="column search-container">
@@ -243,11 +234,11 @@
                 {/if}
             </div>
         </section>
-        <div class='scrolled' style='
+        <div class=scrolled id=lexicon-container style='
             position: absolute;
             top: 95px;
             max-height: {$CurrentLayouts.positions['lexicon'].height - 95}px;
-            width: {displayWidth}px;
+            width: {displayWidth-6}px;
         '>
             {#if displayWidth > 1200}
 
@@ -293,7 +284,7 @@
         <p id=entry-counter bind:clientWidth={entryCounterWidth} style='
             position: absolute;
             top: {$CurrentLayouts.positions['lexicon'].height - 30}px;
-            left: {displayWidth/2 - entryCounterWidth/2}px;
+            left: {displayWidth/2 - 5 - entryCounterWidth/2}px;
         '>
             {#if !!keys[0]} <!-- if there is a search being attempted -->
                 {!!keys[0]? keys.length : '0'} {(keys.length === 1 && !!keys[0])? 'Match' : 'Matches'}

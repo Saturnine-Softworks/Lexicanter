@@ -36,7 +36,7 @@
             </div>
         {/each}
     {:else}
-        <input type=text class=pronunciation bind:value={pronunciations['General'].ipa}>
+        <input type=text class=pronunciation bind:value={pronunciations['General'].ipa} style={$Language.PronunciationsDisplay.small? '' : 'size: 11pt'}>
     {/if}
     <textarea bind:value={description}></textarea>
     <br>

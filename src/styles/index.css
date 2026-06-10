@@ -250,6 +250,7 @@ h6 {
     font-size: 11pt;
     transition: 0.3s;
     padding: 1em;
+    border-radius: 1em;
 }
 
 .variants {
@@ -483,6 +484,10 @@ td {
 .inflection h6,
 .reference h6 {
     font-size: 0.8em;
+}
+
+.grapheme-svg svg {
+    stroke: none;
 }
 
 ::-webkit-resizer {

@@ -45,26 +45,6 @@
         lectSet = Array.from(new Set(senses.map(sense => [...sense.lects]).flat().filter(lect => $Language.Lects.includes(lect))))
     }
 
-    function scrollIntoView(word: string) {
-        const entry = document.getElementById(word);
-        if (entry) {
-            if (!!$selectedTab) {
-                $Language.Layouts.tabmode === 'switch'
-                    ? $selectedTab = [0]
-                    : $selectedTab.push(0)
-            };
-            searchDefinitions = ''; searchTags = ''; searchWords = ''; lectFilter = '';
-            entry.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-            })
-        };
-    }
-    ipcRenderer.on('lexicon link', (_:any, word: string) => {
-        console.log('link:', word);
-        scrollIntoView(word);
-    });
-
 </script>
 
 <Draggable panel=alphabet>

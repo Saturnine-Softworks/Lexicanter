@@ -226,6 +226,8 @@ export type Language = {
     ShowAlphabet: boolean;
     SoundChangeEngine: SoundChangeEngine;
     Pronunciations: Pronunciations;
+    PronunciationsDisplay: { circumfix: [string, string]; small: boolean };
+    RomanizationDisplay: { italic: boolean };
     Orthographies: Orthography[];
     ShowPronunciation: boolean;
     ShowOrthography: boolean;

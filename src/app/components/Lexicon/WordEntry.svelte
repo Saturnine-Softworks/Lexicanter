@@ -75,7 +75,10 @@
         $Language.Lexicon = {...$Language.Lexicon}; // assignment trigger
 
         // scroll to added word
-        window.setTimeout(() => ipcRenderer.send('lexicon link', word), 50);
+        window.setTimeout(
+            () => document.getElementById('lexicon-container')!.scrollTop = document.getElementById(word)!.offsetTop,
+            100
+        );
 
         $wordInput = '';
         $pronunciations = (()=>{

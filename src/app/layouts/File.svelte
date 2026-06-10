@@ -78,6 +78,12 @@
             if (contents.hasOwnProperty('ShowPronunciation')) {
                 $Language.ShowPronunciation = contents.ShowPronunciation;
             }
+            if (contents.hasOwnProperty('PronunciationsDisplay')) {
+                $Language.PronunciationsDisplay = contents.PronunciationsDisplay;
+            }
+            if (contents.hasOwnProperty('RomanizationDisplay')) {
+                $Language.RomanizationDisplay = contents.RomanizationDisplay;
+            }
             if (contents.hasOwnProperty('SaveLocation')) {
                 $Language.SaveLocation = contents.SaveLocation;
             }

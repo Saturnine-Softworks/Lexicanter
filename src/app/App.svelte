@@ -92,7 +92,7 @@
                     margin-right: .5rem;
                     margin-top: .25rem;
                 '>
-                    <em><i>β</i></em>-{version}-{platform}
+                    <em><i>v</i></em>-{version}-{platform}
                 </p>
                 <div class="button-container">
                     {#each tab_btns as tab, i}

@@ -1,7 +1,7 @@
 {
     "name": "lexicanter",
     "productName": "Lexicanter",
-    "version": "2.3.0-1",
+    "version": "2.3.0",
     "description": "A lexicon management tool for constructed languages.",
     "main": "src/index.js",
     "scripts": {
@@ -28,7 +28,7 @@
         "npmRebuild": false,
         "publish": {
             "provider": "github",
-            "releaseType": "prerelease",
+            "releaseType": "release",
             "vPrefixedTagName": false
         },
         "appId": "com.lexicanter.app",
@@ -179,31 +179,31 @@
         "vex-js": "4.1.0"
     },
     "devDependencies": {
-        "@eslint/js": "9.37.0",
-        "@sveltejs/vite-plugin-svelte": "6.2.1",
-        "@tsconfig/svelte": "5.0.5",
+        "@eslint/js": "10.0.1",
+        "@sveltejs/vite-plugin-svelte": "7.1.2",
+        "@tsconfig/svelte": "5.0.8",
         "@types/moo": "0.5.10",
         "@types/nearley": "2.11.5",
-        "@typescript-eslint/eslint-plugin": "8.46.1",
-        "@typescript-eslint/parser": "8.46.1",
+        "@typescript-eslint/eslint-plugin": "8.60.1",
+        "@typescript-eslint/parser": "8.60.1",
         "@vitest/coverage-v8": "3.2.4",
         "dotenv": "^17.2.3",
-        "electron": "38.3.0",
+        "electron": "42.3.3",
         "electron-builder": "26.0.12",
         "electron-notarize": "^1.2.2",
         "eslint": "9.37.0",
         "globals": "16.4.0",
         "mdsvex": "0.12.6",
         "prettier": "^3.6.2",
-        "svelte": "5.40.2",
-        "svelte-check": "4.3.3",
-        "svelte-preprocess": "6.0.3",
+        "svelte": "5.56.2",
+        "svelte-check": "4.6.0",
+        "svelte-preprocess": "6.0.5",
         "tslab": "^1.0.22",
         "tslib": "2.8.1",
-        "typescript": "5.9.3",
-        "typescript-eslint": "8.46.1",
-        "vite": "7.1.10",
-        "vite-plugin-electron-renderer": "0.14.6",
-        "vitest": "3.2.4"
+        "typescript": "6.0.3",
+        "typescript-eslint": "8.60.1",
+        "vite": "8.0.16",
+        "vite-plugin-electron-renderer": "1.0.0",
+        "vitest": "4.1.8"
     }
 }
