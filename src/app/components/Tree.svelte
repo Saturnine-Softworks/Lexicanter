@@ -3,8 +3,8 @@
     import { draw, blur } from 'svelte/transition';
     type Node = {
         name: string;
-        children: { name: string, source: string }[];
-        parents: { name: string, source: string }[];
+        children: { name: string, supplement: string, source: string }[];
+        parents: { name: string, supplement: string, source: string }[];
     }
 
     let {
@@ -38,26 +38,32 @@
             }}>
                 <rect class="lex"
                     x={(width / (tree.parents.length + 1)) * (i + 1) - 60}
-                    y={(height)/9 - dYparents[i] - 15 + Math.max(...dYparents)}
+                    y={(height)/9 - dYparents[i] + -15 + Math.max(...dYparents)}
                     width="120"
                 />
                 <text class="lex-entry" transition:blur="{{amount: 10, duration: 999}}"
                     x={(width / (tree.parents.length + 1)) * (i + 1)}
-                    y={(height)/9 - dYparents[i] + Math.max(...dYparents)}
+                    y={(height)/9 - dYparents[i] + 0 + Math.max(...dYparents)}
                     text-anchor="middle"
                     dominant-baseline="middle"
                 > { parent.name } </text>
-                <text class="tag-item" transition:blur="{{amount: 10, duration: 999}}"
+                <text class=tag-item transition:blur="{{amount: 10, duration: 999}}"
                     x={(width / (tree.parents.length + 1)) * (i + 1)}
                     y={(height)/9 - dYparents[i] + 15 + Math.max(...dYparents)}
                     text-anchor="middle"
                     dominant-baseline="middle"
                 > { parent.source } </text>
+                <text class='lex-entry' transition:blur="{{amount: 10, duration: 999}}"
+                x={(width / (tree.parents.length + 1)) * (i + 1)}
+                y={(height)/9 - dYparents[i] + 30 + Math.max(...dYparents)}
+                text-anchor="middle"
+                dominant-baseline="middle"
+            > { parent.supplement } </text>
                 <path transition:draw="{{duration: 999}}"
                     d = {
                         `M ${(width / (tree.parents.length + 1)) * (i + 1)}, ${(height)/9 - dYparents[i] + 20 + Math.max(...dYparents)} `
-                        + `C ${(width / (tree.parents.length + 1)) * (i + 1)}, ${(height)/9 - dYparents[i] + 50 + Math.max(...dYparents)} `
-                        + ` ${width/2}, ${height/2 - 40} `
+                        + `C ${(width / (tree.parents.length + 1)) * (i + 1)}, ${(height)/9 - dYparents[i] + 30 + Math.max(...dYparents)} `
+                        + ` ${width/2}, ${height/2 - 60} `
                         + ` ${width/2}, ${height/2 - 10}`
                     }
                     fill="none"
@@ -79,12 +85,12 @@
             }}>
                 <rect class="lex"
                     x={(width / (tree.children.length + 1)) * (i + 1) - 60}
-                    y={(height + dYchildren[i]) - height/9 - 15 - Math.max(...dYchildren)}
+                    y={(height + dYchildren[i]) - height/9 + -15 - Math.max(...dYchildren)}
                     width="120"
                 />
                 <text class="lex-entry" transition:blur="{{amount: 10, duration: 999}}"
                     x={(width / (tree.children.length + 1)) * (i + 1)}
-                    y={(height + dYchildren[i]) - height/9 - Math.max(...dYchildren)}
+                    y={(height + dYchildren[i]) - height/9 + 0 - Math.max(...dYchildren)}
                     text-anchor="middle"
                     dominant-baseline="middle"
                 > { child.name } </text>
@@ -94,6 +100,12 @@
                     text-anchor="middle"
                     dominant-baseline="middle"
                 > { child.source } </text>
+                <text class='' transition:blur="{{amount: 10, duration: 999}}"
+                x={(width / (tree.children.length + 1)) * (i + 1)}
+                y={(height + dYchildren[i]) - height/9 + 30 - Math.max(...dYchildren)}
+                text-anchor="middle"
+                dominant-baseline="middle"
+            > { child.supplement } </text>
                 <path transition:draw="{{duration: 999}}"
                     d = {
                         `M ${width/2}, ${height/2 + 10} `

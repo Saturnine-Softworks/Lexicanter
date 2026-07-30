@@ -49,6 +49,20 @@
         let ancestorString = '';
         let lastGen = '';
         ancestors.forEach(generation => {
+            for (let i = 0; i < generation.length; i++) {
+                let name = generation[i];
+                generation[i] = $Language.Etymologies[name]?.source !== '<< THIS LANGUAGE >>' ? 
+                    $Language.Etymologies[name].source + " *" + generation[i] + "*"
+                  : generation[i] ;
+                try {
+                    generation[i] = $Language.Etymologies[name]?.supplement !== '' ?
+                        generation[i] + ' (' + $Language.Etymologies[name].supplement + ')'
+                      : generation[i] ;
+                } catch ( err ) {
+                    console.log(generation[i], $Language.Etymologies[generation[i]])
+                    console.error(err)
+                }
+            }
             let newGen = generation.join(', ');
             if (newGen !== lastGen) ancestorString += newGen + ' → ';
             lastGen = newGen;
@@ -90,9 +104,10 @@
         {#if $Language.ShowInflection || showInflections}
             <Inflections {word} tags={Sense.tags} />
         {/if}
-        {#if $Language.ShowEtymology && !!entryAncestors && showEtymology}
-            <div class='tag-item'>etymology</div>
-            <p class="lex-body"><i>{entryAncestors}</i></p>
+        {#if $Language.ShowEtymology && !!entryAncestors && showEtymology && i === source.Senses.length - 1}
+            <br>
+            <span style='font-variant: small-caps'>⋲ etymology ⋺</span>
+            <p class="lex-body">{@html markdownToHtml(entryAncestors)}</p>
         {/if}
     {/each}
 </div>

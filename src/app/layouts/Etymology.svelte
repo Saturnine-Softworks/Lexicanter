@@ -6,8 +6,8 @@
     import Tree from '../components/Tree.svelte';
     import Draggable from '../components/Draggable.svelte';
     import LexEntry from '../components/Lexicon/LexEntry.svelte';
-    let newParent: string[] = $state(['', '']);
-    let newChild: string[] = $state(['', '']);
+    let newParent: string[] = $state(['', '', '']);
+    let newChild: string[] = $state(['', '', '']);
     let manualParentEntry: boolean = $state(false); 
     let manualChildEntry: boolean = $state(false);
 
@@ -48,26 +48,29 @@
     let search: string = $state('');
 
     function searchEntries() {
-        let mergedLexicons: Lexc.Lexicon = {};
-        for (const name in $Language.Relatives) {
-            mergedLexicons = { ...mergedLexicons, ...$Language.Relatives[name] };
-        }
-        mergedLexicons = { ...mergedLexicons, ...$Language.Lexicon };
-        keys = Object.keys(mergedLexicons).filter(entry => {
-            let term: string;
-            term = $Language.CaseSensitive? entry : entry.toLowerCase()
-            term = $Language.IgnoreDiacritics? entry.normalize('NFD') : entry;
-            let search_term: string;
-            search_term = $Language.CaseSensitive? search : search.toLowerCase();
-            search_term = $Language.IgnoreDiacritics? search_term.normalize('NFD') : search_term;
-            return `^${term.replaceAll(/\s+/g, '^')}^`.includes(search_term);
-        });
+        if (search !== '') {
+            let mergedLexicons = {};
+            for (const name in $Language.Relatives) {
+                mergedLexicons = { ...mergedLexicons, ...$Language.Relatives[name] };
+            }
+            mergedLexicons = { ...mergedLexicons, ...$Language.Lexicon, ...$Language.Etymologies  };
+            keys = Object.keys(mergedLexicons).filter(entry => {
+                let term: string;
+                term = $Language.CaseSensitive? entry : entry.toLowerCase()
+                term = $Language.IgnoreDiacritics? entry.normalize('NFD') : entry;
+                let search_term: string;
+                search_term = $Language.CaseSensitive? search : search.toLowerCase();
+                search_term = $Language.IgnoreDiacritics? search_term.normalize('NFD') : search_term;
+                return `^${term.replaceAll(/\s+/g, '^')}^`.includes(search_term);
+            });
+            if (!keys.length) keys = ['<< no match >>']
+        } else keys = []
     }
     
     type Node = {
         name: string;
-        children: { name: string, source: string }[];
-        parents: { name: string, source: string }[];
+        children: { name: string, supplement: string, source: string }[];
+        parents: { name: string, supplement: string, source: string }[];
     };
 
     function createTreeData(): Node {
@@ -77,8 +80,10 @@
             if (entry === selectedEntry) return;
             if ($Language.Etymologies[entry].descendants.some(descendant => descendant.name === selectedEntry)) {
                 const source: string = $Language.Etymologies[entry].source === '<< THIS LANGUAGE >>'? $Language.Name : $Language.Etymologies[entry].source;
+                const supplement: string = $Language.Etymologies[entry].supplement;
                 parents.push([
                     entry,
+                    supplement,
                     source
                 ]);
             }
@@ -89,6 +94,7 @@
             $Language.Etymologies[selectedEntry].descendants.forEach(descendant => {
                 children.push([
                     descendant.name, 
+                    $Language.Etymologies[descendant.name].supplement,
                     descendant.source === '<< THIS LANGUAGE >>'? $Language.Name : descendant.source
                 ]);
             });
@@ -96,8 +102,8 @@
         // create the tree data
         return {
             name: selectedEntry,
-            children: children.map(child => { return {name: child[0], source: child[1]} }),
-            parents: parents.map(parent => { return {name: parent[0], source: parent[1]} })
+            children: children.map(child => { return {name: child[0], supplement: child[1], source: child[2]} }),
+            parents: parents.map(parent => { return {name: parent[0], supplement: parent[1], source: parent[2]} })
         };
     }
 
@@ -132,6 +138,15 @@
                                 source={$Language.Relatives[ Object.entries($Language.Relatives).find(([_, lex]) => Object.keys(lex).includes(selectedEntry))![0] ][selectedEntry]}
                                 showEtymology={false}
                             />
+                        {:else}
+                            <div class=narrow>
+                                <span class=lex-entry>{selectedEntry}</span> <br>
+                                <span class=tag-item>{$Language.Etymologies[selectedEntry].source}</span>
+                                <br>
+                                <label>Supplement
+                                    <input type=text placeholder='e.g. definition showing semantic drift' bind:value={$Language.Etymologies[selectedEntry].supplement}>
+                                </label>
+                            </div>
                         {/if}
                     {:else}
                         <p class='info'>Select an entry from the left to view and edit its etymology.</p>
@@ -173,11 +188,16 @@
                                     <input type='text' bind:value={newParent[1]} />
                                 </label>
                             {/if}
+                            <br>
+                            <label>Supplement
+                                <input type=text class=narrow placeholder='e.g. definition to show semantic drift' bind:value={newParent[2]}>
+                            </label>
                             <button class='hover-highlight hover-shadow' onclick={() => {
                                 if (!newParent[0]) return;
                                 if (!(newParent[0] in $Language.Etymologies))
                                     $Language.Etymologies[newParent[0]] = {
                                         source: newParent[1] === $Language.Name? '<< THIS LANGUAGE >>' : newParent[1],
+                                        supplement: newParent[2],
                                         descendants: []
                                     };
                                 $Language.Etymologies[newParent[0]].descendants.push({
@@ -185,7 +205,7 @@
                                     source: $Language.Etymologies[selectedEntry].source
                                 });
                                 $Language.Etymologies = {...$Language.Etymologies};
-                                newParent = ['', ''];
+                                newParent = ['', '', ''];
                             }}>Link</button>
                             <div class='column scrolled'>
                                 {#each tree.parents as parent}
@@ -211,7 +231,7 @@
                         <div class='column'>
                             <p>Descendants</p>
                             <label>Manual Entry
-                                <input type='checkbox' bind:checked={manualChildEntry} />
+                                <input type=checkbox bind:checked={manualChildEntry} />
                             </label>
                             {#if !manualChildEntry}
                                 <select bind:value={newChild[0]} onchange={() => newChild[1] = $Language.Name}>
@@ -234,11 +254,16 @@
                                     <input type='text' bind:value={newChild[1]} />
                                 </label>
                             {/if}
+                            <br>
+                            <label>Supplement
+                                <input type=text class=narrow placeholder="e.g. definition to show semantic drift" bind:value={newChild[2]}>
+                            </label>
                             <button class='hover-highlight hover-shadow' onclick={() => {
                                 if (!newChild[0]) return;
                                 if (!(newChild[0] in $Language.Etymologies))
                                     $Language.Etymologies[newChild[0]] = {
                                         source: newChild[1],
+                                        supplement: newChild[2],
                                         descendants: []
                                     };
                                 $Language.Etymologies[selectedEntry].descendants.push({
@@ -246,7 +271,7 @@
                                     source: newChild[1] === $Language.Name? '<< THIS LANGUAGE >>' : newChild[1]
                                 });
                                 $Language.Etymologies = {...$Language.Etymologies};
-                                newChild = ['', ''];
+                                newChild = ['', '', ''];
                             }}>Link</button>
                             <div class='column scrolled'>
                                 {#if tree}
@@ -294,7 +319,7 @@
                             oninput={searchEntries}
                         />
                     </div>
-                    <p>⦓ <i>Internal</i> ⦔</p>
+                    <span style='font-variant: small-caps; font-weight: bold;'>⋲ internal ⋺</span>
                     <div class='column scrolled' style='max-height: 40%'>
                         {#each alphabetized as entry, i}
                             <div class='lex-entry' class:selected={entry === selectedEntry}
@@ -303,6 +328,7 @@
                                     if (!(entry in $Language.Etymologies))
                                         $Language.Etymologies[entry] = {
                                             descendants: [],
+                                            supplement: '',
                                             source: '<< THIS LANGUAGE >>'
                                         }
                                 }}
@@ -315,7 +341,7 @@
                         {/each}
                     </div>
                     <br>
-                    <p>⦔ <i>External</i> ⦓</p>
+                    <span style='font-variant: small-caps; font-weight: bold;'>⋺ external ⋲</span>
                     <div class='column scrolled' style='max-height: 40%'>
                         {#each externalAlphabetized as entry, i}
                             <div class='lex-entry' class:selected={entry === selectedEntry}

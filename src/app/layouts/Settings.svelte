@@ -419,6 +419,7 @@
                                     if (!$Language.Lexicon[word] && (!$Language.Etymologies[word] || overwrite)) {
                                         $Language.Etymologies[word] = {
                                             descendants: [],
+                                            supplement: '',
                                             source: contents.Name,
                                         };
                                     }

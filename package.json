@@ -1,7 +1,7 @@
 {
     "name": "lexicanter",
     "productName": "Lexicanter",
-    "version": "2.3.0",
+    "version": "2.3.1",
     "description": "A lexicon management tool for constructed languages.",
     "main": "src/index.js",
     "scripts": {
@@ -131,13 +131,6 @@
                 "filter": [
                     "**/*"
                 ]
-            },
-            {
-                "from": "./library/tadpole_ffi/target/i686-pc-windows-gnu/release/_tadpole_ffi.dll",
-                "to": "i686-pc-windows-gnu/tadpole_ffi.dll",
-                "filter": [
-                    "**/*"
-                ]
             }
         ],
         "directories": {
@@ -180,13 +173,13 @@
     },
     "devDependencies": {
         "@eslint/js": "10.0.1",
-        "@sveltejs/vite-plugin-svelte": "7.1.2",
+        "@sveltejs/vite-plugin-svelte": "7.2.0",
         "@tsconfig/svelte": "5.0.8",
         "@types/moo": "0.5.10",
         "@types/nearley": "2.11.5",
         "@typescript-eslint/eslint-plugin": "8.60.1",
         "@typescript-eslint/parser": "8.60.1",
-        "@vitest/coverage-v8": "3.2.4",
+        "@vitest/coverage-v8": "4.1.10",
         "dotenv": "^17.2.3",
         "electron": "42.3.3",
         "electron-builder": "26.0.12",
@@ -195,15 +188,15 @@
         "globals": "16.4.0",
         "mdsvex": "0.12.6",
         "prettier": "^3.6.2",
-        "svelte": "5.56.2",
+        "svelte": "5.56.8",
         "svelte-check": "4.6.0",
         "svelte-preprocess": "6.0.5",
         "tslab": "^1.0.22",
         "tslib": "2.8.1",
         "typescript": "6.0.3",
         "typescript-eslint": "8.60.1",
-        "vite": "8.0.16",
+        "vite": "8.2.0",
         "vite-plugin-electron-renderer": "1.0.0",
-        "vitest": "4.1.8"
+        "vitest": "4.1.10"
     }
 }

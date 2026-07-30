@@ -143,6 +143,7 @@ export type Descendant = {
 export type Etymologies = {
     [index: string]: {
         descendants: Descendant[];
+        supplement: string;
         source: '<< THIS LANGUAGE >>' | string;
     };
 };
