@@ -185,7 +185,7 @@ var app = (function () {
             h = `__svelte_${(function (e) {
                 let t = 5381,
                     n = e.length;
-                for (; n--; ) t = ((t << 5) - t) ^ e.charCodeAt(n);
+                for (; n--;) t = ((t << 5) - t) ^ e.charCodeAt(n);
                 return t >>> 0;
             })(d)}_${a}`,
             u = y(e),
@@ -273,21 +273,21 @@ var app = (function () {
         const e = z;
         do {
             try {
-                for (; se < X.length; ) {
+                for (; se < X.length;) {
                     const e = X[se];
                     (se++, V(e), le(e.$$));
                 }
             } catch (e) {
                 throw ((X.length = 0), (se = 0), e);
             }
-            for (V(null), X.length = 0, se = 0; Z.length; ) Z.pop()();
+            for (V(null), X.length = 0, se = 0; Z.length;) Z.pop()();
             for (let e = 0; e < J.length; e += 1) {
                 const t = J[e];
                 ie.has(t) || (ie.add(t), t());
             }
             J.length = 0;
         } while (X.length);
-        for (; Q.length; ) Q.pop()();
+        for (; Q.length;) Q.pop()();
         ((te = !1), ie.clear(), V(e));
     }
     function le(e) {
@@ -657,7 +657,7 @@ var app = (function () {
                         this.document || this.ownerDocument
                     ).querySelectorAll(e);
                     let n = t.length;
-                    for (; --n >= 0 && t.item(n) !== this; );
+                    for (; --n >= 0 && t.item(n) !== this;);
                     return n > -1;
                 }),
         Element.prototype.closest ||
@@ -1141,7 +1141,7 @@ var app = (function () {
         }
         static isEmpty(e, t) {
             const n = [e];
-            for (; n.length > 0; )
+            for (; n.length > 0;)
                 if ((e = n.shift())) {
                     if (this.isLeaf(e) && !this.isNodeEmpty(e, t)) return !1;
                     e.childNodes && n.push(...Array.from(e.childNodes));
@@ -2603,7 +2603,7 @@ var app = (function () {
                                       )
                                           e.styleSheet.cssText = n;
                                       else {
-                                          for (; e.firstChild; )
+                                          for (; e.firstChild;)
                                               e.removeChild(e.firstChild);
                                           e.appendChild(
                                               document.createTextNode(n),
@@ -2966,7 +2966,7 @@ var app = (function () {
                                         'SCRIPT' !== c.nodeName &&
                                         'STYLE' !== c.nodeName
                                     )
-                                        for (; c.childNodes.length > 0; )
+                                        for (; c.childNodes.length > 0;)
                                             t.insertBefore(c.childNodes[0], c);
                                     (t.removeChild(c), this._sanitize(e, t));
                                     break;
@@ -4551,7 +4551,7 @@ var app = (function () {
                 : this.history[this.history.length - 1].items;
         }
         reset() {
-            for (; this.history.length > 1; ) this.pop();
+            for (; this.history.length > 1;) this.pop();
         }
     }
     class Fn extends En {
@@ -6059,7 +6059,7 @@ var app = (function () {
         Object.defineProperty(wi, '__esModule', { value: !0 }),
         (wi.isEmpty = function (e, t) {
             e.normalize();
-            for (var n = [e]; n.length > 0; ) {
+            for (var n = [e]; n.length > 0;) {
                 var o = n.shift();
                 if (o) {
                     if ((0, Oi.isLeaf)((e = o)) && !(0, Ii.isNodeEmpty)(e, t))
@@ -6451,7 +6451,7 @@ var app = (function () {
                     c = e.childNodes,
                     d = t ? c[0] : c[c.length - 1];
                 if (l(d)) {
-                    for (; l(d) && d.nodeType !== Node.TEXT_NODE; )
+                    for (; l(d) && d.nodeType !== Node.TEXT_NODE;)
                         d = t ? d.firstChild : d.lastChild;
                     if (l(d) && d.nodeType === Node.TEXT_NODE) {
                         var h =
@@ -13492,7 +13492,7 @@ var app = (function () {
             .replace(/\|/g, (e, t, n) => {
                 let o = !1,
                     i = t;
-                for (; --i >= 0 && '\\' === n[i]; ) o = !o;
+                for (; --i >= 0 && '\\' === n[i];) o = !o;
                 return o ? '|' : ' |';
             })
             .split(/ \|/);
@@ -13503,7 +13503,7 @@ var app = (function () {
             n.length > t)
         )
             n.splice(t);
-        else for (; n.length < t; ) n.push('');
+        else for (; n.length < t;) n.push('');
         for (; o < n.length; o++) n[o] = n[o].trim().replace(/\\\|/g, '|');
         return n;
     }
@@ -13511,7 +13511,7 @@ var app = (function () {
         const o = e.length;
         if (0 === o) return '';
         let i = 0;
-        for (; i < o; ) {
+        for (; i < o;) {
             const r = e.charAt(o - i - 1);
             if (r !== t || n) {
                 if (r === t || !n) break;
@@ -13523,7 +13523,7 @@ var app = (function () {
     function Oa(e, t) {
         if (t < 1) return '';
         let n = '';
-        for (; t > 1; ) (1 & t && (n += e), (t >>= 1), (e += e));
+        for (; t > 1;) (1 & t && (n += e), (t >>= 1), (e += e));
         return n + e;
     }
     function Ia(e, t, n, o) {
@@ -14448,19 +14448,15 @@ var app = (function () {
                       );
                 e;
             )
-                if (
-                    !(
-                        this.options.extensions &&
-                        this.options.extensions.block &&
-                        this.options.extensions.block.some(
-                            (o) =>
-                                !!(n = o.call({ lexer: this }, e, t)) &&
-                                ((e = e.substring(n.raw.length)),
-                                t.push(n),
-                                !0),
-                        )
+                if (!(
+                    this.options.extensions &&
+                    this.options.extensions.block &&
+                    this.options.extensions.block.some(
+                        (o) =>
+                            !!(n = o.call({ lexer: this }, e, t)) &&
+                            ((e = e.substring(n.raw.length)), t.push(n), !0),
                     )
-                )
+                ))
                     if ((n = this.tokenizer.space(e)))
                         ((e = e.substring(n.raw.length)),
                             1 === n.raw.length && t.length > 0
@@ -14592,10 +14588,7 @@ var app = (function () {
                                         .lastIndex,
                                 ));
             }
-            for (
-                ;
-                null != (r = this.tokenizer.rules.inline.blockSkip.exec(l));
-            )
+            for (; null != (r = this.tokenizer.rules.inline.blockSkip.exec(l));)
                 l =
                     l.slice(0, r.index) +
                     '[' +
@@ -14611,7 +14604,7 @@ var app = (function () {
                     '++' +
                     l.slice(this.tokenizer.rules.inline.escapedEmSt.lastIndex)),
                     this.tokenizer.rules.inline.escapedEmSt.lastIndex--);
-            for (; e; )
+            for (; e;)
                 if (
                     (s || (a = ''),
                     (s = !1),
@@ -24189,7 +24182,7 @@ var app = (function () {
                 r = 0,
                 s = e + 1,
                 a = 0;
-            for (; r < s - 1 && a < 10; ) {
+            for (; r < s - 1 && a < 10;) {
                 i = Math.ceil((r + s) / 2);
                 const e = t(i),
                     l = Fd(this.table, e);
@@ -25284,7 +25277,7 @@ var app = (function () {
         Object.defineProperty(xu, '__esModule', { value: !0 }),
         (xu.isEmpty = function (e, t) {
             e.normalize();
-            for (var n = [e]; n.length > 0; ) {
+            for (var n = [e]; n.length > 0;) {
                 var o = n.shift();
                 if (o) {
                     if ((0, Lu.isLeaf)((e = o)) && !(0, Au.isNodeEmpty)(e, t))
@@ -25770,7 +25763,7 @@ var app = (function () {
                     c = e.childNodes,
                     d = t ? c[0] : c[c.length - 1];
                 if (l(d)) {
-                    for (; l(d) && d.nodeType !== Node.TEXT_NODE; )
+                    for (; l(d) && d.nodeType !== Node.TEXT_NODE;)
                         d = t ? d.firstChild : d.lastChild;
                     if (l(d) && d.nodeType === Node.TEXT_NODE) {
                         var h =
@@ -26099,7 +26092,7 @@ var app = (function () {
                     return e.previousElementSibling;
             }
         }
-        for (o = i(e); null !== o; ) (n.push(o), (o = i(o)));
+        for (o = i(e); null !== o;) (n.push(o), (o = i(o)));
         return 0 !== n.length ? n : null;
     }
     function Sp(e, t = !0) {
@@ -26143,7 +26136,7 @@ var app = (function () {
             if (null === e) return null;
             let t = e.parentNode,
                 n = 0;
-            for (; null !== t && t !== this.listWrapper; )
+            for (; null !== t && t !== this.listWrapper;)
                 (Gu(t) && t.classList.contains(Wu.item) && (n += 1),
                     (t = t.parentNode));
             return n + 1;
@@ -27304,7 +27297,7 @@ var app = (function () {
                             )
                                 e.styleSheet.cssText = o;
                             else {
-                                for (; e.firstChild; )
+                                for (; e.firstChild;)
                                     e.removeChild(e.firstChild);
                                 e.appendChild(document.createTextNode(o));
                             }
@@ -27768,7 +27761,7 @@ var app = (function () {
                                 e.exports = function (e, t) {
                                     if (t.styleSheet) t.styleSheet.cssText = e;
                                     else {
-                                        for (; t.firstChild; )
+                                        for (; t.firstChild;)
                                             t.removeChild(t.firstChild);
                                         t.appendChild(
                                             document.createTextNode(e),
@@ -28324,7 +28317,7 @@ var app = (function () {
                                 e.exports = function (e, t) {
                                     if (t.styleSheet) t.styleSheet.cssText = e;
                                     else {
-                                        for (; t.firstChild; )
+                                        for (; t.firstChild;)
                                             t.removeChild(t.firstChild);
                                         t.appendChild(
                                             document.createTextNode(e),
@@ -28862,7 +28855,7 @@ var app = (function () {
                                             i =
                                                 this.api.blocks.getCurrentBlockIndex();
                                         const r = i === e - 1 ? -1 : 1;
-                                        for (; o[1] !== t; ) {
+                                        for (; o[1] !== t;) {
                                             n = i;
                                             const e =
                                                 this.api.blocks.getBlockByIndex(
@@ -29194,7 +29187,7 @@ var app = (function () {
                                 moveDescendants(e, t, n, o) {
                                     let i = n,
                                         r = t;
-                                    for (; e; )
+                                    for (; e;)
                                         (this.move(r, i),
                                             0 === o && ((i += 1), (r += 1)),
                                             (e -= 1));
@@ -29903,7 +29896,7 @@ var app = (function () {
                   })(t, r));
             const s = t.length;
             let a = 0;
-            for (; n < s; ) {
+            for (; n < s;) {
                 i && (10 === t[n] && (a = ++n), (i = !1));
                 let r = -1;
                 for (; n < s && -1 === r; ++n)
@@ -29982,7 +29975,7 @@ var app = (function () {
                         await (async function (e, t) {
                             const n = e.getReader();
                             let o;
-                            for (; !(o = await n.read()).done; ) t(o.value);
+                            for (; !(o = await n.read()).done;) t(o.value);
                         })(
                             t.body,
                             $f(
@@ -31556,7 +31549,7 @@ var app = (function () {
                     pagination: { size: t, offset: 0 },
                 }),
                 o = n.hasNextPage();
-            for (yield n.records; o; )
+            for (yield n.records; o;)
                 ((n = await n.nextPage()),
                     (o = n.hasNextPage()),
                     yield n.records);
@@ -31570,7 +31563,7 @@ var app = (function () {
                 pagination: { size: r, offset: i },
             });
             const a = [...s.records];
-            for (; s.hasNextPage() && a.length < o; )
+            for (; s.hasNextPage() && a.length < o;)
                 ((s = await s.nextPage()), a.push(...s.records));
             s.hasNextPage() &&
                 void 0 === e.pagination?.size &&
@@ -33845,9 +33838,9 @@ var app = (function () {
                                       (c(Kr).Lexicon = e),
                                       (c(Kr).Name = s[0]
                                           .split('/')
-                                          [
-                                              s[0].split('/').length - 1
-                                          ].split('.')[0]),
+                                          [s[0].split('/').length - 1].split(
+                                              '.',
+                                          )[0]),
                                       xb.emit(
                                           'update-lexicon-for-gods-sake-please',
                                       ));
