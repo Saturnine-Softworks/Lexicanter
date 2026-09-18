@@ -563,6 +563,7 @@
                             <option value="styles/glade.css">☾ Glade</option>
                             <option value="styles/pomegranate.css">☾ Pomegranate</option>
                             <option value="styles/magnolia.css">☾ Magnolia</option>
+                            <option value="styles/lazuli.css">☾ Lapis Lazuli</option>
                             <option value="styles/juniper.css">☀ Juniper</option>
                             <option value="styles/leatherbound.css">☀ Leatherbound</option>
                             <option value="styles/wisteria.css">☀ Wisteria</option>
