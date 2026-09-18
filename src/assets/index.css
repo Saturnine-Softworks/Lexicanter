@@ -919,7 +919,7 @@ body.vex-open {
     outline: none;
 }
 .vex.vex-theme-os .vex-dialog-form .vex-dialog-buttons {
-    *zoom: 1;
+    zoom: 1;
 }
 .vex.vex-theme-os .vex-dialog-form .vex-dialog-buttons:after {
     content: '';
