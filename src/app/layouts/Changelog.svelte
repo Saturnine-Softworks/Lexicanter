@@ -11,6 +11,16 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
+        '2.3.1': {
+            type: PATCH,
+            notes: [
+                'Improved etymology features: better textual representation of etymology trees and new \'supplement\' field.',
+                'New dark color theme, Lapis Lazuli: deep blue with pyrite accents.',
+                'Fixed issue with etymology search bar not showing any external results when blank.',
+                'Fixed some display width issues with certain panels.',
+                'Fixed selected text transform engine not being used for test input for standard font orthographies.',
+            ]
+        },
         '2.3.0': {
             type: MINOR,
             notes: [

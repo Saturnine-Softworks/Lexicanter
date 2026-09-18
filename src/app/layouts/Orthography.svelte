@@ -248,16 +248,17 @@
                     <svelte:boundary>
                         {@const ortho=$Language.Orthographies.find(o=>o.name===selectedOrtho)}
                         {#if ortho?.typesetter === 'standard'}
-                            <textarea
-                                rows=6
-                                style:background-color=transparent
-                                style:font-family={ortho.font || 'Gentium'}
-                                value={(() => {
-                                    const settings = parseRules(ortho.rules || '');
-                                    return applyRules(settings.rules, testInput, settings.categories);
-                                })()}
-                                readonly
-                            ></textarea>
+                            {#await preprocess_ortho(testInput, ortho)}
+                                <i>generating...</i>
+                            {:then resInput} 
+                                <textarea
+                                    rows=6
+                                    style:background-color=transparent
+                                    style:font-family={ortho.font || 'Gentium'}
+                                    value={resInput}
+                                    readonly
+                                ></textarea>
+                            {/await}
                         {:else if ortho?.typesetter === 'graphemy' && ortho.graphemy}
                             {#await preprocess_ortho(testInput, ortho)}
                                 <i>generating...</i>
