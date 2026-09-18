@@ -25,7 +25,6 @@
         && ('description' in source? ortho.displayInPhrasebook : ortho.display) 
     }
         {#if !!ortho.graphemy}
-
             <svelte:boundary> <!-- I simply don't trust anything not to explode. -->
                 {#key $Language.Lexicon}
                     {#await preprocess_ortho(word, ortho, source)}

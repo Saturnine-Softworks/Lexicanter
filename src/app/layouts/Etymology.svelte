@@ -6,11 +6,11 @@
     import Tree from '../components/Tree.svelte';
     import Draggable from '../components/Draggable.svelte';
     import LexEntry from '../components/Lexicon/LexEntry.svelte';
+
     let newParent: string[] = $state(['', '', '']);
     let newChild: string[] = $state(['', '', '']);
     let manualParentEntry: boolean = $state(false); 
     let manualChildEntry: boolean = $state(false);
-
     let selectedEntry: string =$state('');
     let keys: string[] = $state([]);
     let filtered_lex: Lexc.Lexicon = $derived(
@@ -143,11 +143,13 @@
                                 <span class=lex-entry>{selectedEntry}</span> <br>
                                 <span class=tag-item>{$Language.Etymologies[selectedEntry].source}</span>
                                 <br>
-                                <label>Supplement
-                                    <input type=text placeholder='e.g. definition showing semantic drift' bind:value={$Language.Etymologies[selectedEntry].supplement}>
-                                </label>
                             </div>
                         {/if}
+                        <div class=narrow>
+                            <label>Supplement
+                                <input type=text placeholder='e.g. shortform definition' bind:value={$Language.Etymologies[selectedEntry].supplement}>
+                            </label>
+                        </div>
                     {:else}
                         <p class='info'>Select an entry from the left to view and edit its etymology.</p>
                     {/if}
@@ -168,7 +170,10 @@
                             </label>
                             {#if !manualParentEntry}
                                 <select bind:value={newParent[0]}
-                                    onchange={() => newParent[1] = $Language.Name}>
+                                    onchange={() => {
+                                        newParent[1] = $Language.Name;
+                                        newParent[2] = $Language.Etymologies[newParent[0]]?.supplement || '';
+                                    }}>
                                     <optgroup label='Internal'>
                                         {#each alphabetized as entry}
                                             <option value={entry}>{ entry }</option>
@@ -194,12 +199,14 @@
                             </label>
                             <button class='hover-highlight hover-shadow' onclick={() => {
                                 if (!newParent[0]) return;
-                                if (!(newParent[0] in $Language.Etymologies))
-                                    $Language.Etymologies[newParent[0]] = {
+                                if (!(newParent[0] in $Language.Etymologies))     
+                                    $Language.Etymologies[newParent[0]] = {     
                                         source: newParent[1] === $Language.Name? '<< THIS LANGUAGE >>' : newParent[1],
                                         supplement: newParent[2],
                                         descendants: []
                                     };
+                                else
+                                    $Language.Etymologies[newParent[0]].supplement = newParent[2];
                                 $Language.Etymologies[newParent[0]].descendants.push({
                                     name: selectedEntry,
                                     source: $Language.Etymologies[selectedEntry].source
@@ -234,7 +241,10 @@
                                 <input type=checkbox bind:checked={manualChildEntry} />
                             </label>
                             {#if !manualChildEntry}
-                                <select bind:value={newChild[0]} onchange={() => newChild[1] = $Language.Name}>
+                                <select bind:value={newChild[0]} onchange={() => {
+                                    newChild[1] = $Language.Name;
+                                    newChild[2] = $Language.Etymologies[newChild[0]]?.supplement || '';
+                                }}>
                                     <optgroup label="Internal">
                                         {#each alphabetized as entry}
                                             <option value={entry}>{ entry }</option>
@@ -266,6 +276,9 @@
                                         supplement: newChild[2],
                                         descendants: []
                                     };
+                                else
+                                    $Language.Etymologies[newChild[0]].supplement = newChild[2];
+
                                 $Language.Etymologies[selectedEntry].descendants.push({
                                     name: newChild[0],
                                     source: newChild[1] === $Language.Name? '<< THIS LANGUAGE >>' : newChild[1]

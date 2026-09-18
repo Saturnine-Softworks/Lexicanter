@@ -63,7 +63,7 @@
                     console.error(err)
                 }
             }
-            let newGen = generation.join(', ');
+            let newGen = generation.join('; ');
             if (newGen !== lastGen) ancestorString += newGen + ' → ';
             lastGen = newGen;
         });
@@ -83,7 +83,7 @@
     });
 </script>
 <!-- svelte-ignore a11y_no_static_element_interactions -->
-<div id='{word}' class="lex-entry prelined" oncontextmenu={() => edit()}>
+<div id='{word}' class='lex-entry prelined' oncontextmenu={() => edit()}>
     <EntryLabel {word} {source} />
     <Pronunciations pronunciations={ source.pronunciations }/>
     {#each source.Senses as Sense, i}
@@ -105,7 +105,7 @@
             <Inflections {word} tags={Sense.tags} />
         {/if}
         {#if $Language.ShowEtymology && !!entryAncestors && showEtymology && i === source.Senses.length - 1}
-            <br>
+            <span style='display:block; height:.5em'></span>
             <span style='font-variant: small-caps'>⋲ etymology ⋺</span>
             <p class="lex-body">{@html markdownToHtml(entryAncestors)}</p>
         {/if}
