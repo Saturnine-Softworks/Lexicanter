@@ -163,7 +163,7 @@
     clear: both;
 }
 .vex.vex-theme-os .vex-dialog-form .vex-dialog-buttons {
-    *zoom: 1;
+    zoom: 1;
 }
 .vex.vex-theme-os .vex-dialog-button {
     border-radius: 3px;
