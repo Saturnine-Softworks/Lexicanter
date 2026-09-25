@@ -146,11 +146,11 @@
         "node": ">=23.3.0"
     },
     "dependencies": {
-        "@editorjs/editorjs": "2.31.0",
-        "@editorjs/header": "2.8.8",
-        "@editorjs/list": "2.0.8",
+        "@editorjs/editorjs": "2.31.7",
+        "@editorjs/header": "2.8.9",
+        "@editorjs/list": "2.0.9",
         "@editorjs/paragraph": "2.11.7",
-        "@editorjs/table": "2.4.5",
+        "@editorjs/table": "2.4.6",
         "@editorjs/text-variant-tune": "1.0.3",
         "@editorjs/underline": "1.2.1",
         "@electron/remote": "2.1.3",
