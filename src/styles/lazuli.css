@@ -1,467 +1,487 @@
 body {
-  color: #e0dac5;
-  background-color: #0c1548;
+    color: #e0dac5;
+    background-color: #0c1548;
 }
 
-button, select {
-  color: #e0dac5;
-  background-color: #9a8616;
+button,
+select {
+    color: #e0dac5;
+    background-color: #9a8616;
 }
-button[id=overwrite], select[id=overwrite] {
-  color: darkred;
+button[id='overwrite'],
+select[id='overwrite'] {
+    color: darkred;
 }
-button.inflection, select.inflection {
-  background-color: transparent !important;
-  border: none !important;
-  font-family: Noto;
-  font-size: 9pt;
+button.inflection,
+select.inflection {
+    background-color: transparent !important;
+    border: none !important;
+    font-family: Noto;
+    font-size: 9pt;
 }
 
 .hover-highlight:hover {
-  color: #fffeed;
+    color: #fffeed;
 }
 
 .hover-shadow:hover {
-  box-shadow: 0px 2px 12px #1a1a1a;
+    box-shadow: 0px 2px 12px #1a1a1a;
 }
 
-.tab-container .button-container, .tab-container .button-container button {
-  color: #e0dac5;
-  background-color: #010a13;
+.tab-container .button-container,
+.tab-container .button-container button {
+    color: #e0dac5;
+    background-color: #010a13;
 }
-.tab-container .button-container:hover, .tab-container .button-container button:hover {
-  color: #fffeed;
+.tab-container .button-container:hover,
+.tab-container .button-container button:hover {
+    color: #fffeed;
 }
 
 .selected {
-  background-color: #0c1548 !important;
+    background-color: #0c1548 !important;
 }
 
 .container {
-  background-color: #0c1030;
-  border: 1px solid #0f151b;
-  border-radius: 0;
+    background-color: #0c1030;
+    border: 1px solid #0f151b;
+    border-radius: 0;
 }
 
 .draggable {
-  border: 0.5px solid #0f151b;
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.2666666667);
+    border: 0.5px solid #0f151b;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0.66rem 1.33rem rgba(0, 0, 0, 0.2666666667);
 }
 .draggable .container {
-  border: none;
-  border-top: 1px solid #0f151b;
+    border: none;
+    border-top: 1px solid #0f151b;
 }
 .draggable .dragbar {
-  background-color: #0c1548;
+    background-color: #0c1548;
 }
 
 .info {
-  color: #b1a369;
+    color: #b1a369;
 }
 
 .version-info {
-  color: #e7c026;
+    color: #e7c026;
 }
 
-.lex-entry, .lex-body {
-  color: #e0dac5;
+.lex-entry,
+.lex-body {
+    color: #e0dac5;
 }
 .lex-entry {
-  --graphemy-color-override: #e0dac5;
+    --graphemy-color-override: #e0dac5;
 }
 .lex-entry:hover {
-  --graphemy-color-override: #d0dace;
-  background: #837215;
-  color: #d0dace;
+    --graphemy-color-override: #d0dace;
+    background: #837215;
+    color: #d0dace;
 }
 
-svg .lex-entry, svg .lex-body {
-  fill: #e0dac5;
-  color: #e0dac5;
+svg .lex-entry,
+svg .lex-body {
+    fill: #e0dac5;
+    color: #e0dac5;
 }
 svg .lex-entry:hover {
-  fill: #d0dace;
-  color: #d0dace;
-  background-color: #837215;
+    fill: #d0dace;
+    color: #d0dace;
+    background-color: #837215;
 }
 svg .tag-item {
-  fill: #e0dac5;
-  font-weight: bold;
+    fill: #e0dac5;
+    font-weight: bold;
 }
-svg g:hover > text.tag-item, svg g:hover > text.lex-entry {
-  stroke: #d0dace;
-  fill: #d0dace;
-  cursor: pointer;
+svg g:hover > text.tag-item,
+svg g:hover > text.lex-entry {
+    stroke: #d0dace;
+    fill: #d0dace;
+    cursor: pointer;
 }
 svg rect {
-  stroke: none;
+    stroke: none;
 }
 svg rect.lex {
-  fill: transparent;
-  transition: 0.3s;
+    fill: transparent;
+    transition: 0.3s;
 }
-svg rect.lex:hover, svg rect.lex:has(~ :hover) {
-  fill: #837215;
-  cursor: pointer;
+svg rect.lex:hover,
+svg rect.lex:has(~ :hover) {
+    fill: #837215;
+    cursor: pointer;
 }
 svg rect.lex {
-  rx: 10;
-  height: 3em;
-  padding: 5px;
+    rx: 10;
+    height: 3em;
+    padding: 5px;
 }
 svg {
-  stroke: #e0dac5;
+    stroke: #e0dac5;
 }
 
-.tag-item, [id=entry-counter] {
-  color: #e0dac5;
-  background-color: #122881;
+.tag-item,
+[id='entry-counter'] {
+    color: #e0dac5;
+    background-color: #122881;
 }
 
 .pronunciation {
-  color: #dbc251;
+    color: #dbc251;
 }
 
 .lect {
-  color: #dbc251;
+    color: #dbc251;
 }
 
 hr {
-  border: 1px solid #e0dac5;
-  border-left: none;
-  border-right: none;
-  border-top: none;
+    border: 1px solid #e0dac5;
+    border-left: none;
+    border-right: none;
+    border-top: none;
 }
 
 label {
-  color: #e7c026;
+    color: #e7c026;
 }
 
-textarea.pronunciation, input.pronunciation {
-  background-color: transparent;
+textarea.pronunciation,
+input.pronunciation {
+    background-color: transparent;
 }
-textarea.pronunciation:hover, input.pronunciation:hover {
-  background-color: #64644b;
+textarea.pronunciation:hover,
+input.pronunciation:hover {
+    background-color: #64644b;
 }
-textarea, input {
-  color: #e0dac5 !important;
-  background-color: #0d2346;
+textarea,
+input {
+    color: #e0dac5 !important;
+    background-color: #0d2346;
 }
-textarea[type=checkbox], input[type=checkbox] {
-  background-color: transparent;
-  border: 0.15em solid #e0dac5;
+textarea[type='checkbox'],
+input[type='checkbox'] {
+    background-color: transparent;
+    border: 0.15em solid #e0dac5;
 }
-textarea[type=checkbox]::before, input[type=checkbox]::before {
-  background-color: #e2d34f;
+textarea[type='checkbox']::before,
+input[type='checkbox']::before {
+    background-color: #e2d34f;
 }
 
 td {
-  border: 1px solid #0f151b;
+    border: 1px solid #0f151b;
 }
 
 tr:nth-child(odd) {
-  background-color: #0d2346;
+    background-color: #0d2346;
 }
 tr:nth-child(even) {
-  background-color: rgb(20.9879518072, 56.5060240964, 113.0120481928);
+    background-color: rgb(20.9879518072, 56.5060240964, 113.0120481928);
 }
 
 ::-webkit-resizer {
-  background-color: #275068;
+    background-color: #275068;
 }
 ::-webkit-resizer:hover {
-  background-color: #9a8616;
+    background-color: #9a8616;
 }
 ::-webkit-scrollbar-track {
-  background-color: #0c1548;
+    background-color: #0c1548;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #275068;
+    background-color: #275068;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #9a8616;
+    background-color: #9a8616;
 }
 
 a {
-  color: #e2d34f;
-  transition: 0.5s;
+    color: #e2d34f;
+    transition: 0.5s;
 }
 a:hover {
-  color: #fffeed;
+    color: #fffeed;
 }
 
-.ce-toolbar__settings-btn, .ce-toolbar__plus {
-  color: #e0dac5 !important;
+.ce-toolbar__settings-btn,
+.ce-toolbar__plus {
+    color: #e0dac5 !important;
 }
 .ce-toolbar:hover {
-  background-color: #9a8616 !important;
+    background-color: #9a8616 !important;
 }
 .ce-conversion-tool {
-  background-color: #9a8616 !important;
+    background-color: #9a8616 !important;
 }
 .ce-conversion-toolbar {
-  background-color: #122881 !important;
+    background-color: #122881 !important;
 }
 .ce-conversion-tool:hover {
-  background-color: #b1a369 !important;
+    background-color: #b1a369 !important;
 }
-.ce-popover, .ce-popover--opened {
-  background-color: #9a8616 !important;
+.ce-popover,
+.ce-popover--opened {
+    background-color: #9a8616 !important;
 }
 .ce-popover__item {
-  background-color: #9a8616 !important;
+    background-color: #9a8616 !important;
 }
 .ce-popover__item:hover {
-  background-color: #b1a369 !important;
+    background-color: #b1a369 !important;
 }
 .ce-inline-tool {
-  background-color: #122881 !important;
+    background-color: #122881 !important;
 }
 .ce-inline-tool:hover {
-  background-color: #b1a369 !important;
+    background-color: #b1a369 !important;
 }
-.ce-inline-toolbar, .ce-inline-toolbar__dropdown, .ce-inline-toolbar__buttons {
-  background-color: #122881 !important;
+.ce-inline-toolbar,
+.ce-inline-toolbar__dropdown,
+.ce-inline-toolbar__buttons {
+    background-color: #122881 !important;
 }
 .ce-paragraph[data-placeholder]:empty::before {
-  color: #dbc251 !important;
+    color: #dbc251 !important;
 }
 
 .tc-popover {
-  --color-border: #e2d34f !important;
-  --color-background: #122881 !important;
-  --color-background-hover: #9a8616 !important;
-  --color-background-confirm: #812b2b !important;
-  --color-background-confirm-hover: #a12929 !important;
-  --color-text-confirm: white !important;
+    --color-border: #e2d34f !important;
+    --color-background: #122881 !important;
+    --color-background-hover: #9a8616 !important;
+    --color-background-confirm: #812b2b !important;
+    --color-background-confirm-hover: #a12929 !important;
+    --color-text-confirm: white !important;
 }
 .tc-wrap {
-  --color-background: rgba(255, 255, 255, 0.396) !important;
-  --color-text-secondary: #dbc251 !important;
-  --color-border: #e2d34f !important;
+    --color-background: rgba(255, 255, 255, 0.396) !important;
+    --color-text-secondary: #dbc251 !important;
+    --color-border: #e2d34f !important;
 }
 
 table {
-  border-color: #e2d34f;
+    border-color: #e2d34f;
 }
 
 .inflection td {
-  border-color: #e2d34f !important;
-  background-color: transparent !important;
+    border-color: #e2d34f !important;
+    background-color: transparent !important;
 }
 .inflection tr {
-  background-color: transparent !important;
+    background-color: transparent !important;
 }
 
 .milkyWay {
-  width: 100px;
-  height: 100px;
-  background: transparent;
-  margin: auto;
-  position: relative;
-  border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    background: transparent;
+    margin: auto;
+    position: relative;
+    border-radius: 50%;
 }
 .milkyWay .planet {
-  border: 1px solid #fff;
-  animation-name: orbit;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
-  animation-play-state: paused;
+    border: 1px solid #fff;
+    animation-name: orbit;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    animation-play-state: paused;
 }
-.milkyWay .planet::before, .milkyWay .planet::after {
-  position: absolute;
-  content: "";
-  display: block;
-  border-radius: 50%;
+.milkyWay .planet::before,
+.milkyWay .planet::after {
+    position: absolute;
+    content: '';
+    display: block;
+    border-radius: 50%;
 }
 .milkyWay > div {
-  position: absolute;
-  border-radius: 50%;
+    position: absolute;
+    border-radius: 50%;
 }
 
 .sun {
-  background: #faca09;
-  width: 10%;
-  height: 10%;
-  top: 45%;
-  left: 45%;
+    background: #faca09;
+    width: 10%;
+    height: 10%;
+    top: 45%;
+    left: 45%;
 }
 
 .mercury {
-  width: 20%;
-  height: 20%;
-  top: calc(40% - 1px);
-  left: calc(40% - 1px);
-  animation-duration: 2s;
+    width: 20%;
+    height: 20%;
+    top: calc(40% - 1px);
+    left: calc(40% - 1px);
+    animation-duration: 2s;
 }
 .mercury::before {
-  background: #9fb5b6;
-  width: 16%;
-  height: 16%;
-  top: -8%;
-  left: 42%;
+    background: #9fb5b6;
+    width: 16%;
+    height: 16%;
+    top: -8%;
+    left: 42%;
 }
 
 .venus {
-  width: 30%;
-  height: 30%;
-  top: calc(35% - 1px);
-  left: calc(35% - 1px);
-  animation-duration: 3s;
+    width: 30%;
+    height: 30%;
+    top: calc(35% - 1px);
+    left: calc(35% - 1px);
+    animation-duration: 3s;
 }
 .venus::before {
-  background: #ECC98E;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #ecc98e;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 
 .earth {
-  width: 40%;
-  height: 40%;
-  top: calc(30% - 1px);
-  left: calc(30% - 1px);
-  animation-duration: 4s;
+    width: 40%;
+    height: 40%;
+    top: calc(30% - 1px);
+    left: calc(30% - 1px);
+    animation-duration: 4s;
 }
 .earth::before {
-  background: #208fd8;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #208fd8;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 .earth::after {
-  background: #33c470;
-  width: 10%;
-  height: 6%;
-  top: -3%;
-  left: 45%;
-  transform: rotate(45deg);
+    background: #33c470;
+    width: 10%;
+    height: 6%;
+    top: -3%;
+    left: 45%;
+    transform: rotate(45deg);
 }
 
 .mars {
-  width: 50%;
-  height: 50%;
-  top: calc(25% - 1px);
-  left: calc(25% - 1px);
-  animation-duration: 5s;
+    width: 50%;
+    height: 50%;
+    top: calc(25% - 1px);
+    left: calc(25% - 1px);
+    animation-duration: 5s;
 }
 .mars::before {
-  background: #d35400;
-  width: 6%;
-  height: 6%;
-  top: -3%;
-  left: 47%;
+    background: #d35400;
+    width: 6%;
+    height: 6%;
+    top: -3%;
+    left: 47%;
 }
 
 .jupiter {
-  width: 60%;
-  height: 60%;
-  top: calc(20% - 1px);
-  left: calc(20% - 1px);
-  animation-duration: 6s;
+    width: 60%;
+    height: 60%;
+    top: calc(20% - 1px);
+    left: calc(20% - 1px);
+    animation-duration: 6s;
 }
 .jupiter::before {
-  background: #d4975a;
-  width: 10%;
-  height: 10%;
-  top: -5%;
-  left: 45%;
+    background: #d4975a;
+    width: 10%;
+    height: 10%;
+    top: -5%;
+    left: 45%;
 }
 
 .saturn {
-  width: 70%;
-  height: 70%;
-  top: calc(15% - 1px);
-  left: calc(15% - 1px);
-  animation-duration: 7s;
+    width: 70%;
+    height: 70%;
+    top: calc(15% - 1px);
+    left: calc(15% - 1px);
+    animation-duration: 7s;
 }
 .saturn::before {
-  background: #E4D191;
-  width: 7%;
-  height: 7%;
-  top: -4%;
-  left: 48%;
+    background: #e4d191;
+    width: 7%;
+    height: 7%;
+    top: -4%;
+    left: 48%;
 }
 .saturn::after {
-  background: #F0E4C1;
-  width: 12%;
-  height: 1%;
-  top: -1%;
-  left: 45.5%;
-  transform: rotate(-15deg);
+    background: #f0e4c1;
+    width: 12%;
+    height: 1%;
+    top: -1%;
+    left: 45.5%;
+    transform: rotate(-15deg);
 }
 
 .uranus {
-  width: 80%;
-  height: 80%;
-  top: calc(10% - 1px);
-  left: calc(10% - 1px);
-  animation-duration: 8s;
+    width: 80%;
+    height: 80%;
+    top: calc(10% - 1px);
+    left: calc(10% - 1px);
+    animation-duration: 8s;
 }
 .uranus::before {
-  background: #3498db;
-  width: 5%;
-  height: 5%;
-  top: -2%;
-  left: 48%;
+    background: #3498db;
+    width: 5%;
+    height: 5%;
+    top: -2%;
+    left: 48%;
 }
 .uranus::after {
-  background: #b0d0e5;
-  width: 8%;
-  height: 0.5%;
-  top: 0%;
-  left: 46.25%;
-  transform: rotate(-15deg);
+    background: #b0d0e5;
+    width: 8%;
+    height: 0.5%;
+    top: 0%;
+    left: 46.25%;
+    transform: rotate(-15deg);
 }
 
 .neptune {
-  width: 90%;
-  height: 90%;
-  top: calc(5% - 1px);
-  left: calc(5% - 1px);
-  animation-duration: 9s;
+    width: 90%;
+    height: 90%;
+    top: calc(5% - 1px);
+    left: calc(5% - 1px);
+    animation-duration: 9s;
 }
 .neptune::before {
-  background: #1269a3;
-  width: 4%;
-  height: 4%;
-  top: -1%;
-  left: 49%;
+    background: #1269a3;
+    width: 4%;
+    height: 4%;
+    top: -1%;
+    left: 49%;
 }
 .neptune::after {
-  background: #91cbf2;
-  width: 6%;
-  height: 0.5%;
-  top: 0.5%;
-  left: 48%;
-  transform: rotate(-15deg);
+    background: #91cbf2;
+    width: 6%;
+    height: 0.5%;
+    top: 0.5%;
+    left: 48%;
+    transform: rotate(-15deg);
 }
 
 .pluto {
-  width: 100%;
-  height: 100%;
-  top: calc(0% - 1px);
-  left: calc(0% - 1px);
-  animation-duration: 10s;
+    width: 100%;
+    height: 100%;
+    top: calc(0% - 1px);
+    left: calc(0% - 1px);
+    animation-duration: 10s;
 }
 .pluto::before {
-  background: #b78c7a;
-  width: 2%;
-  height: 2%;
-  top: -0.5%;
-  left: 49%;
+    background: #b78c7a;
+    width: 2%;
+    height: 2%;
+    top: -0.5%;
+    left: 49%;
 }
 
 @keyframes orbit {
-  0% {
-    transform: rotate(-180deg);
-  }
-  100% {
-    transform: rotate(180deg);
-  }
+    0% {
+        transform: rotate(-180deg);
+    }
+    100% {
+        transform: rotate(180deg);
+    }
 }
 
 /*# sourceMappingURL=lazuli.css.map */
