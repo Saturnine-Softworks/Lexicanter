@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-require-imports */
 const { ipcRenderer } = require('electron');
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const vex = require('vex-js');
 import { get } from 'svelte/store';
 import type { OutputData } from '@editorjs/editorjs';

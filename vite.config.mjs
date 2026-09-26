@@ -54,10 +54,10 @@ export default defineConfig({
     },
     build: {
         outDir: './',
-        rollupOptions: {
+        rolldownOptions: {
             output: { entryFileNames: 'entry.js' },
         },
-        target: 'node22.6.0',
+        target: 'node23.3.0',
     },
     define: {
         'import.meta.vitest': 'undefined',

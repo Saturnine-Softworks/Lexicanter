@@ -181,7 +181,7 @@
         "@typescript-eslint/parser": "8.60.1",
         "@vitest/coverage-v8": "4.1.10",
         "dotenv": "^17.2.3",
-        "electron": "42.3.3",
+        "electron": "42.11.8",
         "electron-builder": "26.0.12",
         "electron-notarize": "^1.2.2",
         "eslint": "9.37.0",
@@ -197,6 +197,6 @@
         "typescript-eslint": "8.60.1",
         "vite": "8.2.0",
         "vite-plugin-electron-renderer": "1.0.0",
-        "vitest": "4.1.10"
+        "vitest": "4.1.11"
     }
 }
