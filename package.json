@@ -162,7 +162,7 @@
         "editorjs-toggle-block": "0.3.16",
         "electron-build": "0.0.3",
         "electron-updater": "6.8.9",
-        "koffi": "3.3.1",
+        "koffi": "=2.16.3",
         "marked": "18.0.14",
         "moo": "0.5.3",
         "nearley": "2.20.1",
