@@ -1,6 +1,6 @@
 <script lang="ts">
-    const fs = require('fs');
-    const path = require('path');
+    import * as fs from 'node:fs';
+    import * as path from 'node:path';
     import { docsEditor, Language, selectedCategory, selectedTab, fileLoadIncrement, defaultLanguage, dbid, dbkey, CurrentLayouts } from '../stores';
     import type { OutputData } from '@editorjs/editorjs';
     import type * as Lexc from '../types';
@@ -299,7 +299,7 @@
                         }, 5000);
                         return;
                     }
-                    fs.readFile(file_path[0], 'utf8', (err: NodeJS.ErrnoException, data: string) => {
+                    fs.readFile(file_path[0], 'utf8', (err: NodeJS.ErrnoException | null, data: string) => {
                         if (err) {
                             console.log(err);
                             window.alert(
