@@ -79,14 +79,10 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <main id=main spellcheck={false}>
+    
     <div class=tab-container>
         <div class=row>
             <div class=column style=width:100%>
-                <p class=window-control>
-                    <button class="hover-highlight close material-icons" onclick={() => ipcRenderer.send('buttonclose')}>close</button>
-                    <button class="hover-highlight minimize material-icons" onclick={() => ipcRenderer.send('minimize')}>remove</button>
-                    <button class="hover-highlight maximize material-icons" onclick={() => ipcRenderer.send('maximize')}>fullscreen</button>
-                </p>
                 <p class=version-info style='
                     text-align: right;
                     margin-right: .5rem;
@@ -123,6 +119,11 @@
                             > {tab} </button>
                         {/if}
                     {/each}
+                    <div class=window-control>
+                        <button class="hover-highlight close material-icons" onclick={() => ipcRenderer.send('buttonclose')}>close</button>
+                        <button class="hover-highlight minimize material-icons" onclick={() => ipcRenderer.send('minimize')}>remove</button>
+                        <button class="hover-highlight maximize material-icons" onclick={() => ipcRenderer.send('maximize')}>fullscreen</button>
+                    </div>
                 </div>
                 {#each tabs as Tab, i}
                     <div class:collapsed={!$selectedTab.includes(i)}>

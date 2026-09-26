@@ -67,6 +67,7 @@ button {
     cursor: pointer;
     -webkit-app-region: no-drag;
     -webkit-user-select: none;
+    user-select: none;
 }
 button[id='overwrite'] {
     font-weight: bold;
@@ -111,6 +112,7 @@ button.collapser-h::after {
     width: 100vw;
     height: 100vh;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 .button-container {
@@ -129,8 +131,10 @@ button.collapser-h::after {
 
 .window-control {
     text-align: left;
-    height: 0px;
     overflow: visible;
+    position: absolute;
+    top: 2px;
+    left: 2px;
 }
 .window-control button {
     border: none !important;
@@ -225,6 +229,7 @@ h6 {
     font-style: italic;
     line-height: 1.5em;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 .phonology {
@@ -240,6 +245,7 @@ h6 {
     display: inline;
     float: right;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 .lex-body {
@@ -340,6 +346,7 @@ label {
     font-family: Noto;
     font-size: 11pt;
     -webkit-user-select: none;
+    user-select: none;
 }
 
 .pronunciation {
@@ -673,7 +680,7 @@ hr {
     background: #b0d0e5;
     width: 8%;
     height: 0.5%;
-    top: 0%;
+    top: -0%;
     left: 46.25%;
     transform: rotate(-15deg);
 }

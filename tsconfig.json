@@ -6,12 +6,7 @@
     "module": "es2022",
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "compilerOptions": {
-        "types": [
-            "svelte",
-            "vitest/importMeta",
-            "@types/wicg-file-system-access",
-            "node"
-        ], // Adds the FileSystemAccess API types
+        "types": ["svelte", "@types/wicg-file-system-access", "node"], // Adds the FileSystemAccess API types
         "lib": ["esnext", "dom"]
     }
 }

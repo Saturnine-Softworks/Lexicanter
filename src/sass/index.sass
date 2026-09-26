@@ -55,6 +55,7 @@ button
     cursor: pointer
     -webkit-app-region: no-drag
     -webkit-user-select: none
+    user-select: none
     &[id=overwrite] 
         font-weight: bold
     
@@ -93,6 +94,7 @@ button
     width: 100vw
     height: 100vh
     -webkit-user-select: none
+    user-select: none
 
 .button-container 
     width: 100%
@@ -108,8 +110,10 @@ button
 
 .window-control
     text-align: left
-    height: 0px
     overflow: visible
+    position: absolute
+    top: 2px
+    left: 2px
     button
         border: none !important
         outline: none !important
@@ -184,6 +188,7 @@ h1, h2, h3, h4, h5, h6
     font-style: italic
     line-height: 1.5em
     -webkit-user-select: none
+    user-select: none
 
 .phonology 
     @include font(Gentium)
@@ -195,6 +200,7 @@ h1, h2, h3, h4, h5, h6
     display: inline
     float: right
     -webkit-user-select: none
+    user-select: none
 
 .lex
     &-body 
@@ -265,6 +271,7 @@ h1, h2, h3, h4, h5, h6
 label 
     @include font(Noto)
     -webkit-user-select: none
+    user-select: none
     
 .pronunciation
     @include pronunciation()

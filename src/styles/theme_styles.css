@@ -179,7 +179,7 @@ tr:nth-child(odd) {
     background-color: #000;
 }
 tr:nth-child(even) {
-    background-color: rgb(25.5, 25.5, 25.5);
+    background-color: rgb(10%, 10%, 10%);
 }
 
 ::-webkit-resizer {
