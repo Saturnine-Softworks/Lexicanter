@@ -1,14 +1,14 @@
 <svelte:options runes/>
 <script lang=ts>
-    import { Language, selectedTab } from "../stores";
-    import { parseRules, applyRules } from "../utils/sca";
-    import type { GraphemyOptions, Orthography } from "../types";
-    import { showOpenDialog } from "../utils/files";
-    import { graphemify } from "../utils/interop";
-    import Draggable from "../components/Draggable.svelte";
-    import { readFile } from "fs";
-    import path from "path";
-    import { preprocess_ortho } from "../utils/phonetics";
+    import { Language, selectedTab } from '../stores';
+    import { parseRules, applyRules } from '../utils/sca';
+    import type { GraphemyOptions, Orthography } from '../types';
+    import { showOpenDialog } from '../utils/files';
+    import { graphemify } from '../utils/interop';
+    import Draggable from '../components/Draggable.svelte';
+    import { readFile } from 'node:fs';
+    import path from 'node:path';
+    import { preprocess_ortho } from '../utils/phonetics';
     let selectedOrtho = $state('');
     let testInput = $state('');
     const vex = require('vex-js');
