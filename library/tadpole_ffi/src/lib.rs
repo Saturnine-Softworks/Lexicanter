@@ -39,7 +39,7 @@ pub unsafe extern "C" fn tadpole(
 
     let engine = match parser_str.as_str() {
         "lexc" => SoundChanger::parse_string(&spec_str, &TadpoleLexc),
-        "tadpole" => SoundChanger::parse_string(&spec_str, &TadpoleParser::new()),
+        "tadpole" => SoundChanger::parse_string(&spec_str, &TadpoleParser::default()),
         _ => return string_to_c_char(String::from("Not a valid parser.")),
     };
 
@@ -51,6 +51,7 @@ pub unsafe extern "C" fn tadpole(
     let res = engine.unwrap()
         .run(&input_str)
         .unwrap_or(SoundChangerResult {
+            input: String::from(&input_str),
             result: String::from("[ Parser Error ]"),
             outputs: Vec::new(),
         })

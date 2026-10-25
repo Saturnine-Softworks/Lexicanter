@@ -1,9 +1,3 @@
-/*
- * courtesy of Zhuriel
- * https://codeberg.org/zhuriel/tadpole_lexc/src/branch/master/src/lib.rs
- * pulled Oct 17 2025
- */
-
 use tadpole::{
     Frontend, RawDirective,
     definitions::{DefDirective, Definitions},
@@ -15,11 +9,12 @@ use tadpole::{
             combinator::{AlternativeMatcher, InverseMatcher, RepeatMatcher, SequenceMatcher},
         },
         replacer::{
-            ReplaceError, Replacer, ReplacerDef,
+            ReplaceError, ReplaceErrorType, Replacer, ReplacerDef,
             base::{BindingReplacer, CharReplacer, ClassReplacer, NullReplacer},
             combinator::{AlternativeReplacer, SequenceReplacer},
         },
     },
+    util::WrapError,
 };
 
 use crate::lexc::parse::parse_lexc_line;
@@ -191,6 +186,24 @@ impl ReplacerDef for LexcElem {
     fn resolve(&self, defs: &Definitions) -> Result<Box<dyn Replacer>, ReplaceError> {
         let mut counter = 0;
         self.clone().resolve_replacer(defs, &mut counter)
+    }
+}
+
+impl WrapError<ReplaceErrorType, ReplaceError> for LexcElem {
+    fn name(&self) -> &'static str {
+        match self {
+            Self::Alt(_) => "alternative",
+            Self::Capture => "capture",
+            Self::Char(_) => "char",
+            Self::Invert(_) => "invert",
+            Self::Null => "null",
+            Self::Optional(_) => "optional",
+            Self::RepeatAny(_) => "repeat any",
+            Self::RepeatOne(_) => "repeat at least one",
+            Self::Seq(_) => "sequence",
+            Self::Wildcard => "wildcard",
+            Self::WordBoundary => "boundary",
+        }
     }
 }
 

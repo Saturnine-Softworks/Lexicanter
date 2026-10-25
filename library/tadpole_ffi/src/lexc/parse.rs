@@ -1,9 +1,3 @@
-/*
- * courtesy of Zhuriel
- * https://codeberg.org/zhuriel/tadpole_lexc/src/branch/master/src/parse.rs
- * pulled Oct 17 2025
- */
-
 use tadpole::{
     RawDirective,
     definitions::DefDirective,
@@ -32,7 +26,8 @@ pub(crate) fn parse_lexc_line(input: &str) -> IResult<&str, RawDirective> {
 fn parse_lexc_class(input: &str) -> IResult<&str, RawDirective> {
     map(
         (
-            space0,
+            // not sure why the type annotation is needed here, it wasn't before
+            space0::<&str, nom::error::Error<&str>>,
             none_of(" \t\n:"),
             space0,
             tag("::"),
@@ -47,7 +42,7 @@ fn parse_lexc_class(input: &str) -> IResult<&str, RawDirective> {
         |(_, name, _, _, _, chars, _, _)| {
             RawDirective::Def(DefDirective::DefineClass(
                 String::from(name),
-                (chars as Vec<&str>).into_iter().map(String::from).collect(),
+                chars.into_iter().map(|s| s.to_string()).collect::<Vec<_>>(),
             ))
         },
     )
@@ -234,7 +229,7 @@ fn elem_replacer(input: &str) -> IResult<&str, LexcElem> {
 
 fn lexc_char(input: &str) -> IResult<&str, LexcElem> {
     alt((
-        map(none_of(" \t\n\\>/+*?{}()^#_"), |ch| {
+        map(none_of(" \t\n\\>/+*?{}()^#_,"), |ch| {
             LexcElem::Char(String::from(ch))
         }),
         map(preceded(tag("\\"), anychar), |ch| {

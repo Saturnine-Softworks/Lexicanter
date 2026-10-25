@@ -8,5 +8,5 @@ name = "_graphemy_ffi"
 crate-type = ["cdylib"]
 
 [dependencies]
-graphemy = { git = "https://codeberg.org/zhuriel/graphemy.git", version = "0.6.0" }
+graphemy = { git = "https://codeberg.org/zhuriel/graphemy.git", version = "0.7.0" }
 svg = "0.18.0"
