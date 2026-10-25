@@ -232,6 +232,13 @@ export type Language = {
     Orthographies: Orthography[];
     ShowPronunciation: boolean;
     ShowOrthography: boolean;
+    GraphemyCache: {
+        // orthography name
+        [index: string]: {
+            // word          svg
+            [index: string]: string
+        }
+     }
     Phonotactics: Phonotactics;
     UseAdvancedPhonotactics: boolean;
     AdvancedPhonotactics: AdvancedPhonotactics;

@@ -143,6 +143,12 @@
                         }
                     });
                 }
+
+                // added 2.3.3
+                if (contents.hasOwnProperty('GraphemyCache')) 
+                    $Language.GraphemyCache = contents.GraphemyCache;
+                else 
+                    $Language.GraphemyCache = {};
             }
             
             errorMessage = 'There was a problem loading the phonotactics rules from the file.'

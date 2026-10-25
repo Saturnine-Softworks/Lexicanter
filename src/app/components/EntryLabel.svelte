@@ -34,7 +34,8 @@
                             ortho.graphemy.engine, 
                             input, 
                             ortho.graphemy.bounds.width, 
-                            ortho.graphemy.bounds.height
+                            ortho.graphemy.bounds.height,
+                            ortho.name
                         )}
                             <i>generating...</i>
                         {:then svg} 

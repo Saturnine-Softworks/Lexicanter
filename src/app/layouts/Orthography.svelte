@@ -9,6 +9,7 @@
     import { readFile } from 'node:fs';
     import path from 'node:path';
     import { preprocess_ortho } from '../utils/phonetics';
+    import { clear } from 'node:console';
     let selectedOrtho = $state('');
     let testInput = $state('');
     const vex = require('vex-js');
@@ -48,6 +49,16 @@
             [attribute]: value
         }
 
+    }
+
+    /**
+     * Reset the Graphemy SVG cache for an orthography at index `i` within `$Language.Orthographies`
+     * @param i index
+     */
+    function clear_cache(i: number) {
+        $Language.GraphemyCache[$Language.Orthographies[i].name] = {};
+
+        console.info($Language.GraphemyCache);
     }
 
 </script>
@@ -97,6 +108,7 @@
                                     console.log(data.toString())
                                     $Language.Orthographies[i].font = path.basename(file_path[0]);
                                     ($Language.Orthographies[i].graphemy as GraphemyOptions).engine = data.toString();
+                                    clear_cache(i);
                                 });
                             });
                         }}>Import Graphemy (.gmy) File</button>
@@ -113,6 +125,7 @@
                                     onchange={(e)=>{
                                         if (!$Language.Orthographies[i].graphemy.hasOwnProperty('bounds')) return;
                                         ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.width = Number((e.target as HTMLInputElement).value);
+                                        clear_cache(i);
                                     }}
                                 />
                                 <input type=number min=0
@@ -120,6 +133,7 @@
                                     onchange={(e)=>{
                                         if (!$Language.Orthographies[i].graphemy.hasOwnProperty('bounds')) return;
                                         ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.width = Number((e.target as HTMLInputElement).value);
+                                        clear_cache(i);
                                     }}
                                 />
                             </div>
@@ -130,6 +144,7 @@
                                     onchange={(e)=>{
                                         if (!$Language.Orthographies[i].graphemy.hasOwnProperty('bounds')) return;
                                         ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.height = Number((e.target as HTMLInputElement).value);
+                                        clear_cache(i);
                                     }}
                                 />
                                 <input type=number min=0
@@ -137,6 +152,7 @@
                                     onchange={(e)=>{
                                         if (!$Language.Orthographies[i].graphemy.hasOwnProperty('bounds')) return;
                                         ($Language.Orthographies[i].graphemy as GraphemyOptions).bounds.height = Number((e.target as HTMLInputElement).value);
+                                        clear_cache(i);
                                     }}
                                 />
                             </div>
@@ -196,6 +212,7 @@
                             class={orthography.name === 'Romanization'? 'text-center' : 'text-left'}
                             onblur={(e) => {
                                 setAttribute(e, 'rules', i);
+                                if ($Language.Orthographies[i].graphemy) clear_cache(i);
                             }}
                             style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
                             value={orthography.rules}
@@ -206,6 +223,11 @@
                         <button
                             class="hover-highlight hover-shadow"
                             onclick={() => {
+                                if ($Language.Orthographies[i].graphemy) {
+                                    if ($Language.GraphemyCache[$Language.Orthographies[i].name]) 
+                                        delete $Language.GraphemyCache[$Language.Orthographies[i].name]
+                                }
+                                
                                 $Language.Orthographies = [
                                     ...$Language.Orthographies.slice(0, i),
                                     ...$Language.Orthographies.slice(i + 1)
@@ -267,7 +289,8 @@
                                     ortho.graphemy.engine, 
                                     resInput, 
                                     ortho.graphemy.bounds.width, 
-                                    ortho.graphemy.bounds.height
+                                    ortho.graphemy.bounds.height,
+                                    ortho.name
                                 )}
                                     <i>generating...</i>
                                 {:then svg} 

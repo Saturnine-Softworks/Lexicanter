@@ -138,33 +138,33 @@
 </script>
 
 <style lang=sass>
-    .draggable
-        position: absolute
-        width: 33vh
-        resize: both
-        border-radius: 5px
-        overflow: hidden
-    
-    .shadow
-        background-color: #0008
-        position: absolute
-        border-radius: 5px
+.draggable
+    position: absolute
+    width: 33vh
+    resize: both
+    border-radius: 5px
+    overflow: hidden
 
-    .dragbar
-        user-select: none
-        cursor: move
-        border: none
-        display: flex
+.shadow
+    background-color: #0008
+    position: absolute
+    border-radius: 5px
 
-    button
-        background-color: transparent
-        border: none
-        padding: 0px
-        margin: 0 10px
-        color: #fff8
-        font-size: 1rem
-        &:hover
-            color: #fffc
+.dragbar
+    user-select: none
+    cursor: move
+    border: none
+    display: flex
+
+button
+    background-color: transparent
+    border: none
+    padding: 0px
+    margin: 0 10px
+    color: #fff8
+    font-size: 1rem
+    &:hover
+        color: #fffc
 </style>
 {#if mousedown}
     <div

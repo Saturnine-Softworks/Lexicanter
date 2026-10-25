@@ -1,4 +1,6 @@
+import { get } from 'svelte/store';
 import type { SoundChangeEngine } from '../types';
+import { Language } from '../stores';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { ipcRenderer } = require('electron');
@@ -28,6 +30,7 @@ export async function ffi(
  * @param {string} input The string to be rendered via the typesetter
  * @param {number} max_width The maximum width of the bounding box for the rendered text
  * @param {number} max_height The maximum height of the bounding box for the rendered text
+ * @param {string} cache_key The name of the associated orthography
  * @returns {Promise<string>} The rendered SVG as a string
  */
 export async function graphemify(
@@ -35,6 +38,7 @@ export async function graphemify(
     input: string,
     max_width: number = 100.0,
     max_height: number = 100.0,
+    cache_key: string
 ): Promise<string> {
     // Sanity checks
     if (!engine) return 'No Graphemy engine loaded.';
@@ -42,13 +46,20 @@ export async function graphemify(
     if (!max_width) max_width = 100;
     if (!max_height) max_height = 100;
 
-    return (await ffi(
-        'graphemify',
-        engine,
-        input,
-        max_width,
-        max_height,
-    )) as string;
+    // check if svg has been cached, generate if not
+    if (!get(Language).GraphemyCache[cache_key]?.[input]) {
+        if (!get(Language).GraphemyCache[cache_key]) get(Language).GraphemyCache[cache_key] = {};
+        get(Language).GraphemyCache[cache_key][input] = (
+            await ffi (
+                'graphemify',
+                engine,
+                input,
+                max_width,
+                max_height,
+            )
+        ) as string
+    }
+    return get(Language).GraphemyCache[cache_key][input];
 }
 
 export async function tadpole(
