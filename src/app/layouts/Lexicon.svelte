@@ -24,11 +24,11 @@
 
     let alphabetized: string[];
     $: { // Update the alphabetized lexicon when conditions change
-        $Language; 
-        $Language.Lexicon; $Language.Pronunciations;
-        $Language.ShowEtymology; $Language.Etymologies; 
-        $Language.ShowInflection; $Language.Inflections; 
-        $Language.Alphabet; $Language.Orthographies;
+        // $Language; 
+        // $Language.Lexicon; $Language.Pronunciations;
+        // $Language.ShowEtymology; $Language.Etymologies; 
+        // $Language.ShowInflection; $Language.Inflections; 
+        // $Language.Alphabet; $Language.Orthographies;
         keys;
         (() => {
             alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
