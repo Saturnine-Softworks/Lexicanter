@@ -3,6 +3,7 @@
     import { Language, hideDropdowns } from "../stores";
     import { blur } from 'svelte/transition';
     import * as sca from "../utils/sca";
+    import { tadpole } from "../utils/interop";
 
     let { 
         word, 
@@ -34,15 +35,29 @@
         }));
         const data = filtered.map(inflection => inflection.tables.blocks);
         const categories = filtered.map(inflection => inflection.categories + '\n').join()
+
         data.forEach((blocks, i) => {
+
             blocks.forEach((block, j) => {
                 if (block.type !== 'table') return;
+
                 block.data.content.forEach((row: string[], y: number) => {
-                    row.forEach((cell: string, x: number) => {
-                        const rules = sca.parseRules(htmlToText(cell)).rules;
-                        const cats = sca.parseRules(categories).categories;
-                        if (!rules[0]) return
-                        data[i][j].data.content[y][x] = sca.applyRules(rules, word, cats);
+
+                    row.forEach(async (cell: string, x: number) => {
+
+                        if ($Language.SoundChangeEngine === 'legacy') {
+                            const rules = sca.parseRules(htmlToText(cell)).rules;
+                            const cats = sca.parseRules(categories).categories;
+                            if (!rules[0]) return
+                            data[i][j].data.content[y][x] = sca.applyRules(rules, word, cats);
+                        } 
+                            else 
+                                    {
+                            let res = await tadpole($Language.SoundChangeEngine, word, cell);
+                            if (res.startsWith('error')) return;
+                            data[i][j].data.content[y][x] = res;
+                        }
+                        
                     });
                 });
             });

@@ -3,7 +3,7 @@
     import Draggable from "../components/Draggable.svelte";
     import { selectedTab } from "../stores";
 
-    const [MAJOR, MINOR, PATCH, EX] = [0, 1, 2, 3];
+    const [MAJOR, MINOR, PATCH, HOT] = [0, 1, 2, 3];
     
     interface ChangelogEntry {
         type: number;
@@ -11,6 +11,21 @@
     }
     
     const changelog: Record<string, ChangelogEntry> = {
+        '2.3.3': {
+            type: PATCH,
+            'notes': [
+                'Updated tadpole to 1.4.0 and Graphemy to 0.7.0. ',
+                'Fixed issue with tadpole.lexc which caused anonymous categories not to work. ',
+                'Inflections tables now use your selected sound change engine. ',
+                'Updated the Pronunciation Rules section of the Help tab. '
+            ]
+        },
+        '2.3.2': {
+            type: HOT,
+            notes: [
+                'Fixed a platform specific start-up issue. '
+            ]
+        },
         '2.3.1': {
             type: PATCH,
             notes: [
@@ -425,7 +440,7 @@
             
                 <br><hr/><br>
                 {#each Object.keys(changelog) as version}
-                    <p><u>{['Overhaul', 'Update', 'Patch', 'Experiment'][changelog[version].type]} {version}</u></p>
+                    <p><u>{['Overhaul', 'Update', 'Patch', 'Hotfix'][changelog[version].type]} {version}</u></p>
                     <p style='width: 70%; margin: auto; text-align: left; line-height: 1.6'>
                         {#each changelog[version].notes as note}
                             • {@html note} <br>

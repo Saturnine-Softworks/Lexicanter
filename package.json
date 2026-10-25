@@ -1,7 +1,7 @@
 {
     "name": "lexicanter",
     "productName": "Lexicanter",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "description": "A lexicon management tool for constructed languages.",
     "main": "src/index.js",
     "scripts": {
@@ -189,7 +189,7 @@
         "tslab": "^1.0.22",
         "tslib": "2.8.1",
         "typescript": "=6.0.3",
-        "vite": "=7.3.6",
+        "vite": "7.3.7",
         "vite-plugin-electron-renderer": "=0.14.7"
     }
 }
