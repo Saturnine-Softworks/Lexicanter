@@ -80,7 +80,7 @@ export async function uploadFile(userID: string, key: string, file: string) {
         });
         const data = await response.json();
         if (!data.success) {
-            throw new Error(data.error || 'Failed to upload file');
+            throw new Error(JSON.stringify(data));
         }
     } catch (error) {
         console.error('Error uploading file:', error);
