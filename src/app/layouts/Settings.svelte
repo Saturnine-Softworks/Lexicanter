@@ -616,12 +616,12 @@
                             </div>
                         {/if}
                         <br>
-                        <div style="display:flex">
+                        <div style=display:flex>
                             x-axis:
                             <input type=range bind:value={$CurrentLayouts.snapping.x} min=60 max=500 disabled={$CurrentLayouts.snapping.proportional}/>
                             {Math.round($CurrentLayouts.snapping.x)}
                         </div>
-                        <div style="display:flex">
+                        <div style=display:flex>
                             y-axis:
                             <input type=range bind:value={$CurrentLayouts.snapping.y} min=60 max=500 disabled={$CurrentLayouts.snapping.proportional}/>
                             {Math.round($CurrentLayouts.snapping.y)}
@@ -630,8 +630,8 @@
                     <br>
                     <label> Tab Mode <br>
                         <select bind:value={$Language.Layouts.tabmode}>
-                            <option value='switch'>Switch</option>
-                            <option value='toggle'>Toggle</option>
+                            <option value=switch>Switch</option>
+                            <option value=toggle>Toggle</option>
                         </select>
                         <p class=info>
                             The tab mode controls the behavior of clicking on the tab icons across the top of the window. In "Switch" mode,
@@ -682,7 +682,7 @@
                 <br><hr/><br>
                 <p>Save Settings</p> <br>
                 <label>Auto-Save
-                    <input type="checkbox" bind:checked={$autosave} onchange={change_autosave_pref}/>
+                    <input type=checkbox bind:checked={$autosave} onchange={change_autosave_pref}/>
                 </label>
                 <br>
                 <div class=narrow>
@@ -691,6 +691,7 @@
                             devices and the discord bot and online file viewer. To get your User ID and Key, please go to the Saturn's Sojourn discord
                             server and use the command <code>/account</code>.
                         </p>
+                        <br>
                         <span>Uploading is {$Language.UploadToDatabase? 'On' : 'Off'} for this file.
                             <input type=checkbox bind:checked={$Language.UploadToDatabase}/>
                         </span>
@@ -700,11 +701,11 @@
                             <button class='hover-highlight hover-shadow' onclick={setFileVersions}>Refresh</button>
                         {/if}
                         <br>
-                        <span>User ID: <input class:pronunciation={disabledDatabase} type=text bind:value={inputID} disabled={disabledDatabase}/></span>
+                        <span>Username: <input class:pronunciation={disabledDatabase} type=email bind:value={inputID} disabled={disabledDatabase}/></span>
                         <br>
-                        <span>Key: <input class:pronunciation={disabledDatabase} type=text bind:value={inputKey} disabled={disabledDatabase}/></span>
+                        <span>Password: <input class:pronunciation={disabledDatabase} type=password bind:value={inputKey} disabled={disabledDatabase}/></span>
                         <button onclick={setDatabaseAccount}>Authenticate</button>
-                        <p class=info>Your ID and Key are saved to the app's internal settings, not to your file, but turning on uploading is saved per-file.</p>
+                        <p class=info>Your username and password are saved to the app's internal settings, not to your file. Upload preference is saved per-file.</p>
                         <br>
                         <button class='hover-highlight hover-shadow' onclick={syncFromDatabase}>Sync From Cloud</button>
                         <p class=info>This will overwrite the current file with the latest version of the file available in the cloud.</p>

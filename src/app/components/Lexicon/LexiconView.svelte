@@ -1,6 +1,5 @@
 <script lang="ts">
-    const { ipcRenderer } = require('electron');
-    import { Language, wordInput, pronunciations, selectedTab, hideDropdowns, CurrentLayouts, senses } from '../../stores';
+    import { Language, wordInput, pronunciations, hideDropdowns, CurrentLayouts, senses } from '../../stores';
     import type * as Lexc from '../../types';
     import { alphabetize } from '../../utils/alphabetize';
     import LexEntry from './LexEntry.svelte';
@@ -28,8 +27,7 @@
         (() => {
             alphabetized = alphabetize(!!keys.length? filtered_lex : $Language.Lexicon)
         })();
-    } 
-
+    }
 
     /**
      * This function is used to delete an entry from the lexicon and
