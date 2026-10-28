@@ -63,7 +63,7 @@
         }
 
         if (!$CurrentLayouts.snapping.proportional) return;
-        const sensitivity = 1000;
+        // const sensitivity = 1000;
         $CurrentLayouts.snapping.x = Math.round(window.innerWidth / $CurrentLayouts.snapping.columns * 100)/100
         $CurrentLayouts.snapping.y = Math.round((window.innerHeight - 25) / $CurrentLayouts.snapping.rows * 100)/100
     }

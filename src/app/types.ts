@@ -227,6 +227,7 @@ export type Language = {
     ShowAlphabet: boolean;
     SoundChangeEngine: SoundChangeEngine;
     Pronunciations: Pronunciations;
+    EngineHead: string,
     PronunciationsDisplay: { circumfix: [string, string]; small: boolean };
     RomanizationDisplay: { italic: boolean };
     Orthographies: Orthography[];
@@ -236,9 +237,9 @@ export type Language = {
         // orthography name
         [index: string]: {
             // word          svg
-            [index: string]: string
-        }
-     }
+            [index: string]: string;
+        };
+    };
     Phonotactics: Phonotactics;
     UseAdvancedPhonotactics: boolean;
     AdvancedPhonotactics: AdvancedPhonotactics;

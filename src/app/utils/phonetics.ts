@@ -31,14 +31,14 @@ export async function get_pronunciation(
     //         Lang().SoundChangeEngine +
     //         '" engine.',
     // );
-        const rules: string = Lang().Pronunciations[lect];
+    const rules: string = Lang().Pronunciations[lect];
 
-        if (Lang().SoundChangeEngine === 'legacy') {
-            const settings = parseRules(rules);
+    if (Lang().SoundChangeEngine === 'legacy') {
+        const settings = parseRules(Lang().EngineHead + '\n' + rules);
         return applyRules(settings.rules, word, settings.categories);
     }
-
-    return await tadpole(Lang().SoundChangeEngine, word, rules);
+    
+    return await tadpole(Lang().SoundChangeEngine, word, Lang().EngineHead + '\n' + rules);
 }
 
 /**
@@ -170,14 +170,27 @@ export async function preprocess_ortho(
             : source.pronunciations[ortho.lect].ipa
         : word;
     if (!Lang().TransformCache[ortho.name]?.[word] || ortho.graphemy) {
-        if (!Lang().TransformCache[ortho.name]) Lang().TransformCache[ortho.name] = {};
+        if (!Lang().TransformCache[ortho.name])
+            Lang().TransformCache[ortho.name] = {};
         if (Lang().SoundChangeEngine === 'legacy') {
-            const settings = parseRules(ortho.rules);
-            const output = applyRules(settings.rules, input, settings.categories);
+            const settings = parseRules(Lang().EngineHead + '\n' + ortho.rules);
+            const output = applyRules(
+                settings.rules,
+                input,
+                settings.categories,
+            );
             if (ortho.graphemy) return output;
-            Lang().TransformCache[ortho.name][word] = applyRules(settings.rules, input, settings.categories);
+            Lang().TransformCache[ortho.name][word] = applyRules(
+                settings.rules,
+                input,
+                settings.categories,
+            );
         } else {
-            const output = await tadpole(Lang().SoundChangeEngine, input, ortho.rules);
+            const output = await tadpole(
+                Lang().SoundChangeEngine,
+                input,
+                Lang().EngineHead + '\n' + ortho.rules,
+            );
             if (ortho.graphemy) return output;
             Lang().TransformCache[ortho.name][word] = output;
         }

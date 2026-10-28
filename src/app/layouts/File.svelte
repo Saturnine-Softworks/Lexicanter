@@ -129,6 +129,10 @@
             errorMessage = 'There was a problem loading the pronunciations rules from the file.'
             $Language.Pronunciations = contents.Pronunciations; 
             $Language.Lects.forEach(writeRomans);
+            
+            if (contents.hasOwnProperty('EngineHead')) // added in 2.3.3
+                $Language.EngineHead = contents.EngineHead
+            else $Language.EngineHead = '';
 
             errorMessage = 'There was a problem loading the orthography data from the file.'
             if (contents.hasOwnProperty('Orthographies')) {

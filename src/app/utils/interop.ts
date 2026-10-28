@@ -40,7 +40,7 @@ export async function graphemify(
     index_key: string,
     max_width: number = 100.0,
     max_height: number = 100.0,
-    cache_key: string
+    cache_key: string,
 ): Promise<string> {
     // Sanity checks
     if (!engine) return 'No Graphemy engine loaded.';
@@ -50,16 +50,15 @@ export async function graphemify(
 
     // check if svg has been cached, generate if not
     if (!get(Language).TransformCache[cache_key]?.[index_key]) {
-        if (!get(Language).TransformCache[cache_key]) get(Language).TransformCache[cache_key] = {};
-        get(Language).TransformCache[cache_key][index_key] = (
-            await ffi (
-                'graphemify',
-                engine,
-                input,
-                max_width,
-                max_height,
-            )
-        ) as string
+        if (!get(Language).TransformCache[cache_key])
+            get(Language).TransformCache[cache_key] = {};
+        get(Language).TransformCache[cache_key][index_key] = (await ffi(
+            'graphemify',
+            engine,
+            input,
+            max_width,
+            max_height,
+        )) as string;
     }
     return get(Language).TransformCache[cache_key][index_key];
 }

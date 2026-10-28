@@ -15,13 +15,13 @@ const requestOptions = {
  * @param file Language file JSON string
  * @returns Object with one key, `compressed`
  */
-function compress(file: Lexc.Language): {Name: string, compressed: string} {
+function compress(file: Lexc.Language): { Name: string; compressed: string } {
     const input = JSON.stringify(file);
     const output = lz.compressToUTF16(input);
     return {
         Name: file.Name,
-        compressed: output
-    }
+        compressed: output,
+    };
 }
 
 /**
@@ -29,7 +29,7 @@ function compress(file: Lexc.Language): {Name: string, compressed: string} {
  * @param file JSON object returned from api response
  * @returns decompressed Language object
  */
-function decompress(file: { Name: string, compressed: string }): Lexc.Language {
+function decompress(file: { Name: string; compressed: string }): Lexc.Language {
     const input = file.compressed;
     const output = lz.decompressFromUTF16(input);
     return JSON.parse(output) as Lexc.Language;

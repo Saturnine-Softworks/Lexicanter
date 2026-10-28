@@ -50,6 +50,7 @@ const Default: Lexc.Language = {
             'e > ɛ\n' +
             'Now both rules will be applied correctly. You can test this by removing the first set of rules from this demo.',
     },
+    EngineHead: 'Use this field to define categories/classes and macros for use in any other rule set.',
     PronunciationsDisplay: { circumfix: ['/', '/'], small: true },
     RomanizationDisplay: { italic: true },
     Orthographies: <Lexc.Orthography[]>[

@@ -115,6 +115,7 @@
         editors.push(editor);
     }
     async function saveEditors(): Promise<string> {
+        $Language.TransformCache.__Inflections = {} // clear cache
         for (let i = 0; i < editors.length; i++) {
             editors[i].save().then((outputData) => {
                 $Language.Inflections[i].tables = outputData;
@@ -155,7 +156,7 @@
                                 </label>
                             </div>
                             <div class="column">
-                                <label>Rule Categories
+                                <label>{$Language.SoundChangeEngine === 'tadpole.tadpole'? 'Classes & Macros' : 'Rule Categories'}
                                     <div>
                                         <textarea class=text-left rows=3 bind:value={inflection.categories}></textarea>
                                     </div>

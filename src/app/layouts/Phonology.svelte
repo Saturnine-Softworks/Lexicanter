@@ -281,12 +281,27 @@
                                 {/each}
                             </select>
                         {/if}
-                        <textarea class="prelined" rows="24" style:text-align=left id="pronunciations-input"
+                        <textarea class=prelined rows=24 style:text-align=left id=pronunciations-input
                             style:font-family={$Language.SoundChangeEngine === 'tadpole.tadpole'? '"Fira Code", Courier, monospace' : 'Gentium'}
                             value={$Language.Pronunciations[selectedLect]}
                             on:blur={e => {
                                 setInStone(e); // binding directly to the store is very slow when the language is large
                                 writeRomans(selectedLect);
+                            }}
+                        ></textarea>
+                    </label>
+                    <br>
+                    <label>
+                        {$Language.SoundChangeEngine === 'tadpole.tadpole'? 'Universal Classes & Macros' : 'Universal Categories'}
+                        <textarea class=prelined rows=6 style:text-align=left id=engine-head-input
+                            style:font-family={$Language.SoundChangeEngine === 'tadpole.tadpole'? '"Fira Code", Courier, monospace' : 'Gentium'}
+                            value={$Language.EngineHead}
+                            on:blur={e => {
+                                $Language.EngineHead = (e.target as HTMLInputElement).value;
+
+                                // this section is applied to all text transforms, so all caches are invalidated on change
+                                $Language.TransformCache = {};
+                                $Language.Lects.forEach(lect => writeRomans(lect));
                             }}
                         ></textarea>
                     </label>
@@ -319,6 +334,7 @@
                             readonly
                         ></textarea>
                     {/await}
+                    <br><br><br><br>
                 </div>
             </Draggable>
         {/if}
