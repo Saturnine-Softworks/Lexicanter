@@ -24,16 +24,18 @@
         return temp.textContent ?? '';
     }
 
-    function get_data(inflections: typeof $Language.Inflections, text: string) {
-        const filtered = structuredClone(inflections.filter(inflection => {
-            let filter: RegExp;
-            try {
-                filter = new RegExp(inflection.filter);
-            } catch (e) {
-                filter = /.+/;
+    const data = $derived.by ( () => {
+        const filtered = structuredClone(untrack(() => $Language.Inflections) // untracked because we want this to update only when the cache is cleared
+            .filter(inflection => {
+                let filter: RegExp;
+                try {
+                    filter = new RegExp(inflection.filter);
+                } catch (e) {
+                    filter = /.+/;
+                }
+                return (inflection.tags[0]? inflection.tags.some(tag => tags.includes(tag)) : true) && word.match(filter)
             }
-            return (inflection.tags[0]? inflection.tags.some(tag => tags.includes(tag)) : true) && text.match(filter)
-        }));
+        ));
 
         let data = filtered.map(inflection => inflection.tables.blocks);
         const categories = filtered.map(inflection => inflection.categories + '\n').join()
@@ -42,16 +44,14 @@
 
             blocks.forEach((block, j) => {
                 if (block.type !== 'table') return;
-
+                const index_key = `${i}.${j}:${word}`
+                if ($Language.TransformCache.__Inflections?.[index_key]) {
+                    // cache stores the entire stringified table
+                    data[i][j] = JSON.parse($Language.TransformCache.__Inflections[index_key]);
+                    return;
+                }
                 block.data.content.forEach((row: string[], y: number) => {
-
                     row.forEach(async (cell: string, x: number) => {
-                        const index_key = `${i}.${j}.${y}.${x}:${text}`
-                        if ($Language.TransformCache.__Inflections?.[index_key]) {
-                            data[i][j].data.content[y][x] = $Language.TransformCache.__Inflections[index_key];
-                            return;
-                        }
-
                         if ($Language.SoundChangeEngine === 'legacy') {
                             const rules = sca.parseRules($Language.EngineHead + '\n' + htmlToText(cell)).rules;
                             const cats = sca.parseRules(categories).categories;
@@ -69,22 +69,20 @@
             });
         });
         return data;
-    }
+    });
 
-    const data = $derived(get_data($Language.Inflections, word))
+    if (!$Language.TransformCache.__Inflections) $Language.TransformCache.__Inflections = {};
 
-    if ($Language.TransformCache.__Inflections) $Language.TransformCache.__Inflections = {};
     $effect(() => { // cannot modify $Language.TransformCache within get_data() function because side effects are not allowed outside of $effect()
         data.forEach((blocks, i) => {
             blocks.forEach((block, j) => {
                 if (block.type !== 'table') return;
-                block.data.content.forEach((row: string[], y: number) => {
-                    row.forEach((cell: string, x: number) => {
-                        const index_key = `${i}.${j}.${y}.${x}:${ untrack(() => word) /* `word` derives `data`, `data` causes this effect */ }`
-                        // untrack to prevent infinite loop; directly setting here would make $Language.TransformCache a dependency
-                        untrack(() => $Language.TransformCache.__Inflections[index_key] = cell); 
-                    }) 
-                })
+                const index_key = `${i}.${j}:${ untrack(() => word) /* `word` derives `data`, `data` causes this effect */ }`
+                if (!$Language.TransformCache.__Inflections[index_key]) {
+                    // untrack to prevent infinite loop; directly referencing here would make $Language.TransformCache a dependency
+                    untrack(() => $Language.TransformCache.__Inflections[index_key] = JSON.stringify(block)); 
+                    // console.debug(index_key, block)
+                }
             })
         })
     })
