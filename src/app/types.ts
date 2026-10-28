@@ -232,7 +232,7 @@ export type Language = {
     Orthographies: Orthography[];
     ShowPronunciation: boolean;
     ShowOrthography: boolean;
-    GraphemyCache: {
+    TransformCache: {
         // orthography name
         [index: string]: {
             // word          svg

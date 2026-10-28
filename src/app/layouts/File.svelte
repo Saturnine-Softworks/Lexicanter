@@ -145,10 +145,10 @@
                 }
 
                 // added 2.3.3
-                if (contents.hasOwnProperty('GraphemyCache')) 
-                    $Language.GraphemyCache = contents.GraphemyCache;
+                if (contents.hasOwnProperty('TransformCache')) 
+                    $Language.TransformCache = contents.TransformCache;
                 else 
-                    $Language.GraphemyCache = {};
+                    $Language.TransformCache = {};
             }
             
             errorMessage = 'There was a problem loading the phonotactics rules from the file.'

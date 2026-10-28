@@ -65,7 +65,7 @@ const Default: Lexc.Language = {
         },
     ],
     ShowOrthography: false,
-    GraphemyCache: {},
+    TransformCache: {},
     ShowPronunciation: true,
     Phonotactics: <Lexc.Phonotactics>{
         General: <Lexc.PhonotacticsLect>{

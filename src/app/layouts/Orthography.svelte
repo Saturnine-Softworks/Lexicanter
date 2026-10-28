@@ -55,8 +55,8 @@
      * @param i index
      */
     function clear_cache(i: number) {
-        $Language.GraphemyCache[$Language.Orthographies[i].name] = {};
-        console.info($Language.GraphemyCache);
+        $Language.TransformCache[$Language.Orthographies[i].name] = {};
+        console.info($Language.TransformCache);
     }
 
 </script>
@@ -222,8 +222,8 @@
                             class="hover-highlight hover-shadow"
                             onclick={() => {
                                 if ($Language.Orthographies[i].graphemy) {
-                                    if ($Language.GraphemyCache[$Language.Orthographies[i].name]) 
-                                        delete $Language.GraphemyCache[$Language.Orthographies[i].name]
+                                    if ($Language.TransformCache[$Language.Orthographies[i].name]) 
+                                        delete $Language.TransformCache[$Language.Orthographies[i].name]
                                 }
                                 
                                 $Language.Orthographies = [

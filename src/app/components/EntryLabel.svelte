@@ -3,7 +3,7 @@
     import { Language } from '../stores';
     import { graphemify } from '../utils/interop';
     import { preprocess_ortho } from '../utils/phonetics';
-    import type { Word, Phrase, Variant, Orthography } from '../types';
+    import type { Word, Phrase, Variant } from '../types';
     let {
         word, 
         source

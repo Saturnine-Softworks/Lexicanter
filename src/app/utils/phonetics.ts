@@ -168,11 +168,14 @@ export async function preprocess_ortho(
             ? word
             : source.pronunciations[ortho.lect].ipa
         : word;
+    if (!Lang().TransformCache[ortho.name]) Lang().TransformCache[ortho.name] = {};
     if (Lang().SoundChangeEngine === 'legacy') {
         const settings = parseRules(ortho.rules);
-        return applyRules(settings.rules, input, settings.categories);
+        Lang().TransformCache[ortho.name][word] = applyRules(settings.rules, input, settings.categories);
+    } else {
+        Lang().TransformCache[ortho.name][word] = await tadpole(Lang().SoundChangeEngine, input, ortho.rules);
     }
-    return await tadpole(Lang().SoundChangeEngine, input, ortho.rules);
+    return Lang().TransformCache[ortho.name][word];
 }
 
 /**

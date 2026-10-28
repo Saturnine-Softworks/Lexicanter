@@ -49,9 +49,9 @@ export async function graphemify(
     if (!max_height) max_height = 100;
 
     // check if svg has been cached, generate if not
-    if (!get(Language).GraphemyCache[cache_key]?.[index_key]) {
-        if (!get(Language).GraphemyCache[cache_key]) get(Language).GraphemyCache[cache_key] = {};
-        get(Language).GraphemyCache[cache_key][index_key] = (
+    if (!get(Language).TransformCache[cache_key]?.[index_key]) {
+        if (!get(Language).TransformCache[cache_key]) get(Language).TransformCache[cache_key] = {};
+        get(Language).TransformCache[cache_key][index_key] = (
             await ffi (
                 'graphemify',
                 engine,
@@ -61,7 +61,7 @@ export async function graphemify(
             )
         ) as string
     }
-    return get(Language).GraphemyCache[cache_key][index_key];
+    return get(Language).TransformCache[cache_key][index_key];
 }
 
 export async function tadpole(
