@@ -163,6 +163,7 @@ export async function preprocess_ortho(
     ortho: Orthography,
     source: Word | Phrase | Variant | null = null,
 ): Promise<string> {
+    if (ortho.name === 'Romanization') return word;
     const input = source
         ? ortho.root === 'rom'
             ? word
@@ -171,9 +172,13 @@ export async function preprocess_ortho(
     if (!Lang().TransformCache[ortho.name]) Lang().TransformCache[ortho.name] = {};
     if (Lang().SoundChangeEngine === 'legacy') {
         const settings = parseRules(ortho.rules);
+        const output = applyRules(settings.rules, input, settings.categories);
+        if (ortho.graphemy) return output;
         Lang().TransformCache[ortho.name][word] = applyRules(settings.rules, input, settings.categories);
     } else {
-        Lang().TransformCache[ortho.name][word] = await tadpole(Lang().SoundChangeEngine, input, ortho.rules);
+        const output = await tadpole(Lang().SoundChangeEngine, input, ortho.rules);
+        if (ortho.graphemy) return output;
+        Lang().TransformCache[ortho.name][word] = output;
     }
     return Lang().TransformCache[ortho.name][word];
 }

@@ -56,7 +56,7 @@
      */
     function clear_cache(i: number) {
         $Language.TransformCache[$Language.Orthographies[i].name] = {};
-        console.info($Language.TransformCache);
+        // console.info($Language.TransformCache);
     }
 
 </script>
@@ -69,6 +69,8 @@
                         <input type=text
                             onblur={(e) => {
                                 setAttribute(e, 'name', i);
+                                clear_cache(i);
+                                delete $Language.TransformCache[orthography.name];
                             }}
                             style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
                             value={orthography.name}
@@ -161,7 +163,7 @@
                         {#if orthography.name === 'Romanization'}
                             <span>Base input</span>
                         {:else}
-                            <select bind:value={orthography.root}>
+                            <select bind:value={orthography.root} onchange={() => clear_cache(i)}>
                                 <option value=ipa>Base from pronunciation</option>
                                 <option value=rom>Base from romanization</option>
                             </select>
@@ -185,6 +187,7 @@
                                             height: 100,
                                         }
                                     } satisfies GraphemyOptions;
+                                    clear_cache(i)
                                 }}
                             >
                                 <option value=standard> Standard typeface </option>
@@ -195,7 +198,7 @@
                     <br>
                     {#if $Language.UseLects && orthography.root === 'ipa'}
                         <label>Lect
-                            <select bind:value={orthography.lect}>
+                            <select bind:value={orthography.lect} onchange={() => clear_cache(i)}>
                                 {#each $Language.Lects as lect}
                                     <option value={lect}>{lect}</option>
                                 {/each}
@@ -210,7 +213,7 @@
                             class={orthography.name === 'Romanization'? 'text-center' : 'text-left'}
                             onblur={(e) => {
                                 setAttribute(e, 'rules', i);
-                                if ($Language.Orthographies[i].graphemy) clear_cache(i);
+                                clear_cache(i);
                             }}
                             style:background-color={orthography.name === 'Romanization' ? 'transparent' : ''}
                             value={orthography.rules}
@@ -221,10 +224,8 @@
                         <button
                             class="hover-highlight hover-shadow"
                             onclick={() => {
-                                if ($Language.Orthographies[i].graphemy) {
-                                    if ($Language.TransformCache[$Language.Orthographies[i].name]) 
-                                        delete $Language.TransformCache[$Language.Orthographies[i].name]
-                                }
+                                if ($Language.TransformCache[$Language.Orthographies[i].name]) 
+                                    delete $Language.TransformCache[$Language.Orthographies[i].name]
                                 
                                 $Language.Orthographies = [
                                     ...$Language.Orthographies.slice(0, i),
@@ -251,6 +252,7 @@
                                 displayInPhrasebook: true,
                             }
                         ];
+                        $Language.TransformCache[$Language.Orthographies.findLast(o => !!o)!.name] = {}
                     }}
                 >New Orthography</button>
                 <br><br>
