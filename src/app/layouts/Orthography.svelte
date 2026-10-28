@@ -1,7 +1,7 @@
 <svelte:options runes/>
 <script lang=ts>
     import { Language, selectedTab } from '../stores';
-    import { parseRules, applyRules } from '../utils/sca';
+    // import { parseRules, applyRules } from '../utils/sca';
     import type { GraphemyOptions, Orthography } from '../types';
     import { showOpenDialog } from '../utils/files';
     import { graphemify } from '../utils/interop';
@@ -9,7 +9,6 @@
     import { readFile } from 'node:fs';
     import path from 'node:path';
     import { preprocess_ortho } from '../utils/phonetics';
-    import { clear } from 'node:console';
     let selectedOrtho = $state('');
     let testInput = $state('');
     const vex = require('vex-js');
@@ -57,7 +56,6 @@
      */
     function clear_cache(i: number) {
         $Language.GraphemyCache[$Language.Orthographies[i].name] = {};
-
         console.info($Language.GraphemyCache);
     }
 
@@ -288,6 +286,7 @@
                                 {#await graphemify(
                                     ortho.graphemy.engine, 
                                     resInput, 
+                                    testInput,
                                     ortho.graphemy.bounds.width, 
                                     ortho.graphemy.bounds.height,
                                     ortho.name

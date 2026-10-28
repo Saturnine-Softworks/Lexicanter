@@ -32,7 +32,7 @@
                     {:then input}
                         {#await graphemify(
                             ortho.graphemy.engine, 
-                            input, 
+                            input, word,
                             ortho.graphemy.bounds.width, 
                             ortho.graphemy.bounds.height,
                             ortho.name
