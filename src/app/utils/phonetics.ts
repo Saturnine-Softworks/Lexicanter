@@ -8,6 +8,8 @@ import {
 } from '../stores.js';
 import { applyRules, parseRules } from './sca';
 import type * as Lexc from '../types.js';
+import type { Orthography, Word, Phrase, Variant } from '../types';
+import { tadpole } from './interop.js';
 const Lang = () => get(Language);
 
 /**
@@ -29,10 +31,10 @@ export async function get_pronunciation(
     //         Lang().SoundChangeEngine +
     //         '" engine.',
     // );
-    const rules: string = Lang().Pronunciations[lect];
+        const rules: string = Lang().Pronunciations[lect];
 
-    if (Lang().SoundChangeEngine === 'legacy') {
-        const settings = parseRules(rules);
+        if (Lang().SoundChangeEngine === 'legacy') {
+            const settings = parseRules(rules);
         return applyRules(settings.rules, word, settings.categories);
     }
 
@@ -156,8 +158,6 @@ export function complete_word(trial: string) {
     return finalize(word);
 }
 
-import type { Orthography, Word, Phrase, Variant } from '../types';
-import { tadpole } from './interop.js';
 export async function preprocess_ortho(
     word: string,
     ortho: Orthography,
@@ -169,16 +169,18 @@ export async function preprocess_ortho(
             ? word
             : source.pronunciations[ortho.lect].ipa
         : word;
-    if (!Lang().TransformCache[ortho.name]) Lang().TransformCache[ortho.name] = {};
-    if (Lang().SoundChangeEngine === 'legacy') {
-        const settings = parseRules(ortho.rules);
-        const output = applyRules(settings.rules, input, settings.categories);
-        if (ortho.graphemy) return output;
-        Lang().TransformCache[ortho.name][word] = applyRules(settings.rules, input, settings.categories);
-    } else {
-        const output = await tadpole(Lang().SoundChangeEngine, input, ortho.rules);
-        if (ortho.graphemy) return output;
-        Lang().TransformCache[ortho.name][word] = output;
+    if (!Lang().TransformCache[ortho.name]?.[word] || ortho.graphemy) {
+        if (!Lang().TransformCache[ortho.name]) Lang().TransformCache[ortho.name] = {};
+        if (Lang().SoundChangeEngine === 'legacy') {
+            const settings = parseRules(ortho.rules);
+            const output = applyRules(settings.rules, input, settings.categories);
+            if (ortho.graphemy) return output;
+            Lang().TransformCache[ortho.name][word] = applyRules(settings.rules, input, settings.categories);
+        } else {
+            const output = await tadpole(Lang().SoundChangeEngine, input, ortho.rules);
+            if (ortho.graphemy) return output;
+            Lang().TransformCache[ortho.name][word] = output;
+        }
     }
     return Lang().TransformCache[ortho.name][word];
 }
