@@ -28,6 +28,7 @@ export async function ffi(
  * Wrapper for the Rust-side `graphemify` function via FFI/IPC.
  * @param {string} engine The Graphemy engine file as a string
  * @param {string} input The string to be rendered via the typesetter
+ * @param {string} index_key The key to file the SVG under
  * @param {number} max_width The maximum width of the bounding box for the rendered text
  * @param {number} max_height The maximum height of the bounding box for the rendered text
  * @param {string} cache_key The name of the associated orthography
@@ -36,6 +37,7 @@ export async function ffi(
 export async function graphemify(
     engine: string,
     input: string,
+    index_key: string,
     max_width: number = 100.0,
     max_height: number = 100.0,
     cache_key: string
@@ -47,9 +49,9 @@ export async function graphemify(
     if (!max_height) max_height = 100;
 
     // check if svg has been cached, generate if not
-    if (!get(Language).GraphemyCache[cache_key]?.[input]) {
+    if (!get(Language).GraphemyCache[cache_key]?.[index_key]) {
         if (!get(Language).GraphemyCache[cache_key]) get(Language).GraphemyCache[cache_key] = {};
-        get(Language).GraphemyCache[cache_key][input] = (
+        get(Language).GraphemyCache[cache_key][index_key] = (
             await ffi (
                 'graphemify',
                 engine,
@@ -59,7 +61,7 @@ export async function graphemify(
             )
         ) as string
     }
-    return get(Language).GraphemyCache[cache_key][input];
+    return get(Language).GraphemyCache[cache_key][index_key];
 }
 
 export async function tadpole(

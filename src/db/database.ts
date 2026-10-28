@@ -1,5 +1,6 @@
 import type { FetchError } from 'node-fetch';
 import type * as Lexc from '../app/types';
+import * as lz from 'lz-string';
 
 const API_URL = 'https://saturnine.xyz/api/lexicanter';
 const requestOptions = {
@@ -8,6 +9,31 @@ const requestOptions = {
         'Content-Type': 'application/json',
     },
 };
+
+/**
+ * Compresses a string using `lz-string`
+ * @param file Language file JSON string
+ * @returns Object with one key, `compressed`
+ */
+function compress(file: Lexc.Language): {Name: string, compressed: string} {
+    const input = JSON.stringify(file);
+    const output = lz.compressToUTF16(input);
+    return {
+        Name: file.Name,
+        compressed: output
+    }
+}
+
+/**
+ * Decompresses a Language file returned from API using `lz-string`
+ * @param file JSON object returned from api response
+ * @returns decompressed Language object
+ */
+function decompress(file: { Name: string, compressed: string }): Lexc.Language {
+    const input = file.compressed;
+    const output = lz.decompressFromUTF16(input);
+    return JSON.parse(output) as Lexc.Language;
+}
 
 export async function verify(
     userID: string,
@@ -56,6 +82,9 @@ export async function downloadFile(
         });
         const data = await response.json();
         if (data.success) {
+            if (data.file.compressed) {
+                return decompress(data.file);
+            }
             return data.file;
         }
         throw new Error(data.error || 'Failed to download file');
@@ -74,7 +103,7 @@ export async function uploadFile(userID: string, key: string, file: string) {
                 key: key,
                 action: {
                     type: 'upload',
-                    file: file,
+                    file: JSON.stringify(compress(JSON.parse(file))),
                 },
             }),
         });
