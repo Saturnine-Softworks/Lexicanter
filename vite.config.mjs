@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import path from 'path';
 import process from 'process';
 import { defineConfig } from 'vite';
@@ -25,6 +24,9 @@ export default defineConfig({
             ],
             compilerOptions: {
                 dev: true,
+                experimental: {
+                    async: true,
+                }
                 // compatibility: {
                 //     componentApi: 4
                 // }

@@ -176,7 +176,12 @@
                             <div class="column">
                                 <label>{$Language.SoundChangeEngine === 'tadpole.tadpole'? 'Classes & Macros' : 'Rule Categories'}
                                     <div>
-                                        <textarea class=text-left rows=3 bind:value={inflection.categories}></textarea>
+                                        <textarea 
+                                            class=text-left
+                                            style:font-family={$Language.SoundChangeEngine === 'tadpole.tadpole'? '"Fira Code", Courier, monospace' : 'Gentium'}
+                                            rows=3 
+                                            bind:value={inflection.categories}
+                                        ></textarea>
                                     </div>
                                 </label>
                             </div>

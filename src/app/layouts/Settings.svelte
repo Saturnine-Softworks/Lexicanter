@@ -775,7 +775,7 @@
                         <b>Tadpole.Lexc</b>, but files created before version 2.2.6 will default to <i>Legacy</i>.
                         <br><br>
                         It is possible that there may be some discrepancies between the results produced by <i>Tadpole.Lexc</i> and <i>Legacy</i>, but
-                        for the most part, you should be able to switch between these two without issues. [As of the first 2.3.0 prerelease, <i>Tadpole.Lexc</i> does not support anonymous categories]. 
+                        for the most part, you should be able to switch between these two without issues.
                         <br><br>
                         However, <i>Tadpole</i> is <b>not</b> compatible with the legacy syntax; if you switch to this syntax, you will need to
                         rewrite any existing sound change notation (such as pronunciation rules or orthography conversion rules). Tadpole, however,

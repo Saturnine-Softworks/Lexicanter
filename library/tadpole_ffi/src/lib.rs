@@ -58,7 +58,7 @@ pub unsafe extern "C" fn tadpole(
         .result;
     
     // println!("Parser: {parser_str}\n\n{spec_str}\n");
-    println!("{input_str} -> {res}\n");
+    // println!("{input_str} -> {res}\n");
 
     string_to_c_char(res)
 }
