@@ -14,6 +14,11 @@
         '2.3.3': {
             type: PATCH,
             'notes': [
+                'Added text field to Phonology panel for "Universal Categories" (or if using tadpole, "Universal Classes & Macros"). Definitions written here can be accessed by any other text field where pronunciation/sound change rules are written, such as the separate fields for different lects, orthography preprocessing, and inflection tables.',
+                'Inflection tables and alternate orthographies are now cached in-file. This may increase initial load times, but every load after that should be much faster. The app should handle large and feature-rich files much better in general.',
+                'Files are now compressed for online storage (they are still stored uncompressed locally), which will allow for much larger and faster file uploads and syncing.',
+                'The <code>saturnine.xyz/lexicanter/[your language]/lexicon</code> pages now can display inflection tables and Graphemy-rendered orthographies.',
+                'The discord bot has been updated to be able to read from and write new words into files created up through this update.',
                 'Updated tadpole to 1.4.0 and Graphemy to 0.7.0. ',
                 'Fixed issue with tadpole.lexc which caused anonymous categories not to work. ',
                 'Inflections tables now use your selected sound change engine. ',
